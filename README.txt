@@ -1,6 +1,6 @@
-Copyright (C) 2009-2012 Mathieu Fortin for Rouge Epicea.
+Copyright (C) 2009-2015 Mathieu Fortin for Rouge Epicea.
 
-Email: capsismrnfmodules@gmail.com
+Email: mathieu.fortin.re@gmail.com
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -17,4 +17,4 @@ Please see the license at http://www.gnu.org/copyleft/lesser.html.
 
 This library requires the repicea libraries to work properly, which 
 are all protected by a GNU Lesser General Public License. It also requires 
-the commons-math-2.2.jar library, which is protected by a Apache License. 
+the commons-math-2.2.jar library, which is protected by an Apache License. 
