@@ -1,0 +1,72 @@
+/*
+ * English version follows
+ * 
+ * Ce fichier fait partie de la bibliothèque mrnf-foresttools.
+ * Il est protégé par la loi sur le droit d'auteur (L.R.C.,cC-42) et par les
+ * conventions internationales. Toute reproduction de ce fichier sans l'accord 
+ * du ministère des Ressources naturelles et de la Faune du Gouvernement du 
+ * Québec est strictement interdite.
+ * 
+ * Copyright (C) 2009-2012 Gouvernement du Québec - Rouge-Epicea
+ * 	Pour information, contactez Jean-Pierre Saucier, 
+ * 			Ministère des Ressources naturelles et de la Faune du Québec
+ * 			jean-pierre.saucier@mrnf.gouv.qc.ca
+ *
+ * This file is part of the mrnf-foresttools library. It is 
+ * protected by copyright law (L.R.C., cC-42) and by international agreements. 
+ * Any reproduction of this file without the agreement of Québec Ministry of 
+ * Natural Resources and Wildlife is strictly prohibited.
+ *
+ * Copyright (C) 2009-2012 Gouvernement du Québec 
+ * 	For further information, please contact Jean-Pierre Saucier,
+ * 			Ministère des Ressources naturelles et de la Faune du Québec
+ * 			jean-pierre.saucier@mrnf.gouv.qc.ca
+ */
+package quebecmrnfutility.treelogger.sybille;
+
+import repicea.simulation.treelogger.LoggableTree;
+import repicea.simulation.treelogger.TreeLogCategory;
+import repicea.simulation.treelogger.WoodPiece;
+import repicea.stats.estimates.Estimate;
+
+/**
+ * The SybilleWoodPiece is the WoodPiece derived class for the Sybille tree logger.
+ * @author Mathieu Fortin - March 2012
+ */
+public class SybilleWoodPiece extends WoodPiece {
+	
+	private static final long serialVersionUID = 20120310L;
+	
+	private Estimate<?> volumeEstimate;
+	private double trueLengthM;
+		
+	protected SybilleWoodPiece(TreeLogCategory logCategory, LoggableTree tree, Estimate<?> volumeEstimate, double trueLengthM) {
+		super(logCategory, -1, tree, -1, false, true);		// with bark is false, with pith is true
+		this.volumeEstimate = volumeEstimate;
+		this.trueLengthM = trueLengthM;
+	}
+	
+	@Override
+	public String toString() {
+		return "Log category = " + getLogCategory().getName() + "; Species = " + getTreeFromWhichComesThisPiece().getSpeciesName();
+	}
+
+	/**
+	 * Do not use this method. Use setVolumeDm3(Estimate) instead.
+	 */
+	@Deprecated
+	@Override
+	protected void setVolumeM3(double volumeOfThisWoodPiece_m3) {}
+
+	@Override
+	public double getVolumeM3() {
+		return volumeEstimate.getMean().getSumOfElements() * .001;				
+	}
+	
+	/**
+	 * This method returns the true length of the log.
+	 * @return the log length (m)
+	 */
+	public double getLength() {return trueLengthM;}
+	
+}
