@@ -138,16 +138,16 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	private List<Integer>							measurementDates;
 	private boolean									isBlupEstimationDone;
 
-	private static Map<BetaHdSpecies, GaussianEstimate>	betaMatrixReferenceMap	= new HashMap<BetaHdSpecies, GaussianEstimate>();
-	private static Map<BetaHdSpecies, GaussianEstimate>	plotRandomEffectReferenceMap	= new HashMap<BetaHdSpecies, GaussianEstimate>();
-	private static Map<BetaHdSpecies, GaussianEstimate> treeRandomEffectReferenceMap = new HashMap<BetaHdSpecies, GaussianEstimate>();
-	private static Map<BetaHdSpecies, Map<String, Matrix>>	subDomainDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
-	private static Map<BetaHdSpecies, Map<String, Matrix>>	vegPotDummyReferenceMap			= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
-	private static Map<BetaHdSpecies, Map<String, Matrix>>	ecoTypeDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
-	private static Map<BetaHdSpecies, Map<String, Matrix>>	disturbDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
-	private static Map<BetaHdSpecies, List<Effect>>			listEffectReferenceMap			= new HashMap<BetaHdSpecies, List<Effect>>();
-	private static Map<BetaHdSpecies, Matrix> oXVectorReferenceMap = new  HashMap<BetaHdSpecies, Matrix>();
-	private static Map<BetaHdSpecies, Map<Integer, GaussianEstimate>>	blupsLibraryPlotReferenceMap	= new HashMap<BetaHdSpecies, Map<Integer, GaussianEstimate>>();
+	private Map<BetaHdSpecies, GaussianEstimate>	betaMatrixReferenceMap	= new HashMap<BetaHdSpecies, GaussianEstimate>();
+	private Map<BetaHdSpecies, GaussianEstimate>	plotRandomEffectReferenceMap	= new HashMap<BetaHdSpecies, GaussianEstimate>();
+	private Map<BetaHdSpecies, GaussianEstimate> treeRandomEffectReferenceMap = new HashMap<BetaHdSpecies, GaussianEstimate>();
+	private Map<BetaHdSpecies, Map<String, Matrix>>	subDomainDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
+	private Map<BetaHdSpecies, Map<String, Matrix>>	vegPotDummyReferenceMap			= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
+	private Map<BetaHdSpecies, Map<String, Matrix>>	ecoTypeDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
+	private Map<BetaHdSpecies, Map<String, Matrix>>	disturbDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
+	private Map<BetaHdSpecies, List<Effect>>			listEffectReferenceMap			= new HashMap<BetaHdSpecies, List<Effect>>();
+	private Map<BetaHdSpecies, Matrix> oXVectorReferenceMap = new  HashMap<BetaHdSpecies, Matrix>();
+	private Map<BetaHdSpecies, Map<Integer, GaussianEstimate>>	blupsLibraryPlotReferenceMap	= new HashMap<BetaHdSpecies, Map<Integer, GaussianEstimate>>();
 
 	public BetaHeightPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled,
 			List<Integer> measurementDates) {
@@ -325,10 +325,10 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	 */
 	private void setVersion(BetaHdSpecies species) {
 
-		defaultBeta = BetaHeightPredictor.betaMatrixReferenceMap.get(species);
+		defaultBeta = betaMatrixReferenceMap.get(species);
 
 		defaultRandomEffects.clear();
-		defaultRandomEffects.put(HierarchicalLevel.Plot, BetaHeightPredictor.plotRandomEffectReferenceMap.get(species));
+		defaultRandomEffects.put(HierarchicalLevel.Plot, plotRandomEffectReferenceMap.get(species));
 //		defaultRandomEffects.put(HierarchicalLevel.Tree, BetaHeightPredictor.treeRandomEffectReferenceMap.get(species));
 		
 		oXVector = oXVectorReferenceMap.get(species);
