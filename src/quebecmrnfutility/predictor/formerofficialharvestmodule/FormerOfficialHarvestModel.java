@@ -55,7 +55,7 @@ public class FormerOfficialHarvestModel extends LogisticModelBasedSimulator<Form
 	@Deprecated
 	public static enum Treatment implements TreatmentEnum {
 		CA("Sanitary harvesting", "Coupe d'am\u00E9lioration"), 
-		CE("Crop tree harvesting", "Coupe d'\u00E9�claircie"), 
+		CE("Crop tree harvesting", "Coupe d'\u00E9claircie"), 
 		CJ("Selection cutting", "Coupe de jardinage"), 
 		CP("Shelterwood cutting", "Coupe progressive"), 
 		EC("Commercial thinning", "\u00C9claircie commerciale"), 
