@@ -54,15 +54,13 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - September 2011
  */
 @Deprecated
+@SuppressWarnings({"rawtypes","unchecked"})
 public final class StemTaperEquation extends ModelBasedSimulator {
 	
 	private static final long serialVersionUID = 20120110L;
 
 	public static enum EstimationMethod {FirstOrder, SecondOrder, MonteCarlo}
 
-//	private Matrix omega;
-//	private Map<HierarchicalLevel, Matrix> gMatrices;
-	
 	private double rho;
 	private double varFunctionParm1;
 	private double varFunctionParm2;
@@ -80,7 +78,6 @@ public final class StemTaperEquation extends ModelBasedSimulator {
 	private Matrix plotRandomEffects;
 	private Matrix treeRandomEffects;
 	
-	// TODO use a GaussianEstimate here
 	private Matrix rMatrix;
 	private Matrix rMatrixChol;
 	private Matrix residualErrors;
@@ -372,7 +369,6 @@ public final class StemTaperEquation extends ModelBasedSimulator {
 	 * @return an Estimate instance
 	 * @throws Exception
 	 */
-	@SuppressWarnings("rawtypes")
 	public Estimate predictVolume(Matrix heights) throws Exception {
 		deltaH = getHeightSectionLength(heights);
 		double factor = Math.PI / 8 * deltaH * 1E-3; 							// 1E-3 is a factor to express the result in dm3
@@ -387,7 +383,7 @@ public final class StemTaperEquation extends ModelBasedSimulator {
 			result = new GaussianEstimate();
 		}	
 
-		MonteCarloEstimate taperEstimate = predictTaperForTheseHeights(heights);
+		MonteCarloEstimate<Matrix> taperEstimate = predictTaperForTheseHeights(heights);
 		
 		Matrix volumeEstim;
 		for (int iter = 0; iter < numberOfRuns; iter++) {
@@ -411,7 +407,6 @@ public final class StemTaperEquation extends ModelBasedSimulator {
 	 * @param tree a StemTaperTree instance
 	 * @return the volume in dm3 or -1 if the volume cannot be calculated
 	 */
-	@SuppressWarnings("unchecked")
 	public static double getVolumeThroughSmalianFormula(StemTaperTree tree) {
 		Vector<StemTaperHeightSection> heightSections = tree.getHeightSections();
 		

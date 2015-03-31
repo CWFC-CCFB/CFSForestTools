@@ -201,7 +201,7 @@ public class StemTaperPredictorTest {
 		
 		Map<StemTaperTreeSpecies, Double> outputMap = new HashMap<StemTaperTreeSpecies, Double>();
 		StemTaperEstimate taperEstimate;
-		Estimate volumeEstimate;
+		Estimate<Matrix, ?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			volumeEstimate = taperEstimate.getVolumeEstimate();
@@ -256,7 +256,7 @@ public class StemTaperPredictorTest {
 
 		Map<StemTaperTreeSpecies, Double> outputMap = new HashMap<StemTaperTreeSpecies, Double>();
 		StemTaperEstimate taperEstimate;
-		Estimate volumeEstimate;
+		Estimate<Matrix, ?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			volumeEstimate = taperEstimate.getVolumeEstimate();
@@ -426,7 +426,7 @@ public class StemTaperPredictorTest {
 		
 		Map<StemTaperTreeSpecies, Double> outputMap = new HashMap<StemTaperTreeSpecies, Double>();
 		StemTaperEstimate taperEstimate;
-		Estimate volumeEstimate;
+		Estimate<Matrix, ?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			volumeEstimate = taperEstimate.getVolumeEstimate();
@@ -481,7 +481,7 @@ public class StemTaperPredictorTest {
 
 		Map<StemTaperTreeSpecies, Double> outputMap = new HashMap<StemTaperTreeSpecies, Double>();
 		StemTaperEstimate taperEstimate;
-		Estimate volumeEstimate;
+		Estimate<Matrix, ?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			volumeEstimate = taperEstimate.getVolumeEstimate();
@@ -542,7 +542,7 @@ public class StemTaperPredictorTest {
 		StemTaperSegmentList segments = tree.getGaussLegendreBottomSegments();
 		StemTaperEstimate taperEstimate = ste.getPredictedTaperForTheseSegments(tree, segments);
 			
-		Estimate volumeEstimate = taperEstimate.getVolumeEstimate(segments);
+		Estimate<Matrix, ?> volumeEstimate = taperEstimate.getVolumeEstimate(segments);
 		double volume = volumeEstimate.getMean().getSumOfElements();
 		double variance = volumeEstimate.getVariance().getSumOfElements();
 		NumberFormat nf = NumberFormat.getInstance();
