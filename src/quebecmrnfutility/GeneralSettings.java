@@ -24,6 +24,8 @@
  */
 package quebecmrnfutility;
 
+import repicea.io.tools.LevelProviderEnum;
+
 
 /**
  * This class contains the common codes for species and environment that apply in the 
@@ -39,7 +41,7 @@ public class GeneralSettings {
 		treeLevel 
 	}
 
-	public enum FieldID {
+	public enum FieldID implements LevelProviderEnum {
 		STRATUM(Level.stratumLevel),
 		
 		PLOT(Level.plotLevel),
@@ -92,7 +94,8 @@ public class GeneralSettings {
 			this.level = level;
 		}
 		
-		public Level getLevel() {
+		@Override
+		public Level getFieldLevel() {
 			return level;
 		}
 	}
