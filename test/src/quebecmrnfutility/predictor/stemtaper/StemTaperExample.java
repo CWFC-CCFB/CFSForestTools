@@ -6,6 +6,7 @@ import repicea.stats.estimates.Estimate;
 public class StemTaperExample {
 
 	
+	@SuppressWarnings({ "deprecation", "unchecked" })
 	public static void main(String[] args) throws Exception {
 		StemTaperEquation ste = new StemTaperEquation();
 		StemTaperTree tree = new StemTaperTreeImpl(200, 15.5);
@@ -15,7 +16,6 @@ public class StemTaperExample {
 		int numberOfRows = (int) ((topHeight - bottomHeight) / spacing) + 1;
 		Matrix heights = new Matrix(numberOfRows, 1, bottomHeight, spacing);
 		ste.setTree(tree);
-		@SuppressWarnings("rawtypes")
 		Estimate<Matrix, ?> volumeEstimate = ste.predictVolume(heights);
 		System.out.println("Volume = " + volumeEstimate.getMean().getSumOfElements());
 		System.out.println("Variance = " + volumeEstimate.getVariance().getSumOfElements());
