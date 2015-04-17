@@ -24,6 +24,7 @@ import repicea.math.Matrix;
 import repicea.stats.estimates.Estimate;
 import repicea.util.ObjectUtility;
 
+@SuppressWarnings("deprecation")
 public class StemTaperTest {
 
 	private static final double VERY_SMALL = 1E-6;
@@ -63,7 +64,7 @@ public class StemTaperTest {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked"})
 	private void runSimulation(int index_j, StemTaperTree tree) throws Exception {
 
 		Vector<StemTaperHeightSection> heightSections = tree.getHeightSections();

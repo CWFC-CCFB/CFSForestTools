@@ -7,6 +7,7 @@ import quebecmrnfutility.predictor.stemtaper.StemTaperStand;
 import quebecmrnfutility.predictor.stemtaper.StemTaperTree;
 import repicea.simulation.ModelBasedSimulator.HierarchicalLevel;
 
+@SuppressWarnings("deprecation")
 public class StemTaperTreeImpl implements StemTaperTree {
 
 	private double dbh;
