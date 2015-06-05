@@ -138,7 +138,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	private List<Integer>							measurementDates;
 	private boolean									isBlupEstimationDone;
 
-	private Map<BetaHdSpecies, GaussianEstimate>	betaMatrixReferenceMap	= new HashMap<BetaHdSpecies, GaussianEstimate>();
+	private Map<BetaHdSpecies, SASParameterEstimate>	betaMatrixReferenceMap	= new HashMap<BetaHdSpecies, SASParameterEstimate>();
 	private Map<BetaHdSpecies, GaussianEstimate>	plotRandomEffectReferenceMap	= new HashMap<BetaHdSpecies, GaussianEstimate>();
 	private Map<BetaHdSpecies, GaussianEstimate> treeRandomEffectReferenceMap = new HashMap<BetaHdSpecies, GaussianEstimate>();
 	private Map<BetaHdSpecies, Map<String, Matrix>>	subDomainDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
@@ -168,7 +168,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 
 	private void init() {
 		try {
-			for (BetaHdSpecies species : BetaHdSpecies.values()) {
+			for (BetaHdSpecies species : BetaHdSpecies.values()) {			
 				String path = ObjectUtility.getRelativePackagePath(getClass()) + species.name().toLowerCase() + "/";
 				String suffix = species.name().toUpperCase().concat(".csv");
 				
@@ -176,19 +176,23 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 				String omegaFilename = path + "omega".concat(suffix);
 				String plotRandomEffectsFilename = path + "randomEffects".concat(suffix);
 				String listSdomFilename = path + "listeSdom".concat(suffix);
-				String listVpFilename = path + "listeVp".concat(suffix);
+				String listVpFilename = path + "listeVp2".concat(suffix);
 				String listEcoTypeFilename = path + "listeTypeEco4".concat(suffix);
 				String listEffectFilename = path + "Effects".concat(suffix);
 				String listDisturbFileName = path + "listePerturb".concat(suffix);
 
 				Matrix beta = ParameterLoaderExt.loadVectorFromFile(parameterFilename).get();
-				Matrix omega = ParameterLoaderExt.loadMatrixFromFile(omegaFilename, 6);
-				omega.getLowerCholTriangle();
+				Matrix omega = ParameterLoaderExt.loadMatrixFromFile(omegaFilename, 6);				
+				try {
+					omega.getLowerCholTriangle();
+				} catch (Exception e) {
+					System.err.println("Error can't use getLowerCholTriangle on omega for " + species);
+				}
 				//RealMatrix matrix = new RealMatrixImpl(omega.m_afData);
 				//CholeskyDecomposition chol = new CholeskyDecompositionImpl(matrix);
 				//matrix = chol.getL();
 
-				GaussianEstimate defaultBeta = new GaussianEstimate(beta, omega);
+				SASParameterEstimate defaultBeta = new SASParameterEstimate(beta, omega);
 				betaMatrixReferenceMap.put(species, defaultBeta);
 				oXVectorReferenceMap.put(species, new Matrix(1,defaultBeta.getMean().m_iRows));
 				Matrix randomEffects = ParameterLoaderExt.loadVectorFromFile(plotRandomEffectsFilename).get();
@@ -637,11 +641,11 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 
 	
 	
-	/**
-	 * For testing purpose.
-	 * 
-	 * @param args
-	 */
+//	/**
+//	 * For testing purpose.
+//	 * 
+//	 * @param args
+//	 */
 //	public static void main(String[] args) {
 //		ArrayList<Integer> outputVec = new ArrayList<Integer>();
 //		for (int year = 2013; year <= 2013 + 10 * 20; year += 10) {
