@@ -15,5 +15,5 @@ License for more details.
 
 Please see the license at http://www.gnu.org/copyleft/lesser.html.
 
-This library requires the repicea libraries to work properly, which 
+This library requires the repicea library to work properly, which 
 are all protected by a GNU Lesser General Public License. 
