@@ -24,7 +24,6 @@
  */
 package quebecmrnfutility.treelogger.sybille;
 
-import repicea.math.Matrix;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLogCategory;
 import repicea.simulation.treelogger.WoodPiece;
@@ -38,10 +37,10 @@ public class SybilleWoodPiece extends WoodPiece {
 	
 	private static final long serialVersionUID = 20120310L;
 	
-	private Estimate<Matrix, ?> volumeEstimate;
+	private Estimate<?> volumeEstimate;
 	private double trueLengthM;
 		
-	protected SybilleWoodPiece(TreeLogCategory logCategory, LoggableTree tree, Estimate<Matrix, ?> volumeEstimate, double trueLengthM) {
+	protected SybilleWoodPiece(TreeLogCategory logCategory, LoggableTree tree, Estimate<?> volumeEstimate, double trueLengthM) {
 		super(logCategory, -1, tree, -1, false, true);		// with bark is false, with pith is true
 		this.volumeEstimate = volumeEstimate;
 		this.trueLengthM = trueLengthM;

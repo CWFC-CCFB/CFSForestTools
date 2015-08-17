@@ -40,6 +40,7 @@ import repicea.stats.StatisticalUtility.TypeMatrixR;
 import repicea.stats.distributions.GaussianErrorTerm;
 import repicea.stats.distributions.GaussianErrorTermList;
 import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
+import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
@@ -408,9 +409,9 @@ public final class GeneralHeightPredictor extends ModelBasedSimulator {
 			Matrix matV = matZ.multiply(matrixG).multiply(matZ.transpose()).add(matR);	// variance - covariance matrix
 			blups = matrixG.multiply(matZ.transpose()).multiply(matV.getInverseMatrix()).multiply(vectRes);							// blup_essHD is redefined according to observed values
 			blupsVariance = matZ.transpose().multiply(matR.getInverseMatrix()).multiply(matZ).add(matrixG.getInverseMatrix()).getInverseMatrix();			// blup_essHDvar is redefined according to observed values
-			Map<Integer, GaussianEstimate> randomEffectsMap = blupsLibrary.get(HierarchicalLevel.Plot);
+			Map<Integer, Estimate<?>> randomEffectsMap = blupsLibrary.get(HierarchicalLevel.Plot);
 			if (randomEffectsMap == null) {
-				randomEffectsMap = new HashMap<Integer, GaussianEstimate>();
+				randomEffectsMap = new HashMap<Integer, Estimate<?>>();
 				blupsLibrary.put(HierarchicalLevel.Plot, randomEffectsMap);
 			}
 			randomEffectsMap.put(stand.getSubjectId(), new GaussianEstimate(blups, blupsVariance));

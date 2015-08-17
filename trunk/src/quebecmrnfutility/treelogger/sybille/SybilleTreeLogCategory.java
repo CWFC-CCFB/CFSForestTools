@@ -197,7 +197,7 @@ public class SybilleTreeLogCategory extends TreeLogCategory {
 				endIndex = findCloserCeilingCrossSectionIndex(crossSectionHeights, height + getLogLengthM());
 			}
 			double trueLengthM = crossSectionHeights.get(endIndex) - crossSectionHeights.get(startIndex); 
-			Estimate<Matrix, ?> volumeEstimateForThisSection;
+			Estimate<?> volumeEstimateForThisSection;
 			double estimatedD2 = estimate.getMean().m_afData[endIndex][0];
 			if (estimatedD2 * .01 >= smallEndDiameterCm * smallEndDiameterCm) {	// .01 required to shift from mm2 to cm2
 				List<Double> heightsForTheseSegments = new ArrayList<Double>();

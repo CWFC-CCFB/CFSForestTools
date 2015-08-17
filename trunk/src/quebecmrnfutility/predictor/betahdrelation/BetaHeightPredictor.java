@@ -15,6 +15,7 @@ import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.GaussianErrorTerm;
 import repicea.stats.distributions.GaussianErrorTermList;
 import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
+import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
@@ -147,7 +148,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	private Map<BetaHdSpecies, Map<String, Matrix>>	disturbDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
 	private Map<BetaHdSpecies, List<Effect>>			listEffectReferenceMap			= new HashMap<BetaHdSpecies, List<Effect>>();
 	private Map<BetaHdSpecies, Matrix> oXVectorReferenceMap = new  HashMap<BetaHdSpecies, Matrix>();
-	private Map<BetaHdSpecies, Map<Integer, GaussianEstimate>>	blupsLibraryPlotReferenceMap	= new HashMap<BetaHdSpecies, Map<Integer, GaussianEstimate>>();
+	private Map<BetaHdSpecies, Map<Integer, Estimate<?>>> blupsLibraryPlotReferenceMap = new HashMap<BetaHdSpecies, Map<Integer, Estimate<?>>>();
 
 	public BetaHeightPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled,
 			List<Integer> measurementDates) {
@@ -526,9 +527,9 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 				Matrix V = Z.multiply(matrixG).multiply(Z.transpose()).add(R);	// variance - covariance matrix
 				blups = matrixG.multiply(Z.transpose()).multiply(V.getInverseMatrix()).multiply(Res);							// blup_essHD is redefined according to observed values
 				blupsVariance = Z.transpose().multiply(R.getInverseMatrix()).multiply(Z).add(matrixG.getInverseMatrix()).getInverseMatrix();			// blup_essHDvar is redefined according to observed values				
-				Map<Integer, GaussianEstimate> randomEffectsMap = blupsLibraryPlotReferenceMap.get(keySpecies);
+				Map<Integer, Estimate<?>> randomEffectsMap = blupsLibraryPlotReferenceMap.get(keySpecies);
 				if (randomEffectsMap == null) {
-					randomEffectsMap = new HashMap<Integer, GaussianEstimate>();
+					randomEffectsMap = new HashMap<Integer, Estimate<?>>();
 					blupsLibraryPlotReferenceMap.put(keySpecies, randomEffectsMap);
 				}
 				randomEffectsMap.put(stand.getSubjectId(), new GaussianEstimate(blups, blupsVariance));

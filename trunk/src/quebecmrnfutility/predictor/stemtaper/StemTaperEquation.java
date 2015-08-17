@@ -383,7 +383,7 @@ public final class StemTaperEquation extends ModelBasedSimulator {
 			result = new GaussianEstimate();
 		}	
 
-		MonteCarloEstimate<Matrix> taperEstimate = predictTaperForTheseHeights(heights);
+		MonteCarloEstimate taperEstimate = predictTaperForTheseHeights(heights);
 		
 		Matrix volumeEstim;
 		for (int iter = 0; iter < numberOfRuns; iter++) {

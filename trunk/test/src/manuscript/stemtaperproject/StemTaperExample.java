@@ -147,12 +147,12 @@ public class StemTaperExample {
 		result = ste.predictVolume(ht);
 		ResultRecord record;
 
-		for (int i = 0; i < ((MonteCarloEstimate<Matrix>) result).getRealizations().size(); i++) {
+		for (int i = 0; i < ((MonteCarloEstimate) result).getRealizations().size(); i++) {
 			record = new ResultRecord();
 			record.index_j = index_j;
 			record.tree = tree;
 			record.mcIter = i;
-			record.volume = ((MonteCarloEstimate<Matrix>) result).getRealizations().get(i).getSumOfElements();
+			record.volume = ((MonteCarloEstimate) result).getRealizations().get(i).getSumOfElements();
 			records.add(record);
 		}
 
