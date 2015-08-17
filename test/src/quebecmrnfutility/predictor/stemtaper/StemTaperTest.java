@@ -79,7 +79,7 @@ public class StemTaperTest {
 		double minimumHeight = heightSections.firstElement().getSectionHeight();
 
 		Matrix ht;
-		Estimate<Matrix, ?> result;
+		Estimate<?> result;
 
 		int numberOfLogs = heightSections.size();
 		ht = new Matrix(numberOfLogs + 1,1,0,1).scalarMultiply((tree.getHeight() - minimumHeight)/(numberOfLogs)).scalarAdd(minimumHeight);

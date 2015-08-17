@@ -157,7 +157,7 @@ public class StemTaperExampleTree3 {
 		for (EstimationMethod method : EstimationMethod.values()) {
 			ste.setNumberOfMonteCarloRealizations(50000);
 			ste.setEstimationMethod(method);
-			Estimate<Matrix, ?> taper;
+			Estimate<?> taper;
 			taper = ste.predictTaperForTheseHeights(ht);
 			for (int i = 0; i < taper.getMean().m_iRows; i++) {
 				record = new ResultRecord();

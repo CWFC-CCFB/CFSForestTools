@@ -176,7 +176,7 @@ public class StemTaperProject {
 		double minimumHeight = heightSections.firstElement().getSectionHeight();
 		
 		Matrix ht;
-		Estimate<Matrix,?> result;
+		Estimate<?> result;
 		
 		long initialTime;
 		int numberOfLogs = heightSections.size();

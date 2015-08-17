@@ -12,7 +12,7 @@ public class StemTaperExample2 {
 		StemTaperTree tree = new StemTaperTreeImpl(250,19);
 		ste.setTree(tree);
 		Matrix mat = new Matrix(5,1,0.3,1);
-		Estimate<Matrix,?> volume = ste.predictVolume(mat);
+		Estimate<?> volume = ste.predictVolume(mat);
 		double vol1 = volume.getMean().getSubMatrix(0, 3, 0, 0).getSumOfElements();
 		double vol2 = volume.getMean().getSubMatrix(4, 7, 0, 0).getSumOfElements();
 		

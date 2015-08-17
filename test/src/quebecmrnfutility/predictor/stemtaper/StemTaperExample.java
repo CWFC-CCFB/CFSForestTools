@@ -16,7 +16,7 @@ public class StemTaperExample {
 		int numberOfRows = (int) ((topHeight - bottomHeight) / spacing) + 1;
 		Matrix heights = new Matrix(numberOfRows, 1, bottomHeight, spacing);
 		ste.setTree(tree);
-		Estimate<Matrix, ?> volumeEstimate = ste.predictVolume(heights);
+		Estimate<?> volumeEstimate = ste.predictVolume(heights);
 		System.out.println("Volume = " + volumeEstimate.getMean().getSumOfElements());
 		System.out.println("Variance = " + volumeEstimate.getVariance().getSumOfElements());
 	}
