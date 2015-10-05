@@ -1,25 +1,25 @@
 /*
  * English version follows
  * 
- * Ce fichier fait partie de la bibliothèque mrnf-foresttools.
- * Il est protégé par la loi sur le droit d'auteur (L.R.C.,cC-42) et par les
+ * Ce fichier fait partie de la bibliothï¿½que mrnf-foresttools.
+ * Il est protï¿½gï¿½ par la loi sur le droit d'auteur (L.R.C.,cC-42) et par les
  * conventions internationales. Toute reproduction de ce fichier sans l'accord 
- * du ministère des Ressources naturelles et de la Faune du Gouvernement du 
- * Québec est strictement interdite.
+ * du ministï¿½re des Ressources naturelles et de la Faune du Gouvernement du 
+ * Quï¿½bec est strictement interdite.
  * 
- * Copyright (C) 2009-2012 Gouvernement du Québec - Rouge-Epicea
+ * Copyright (C) 2009-2012 Gouvernement du Quï¿½bec - Rouge-Epicea
  * 	Pour information, contactez Jean-Pierre Saucier, 
- * 			Ministère des Ressources naturelles et de la Faune du Québec
+ * 			Ministï¿½re des Ressources naturelles et de la Faune du Quï¿½bec
  * 			jean-pierre.saucier@mrnf.gouv.qc.ca
  *
  * This file is part of the mrnf-foresttools library. It is 
  * protected by copyright law (L.R.C., cC-42) and by international agreements. 
- * Any reproduction of this file without the agreement of Québec Ministry of 
+ * Any reproduction of this file without the agreement of Quï¿½bec Ministry of 
  * Natural Resources and Wildlife is strictly prohibited.
  *
- * Copyright (C) 2009-2012 Gouvernement du Québec 
+ * Copyright (C) 2009-2012 Gouvernement du Quï¿½bec 
  * 	For further information, please contact Jean-Pierre Saucier,
- * 			Ministère des Ressources naturelles et de la Faune du Québec
+ * 			Ministï¿½re des Ressources naturelles et de la Faune du Quï¿½bec
  * 			jean-pierre.saucier@mrnf.gouv.qc.ca
  */
 package quebecmrnfutility.predictor.vigqualstatmodel;
@@ -43,6 +43,12 @@ public class VigQualPredictor extends ModelBasedSimulator {
 	 */
 	public VigQualPredictor(boolean isParametersVariabilityEnabled,	boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect
+	}
+
+	@Override
+	protected void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

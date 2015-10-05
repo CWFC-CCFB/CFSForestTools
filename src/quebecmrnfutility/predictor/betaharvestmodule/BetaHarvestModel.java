@@ -110,10 +110,8 @@ public final class BetaHarvestModel extends LogisticModelBasedSimulator<BetaHarv
 		this(false, false);
 	}
 	
-	/**
-	 * This method initialize the parameters of this class
-	 */
-	private void init() {
+	@Override
+	protected final void init() {
 		try {
 			String path = ObjectUtility.getRelativePackagePath(getClass());
 			String betaFilename = path + "0_HarvestGenericBeta.csv";

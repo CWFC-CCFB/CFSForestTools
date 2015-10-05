@@ -142,12 +142,10 @@ public final class StemTaperPredictor extends StemTaperModel {
 	 * Constructor.
 	 * @throws Exception
 	 */
-	public StemTaperPredictor() throws IOException {
+	public StemTaperPredictor() {
 		super(false, false, false);
 		
-		if (!loaded) {
-			loadDefaultParameters();
-		}
+		init();
 	
 		estimationMethod = EstimationMethod.SecondOrder;
 		setNumberOfMonteCarloRealizations(1); 	
@@ -165,6 +163,14 @@ public final class StemTaperPredictor extends StemTaperModel {
 		isRandomEffectsVariabilityEnabled = estimationMethod == EstimationMethod.MonteCarlo;
 		isResidualVariabilityEnabled = estimationMethod == EstimationMethod.MonteCarlo;
 	}
+	
+	@Override
+	protected final void init() {
+		if (!loaded) {
+			loadDefaultParameters();
+		}
+	}
+	
 	
 	
 	/**
@@ -329,72 +335,77 @@ public final class StemTaperPredictor extends StemTaperModel {
 	}
 	
 	
-	private synchronized void loadDefaultParameters() throws IOException {
+	private synchronized void loadDefaultParameters() {
 		if (!loaded) {
-			for (StemTaperTreeSpecies species : StemTaperTreeSpecies.values()) {
-				for (ModelType modelType : ModelType.values()) {
-					if (species == StemTaperTreeSpecies.PIB && modelType == ModelType.HYBRIDMODEL) {
-						break;//no hybrid model for PIB
-					}
-					String path = ObjectUtility.getRelativePackagePath(getClass());
-					String prefix = modelType + "param" + "/" + species.name().toLowerCase() + "/";
-					prefix = prefix.toLowerCase();
-					String suffix = species.name().toUpperCase().concat(".csv");
+			try {
+				for (StemTaperTreeSpecies species : StemTaperTreeSpecies.values()) {
+					for (ModelType modelType : ModelType.values()) {
+						if (species == StemTaperTreeSpecies.PIB && modelType == ModelType.HYBRIDMODEL) {
+							break;//no hybrid model for PIB
+						}
+						String path = ObjectUtility.getRelativePackagePath(getClass());
+						String prefix = modelType + "param" + "/" + species.name().toLowerCase() + "/";
+						prefix = prefix.toLowerCase();
+						String suffix = species.name().toUpperCase().concat(".csv");
 
-					String parameterFilename = path + prefix + "parameters".concat(suffix);
-					String omegaFilename = path + prefix + "omega".concat(suffix);
-					String plotRandomEffectsFilename = path + prefix + "plotRandomEffects".concat(suffix);
-					String treeRandomEffectsFilename = path + prefix + "treeRandomEffects".concat(suffix);
-					String correlationStructureFilename = path + prefix + "corrStruct".concat(suffix);
-					String varFunctFilename = path + prefix + "varFunct".concat(suffix);
-					String residStdDevFilename = path + prefix + "residualStdDev".concat(suffix);
+						String parameterFilename = path + prefix + "parameters".concat(suffix);
+						String omegaFilename = path + prefix + "omega".concat(suffix);
+						String plotRandomEffectsFilename = path + prefix + "plotRandomEffects".concat(suffix);
+						String treeRandomEffectsFilename = path + prefix + "treeRandomEffects".concat(suffix);
+						String correlationStructureFilename = path + prefix + "corrStruct".concat(suffix);
+						String varFunctFilename = path + prefix + "varFunct".concat(suffix);
+						String residStdDevFilename = path + prefix + "residualStdDev".concat(suffix);
 
-					Matrix beta = ParameterLoader.loadVectorFromFile(parameterFilename).get();
-					Matrix omega = ParameterLoader.loadMatrixFromFile(omegaFilename);
+						Matrix beta = ParameterLoader.loadVectorFromFile(parameterFilename).get();
+						Matrix omega = ParameterLoader.loadMatrixFromFile(omegaFilename);
 
-					if (StemTaperPredictor.betaMatrixReferenceMap.get(modelType) == null) {
-						StemTaperPredictor.betaMatrixReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, GaussianEstimate>());
-					}
-					StemTaperPredictor.betaMatrixReferenceMap.get(modelType).put(species, new GaussianEstimate(beta, omega));
+						if (StemTaperPredictor.betaMatrixReferenceMap.get(modelType) == null) {
+							StemTaperPredictor.betaMatrixReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, GaussianEstimate>());
+						}
+						StemTaperPredictor.betaMatrixReferenceMap.get(modelType).put(species, new GaussianEstimate(beta, omega));
 
-					Matrix g = ParameterLoader.loadMatrixFromFile(plotRandomEffectsFilename);
-					if (StemTaperPredictor.plotRandomEffectReferenceMap.get(modelType) == null) {
-						StemTaperPredictor.plotRandomEffectReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, GaussianEstimate>());
-					}
-					StemTaperPredictor.plotRandomEffectReferenceMap.get(modelType).put(species, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
+						Matrix g = ParameterLoader.loadMatrixFromFile(plotRandomEffectsFilename);
+						if (StemTaperPredictor.plotRandomEffectReferenceMap.get(modelType) == null) {
+							StemTaperPredictor.plotRandomEffectReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, GaussianEstimate>());
+						}
+						StemTaperPredictor.plotRandomEffectReferenceMap.get(modelType).put(species, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
 
-					g = ParameterLoader.loadMatrixFromFile(treeRandomEffectsFilename);
-					if (StemTaperPredictor.treeRandomEffectReferenceMap.get(modelType) == null) {
-						StemTaperPredictor.treeRandomEffectReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, GaussianEstimate>());
-					}
-					StemTaperPredictor.treeRandomEffectReferenceMap.get(modelType).put(species, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
+						g = ParameterLoader.loadMatrixFromFile(treeRandomEffectsFilename);
+						if (StemTaperPredictor.treeRandomEffectReferenceMap.get(modelType) == null) {
+							StemTaperPredictor.treeRandomEffectReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, GaussianEstimate>());
+						}
+						StemTaperPredictor.treeRandomEffectReferenceMap.get(modelType).put(species, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
 
-					Matrix oVec = ParameterLoader.loadVectorFromFile(varFunctFilename).get();
-					if (StemTaperPredictor.varianceParamReferenceMap.get(modelType) == null) {
-						StemTaperPredictor.varianceParamReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, Matrix>());
-					}
-					StemTaperPredictor.varianceParamReferenceMap.get(modelType).put(species, oVec);
+						Matrix oVec = ParameterLoader.loadVectorFromFile(varFunctFilename).get();
+						if (StemTaperPredictor.varianceParamReferenceMap.get(modelType) == null) {
+							StemTaperPredictor.varianceParamReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, Matrix>());
+						}
+						StemTaperPredictor.varianceParamReferenceMap.get(modelType).put(species, oVec);
 
-					oVec = ParameterLoader.loadVectorFromFile(correlationStructureFilename).get();
-					double currentValue, expCurrentValue;
-					for (int i = 0; i < oVec.m_iRows; i++) {		// link function following the implementation in nlme
-						currentValue = oVec.m_afData[i][0];
-						expCurrentValue = Math.exp(currentValue);
-						oVec.m_afData[i][0] = expCurrentValue / (1 + expCurrentValue);
-					}
-					if (StemTaperPredictor.corrParamReferenceMap.get(modelType) == null) {
-						StemTaperPredictor.corrParamReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, Matrix>());
-					}
-					StemTaperPredictor.corrParamReferenceMap.get(modelType).put(species, oVec);
+						oVec = ParameterLoader.loadVectorFromFile(correlationStructureFilename).get();
+						double currentValue, expCurrentValue;
+						for (int i = 0; i < oVec.m_iRows; i++) {		// link function following the implementation in nlme
+							currentValue = oVec.m_afData[i][0];
+							expCurrentValue = Math.exp(currentValue);
+							oVec.m_afData[i][0] = expCurrentValue / (1 + expCurrentValue);
+						}
+						if (StemTaperPredictor.corrParamReferenceMap.get(modelType) == null) {
+							StemTaperPredictor.corrParamReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, Matrix>());
+						}
+						StemTaperPredictor.corrParamReferenceMap.get(modelType).put(species, oVec);
 
-					oVec = ParameterLoader.loadVectorFromFile(residStdDevFilename).get();
-					if (StemTaperPredictor.resStdDevReferenceMap.get(modelType) == null) {
-						StemTaperPredictor.resStdDevReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, Matrix>());
+						oVec = ParameterLoader.loadVectorFromFile(residStdDevFilename).get();
+						if (StemTaperPredictor.resStdDevReferenceMap.get(modelType) == null) {
+							StemTaperPredictor.resStdDevReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, Matrix>());
+						}
+						StemTaperPredictor.resStdDevReferenceMap.get(modelType).put(species, oVec);
 					}
-					StemTaperPredictor.resStdDevReferenceMap.get(modelType).put(species, oVec);
 				}
+				loaded = true;
+				
+			} catch (IOException e) {
+				System.out.println("Error while reading parameters in StemTaperPredictor class");
 			}
-			loaded = true;
 		}
 	}
 	
