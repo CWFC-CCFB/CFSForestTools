@@ -114,10 +114,8 @@ public final class OfficialHarvestModel extends LogisticModelBasedSimulator<Offi
 		this(false, false);
 	}
 	
-	/**
-	 * This method initializes the model parameters of this class
-	 */
-	private void init() {
+	@Override
+	protected final void init() {
 		try {
 			String path = ObjectUtility.getRelativePackagePath(getClass());
 			InputStream isParameters = ClassLoader.getSystemResourceAsStream(path + "parmsNew.txt");

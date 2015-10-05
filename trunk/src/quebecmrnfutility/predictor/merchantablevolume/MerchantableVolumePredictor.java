@@ -65,11 +65,9 @@ public final class MerchantableVolumePredictor extends ModelBasedSimulator {
 	public MerchantableVolumePredictor() {
 		this(false, false, false);
 	}
-	
-	/**
-	 * This method initializes all the parameters required for the predictions.
-	 */
-	private void init() {
+
+	@Override
+	protected final void init() {
 		try {
 			String path = ObjectUtility.getRelativePackagePath(getClass());
 			String betaFilename = path + "0_MerchVolumeBeta.csv";

@@ -167,7 +167,8 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 		this(false, false, false, measurementDates);
 	}
 
-	private void init() {
+	@Override
+	protected final void init() {
 		try {
 			for (BetaHdSpecies species : BetaHdSpecies.values()) {			
 				String path = ObjectUtility.getRelativePackagePath(getClass()) + species.name().toLowerCase() + "/";

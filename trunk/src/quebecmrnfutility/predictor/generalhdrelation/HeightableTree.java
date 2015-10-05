@@ -29,24 +29,20 @@ import java.util.Set;
 
 import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
-import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmPlus1Provider;
 import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.SquaredLnDbhCmPlus1Provider;
-import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
+import repicea.simulation.hdrelationships.HDRelationshipTree;
 
 /**
  * The HeightableTree interface ensures the compatibility with the HD relationship.
  * @author Mathieu Fortin - November 2012
  */
-public interface HeightableTree extends MonteCarloSimulationCompliantObject, 
-										HeightMProvider,
+public interface HeightableTree extends HDRelationshipTree, 
 										DbhCmProvider,
 										LnDbhCmPlus1Provider,
-										SquaredLnDbhCmPlus1Provider,
-										IndexableErrorTerm {
+										SquaredLnDbhCmPlus1Provider {
 
 	public enum HdSpecies {
 		BOJ,

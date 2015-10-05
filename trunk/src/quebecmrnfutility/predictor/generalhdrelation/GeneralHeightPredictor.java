@@ -24,23 +24,19 @@
  */
 package quebecmrnfutility.predictor.generalhdrelation;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import quebecmrnfutility.predictor.generalhdrelation.HeightableTree.HdSpecies;
 import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
 import repicea.predictor.QuebecGeneralSettings.DrainageGroup;
-import repicea.simulation.ModelBasedSimulator;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
+import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
+import repicea.simulation.hdrelationships.HDRelationshipModel;
 import repicea.stats.StatisticalUtility.TypeMatrixR;
-import repicea.stats.distributions.GaussianErrorTerm;
-import repicea.stats.distributions.GaussianErrorTermList;
-import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
-import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
@@ -49,26 +45,12 @@ import repicea.util.ObjectUtility;
 /**
  * This class implements the general height-diameter relationship published in Fortin et al. (2009)
  * @author Mathieu Fortin - October 2009
- * @see Fortin, M., Bernier, S., Saucier, J.-P., and Labb�, F. 2009. Une relation hauteur-diam�tre tenant compte de l'influence de la station et du climat pour 20 esp�ces commerciales du Qu�bec. Gouvernement du Qu�bec, Minist�re des Ressources naturelles et de la Faune, Direction de la recherche foresti�re. M�moire de recherche foresti�re no 153. 22 p.
+ * @see Fortin, M., Bernier, S., Saucier, J.-P., and Labbe, F. 2009. Une relation hauteur-diametre tenant 
+ * compte de l'influence de la station et du climat pour 20 especes commerciales du Quebec. 
+ * Gouvernement du Quebec, Ministere des Ressources naturelles et de la Faune, Direction de 
+ * la recherche forestiere. Memoire de recherche forestiere no 153. 22 p.
  */
-public final class GeneralHeightPredictor extends ModelBasedSimulator {
-
-	private static class RegressionElements {
-		protected Matrix Z_tree;
-		protected double fixedPred;
-		protected HdSpecies species;
-		protected RegressionElements() {}
-	}
-	
-	@SuppressWarnings("serial")
-	private static class GaussianErrorTermForHeight extends GaussianErrorTerm {
-
-		public GaussianErrorTermForHeight(IndexableErrorTerm caller, double normalizedValue, double observedValue) {
-			super(caller, normalizedValue);
-			this.value = observedValue;
-		}
-		
-	}
+public final class GeneralHeightPredictor extends HDRelationshipModel<HeightableStand, HeightableTree> {
 	
 	private static final long serialVersionUID = 20100804L;
 
@@ -150,21 +132,16 @@ public final class GeneralHeightPredictor extends ModelBasedSimulator {
 		DUMMY_ECO_REGION.put("6m", dummy);	// region S_EST
 	}
 	
-	private List<Integer> blupEstimationDone;
-
 	/**
 	 * General constructor for all combinations of uncertainty sources.
 	 * @param isParametersVariabilityEnabled a boolean that enables the variability at the parameter level
 	 * @param isRandomEffectsVariabilityEnabled a boolean that enables the variability at the random effect level
 	 * @param isResidualVariabilityEnabled a boolean that enables the variability at the tree level
 	 */
-	public GeneralHeightPredictor(boolean isParametersVariabilityEnabled,
-			boolean isRandomEffectsVariabilityEnabled,
-			boolean isResidualVariabilityEnabled) {
+	public GeneralHeightPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
 		init();
 		oXVector = new Matrix(1,defaultBeta.getMean().m_iRows);
-		blupEstimationDone = new ArrayList<Integer>();
 	}
 
 	/**
@@ -175,7 +152,8 @@ public final class GeneralHeightPredictor extends ModelBasedSimulator {
 		this(false, false, false);
 	}
 
-	private void init() {
+	@Override
+	protected final void init() {
 		try {
 			String path = ObjectUtility.getRelativePackagePath(getClass());
 			String betaFilename = path + "0_HDRelationBeta.csv";
@@ -204,14 +182,8 @@ public final class GeneralHeightPredictor extends ModelBasedSimulator {
 		}
 	}
 	
-	/**
-	 * This method computes the fixed effect prediction and put the prediction, the Z vector,
-	 * and the species name into m_oRegressionOutput member. The method applies in any cases no matter
-	 * it is deterministic or stochastic.
-	 * @param stand a HeightableStand instance
-	 * @param t a HeightableTree instance
-	 */
-	private synchronized RegressionElements fixedEffectsPrediction(HeightableStand stand, HeightableTree t) {
+	@Override
+	protected synchronized RegressionElements fixedEffectsPrediction(HeightableStand stand, HeightableTree t) {
 		Matrix modelParameters = getParametersForThisRealization(stand);
 		
 		double basalArea = stand.getBasalAreaM2Ha();
@@ -274,152 +246,7 @@ public final class GeneralHeightPredictor extends ModelBasedSimulator {
 		return regElements;
 	}
 	
-	/**
-	 * This method accounts for the random effects in the predictions if the random effect variability is enabled. Otherwise, it returns 0d.
-	 * @param stand = a HeightableStand object
-	 * @param regElement = a RegressionElements object
-	 * @return a simulated random effect (double)
-	 */
-	private double blupImplementation(HeightableStand stand, RegressionElements regElement) {
-		Matrix randomEffects = getRandomEffectsForThisSubject(stand);
-		return regElement.Z_tree.multiply(randomEffects).m_afData[0][0];
-	}
 	
-	/**
-	 * This method calculates the height for individual trees and also implements the 
-	 * Monte Carlo simulation automatically. In case of exception, it also returns -1.
-	 * If the predicted height is lower than 1.3, this method returns 1.3.
-	 * @param stand a HeightableStand object
-	 * @param tree a HeightableTree object
-	 * @return the predicted height (m)
-	 */
-	public double predictHeight(HeightableStand stand, HeightableTree tree) {
-		try {
-			if (!blupEstimationDone.contains(stand.getSubjectId())) {
-				predictHeightRandomEffects(stand);
-				blupEstimationDone.add(stand.getSubjectId());
-			}
-			double observedHeight = tree.getHeightM();
-			double predictedHeight; 
-			RegressionElements regElement = fixedEffectsPrediction(stand, tree);
-			predictedHeight = regElement.fixedPred;
-			predictedHeight += blupImplementation(stand, regElement);
-
-			if (observedHeight > 1.3) {			// means that height was already observed
-				double variance = defaultResidualError.get(regElement.species.getSpeciesType()).getVariance().m_afData[0][0];
-				double dNormResidual = (observedHeight - predictedHeight) / Math.pow(variance, 0.5);
-				GaussianErrorTerm errorTerm = new GaussianErrorTermForHeight(tree, dNormResidual, observedHeight - predictedHeight);
-				setSpecificResiduals(tree, errorTerm);	// the residual is set in the simulatedResidualError member
-				return -1d;
-			} else {
-				predictedHeight += residualImplementation(tree);
-				if (predictedHeight < 1.3) {
-					predictedHeight = 1.3;
-				}
-				return predictedHeight;
-			}
-		} catch (Exception e) {
-			System.out.println("Error while estimating tree height for tree " + tree.toString());
-			e.printStackTrace();
-			return -1d;
-		}
-	}
-
-	/**
-	 * This method records a normalized residuals into the simulatedResidualError member which is
-	 * located in the ModelBasedSimulator class. The method asks the date from the HeightableTree
-	 * instance in order to put the normalized residual at the proper location in the vector of residuals.
-	 * @param tree a HeightableTree instance
-	 * @param errorTerm a GaussianErrorTerm instance
-	 */
-	private void setSpecificResiduals(HeightableTree tree, GaussianErrorTerm errorTerm) {
-		getGaussianErrorTerms(tree).add(errorTerm);
-	}
-
-	/**
-	 * This method accounts for a random deviate if the residual variability is enabled. Otherwise, it returns 0d. 
-	 * @param tree a HeightableTree instance
-	 * @param regElement a RegressionElements instance
-	 * @return a simulated residual (double)
-	 */
-	private double residualImplementation(HeightableTree tree) {
-		double residualForThisPrediction = 0d; 
-		if (isResidualVariabilityEnabled) {
-			Matrix residuals = getResidualErrorForThisSubject(tree, tree.getHeightableTreeSpecies().getSpeciesType());
-			int index = getGaussianErrorTerms(tree).getDistanceIndex().indexOf(tree.getErrorTermIndex());
-			residualForThisPrediction = residuals.m_afData[index][0]; 
-		} else {
-			if (doesThisSubjectHaveResidualErrorTerm(tree)) {		// means that height was initially measured
-				setSpecificResiduals(tree, new GaussianErrorTerm(tree, 0d));
-				GaussianErrorTermList list = getGaussianErrorTerms(tree);
-				Matrix meanResiduals = defaultResidualError.get(tree.getHeightableTreeSpecies().getSpeciesType()).getMean(list);
-				residualForThisPrediction = meanResiduals.m_afData[meanResiduals.m_iRows - 1][0];
-			} 
-		}
-		return residualForThisPrediction;
-	}
-	
-	/**
-	 * This method computes the best linear unbiased predictors of the random effects
-	 * @param stand a HeightableStand instance
-	 */
-	private synchronized void predictHeightRandomEffects(HeightableStand stand) {
-		boolean originalIsParameterVariabilityEnabled = isParametersVariabilityEnabled;
-		isParametersVariabilityEnabled = false; // temporarily disabled for the prediction of the random effects
-		
-		Matrix matrixG = defaultRandomEffects.get(HierarchicalLevel.Plot).getVariance();
-		
-		Matrix blups;
-		Matrix blupsVariance;
-
-		RegressionElements regElement;
-		
-		// put all the trees for which the height is available in a Vector
-		List<HeightableTree> heightableTrees = new ArrayList<HeightableTree>();
-		if (!stand.getTrees().isEmpty()) {
-			for (Object tree : stand.getTrees()) {
-				if (tree instanceof HeightableTree) {
-					double height = ((HeightableTree) tree).getHeightM();
-					if (height > 1.3) {
-						heightableTrees.add((HeightableTree) tree);
-					}
-					
-				}
-			}
-		}			
-
-		if (!heightableTrees.isEmpty()) {
-			// matrices for the blup calculation
-			int nbObs = heightableTrees.size();
-			Matrix matZ = new Matrix(nbObs, matrixG.m_iRows);		// design matrix for random effects 
-			Matrix matR = new Matrix(nbObs, nbObs);					// within-tree variance-covariance matrix  
-			Matrix vectRes = new Matrix(nbObs, 1);						// vector of residuals
-
-			for (int i = 0; i < nbObs; i++) {
-				HeightableTree t = heightableTrees.get(i);
-				double height = t.getHeightM();
-				
-				regElement = fixedEffectsPrediction(stand, t);
-				matZ.setSubMatrix(regElement.Z_tree, i, 0);
-				double variance = defaultResidualError.get(regElement.species.getSpeciesType()).getVariance().m_afData[0][0];
-				matR.m_afData[i][i] = variance;
-				double residual = height - regElement.fixedPred;
-				vectRes.m_afData[i][0] = residual;
-			}
-			Matrix matV = matZ.multiply(matrixG).multiply(matZ.transpose()).add(matR);	// variance - covariance matrix
-			blups = matrixG.multiply(matZ.transpose()).multiply(matV.getInverseMatrix()).multiply(vectRes);							// blup_essHD is redefined according to observed values
-			blupsVariance = matZ.transpose().multiply(matR.getInverseMatrix()).multiply(matZ).add(matrixG.getInverseMatrix()).getInverseMatrix();			// blup_essHDvar is redefined according to observed values
-			Map<Integer, Estimate<?>> randomEffectsMap = blupsLibrary.get(HierarchicalLevel.Plot);
-			if (randomEffectsMap == null) {
-				randomEffectsMap = new HashMap<Integer, Estimate<?>>();
-				blupsLibrary.put(HierarchicalLevel.Plot, randomEffectsMap);
-			}
-			randomEffectsMap.put(stand.getSubjectId(), new GaussianEstimate(blups, blupsVariance));
-		}
-		
-		isParametersVariabilityEnabled = originalIsParameterVariabilityEnabled; // set the parameter variability to its original value;
-	}
-
 	private DrainageGroup getDrainageGroup(HeightableStand stand) {
 		DrainageGroup drainageGroup = QuebecGeneralSettings.DRAINAGE_CLASS_LIST.get(stand.getDrainageClass());
 		if (drainageGroup == null) {
@@ -443,6 +270,12 @@ public final class GeneralHeightPredictor extends ModelBasedSimulator {
 		} else {
 			return null;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Collection<HeightableTree> getTreesFromStand(HeightableStand stand) {
+		return stand.getTrees(StatusClass.alive);
 	}
 	
 }
