@@ -66,8 +66,8 @@ public final class StemTaperPredictor extends StemTaperModel {
 	@SuppressWarnings("serial")
 	public static class SchneiderStemTaperEstimate extends StemTaperEstimate {
 		
-		public SchneiderStemTaperEstimate(int numberOfRealizations,	boolean isMonteCarlo, List<Double> computedHeights) {
-			super(numberOfRealizations, isMonteCarlo, computedHeights);
+		public SchneiderStemTaperEstimate(boolean isMonteCarlo, List<Double> computedHeights) {
+			super(isMonteCarlo, computedHeights);
 		}
 
 		@Override
@@ -195,7 +195,7 @@ public final class StemTaperPredictor extends StemTaperModel {
 			numberOfRuns = numberOfMonteCarloRealizations;
 		}
 		
-		StemTaperEstimate prediction = new SchneiderStemTaperEstimate(numberOfRuns, estimationMethod == EstimationMethod.MonteCarlo, heightMeasures);
+		StemTaperEstimate prediction = new SchneiderStemTaperEstimate(estimationMethod == EstimationMethod.MonteCarlo, heightMeasures);
 		
 		for (int iter = 0; iter < numberOfRuns; iter++) {
 			pred = new Matrix(heights.m_iRows, 1);
