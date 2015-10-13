@@ -184,6 +184,44 @@ class FixedEffectVectorFactory implements Serializable {
 				effectList.add(Effect.OffsetDbhXDummyDbh);
 				effectList.add(Effect.SpeciesXLogNbHa);							
 				break;
+			case CJP:
+				effectList = new ArrayList<Effect>();
+				effectList.add(Effect.Intercept);
+				effectList.add(Effect.Species);
+				effectList.add(Effect.OffsetDbh);				
+				effectList.add(Effect.SpeciesXOffsetDbhXDummyDbh);
+				effectList.add(Effect.SpeciesXOffsetDbhXOffsetDbh);
+				effectList.add(Effect.LogNbHa);							
+				break;
+			case CJPG_QM:
+				effectList = new ArrayList<Effect>();
+				effectList.add(Effect.Intercept);
+				effectList.add(Effect.Species);
+				effectList.add(Effect.SpeciesXOffsetDbh);				
+				effectList.add(Effect.SpeciesXOffsetDbhXDummyDbh);
+				effectList.add(Effect.SpeciesXOffsetDbhXOffsetDbh);
+				effectList.add(Effect.LogNbHa);							
+				break;
+			case CPI_CP_CIMOTF:
+				effectList = new ArrayList<Effect>();
+				effectList.add(Effect.Intercept);
+				effectList.add(Effect.Species);
+				effectList.add(Effect.SpeciesXOffsetDbh);				
+				effectList.add(Effect.SpeciesXOffsetDbhXDummyDbh);
+				effectList.add(Effect.SpeciesXOffsetDbhXOffsetDbh);
+				effectList.add(Effect.SpeciesXOffsetDbhXOffsetDbhXDummyDbh);
+				effectList.add(Effect.LogNbHa);	
+				break;
+			case CPI_RL_CIMOTF:
+				effectList = new ArrayList<Effect>();
+				effectList.add(Effect.Intercept);
+				effectList.add(Effect.Species);
+				effectList.add(Effect.OffsetDbh);				
+				effectList.add(Effect.SpeciesXOffsetDbhXDummyDbh);
+				effectList.add(Effect.SpeciesXOffsetDbhXOffsetDbh);
+				effectList.add(Effect.SpeciesXOffsetDbhXOffsetDbhXDummyDbh);
+				effectList.add(Effect.LogNbHa);							
+				break;
 			}
 			effects.put(treatment, effectList);
 		}
