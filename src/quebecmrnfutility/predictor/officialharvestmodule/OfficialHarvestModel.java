@@ -68,7 +68,11 @@ public final class OfficialHarvestModel extends LogisticModelBasedSimulator<Offi
 		CP_45("Partial cutting 45%", "Coupe partielle 45% chantier for\u00eat feuillue R-06"),
 		CPI_CP("CPI_CP Outaouais", "CPI_CP Outaouais"),
 		CPI_RL("CPI_RL Outaouais", "CPI_RL Outaouais"),
-		CRS("CRS Outaouais", "CRS Outaouais");
+		CRS("CRS Outaouais", "CRS Outaouais"),
+		CJP("Selection cutting CIMOTFF","Coupes jardinage CIMOTFF"),
+		CJPG_QM("Selection cutting group of trees CIMOTFF","Coupe jardinage par groupe d'arbres CIMOTFF"),
+		CPI_CP_CIMOTF("CPI_CP CIMOTFF", "Coupe progressive irrégulière couvert permanent CIMOTFF"),
+		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irrégulière à régénération lente CIMOTFF");
 		
 		TreatmentType(String englishText, String frenchText) {
 			setText(englishText, frenchText);

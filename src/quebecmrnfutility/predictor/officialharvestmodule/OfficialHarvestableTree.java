@@ -64,6 +64,10 @@ public interface OfficialHarvestableTree extends DbhCmProvider,
 		private static EnumSet<OfficialHarvestableSpecies>	setEnumCPI_CP	= EnumSet.of(BOJ, ERR, ERS, FEU, HEG, RES, SAB);
 		private static EnumSet<OfficialHarvestableSpecies>	setEnumCPI_RL	= EnumSet.of(AUT, BOJ, ERR, ERS, HEG, SAB, TIL);
 		private static EnumSet<OfficialHarvestableSpecies>	setEnumCRS	= EnumSet.of(AUT, ERS, HEG);
+		private static EnumSet<OfficialHarvestableSpecies>	setEnumCJP	= EnumSet.of(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
+		private static EnumSet<OfficialHarvestableSpecies>	setEnumCJPG_QM	= EnumSet.of(ERS, FEU, HEG, RES);
+		private static EnumSet<OfficialHarvestableSpecies>	setEnumCPI_CP_CIMOTF = EnumSet.of(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
+		private static EnumSet<OfficialHarvestableSpecies>	setEnumCPI_RL_CIMOTF = EnumSet.of(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
 		private OfficialHarvestableSpecies() {		
 		}
 		
@@ -132,6 +136,14 @@ public interface OfficialHarvestableTree extends DbhCmProvider,
 				set = setEnumCPI_RL;
 			} else if(TreatmentType.CRS == treatment){
 				set = setEnumCRS;
+			} else if(TreatmentType.CJP == treatment){
+				set = setEnumCJP;
+			} else if(TreatmentType.CJPG_QM == treatment){
+				set = setEnumCJPG_QM;
+			} else if(TreatmentType.CPI_CP_CIMOTF == treatment){
+				set = setEnumCPI_CP_CIMOTF;
+			} else if(TreatmentType.CPI_RL_CIMOTF == treatment){
+				set = setEnumCPI_RL_CIMOTF;
 			} else {
 				set = setEnumOther;
 			}
