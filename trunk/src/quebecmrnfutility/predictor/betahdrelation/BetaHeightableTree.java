@@ -128,11 +128,6 @@ public interface BetaHeightableTree extends MonteCarloSimulationCompliantObject,
 	 * @return a double
 	 */
 	public double getSocialStatusIndex();
-//	/**
-//	 * This method returns the year of the measurement or prediction.
-//	 * @return an Integer
-//	 */
-//	public int getYear();
 	
 	
 }
