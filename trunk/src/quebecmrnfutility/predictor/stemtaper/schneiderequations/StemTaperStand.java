@@ -38,4 +38,10 @@ public interface StemTaperStand extends MonteCarloSimulationCompliantObject,
 										EcologicalRegionProvider,
 										EcologicalTypeProvider,
 										DrainageClassProvider,
-										ElevationMProvider {}
+										ElevationMProvider {
+	
+	
+	public void setMonteCarloRealizationId(int id);
+	
+	
+}
