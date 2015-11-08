@@ -138,5 +138,5 @@ public interface StemTaperTree extends BasicStemTaperTree,
 	 */
 	public StemTaperTreeSpecies getStemTaperTreeSpecies();
 	
-	public void setMonteCarloRealizationId(int id);
+//	public void setMonteCarloRealizationId(int id);
 }

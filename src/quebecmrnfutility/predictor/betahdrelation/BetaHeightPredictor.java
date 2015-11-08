@@ -52,13 +52,13 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	}
 
 	protected static class BetaHeightableStandMonteCarlo implements MonteCarloSimulationCompliantObject {
-		private int					monteCarloRealization;
+		private final int monteCarloRealization;
 		private int					subjectID;
 		private HierarchicalLevel	hieraLevel;
 
 		protected BetaHeightableStandMonteCarlo(MonteCarloSimulationCompliantObject subject, BetaHdSpecies species) {
 			String id = (subject.getMonteCarloRealizationId() + "_" + species.ordinal());
-			setMonteCarloRealizationId(id.hashCode());
+			this.monteCarloRealization = id.hashCode();
 			subjectID = subject.getSubjectId();
 			hieraLevel = subject.getHierarchicalLevel();
 		}
@@ -73,11 +73,6 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 			return hieraLevel;
 		}
 
-		@Override
-		public void setMonteCarloRealizationId(int i) {
-			monteCarloRealization = i;
-
-		}
 
 		@Override
 		public int getMonteCarloRealizationId() {

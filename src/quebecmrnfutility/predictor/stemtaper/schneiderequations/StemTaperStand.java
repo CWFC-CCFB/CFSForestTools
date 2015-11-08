@@ -41,7 +41,7 @@ public interface StemTaperStand extends MonteCarloSimulationCompliantObject,
 										ElevationMProvider {
 	
 	
-	public void setMonteCarloRealizationId(int id);
+//	public void setMonteCarloRealizationId(int id);
 	
 	
 }

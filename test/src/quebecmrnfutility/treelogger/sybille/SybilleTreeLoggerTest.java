@@ -58,8 +58,8 @@ public class SybilleTreeLoggerTest {
 		@Override
 		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Plot;}
 
-		@Override
-		public void setMonteCarloRealizationId(int i) {this.monteCarloRealizationID = i;}
+//		@Override
+//		public void setMonteCarloRealizationId(int i) {this.monteCarloRealizationID = i;}
 
 		@Override
 		public int getMonteCarloRealizationId() {return monteCarloRealizationID;}
