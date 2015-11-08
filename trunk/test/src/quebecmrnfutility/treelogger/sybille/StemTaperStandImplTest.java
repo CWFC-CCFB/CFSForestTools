@@ -13,8 +13,8 @@ public class StemTaperStandImplTest implements StemTaperStand {
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Plot;}
 
-	@Override
-	public void setMonteCarloRealizationId(int i) {this.monteCarloId = i;}
+//	@Override
+//	public void setMonteCarloRealizationId(int i) {this.monteCarloId = i;}
 
 	@Override
 	public String getEcologicalType() {return "MS22";}

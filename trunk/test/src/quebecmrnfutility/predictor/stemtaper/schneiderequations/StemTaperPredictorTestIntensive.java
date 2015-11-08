@@ -46,8 +46,6 @@ public class StemTaperPredictorTestIntensive {
 		@Override
 		public HierarchicalLevel getHierarchicalLevel() {return null;}
 
-		@Override
-		public void setMonteCarloRealizationId(int i) {	}
 
 		@Override
 		public int getMonteCarloRealizationId() {return 0;}
@@ -105,9 +103,6 @@ public class StemTaperPredictorTestIntensive {
 
 		@Override
 		public HierarchicalLevel getHierarchicalLevel() {return null;}
-
-		@Override
-		public void setMonteCarloRealizationId(int i) {}
 
 		@Override
 		public int getMonteCarloRealizationId() {return 0;}

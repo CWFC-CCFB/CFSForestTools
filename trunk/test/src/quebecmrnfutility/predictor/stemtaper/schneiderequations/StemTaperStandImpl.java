@@ -58,16 +58,9 @@ class StemTaperStandImpl implements StemTaperStand {
 	}
 
 
-	@Override
-	public void setMonteCarloRealizationId(int i) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	@Override
 	public int getMonteCarloRealizationId() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

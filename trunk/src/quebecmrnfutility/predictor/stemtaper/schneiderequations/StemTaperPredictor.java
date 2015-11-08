@@ -136,7 +136,7 @@ public final class StemTaperPredictor extends StemTaperModel {
 	
 	private EstimationMethod estimationMethod;
 	private boolean isResetNeeded;
-	protected ModelType typeModel;//the type of equation model to use Tree or Hybrid
+	protected ModelType typeModel;	//the type of equation model to use Tree or Hybrid
 		
 	/**
 	 * Constructor.
@@ -149,7 +149,7 @@ public final class StemTaperPredictor extends StemTaperModel {
 	
 		estimationMethod = EstimationMethod.SecondOrder;
 		setNumberOfMonteCarloRealizations(1); 	
-		typeModel = ModelType.HYBRIDMODEL;//default model
+		typeModel = ModelType.HYBRIDMODEL;	//default model
 	}
 
 	/**
@@ -157,7 +157,7 @@ public final class StemTaperPredictor extends StemTaperModel {
 	 * model is to be used in a deterministic manner. 
 	 * @param numberOfMonteCarloRealizations an Integer
 	 */
-	public void setNumberOfMonteCarloRealizations(int numberOfMonteCarloRealizations) {
+	private void setNumberOfMonteCarloRealizations(int numberOfMonteCarloRealizations) {
 		this.numberOfMonteCarloRealizations = numberOfMonteCarloRealizations;
 		isParametersVariabilityEnabled = estimationMethod == EstimationMethod.MonteCarlo;
 		isRandomEffectsVariabilityEnabled = estimationMethod == EstimationMethod.MonteCarlo;
@@ -200,8 +200,8 @@ public final class StemTaperPredictor extends StemTaperModel {
 		for (int iter = 0; iter < numberOfRuns; iter++) {
 			pred = new Matrix(heights.m_iRows, 1);
 			if (estimationMethod == EstimationMethod.MonteCarlo) {
-				tree.setMonteCarloRealizationId(iter);
-				tree.getStand().setMonteCarloRealizationId(iter);
+//				tree.setMonteCarloRealizationId(iter);
+//				tree.getStand().setMonteCarloRealizationId(iter);
 				randomizeCoefficients();
 				randomEffects0 = plotRandomEffects.m_afData[0][0] + treeRandomEffects.m_afData[0][0];
 				randomEffects1 = plotRandomEffects.m_afData[1][0] + treeRandomEffects.m_afData[1][0];

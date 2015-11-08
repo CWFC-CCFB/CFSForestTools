@@ -41,8 +41,8 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Tree;}
 
-	@Override
-	public void setMonteCarloRealizationId(int i) {this.monteCarloId = i;}
+//	@Override
+//	public void setMonteCarloRealizationId(int i) {this.monteCarloId = i;}
 
 	@Override
 	public StemTaperStand getStand() {return stand;}

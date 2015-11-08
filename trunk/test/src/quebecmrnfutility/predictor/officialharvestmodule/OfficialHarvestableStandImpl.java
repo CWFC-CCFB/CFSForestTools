@@ -39,8 +39,6 @@ public class OfficialHarvestableStandImpl implements OfficialHarvestableStand {
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Plot;}
 
-	@Override
-	public void setMonteCarloRealizationId(int i) {}			// no need
 
 	@Override
 	public int getMonteCarloRealizationId() {					// no need
