@@ -14,13 +14,12 @@ import repicea.util.ObjectUtility;
 public class BetaHDRelationTests {
 
 	
-	static Collection<BetaHeightableStand> stands;
+	static Map<String, BetaHeightableStand> standMap;
 
 	
 	static void ReadStands() {
 		String filename = ObjectUtility.getPackagePath(BetaHDRelationTests.class) + "fichier_test_unitaire.csv";
-		Map<String, BetaHeightableStand> standMap = new HashMap<String, BetaHeightableStand>();
-		
+		standMap = new HashMap<String, BetaHeightableStand>();
 		CSVReader reader;
 		try {
 			reader = new CSVReader(filename);
@@ -39,7 +38,7 @@ public class BetaHDRelationTests {
 				
 				double dbhCm = Double.parseDouble(record[4].toString());
 				String species = record[5].toString();
-				double heightM = Double.parseDouble(record[6].toString());
+				double predictedHeight = Double.parseDouble(record[29].toString());
 				
 				if (!standMap.containsKey(placetteID)) {
 					standMap.put(placetteID, new BetaHeightableStandImpl(placetteID,
@@ -52,11 +51,7 @@ public class BetaHDRelationTests {
 							meanAnnualPrecipitationMm));
 				}
 				BetaHeightableStandImpl stand = (BetaHeightableStandImpl) standMap.get(placetteID);
-				
-				
-				
-				
-				
+				new BetaHeightableTreeImpl(stand, dbhCm, predictedHeight, treeID++, species);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -70,9 +65,10 @@ public class BetaHDRelationTests {
 
 	@Test
 	public void comparePredictionsWithSAS() {
-		if (stands == null) {
+		if (standMap == null) {
 			BetaHDRelationTests.ReadStands();
 		}
+		int u = 0;
 	}
 	
 }
