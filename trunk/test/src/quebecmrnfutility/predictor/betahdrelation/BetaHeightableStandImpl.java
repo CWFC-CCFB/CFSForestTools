@@ -47,11 +47,6 @@ public class BetaHeightableStandImpl implements BetaHeightableStand {
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Plot;}
 
-//	@Override
-//	public void setMonteCarloRealizationId(int i) {
-//		monteCarloRealizationID = i;
-//	}
-
 	@Override
 	public int getMonteCarloRealizationId() {
 		return monteCarloRealizationID;

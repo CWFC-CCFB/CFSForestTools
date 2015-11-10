@@ -10,19 +10,19 @@ class BetaHeightableTreeImpl implements BetaHeightableTree {
 	final int subjectID;
 	double heightM;
 	final double predictedHeightM;
+	final BetaHdSpecies speciesCode;
 	
 	BetaHeightableTreeImpl(BetaHeightableStandImpl stand,
 			double dbhCm,
-			double observedHeightM,
 			double predictedHeightM,
-			int subjectID) {
+			int subjectID, 
+			String species) {
 		this.stand = stand;
 		stand.trees.add(this);
 		this.dbhCm = dbhCm;
-		this.heightM = observedHeightM;
 		this.predictedHeightM = predictedHeightM;
 		this.subjectID = subjectID;
-		//TODO FP rendu ici
+		speciesCode = BetaHdSpecies.valueOf(species.toUpperCase().trim());
 	}
 	
 	
@@ -35,20 +35,13 @@ class BetaHeightableTreeImpl implements BetaHeightableTree {
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Tree;}
 
-//	@Override
-//	public void setMonteCarloRealizationId(int i) {
-//		stand.setMonteCarloRealizationId(i);
-//	}
-
 	@Override
 	public int getMonteCarloRealizationId() {
 		return stand.getMonteCarloRealizationId();
 	}
 
 	@Override
-	public double getHeightM() {
-		return heightM;
-	}
+	public double getHeightM() {return heightM;}
 
 	@Override
 	public double getDbhCm() {return dbhCm;}
@@ -76,8 +69,7 @@ class BetaHeightableTreeImpl implements BetaHeightableTree {
 
 	@Override
 	public BetaHdSpecies getBetaHeightableTreeSpecies() {
-		// TODO Auto-generated method stub
-		return null;
+		return speciesCode;
 	}
 
 	@Override
