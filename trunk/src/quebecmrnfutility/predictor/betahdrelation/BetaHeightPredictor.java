@@ -398,12 +398,12 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 			case LogDbh_ratioDbh:
 				oXVector.m_afData[0][pointeur++] = lnDbh * (t.getDbhCm()/averageQDiam);
 				break;
-			case LogDbh_basalAreaGreaterThan:
-				oXVector.m_afData[0][pointeur++] = lnDbh * t.getBasalAreaLargerThanSubjectM2Ha();
-				break;
-			case LogDbh2_basalAreaGreaterThan:
-				oXVector.m_afData[0][pointeur++] = lnDbh2 * t.getBasalAreaLargerThanSubjectM2Ha();
-				break;
+//			case LogDbh_basalAreaGreaterThan:
+//				oXVector.m_afData[0][pointeur++] = lnDbh * t.getBasalAreaLargerThanSubjectM2Ha();
+//				break;
+//			case LogDbh2_basalAreaGreaterThan:
+//				oXVector.m_afData[0][pointeur++] = lnDbh2 * t.getBasalAreaLargerThanSubjectM2Ha();
+//				break;
 			case LogDbh2_ratioDbh:
 				oXVector.m_afData[0][pointeur++] = lnDbh2 * (t.getDbhCm()/averageQDiam);
 				break;
@@ -432,9 +432,9 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 			case LogDbh_pTot:
 				oXVector.m_afData[0][pointeur++] = lnDbh * stand.getMeanAnnualPrecipitationMm();
 				break;
-			case LogDbh_Dens:
-				oXVector.m_afData[0][pointeur++] = lnDbh * stand.getNumberOfStemsHa();
-				break;
+//			case LogDbh_Dens:
+//				oXVector.m_afData[0][pointeur++] = lnDbh * stand.getNumberOfStemsHa();
+//				break;
 			case LogDbh_NotOuest:
 				int isNotOuest = 0;
 				String ouest = subDomain.substring(1, subDomain.length()).toUpperCase();
@@ -443,9 +443,9 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 				}
 				oXVector.m_afData[0][pointeur++] = lnDbh * isNotOuest;
 				break;
-			case LogDbh_Is:
-				oXVector.m_afData[0][pointeur++] = lnDbh * t.getSocialStatusIndex();
-				break;
+//			case LogDbh_Is:
+//				oXVector.m_afData[0][pointeur++] = lnDbh * t.getSocialStatusIndex();
+//				break;
 			default:
 				System.out.println("BetaHeightPredictor Class : Unable to apply effect "+effect);
 				break;

@@ -55,11 +55,10 @@ class BetaHeightableTreeImpl implements BetaHeightableTree {
 		return lnDbhCmPlus1;
 	}
 
-	@Override
-	public double getBasalAreaLargerThanSubjectM2Ha() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+//	@Override
+//	public double getBasalAreaLargerThanSubjectM2Ha() {
+//		return 0;
+//	}
 
 	@Override
 	public int getErrorTermIndex() {
@@ -72,10 +71,10 @@ class BetaHeightableTreeImpl implements BetaHeightableTree {
 		return speciesCode;
 	}
 
-	@Override
-	public double getSocialStatusIndex() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+//	@Override
+//	public double getSocialStatusIndex() {
+//		return getDbhCm()/stand.getMeanQuadraticDiameterCm();
+//	}
 
+	protected double getPredictedHeight() {return predictedHeightM;}
 }
