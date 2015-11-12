@@ -1,12 +1,15 @@
 package quebecmrnfutility.predictor.betahdrelation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
+import quebecmrnfutility.predictor.betahdrelation.BetaHeightableTree.BetaHdSpecies;
 import repicea.io.javacsv.CSVReader;
 import repicea.util.ObjectUtility;
 
@@ -32,7 +35,6 @@ public class BetaHDRelationTests {
 				String regEco = record[13].toString().trim();
 				String typeEco = record[15].toString().trim();
 				double elevationM = Double.parseDouble(record[17].toString());
-//				String clDrai = record[18].toString();
 				double meanAnnualPrecipitationMm = Double.parseDouble(record[19].toString());
 				double meanAnnualTemperatureC = Double.parseDouble(record[21].toString());
 				
@@ -63,12 +65,36 @@ public class BetaHDRelationTests {
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void comparePredictionsWithSAS() {
 		if (standMap == null) {
 			BetaHDRelationTests.ReadStands();
 		}
-		int u = 0;
+		List<Integer> measurementDates = new ArrayList<Integer>();
+		measurementDates.add(2015);
+		BetaHeightPredictor predictor = new BetaHeightPredictor(measurementDates);
+		
+		int goodMatches = 0;
+		List<BetaHdSpecies> goodMatchingSpecies = new ArrayList<BetaHdSpecies>();
+		for (BetaHeightableStand stand : standMap.values()) {
+			Collection<BetaHeightableTree> trees = stand.getTrees();
+			for (BetaHeightableTree t : trees) {
+				double actual = predictor.predictHeight(stand, t);
+				double expected = ((BetaHeightableTreeImpl) t).getPredictedHeight();
+				if (Math.abs(expected-actual) < 1E-8) {
+					goodMatches++;
+					if (!goodMatchingSpecies.contains(t.getBetaHeightableTreeSpecies())) {
+						goodMatchingSpecies.add(t.getBetaHeightableTreeSpecies());
+					}
+				} else {
+					goodMatchingSpecies.remove(t.getBetaHeightableTreeSpecies());
+				}
+//				assertEquals("Comparing predicted Heights", expected, actual, 1E-8);
+//				goodMatches++;
+			}
+		}
+		System.out.println("BetaHDRelationTests.comparePredictionsWithSAS - Successful comparisons " + goodMatches);
 	}
 	
 }

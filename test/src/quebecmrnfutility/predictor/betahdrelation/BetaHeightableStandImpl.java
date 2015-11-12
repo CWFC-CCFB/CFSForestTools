@@ -11,7 +11,7 @@ public class BetaHeightableStandImpl implements BetaHeightableStand {
 	int monteCarloRealizationID;
 	final double basalAreaM2Ha;
 	final double meanQuadraticDiameter;
-	double numberOfStemsHa;
+//	double numberOfStemsHa;
 	final String ecoRegion;
 	final String ecoType;
 	boolean isInterventionResult;
@@ -87,10 +87,10 @@ public class BetaHeightableStandImpl implements BetaHeightableStand {
 		return isDefoliated;
 	}
 
-	@Override
-	public double getNumberOfStemsHa() {
-		return numberOfStemsHa;
-	}
+//	@Override
+//	public double getNumberOfStemsHa() {
+//		return numberOfStemsHa;
+//	}
 
 	@Override
 	public double getMeanAnnualPrecipitationMm() {

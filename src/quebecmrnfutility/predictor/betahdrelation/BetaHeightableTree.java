@@ -29,7 +29,6 @@ import java.util.Set;
 
 import repicea.math.Matrix;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2Provider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmPlus1Provider;
@@ -47,7 +46,7 @@ public interface BetaHeightableTree extends MonteCarloSimulationCompliantObject,
 										DbhCmProvider,
 										LnDbhCmPlus1Provider,
 										SquaredLnDbhCmPlus1Provider,
-										BasalAreaLargerThanSubjectM2Provider,
+//										BasalAreaLargerThanSubjectM2Provider,
 										IndexableErrorTerm {
 
 	public enum BetaHdSpecies {	
@@ -122,12 +121,12 @@ public interface BetaHeightableTree extends MonteCarloSimulationCompliantObject,
 	public BetaHdSpecies getBetaHeightableTreeSpecies();
 	
 	
-	/**
-	 * This method returns the social status index calculated as the 
-	 * squared difference between tree dbh and mean quadratic diameter.
-	 * @return a double
-	 */
-	public double getSocialStatusIndex();
+//	/**
+//	 * This method returns the social status index calculated as the 
+//	 * squared difference between tree dbh and mean quadratic diameter.
+//	 * @return a double
+//	 */
+//	public double getSocialStatusIndex();
 	
 	
 }
