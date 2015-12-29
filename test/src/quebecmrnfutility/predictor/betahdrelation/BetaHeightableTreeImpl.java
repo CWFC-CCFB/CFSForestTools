@@ -1,6 +1,6 @@
 package quebecmrnfutility.predictor.betahdrelation;
 
-import repicea.simulation.ModelBasedSimulator.HierarchicalLevel;
+import repicea.simulation.HierarchicalLevel;
 
 class BetaHeightableTreeImpl implements BetaHeightableTree {
 
@@ -33,7 +33,7 @@ class BetaHeightableTreeImpl implements BetaHeightableTree {
 	}
 
 	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Tree;}
+	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
 	@Override
 	public int getMonteCarloRealizationId() {

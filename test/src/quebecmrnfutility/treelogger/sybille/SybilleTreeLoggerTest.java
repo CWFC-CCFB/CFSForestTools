@@ -17,7 +17,7 @@ import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredict
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.io.FormatReader;
-import repicea.simulation.ModelBasedSimulator.HierarchicalLevel;
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
@@ -56,7 +56,7 @@ public class SybilleTreeLoggerTest {
 		public int getSubjectId() {return hashCode();}
 
 		@Override
-		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Plot;}
+		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 //		@Override
 //		public void setMonteCarloRealizationId(int i) {this.monteCarloRealizationID = i;}

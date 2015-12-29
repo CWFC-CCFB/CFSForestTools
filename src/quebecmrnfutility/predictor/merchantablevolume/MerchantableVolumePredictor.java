@@ -26,6 +26,7 @@ package quebecmrnfutility.predictor.merchantablevolume;
 
 import quebecmrnfutility.predictor.merchantablevolume.VolumableTree.VolSpecies;
 import repicea.math.Matrix;
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelBasedSimulator;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
@@ -56,7 +57,7 @@ public final class MerchantableVolumePredictor extends ModelBasedSimulator {
 			boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
 		init();
-		oXVector = new Matrix(1, defaultBeta.getMean().m_iRows);
+		oXVector = new Matrix(1, getDefaultBeta().getMean().m_iRows);
 	}
 	
 	/**
@@ -76,12 +77,12 @@ public final class MerchantableVolumePredictor extends ModelBasedSimulator {
 
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
 			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
-			defaultBeta = new SASParameterEstimate(defaultBetaMean, defaultBetaVariance);
+			setDefaultBeta(new SASParameterEstimate(defaultBetaMean, defaultBetaVariance));
 			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
 			Matrix matrixG = covParms.getSubMatrix(0, 2, 0, 0).squareSym().add(covParms.getSubMatrix(3, 5, 0, 0).squareSym());
 			Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);
 			sigma2 = covParms.getSubMatrix(6, covParms.m_iRows - 1, 0, 0);
-			defaultRandomEffects.put(HierarchicalLevel.Plot, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
+			setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
 		} catch (Exception e) {
 			System.out.println("GeneralVolumeCalculator.init() : Unable to initialize the GeneralVolumeEquation");
 		}

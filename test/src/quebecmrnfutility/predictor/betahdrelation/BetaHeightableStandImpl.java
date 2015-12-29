@@ -3,7 +3,7 @@ package quebecmrnfutility.predictor.betahdrelation;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import repicea.simulation.ModelBasedSimulator.HierarchicalLevel;
+import repicea.simulation.HierarchicalLevel;
 
 public class BetaHeightableStandImpl implements BetaHeightableStand {
 
@@ -45,7 +45,7 @@ public class BetaHeightableStandImpl implements BetaHeightableStand {
 	public int getSubjectId() {return subjectID.hashCode();}
 
 	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Plot;}
+	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 	@Override
 	public int getMonteCarloRealizationId() {

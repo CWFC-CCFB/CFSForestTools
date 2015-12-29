@@ -57,7 +57,7 @@ class OfficialHarvestSubmodel extends ModelBasedSimulator {
 	}
 
 	protected void setDefaultBeta(Matrix beta, Matrix variance) {
-		defaultBeta = new SASParameterEstimate(beta, variance); 
+		setDefaultBeta(new SASParameterEstimate(beta, variance)); 
 	}
 	
 	protected Matrix getSubParametersForThisStand(MonteCarloSimulationCompliantObject stand) {

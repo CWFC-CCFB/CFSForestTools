@@ -11,7 +11,7 @@ import org.junit.Test;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethod;
 import repicea.io.FormatReader;
 import repicea.io.javacsv.CSVReader;
-import repicea.simulation.ModelBasedSimulator.HierarchicalLevel;
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 import repicea.simulation.stemtaper.StemTaperEstimate;
 import repicea.util.ObjectUtility;

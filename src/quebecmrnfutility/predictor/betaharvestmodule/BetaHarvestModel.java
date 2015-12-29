@@ -98,7 +98,7 @@ public final class BetaHarvestModel extends LogisticModelBasedSimulator<BetaHarv
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);
 		isCorrectlyInitialized = false;
 		init();
-		oXVector = new Matrix(1,defaultBeta.getMean().m_iRows);
+		oXVector = new Matrix(1,getDefaultBeta().getMean().m_iRows);
 		isCorrectlyInitialized = true;
 	}
 	
@@ -120,7 +120,7 @@ public final class BetaHarvestModel extends LogisticModelBasedSimulator<BetaHarv
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
 			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
 			
-			this.defaultBeta = new SASParameterEstimate(defaultBetaMean, defaultBetaVariance); 
+			setDefaultBeta(new SASParameterEstimate(defaultBetaMean, defaultBetaVariance)); 
 			
 			speciesTreatmentDummy = new TreeMap<BetaHarvestableSpecies, Map<Treatment, Matrix>>();
 			Vector<Integer> index = new Vector<Integer>();

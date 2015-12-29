@@ -32,6 +32,7 @@ import quebecmrnfutility.predictor.generalhdrelation.HeightableTree.HdSpecies;
 import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
 import repicea.predictor.QuebecGeneralSettings.DrainageGroup;
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
@@ -141,7 +142,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	public GeneralHeightPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
 		init();
-		oXVector = new Matrix(1,defaultBeta.getMean().m_iRows);
+		oXVector = new Matrix(1,getDefaultBeta().getMean().m_iRows);
 	}
 
 	/**
@@ -162,20 +163,19 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
 			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
-			defaultBeta = new SASParameterEstimate(defaultBetaMean, defaultBetaVariance);
+			setDefaultBeta(new SASParameterEstimate(defaultBetaMean, defaultBetaVariance));
 			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
 			
 			Matrix matrixG = covParms.getSubMatrix(0, 19, 0, 0).matrixDiagonal();
 			Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);
-			defaultRandomEffects.put(HierarchicalLevel.Plot, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
-			
+			setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
 			Matrix sigma2 = covParms.getSubMatrix(20, 20, 0, 0);
 			double phi = covParms.m_afData[21][0];
-			defaultResidualError.put(SpeciesType.BroadleavedSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));
+			setDefaultResidualError(SpeciesType.BroadleavedSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));
 			
 			sigma2 = covParms.getSubMatrix(22, 22, 0, 0);
 			phi = covParms.m_afData[23][0];
-			defaultResidualError.put(SpeciesType.ConiferousSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));			
+			setDefaultResidualError(SpeciesType.ConiferousSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));			
 			
 		} catch (Exception e) {
 			System.out.println("GeneralHDRelation Class : Unable to initialize the general height-diameter relationship");
@@ -265,8 +265,8 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	 * @param stand
 	 */
 	public Matrix getBlups(HeightableStand stand) {
-		if (blupsLibrary.get(HierarchicalLevel.Plot) != null) {
-			return blupsLibrary.get(HierarchicalLevel.Plot).get(stand.getSubjectId()).getMean();
+		if (getBlupsAtThisLevel(HierarchicalLevel.PLOT) != null) {
+			return getBlupsAtThisLevel(HierarchicalLevel.PLOT).get(stand.getSubjectId()).getMean();
 		} else {
 			return null;
 		}
