@@ -30,9 +30,9 @@ import java.util.Map;
 
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperEquationSettings.Effect;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
+import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
-import repicea.stats.AbstractStatisticalExpression;
 import repicea.stats.LinearStatisticalExpression;
 
 /**
@@ -43,7 +43,7 @@ class InternalStatisticalExpressions {
 
 	private StemTaperPredictor stemTaperPredictor;
 	private LinearStatisticalExpression firstLinearTerm;
-	private AbstractStatisticalExpression secondLinearTerm;		// abstract because it can be linear or nonlinear sometimes
+	private AbstractMathematicalFunction secondLinearTerm;		// abstract because it can be linear or nonlinear sometimes
 	
 	private StemTaperTree lastTree;
 	
@@ -56,35 +56,35 @@ class InternalStatisticalExpressions {
 	 * @author Mathieu Fortin - January 2012
 	 */
 	@SuppressWarnings("serial")
-	static class CustomizedNonlinearStatisticalExpression extends AbstractStatisticalExpression {
+	static class CustomizedNonlinearStatisticalExpression extends AbstractMathematicalFunction {
 		
 		protected Matrix gradient;
 		protected Matrix hessian;
 		
 		@Override
 		public Double getValue() {
-			if (parameterValues.size() != (variableValues.size() + 1)) {		// there is one additional parameter
+			if (getNumberOfParameters() != (getNumberOfVariables() + 1)) {		// there is one additional parameter
 				throw new IllegalArgumentException("Incompatible vectors");
 			} 
 			double productResult = 0;
-			productResult +=  - Math.exp(- getParameterValue(0).doubleValue() * Math.pow(getVariableValue(0), getParameterValue(1).doubleValue()));
-			for (int i = 1; i < variableValues.size(); i++) {
-				productResult += getVariableValue(i) * getParameterValue(i + 1).doubleValue();
+			productResult +=  - Math.exp(- getParameterValue(0) * Math.pow(getVariableValue(0), getParameterValue(1)));
+			for (int i = 1; i < getNumberOfVariables(); i++) {
+				productResult += getVariableValue(i) * getParameterValue(i + 1);
 			}
 			return productResult;
 		}
 
 		@Override
 		public Matrix getGradient() {
-			if (gradient == null || gradient.m_iRows != parameterValues.size()) {			// create a gradient matrix only once or only if the number of variables in x changes
-				gradient = new Matrix(parameterValues.size(),1);								
+			if (gradient == null || gradient.m_iRows != getNumberOfParameters()) {			// create a gradient matrix only once or only if the number of variables in x changes
+				gradient = new Matrix(getNumberOfParameters(),1);								
 			}
 			double powerExpression = Math.pow(getVariableValue(0), getParameterValue(1));
 			double basicExpression = - Math.exp(- getParameterValue(0) * powerExpression);
 			gradient.m_afData[0][0] = basicExpression * - powerExpression;							// update the value in the gradient matrix
 			gradient.m_afData[1][0] = basicExpression * - getParameterValue(0) * powerExpression * Math.log(getVariableValue(0));							// update the value in the gradient matrix
-			for (int i = 2; i < parameterValues.size(); i++) {
-				gradient.m_afData[i][0] = variableValues.get(i - 1);							// update the value in the gradient matrix
+			for (int i = 2; i < getNumberOfParameters(); i++) {
+				gradient.m_afData[i][0] = getVariableValue(i - 1);							// update the value in the gradient matrix
 			}
 			
 			return gradient;
@@ -92,8 +92,8 @@ class InternalStatisticalExpressions {
 
 		@Override
 		public Matrix getHessian() {
-			if (hessian == null || hessian.m_iCols != parameterValues.size()) {				// create a hessian matrix only once or only if the number of variables in x changes
-				hessian = new Matrix(parameterValues.size(), parameterValues.size());
+			if (hessian == null || hessian.m_iCols != getNumberOfParameters()) {				// create a hessian matrix only once or only if the number of variables in x changes
+				hessian = new Matrix(getNumberOfParameters(), getNumberOfParameters());
 			}
 //			hessian.resetMatrix();	// all values are reset to 0
 			double powerExpression = Math.pow(getVariableValue(0), getParameterValue(1));
@@ -123,28 +123,28 @@ class InternalStatisticalExpressions {
 	 * @author Denis Hache - Mai 2014
 	 */
 	@SuppressWarnings("serial")
-	static class CustomizedNonlinearPibStatisticalExpression extends AbstractStatisticalExpression {
+	static class CustomizedNonlinearPibStatisticalExpression extends AbstractMathematicalFunction {
 
 		protected Matrix	gradient;
 		protected Matrix	hessian;
 
 		@Override
 		public Double getValue() {
-			if (parameterValues.size() != (variableValues.size())) {
+			if (getNumberOfParameters() != (getNumberOfVariables())) {
 				throw new IllegalArgumentException("Incompatible vectors");
 			}
 			double productResult = 0;
-			productResult += Math.pow(getVariableValue(1).doubleValue(), getParameterValue(1)) * Math.pow(getVariableValue(2), getParameterValue(2));
-			productResult += getVariableValue(1) * getParameterValue(1).doubleValue();
-			productResult += getVariableValue(3) * getParameterValue(3).doubleValue();
+			productResult += Math.pow(getVariableValue(1), getParameterValue(1)) * Math.pow(getVariableValue(2), getParameterValue(2));
+			productResult += getVariableValue(1) * getParameterValue(1);
+			productResult += getVariableValue(3) * getParameterValue(3);
 
 			return productResult;
 		}
 
 		@Override
 		public Matrix getGradient() {
-			if (gradient == null || gradient.m_iRows != parameterValues.size()) {			// create a gradient matrix only once or only if the number of variables in x changes
-				gradient = new Matrix(parameterValues.size(), 1);
+			if (gradient == null || gradient.m_iRows != getNumberOfParameters()) {			// create a gradient matrix only once or only if the number of variables in x changes
+				gradient = new Matrix(getNumberOfParameters(), 1);
 			}
 			double powerExpression1 = Math.pow(getVariableValue(1), getParameterValue(1));
 			double powerExpression2 = Math.pow(getVariableValue(2), getParameterValue(2));
@@ -161,8 +161,8 @@ class InternalStatisticalExpressions {
 
 		@Override
 		public Matrix getHessian() {
-			if (hessian == null || hessian.m_iCols != parameterValues.size()) {				// create a hessian matrix only once or only if the number of variables in x changes
-				hessian = new Matrix(parameterValues.size(), parameterValues.size());
+			if (hessian == null || hessian.m_iCols != getNumberOfParameters()) {				// create a hessian matrix only once or only if the number of variables in x changes
+				hessian = new Matrix(getNumberOfParameters(), getNumberOfParameters());
 			}
 //			hessian.resetMatrix();	// all values are reset to 0
 			double powerExpression1 = Math.pow(getVariableValue(1), getParameterValue(1));

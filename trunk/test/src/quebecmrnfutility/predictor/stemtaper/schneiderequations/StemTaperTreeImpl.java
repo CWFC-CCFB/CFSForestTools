@@ -4,7 +4,7 @@ package quebecmrnfutility.predictor.stemtaper.schneiderequations;
 import java.util.List;
 
 import repicea.math.Matrix;
-import repicea.simulation.ModelBasedSimulator.HierarchicalLevel;
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
@@ -39,7 +39,7 @@ class StemTaperTreeImpl implements StemTaperTree {
 
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {
-		return HierarchicalLevel.Tree;
+		return HierarchicalLevel.TREE;
 	}
 
 	@Override

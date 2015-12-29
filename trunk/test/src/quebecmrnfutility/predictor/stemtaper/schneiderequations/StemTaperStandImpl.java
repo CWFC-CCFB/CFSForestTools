@@ -1,7 +1,6 @@
 package quebecmrnfutility.predictor.stemtaper.schneiderequations;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
-import repicea.simulation.ModelBasedSimulator.HierarchicalLevel;
+import repicea.simulation.HierarchicalLevel;
 
 class StemTaperStandImpl implements StemTaperStand {
 
@@ -25,7 +24,7 @@ class StemTaperStandImpl implements StemTaperStand {
 	}
 
 	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Plot;}
+	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 	@Override
 	public String getEcologicalType() {

@@ -9,13 +9,13 @@ import java.util.Map;
 import quebecmrnfutility.predictor.betahdrelation.BetaHeightableTree.BetaHdSpecies;
 import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelBasedSimulator;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.GaussianErrorTerm;
 import repicea.stats.distributions.GaussianErrorTermList;
 import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
-import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
@@ -143,7 +143,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	private Map<BetaHdSpecies, Map<String, Matrix>>	disturbDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
 	private Map<BetaHdSpecies, List<Effect>>			listEffectReferenceMap			= new HashMap<BetaHdSpecies, List<Effect>>();
 	private Map<BetaHdSpecies, Matrix> oXVectorReferenceMap = new  HashMap<BetaHdSpecies, Matrix>();
-	private Map<BetaHdSpecies, Map<Integer, Estimate<?>>> blupsLibraryPlotReferenceMap = new HashMap<BetaHdSpecies, Map<Integer, Estimate<?>>>();
+	private Map<BetaHdSpecies, Map<Integer, GaussianEstimate>> blupsLibraryPlotReferenceMap = new HashMap<BetaHdSpecies, Map<Integer, GaussianEstimate>>();
 
 	public BetaHeightPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled,
 			List<Integer> measurementDates) {
@@ -202,7 +202,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 				double phi = randomEffects.m_afData[1][0];//tree
 				Matrix oMat = StatisticalUtility.constructRMatrix(years, sigma2, phi, StatisticalUtility.TypeMatrixR.POWER);
 				treeRandomEffectReferenceMap.put(species, new GaussianEstimate(new Matrix(oMat.m_iRows, 1), oMat));
-				defaultResidualError.put(species, new GaussianErrorTermEstimate(randomEffects.getSubMatrix(2, 2, 0, 0), phi, StatisticalUtility.TypeMatrixR.POWER));
+				setDefaultResidualError(species, new GaussianErrorTermEstimate(randomEffects.getSubMatrix(2, 2, 0, 0), phi, StatisticalUtility.TypeMatrixR.POWER));
 
 				List<String> sdomM = ParameterLoaderExt.loadColumnVectorFromFile(parameterFilename, 3, String.class);
 				List<String> sdomBio = ParameterLoaderExt.loadColumnVectorFromFile(listSdomFilename, 0, String.class);
@@ -305,7 +305,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 		double dNormResidual;
 
 		if (observedHeight > 1.3) {			// means that height was already observed
-			double variance = defaultRandomEffects.get(HierarchicalLevel.Tree).getVariance().m_afData[0][0];
+			double variance = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance().m_afData[0][0];
 			dNormResidual = (observedHeight - predictedHeight) / Math.pow(variance, 0.5);
 			GaussianErrorTerm errorTerm = new GaussianErrorTermForHeight(tree, dNormResidual, observedHeight - predictedHeight);
 			setSpecificResiduals(tree, errorTerm);	// the residual is set in the simulatedResidualError member
@@ -326,10 +326,10 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	 */
 	private void setVersion(BetaHdSpecies species) {
 
-		defaultBeta = betaMatrixReferenceMap.get(species);
+		setDefaultBeta(betaMatrixReferenceMap.get(species));
 
-		defaultRandomEffects.clear();
-		defaultRandomEffects.put(HierarchicalLevel.Plot, plotRandomEffectReferenceMap.get(species));
+//		defaultRandomEffects.clear();
+		setDefaultRandomEffects(HierarchicalLevel.PLOT, plotRandomEffectReferenceMap.get(species));
 //		defaultRandomEffects.put(HierarchicalLevel.Tree, BetaHeightPredictor.treeRandomEffectReferenceMap.get(species));
 		
 		oXVector = oXVectorReferenceMap.get(species);
@@ -523,9 +523,9 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 				Matrix V = Z.multiply(matrixG).multiply(Z.transpose()).add(R);	// variance - covariance matrix
 				blups = matrixG.multiply(Z.transpose()).multiply(V.getInverseMatrix()).multiply(Res);							// blup_essHD is redefined according to observed values
 				blupsVariance = Z.transpose().multiply(R.getInverseMatrix()).multiply(Z).add(matrixG.getInverseMatrix()).getInverseMatrix();			// blup_essHDvar is redefined according to observed values				
-				Map<Integer, Estimate<?>> randomEffectsMap = blupsLibraryPlotReferenceMap.get(keySpecies);
+				Map<Integer, GaussianEstimate> randomEffectsMap = blupsLibraryPlotReferenceMap.get(keySpecies);
 				if (randomEffectsMap == null) {
-					randomEffectsMap = new HashMap<Integer, Estimate<?>>();
+					randomEffectsMap = new HashMap<Integer, GaussianEstimate>();
 					blupsLibraryPlotReferenceMap.put(keySpecies, randomEffectsMap);
 				}
 				randomEffectsMap.put(stand.getSubjectId(), new GaussianEstimate(blups, blupsVariance));
@@ -543,7 +543,11 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	 * @return a simulated random effect (double)
 	 */
 	private double blupImplementation(BetaHeightableStand stand, RegressionElements regElement) {
-		blupsLibrary.put(HierarchicalLevel.Plot, blupsLibraryPlotReferenceMap.get(regElement.species));
+		Map<Integer, GaussianEstimate> blupsReferences = blupsLibraryPlotReferenceMap.get(regElement.species); 
+		for (Integer subjectID : blupsReferences.keySet()) {
+			GaussianEstimate estimate = blupsReferences.get(subjectID);
+			setBlupsForThisSubject(HierarchicalLevel.PLOT, subjectID, estimate);	// TODO FP check if this is properly implemented
+		}
 		Matrix randomEffects = getRandomEffectsForThisSubject(new BetaHeightableStandMonteCarlo(stand, regElement.species));
 		return regElement.Z_tree.multiply(randomEffects).m_afData[0][0];
 	}
@@ -629,7 +633,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 		} else {			if (doesThisSubjectHaveResidualErrorTerm(tree)) {		// means that height was initially measured
 				setSpecificResiduals(tree, new GaussianErrorTerm(tree, 0d));
 				GaussianErrorTermList list = getGaussianErrorTerms(tree);
-				Matrix meanResiduals = defaultResidualError.get(tree.getBetaHeightableTreeSpecies()).getMean(list);
+				Matrix meanResiduals = getDefaultResidualError(tree.getBetaHeightableTreeSpecies()).getMean(list);
 				residualForThisPrediction = meanResiduals.m_afData[meanResiduals.m_iRows - 1][0];
 			} 
 		}

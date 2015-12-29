@@ -1,7 +1,7 @@
 package quebecmrnfutility.treelogger.sybille;
 
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
-import repicea.simulation.ModelBasedSimulator.HierarchicalLevel;
+import repicea.simulation.HierarchicalLevel;
 
 public class StemTaperStandImplTest implements StemTaperStand {
 
@@ -11,7 +11,7 @@ public class StemTaperStandImplTest implements StemTaperStand {
 	public int getSubjectId() {return this.hashCode();}
 
 	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.Plot;}
+	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 //	@Override
 //	public void setMonteCarloRealizationId(int i) {this.monteCarloId = i;}
