@@ -69,10 +69,6 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 	public double getNumber() {return 1;}
 
 	@Override
-	public TreeStatusPriorToLogging getTreeStatusPriorToLogging() {return TreeStatusPriorToLogging.Alive;}
-
-
-	@Override
 	public int getMonteCarloRealizationId() {
 		return monteCarloId;
 	}
