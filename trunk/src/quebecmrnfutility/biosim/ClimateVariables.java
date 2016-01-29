@@ -33,6 +33,16 @@ public class ClimateVariables implements Serializable {
 		return value;
 	}
 	
+	public void setVariable(Variable enumVar, double value) {
+		variableMap.put(enumVar, value);
+	}
+	
 	public String getPlotId() {return plotID;}
 	
+	@Override
+	public String toString() {
+		return "Plot: " + plotID + "; " 
+				+ Variable.MeanAnnualTempC.name() + " = " + getVariable(Variable.MeanAnnualTempC) + "; "
+				+ Variable.MeanAnnualPrecMm.name() + " = " + getVariable(Variable.MeanAnnualPrecMm);
+	}
 }
