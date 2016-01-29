@@ -13,9 +13,10 @@ public class ClimateVariables implements Serializable {
 	}
 
 	private final Map<Variable, Double> variableMap;
+	private final String plotID;
 	
-	
-	public ClimateVariables() {
+	public ClimateVariables(String plotID) {
+		this.plotID = plotID;
 		variableMap = new HashMap<Variable, Double>();
 	}
 
@@ -31,5 +32,7 @@ public class ClimateVariables implements Serializable {
 		}
 		return value;
 	}
-
+	
+	public String getPlotId() {return plotID;}
+	
 }

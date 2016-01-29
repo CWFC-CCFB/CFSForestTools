@@ -28,5 +28,5 @@ public class PlotLocation implements Serializable, GeographicalCoordinatesProvid
 	@Override
 	public double getLongitude() {return longitude;}
 
-	public String getID() {return plotID;}
+	public String getPlotId() {return plotID;}
 }
