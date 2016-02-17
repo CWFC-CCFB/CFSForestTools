@@ -27,14 +27,9 @@ class StemTaperTreeImpl implements StemTaperTree {
 	}
 	
 	
-//	@Override
-//	public Object getSubjectPlusMonteCarloSpecificId() {
-//		return this;
-//	}
-
 	@Override
-	public int getSubjectId() {
-		return 0;
+	public String getSubjectId() {
+		return "0";
 	}
 
 	@Override

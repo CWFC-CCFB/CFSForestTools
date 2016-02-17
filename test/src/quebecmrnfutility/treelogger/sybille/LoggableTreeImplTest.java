@@ -36,7 +36,7 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 
 	
 	@Override
-	public int getSubjectId() {return this.hashCode();}
+	public String getSubjectId() {return ((Integer) hashCode()).toString();}
 
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}

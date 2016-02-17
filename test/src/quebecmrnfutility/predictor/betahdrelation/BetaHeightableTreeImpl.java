@@ -28,8 +28,8 @@ class BetaHeightableTreeImpl implements BetaHeightableTree {
 	
 	
 	@Override
-	public int getSubjectId() {
-		return subjectID;
+	public String getSubjectId() {
+		return ((Integer) subjectID).toString();
 	}
 
 	@Override

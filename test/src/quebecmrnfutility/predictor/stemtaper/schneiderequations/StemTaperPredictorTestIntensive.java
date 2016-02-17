@@ -37,11 +37,9 @@ public class StemTaperPredictorTestIntensive {
 		}
 
 		
-//		@Override
-//		public Object getSubjectPlusMonteCarloSpecificId() {return null;}
 
 		@Override
-		public int getSubjectId() {return 0;}
+		public String getSubjectId() {return "0";}
 
 		@Override
 		public HierarchicalLevel getHierarchicalLevel() {return null;}
@@ -81,7 +79,6 @@ public class StemTaperPredictorTestIntensive {
 		
 		private StemTaperTreeImpl(Object[] record, String species) {
 			double sectionHeight = Double.parseDouble(record[3].toString());
-//			double sectionDiameter = Double.parseDouble(record[1].toString());
 			crossSectionsHeight = new ArrayList<Double>();
 			crossSectionsHeight.add(sectionHeight);
 			dbhCm = Double.parseDouble(record[2].toString()) * .1;
@@ -95,11 +92,9 @@ public class StemTaperPredictorTestIntensive {
 		
 		private List<Double> getHeightList() {return crossSectionsHeight;}
 		
-//		@Override
-//		public Object getSubjectPlusMonteCarloSpecificId() {return null;}
 
 		@Override
-		public int getSubjectId() {return 0;}
+		public String getSubjectId() {return "0";}
 
 		@Override
 		public HierarchicalLevel getHierarchicalLevel() {return null;}

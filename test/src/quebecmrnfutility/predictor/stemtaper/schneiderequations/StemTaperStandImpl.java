@@ -13,14 +13,9 @@ class StemTaperStandImpl implements StemTaperStand {
 	}
 	
 		
-//	@Override
-//	public Object getSubjectPlusMonteCarloSpecificId() {
-//		return this;
-//	}
-
 	@Override
-	public int getSubjectId() {
-		return this.hashCode();
+	public String getSubjectId() {
+		return ((Integer) hashCode()).toString();
 	}
 
 	@Override
