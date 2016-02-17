@@ -8,7 +8,7 @@ public class StemTaperStandImplTest implements StemTaperStand {
 	private int monteCarloId;
 	
 	@Override
-	public int getSubjectId() {return this.hashCode();}
+	public String getSubjectId() {return ((Integer) hashCode()).toString();}
 
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}

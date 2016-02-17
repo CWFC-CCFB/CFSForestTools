@@ -53,7 +53,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 
 	protected static class BetaHeightableStandMonteCarlo implements MonteCarloSimulationCompliantObject {
 		private final int monteCarloRealization;
-		private int					subjectID;
+		private String subjectID;
 		private HierarchicalLevel	hieraLevel;
 
 		protected BetaHeightableStandMonteCarlo(MonteCarloSimulationCompliantObject subject, BetaHdSpecies species) {
@@ -64,7 +64,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 		}
 
 		@Override
-		public int getSubjectId() {
+		public String getSubjectId() {
 			return subjectID;
 		}
 
@@ -143,7 +143,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	private Map<BetaHdSpecies, Map<String, Matrix>>	disturbDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
 	private Map<BetaHdSpecies, List<Effect>>			listEffectReferenceMap			= new HashMap<BetaHdSpecies, List<Effect>>();
 	private Map<BetaHdSpecies, Matrix> oXVectorReferenceMap = new  HashMap<BetaHdSpecies, Matrix>();
-	private Map<BetaHdSpecies, Map<Integer, GaussianEstimate>> blupsLibraryPlotReferenceMap = new HashMap<BetaHdSpecies, Map<Integer, GaussianEstimate>>();
+	private Map<BetaHdSpecies, Map<String, GaussianEstimate>> blupsLibraryPlotReferenceMap = new HashMap<BetaHdSpecies, Map<String, GaussianEstimate>>();
 
 	public BetaHeightPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled,
 			List<Integer> measurementDates) {
@@ -293,7 +293,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	public synchronized double predictHeight(BetaHeightableStand stand, BetaHeightableTree tree) {
 		double predictedHeight = 0;
 		if (!isBlupEstimationDone) {
-				predictHeightRandomEffects(stand);
+			predictHeightRandomEffects(stand);
 			isBlupEstimationDone = true;
 		}
 		setVersion(tree.getBetaHeightableTreeSpecies());
@@ -523,9 +523,9 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 				Matrix V = Z.multiply(matrixG).multiply(Z.transpose()).add(R);	// variance - covariance matrix
 				blups = matrixG.multiply(Z.transpose()).multiply(V.getInverseMatrix()).multiply(Res);							// blup_essHD is redefined according to observed values
 				blupsVariance = Z.transpose().multiply(R.getInverseMatrix()).multiply(Z).add(matrixG.getInverseMatrix()).getInverseMatrix();			// blup_essHDvar is redefined according to observed values				
-				Map<Integer, GaussianEstimate> randomEffectsMap = blupsLibraryPlotReferenceMap.get(keySpecies);
+				Map<String, GaussianEstimate> randomEffectsMap = blupsLibraryPlotReferenceMap.get(keySpecies);
 				if (randomEffectsMap == null) {
-					randomEffectsMap = new HashMap<Integer, GaussianEstimate>();
+					randomEffectsMap = new HashMap<String, GaussianEstimate>();
 					blupsLibraryPlotReferenceMap.put(keySpecies, randomEffectsMap);
 				}
 				randomEffectsMap.put(stand.getSubjectId(), new GaussianEstimate(blups, blupsVariance));
@@ -543,8 +543,8 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	 * @return a simulated random effect (double)
 	 */
 	private double blupImplementation(BetaHeightableStand stand, RegressionElements regElement) {
-		Map<Integer, GaussianEstimate> blupsReferences = blupsLibraryPlotReferenceMap.get(regElement.species); 
-		for (Integer subjectID : blupsReferences.keySet()) {
+		Map<String, GaussianEstimate> blupsReferences = blupsLibraryPlotReferenceMap.get(regElement.species); 
+		for (String subjectID : blupsReferences.keySet()) {
 			GaussianEstimate estimate = blupsReferences.get(subjectID);
 			setBlupsForThisSubject(HierarchicalLevel.PLOT, subjectID, estimate);	// TODO FP check if this is properly implemented
 		}

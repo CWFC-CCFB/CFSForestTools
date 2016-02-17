@@ -11,7 +11,6 @@ public class BetaHeightableStandImpl implements BetaHeightableStand {
 	int monteCarloRealizationID;
 	final double basalAreaM2Ha;
 	final double meanQuadraticDiameter;
-//	double numberOfStemsHa;
 	final String ecoRegion;
 	final String ecoType;
 	boolean isInterventionResult;
@@ -42,7 +41,7 @@ public class BetaHeightableStandImpl implements BetaHeightableStand {
 	
 	
 	@Override
-	public int getSubjectId() {return subjectID.hashCode();}
+	public String getSubjectId() {return subjectID;}
 
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}

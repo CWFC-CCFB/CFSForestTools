@@ -53,7 +53,7 @@ public class SybilleTreeLoggerTest {
 		
 		
 		@Override
-		public int getSubjectId() {return hashCode();}
+		public String getSubjectId() {return ((Integer) hashCode()).toString();}
 
 		@Override
 		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
