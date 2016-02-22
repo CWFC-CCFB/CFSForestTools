@@ -122,8 +122,7 @@ public class FormerOfficialHarvestModel extends LogisticModelBasedSimulator<Form
 			for (Treatment treatment : Treatment.values()) {
 				if (betas.containsKey(treatment) && variances.containsKey(treatment)) {
 					FormerOfficialHarvestSubmodel calculatorForThisTreatment = new FormerOfficialHarvestSubmodel(isParametersVariabilityEnabled, isResidualVariabilityEnabled);
-					calculatorForThisTreatment.setDefaultBeta(betas.get(treatment), variances.get(treatment));
-//					calculatorForThisTreatment.setLowerCholOmegaMatrix(lowerCholOmegas.get(treatment));
+					calculatorForThisTreatment.setDefaultBeta(betas.get(treatment), variances.get(treatment).squareSym());
 					modelParametersLibrary.put(treatment, calculatorForThisTreatment);
 				}
 			}
