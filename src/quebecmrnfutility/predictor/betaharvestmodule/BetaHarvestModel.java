@@ -33,6 +33,7 @@ import quebecmrnfutility.predictor.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
 import repicea.simulation.LogisticModelBasedSimulator;
 import repicea.simulation.ParameterLoader;
+import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
@@ -120,7 +121,7 @@ public final class BetaHarvestModel extends LogisticModelBasedSimulator<BetaHarv
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
 			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
 			
-			setParameterEstimates(new SASParameterEstimate(defaultBetaMean, defaultBetaVariance)); 
+			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance)); 
 			
 			speciesTreatmentDummy = new TreeMap<BetaHarvestableSpecies, Map<Treatment, Matrix>>();
 			Vector<Integer> index = new Vector<Integer>();

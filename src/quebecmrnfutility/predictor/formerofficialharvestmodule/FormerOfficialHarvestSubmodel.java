@@ -27,6 +27,7 @@ package quebecmrnfutility.predictor.formerofficialharvestmodule;
 import repicea.math.Matrix;
 import repicea.simulation.ModelBasedSimulator;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.SASParameterEstimates;
 
 /**
  * This private class contains a specific version of the harvest module. The versions depend on the nature of the treatment.
@@ -57,7 +58,7 @@ class FormerOfficialHarvestSubmodel extends ModelBasedSimulator {
 	}
 
 	protected void setDefaultBeta(Matrix beta, Matrix variance) {
-		setParameterEstimates(new SASParameterEstimate(beta, variance));		
+		setParameterEstimates(new SASParameterEstimates(beta, variance));		
 	}
 	
 	protected Matrix getSubParametersForThisStand(MonteCarloSimulationCompliantObject stand) {

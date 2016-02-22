@@ -29,6 +29,7 @@ import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelBasedSimulator;
 import repicea.simulation.ParameterLoader;
+import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
@@ -77,7 +78,7 @@ public final class MerchantableVolumePredictor extends ModelBasedSimulator {
 
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
 			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
-			setParameterEstimates(new SASParameterEstimate(defaultBetaMean, defaultBetaVariance));
+			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance));
 			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
 			Matrix matrixG = covParms.getSubMatrix(0, 2, 0, 0).squareSym().add(covParms.getSubMatrix(3, 5, 0, 0).squareSym());
 			Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);
