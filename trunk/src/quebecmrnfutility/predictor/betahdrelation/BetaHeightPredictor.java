@@ -12,6 +12,7 @@ import repicea.predictor.QuebecGeneralSettings;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelBasedSimulator;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.GaussianErrorTerm;
 import repicea.stats.distributions.GaussianErrorTermList;
@@ -134,7 +135,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	private List<Integer>							measurementDates;
 	private boolean									isBlupEstimationDone;
 
-	private Map<BetaHdSpecies, SASParameterEstimate>	betaMatrixReferenceMap	= new HashMap<BetaHdSpecies, SASParameterEstimate>();
+	private Map<BetaHdSpecies, SASParameterEstimates>	betaMatrixReferenceMap	= new HashMap<BetaHdSpecies, SASParameterEstimates>();
 	private Map<BetaHdSpecies, GaussianEstimate>	plotRandomEffectReferenceMap	= new HashMap<BetaHdSpecies, GaussianEstimate>();
 	private Map<BetaHdSpecies, GaussianEstimate> treeRandomEffectReferenceMap = new HashMap<BetaHdSpecies, GaussianEstimate>();
 	private Map<BetaHdSpecies, Map<String, Matrix>>	subDomainDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
@@ -189,7 +190,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 				//CholeskyDecomposition chol = new CholeskyDecompositionImpl(matrix);
 				//matrix = chol.getL();
 
-				SASParameterEstimate defaultBeta = new SASParameterEstimate(beta, omega);
+				SASParameterEstimates defaultBeta = new SASParameterEstimates(beta, omega);
 				betaMatrixReferenceMap.put(species, defaultBeta);
 				oXVectorReferenceMap.put(species, new Matrix(1,defaultBeta.getMean().m_iRows));
 				Matrix randomEffects = ParameterLoaderExt.loadVectorFromFile(plotRandomEffectsFilename).get();

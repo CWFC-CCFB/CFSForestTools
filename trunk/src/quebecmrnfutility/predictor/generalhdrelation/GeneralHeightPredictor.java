@@ -34,6 +34,7 @@ import repicea.predictor.QuebecGeneralSettings;
 import repicea.predictor.QuebecGeneralSettings.DrainageGroup;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
+import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.hdrelationships.HDRelationshipModel;
@@ -163,7 +164,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
 			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
-			setParameterEstimates(new SASParameterEstimate(defaultBetaMean, defaultBetaVariance));
+			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance));
 			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
 			
 			Matrix matrixG = covParms.getSubMatrix(0, 19, 0, 0).matrixDiagonal();
