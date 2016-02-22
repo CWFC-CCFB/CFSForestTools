@@ -71,8 +71,8 @@ public final class OfficialHarvestModel extends LogisticModelBasedSimulator<Offi
 		CRS("CRS Outaouais", "CRS Outaouais"),
 		CJP("Selection cutting CIMOTFF","Coupes jardinage CIMOTFF"),
 		CJPG_QM("Selection cutting group of trees CIMOTFF","Coupe jardinage par groupe d'arbres CIMOTFF"),
-		CPI_CP_CIMOTF("CPI_CP CIMOTFF", "Coupe progressive irrégulière couvert permanent CIMOTFF"),
-		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irrégulière à régénération lente CIMOTFF");
+		CPI_CP_CIMOTF("CPI_CP CIMOTFF", "Coupe progressive irrï¿½guliï¿½re couvert permanent CIMOTFF"),
+		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irrï¿½guliï¿½re ï¿½ rï¿½gï¿½nï¿½ration lente CIMOTFF");
 		
 		TreatmentType(String englishText, String frenchText) {
 			setText(englishText, frenchText);
@@ -133,7 +133,7 @@ public final class OfficialHarvestModel extends LogisticModelBasedSimulator<Offi
 			for (TreatmentType treatment : TreatmentType.values()) {
 				if (betas.containsKey(treatment) && variances.containsKey(treatment)) {
 					OfficialHarvestSubmodel calculatorForThisTreatment = new OfficialHarvestSubmodel(isParametersVariabilityEnabled, isResidualVariabilityEnabled);
-					calculatorForThisTreatment.setDefaultBeta(betas.get(treatment), variances.get(treatment));
+					calculatorForThisTreatment.setParameterEstimates(betas.get(treatment), variances.get(treatment));
 					modelParametersLibrairy.put(treatment, calculatorForThisTreatment);
 				}
 			}

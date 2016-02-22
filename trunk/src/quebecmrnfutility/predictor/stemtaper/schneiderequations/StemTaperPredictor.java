@@ -276,7 +276,7 @@ public final class StemTaperPredictor extends StemTaperModel {
 	private void resetCoefficients() {
 		plotRandomEffects = getDefaultRandomEffects(HierarchicalLevel.PLOT).getMean();
 		treeRandomEffects = getDefaultRandomEffects(HierarchicalLevel.TREE).getMean();
-		linearExpressions.setParameters(getDefaultBeta().getMean());
+		linearExpressions.setParameters(getParameterEstimates().getMean());
 		residualErrors.resetMatrix();
 		isResetNeeded = false;
 	}
@@ -422,8 +422,8 @@ public final class StemTaperPredictor extends StemTaperModel {
 	private void setVersion(StemTaperTreeSpecies species) {
 		linearExpressions = new InternalStatisticalExpressions(this, species);
 
-		setDefaultBeta(StemTaperPredictor.betaMatrixReferenceMap.get(typeModel).get(species));
-		linearExpressions.setParameters(getDefaultBeta().getMean());
+		setParameterEstimates(StemTaperPredictor.betaMatrixReferenceMap.get(typeModel).get(species));
+		linearExpressions.setParameters(getParameterEstimates().getMean());
 
 //		defaultRandomEffects.clear();
 		setDefaultRandomEffects(HierarchicalLevel.PLOT, StemTaperPredictor.plotRandomEffectReferenceMap.get(typeModel).get(species));
@@ -495,7 +495,7 @@ public final class StemTaperPredictor extends StemTaperModel {
 		Matrix gTree = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance();
 		Matrix z = gradients.getSubMatrix(0, gradients.m_iRows - 1, 0, 1);
 		
-		Matrix fixedEffectParameterPart = gradients.multiply(getDefaultBeta().getVariance()).multiply(gradients.transpose());
+		Matrix fixedEffectParameterPart = gradients.multiply(getParameterEstimates().getVariance()).multiply(gradients.transpose());
 		Matrix zGPlotzT = z.multiply(gPlot).multiply(z.transpose());
 		Matrix zGTreezT = z.multiply(gTree).multiply(z.transpose());
 		Matrix v = zGPlotzT;
@@ -546,7 +546,7 @@ public final class StemTaperPredictor extends StemTaperModel {
 			zPrime = xPrime.getSubMatrix(indices, indices);
 			
 			MatrixUtility.elementWiseMultiply(zPrime, variances);
-			MatrixUtility.elementWiseMultiply(xPrime, getDefaultBeta().getVariance());
+			MatrixUtility.elementWiseMultiply(xPrime, getParameterEstimates().getVariance());
 			
 			correctionFactor.m_afData[i][0] = zPrime.getSumOfElements() * .5 + xPrime.getSumOfElements() * .5;
 		}
@@ -571,7 +571,7 @@ public final class StemTaperPredictor extends StemTaperModel {
 		Matrix isserlisTree = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance().getIsserlisMatrix();
 		MatrixUtility.add(isserlisPlot, isserlisTree);
 		Matrix isserlisCombine = isserlisPlot;
-		Matrix isserlisOmega = getDefaultBeta().getVariance().getIsserlisMatrix();
+		Matrix isserlisOmega = getParameterEstimates().getVariance().getIsserlisMatrix();
 		for (int i = 0; i < heights.m_iRows; i++) {
 			xPrimeI = hessians.getSubMatrix(i, i, 0, hessians.m_iCols - 1).transpose().squareSym();
 			zPrimeI = xPrimeI.getSubMatrix(0, 1, 0, 1);
