@@ -57,7 +57,7 @@ public final class MerchantableVolumePredictor extends ModelBasedSimulator {
 			boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
 		init();
-		oXVector = new Matrix(1, getDefaultBeta().getMean().m_iRows);
+		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public final class MerchantableVolumePredictor extends ModelBasedSimulator {
 
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
 			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
-			setDefaultBeta(new SASParameterEstimate(defaultBetaMean, defaultBetaVariance));
+			setParameterEstimates(new SASParameterEstimate(defaultBetaMean, defaultBetaVariance));
 			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
 			Matrix matrixG = covParms.getSubMatrix(0, 2, 0, 0).squareSym().add(covParms.getSubMatrix(3, 5, 0, 0).squareSym());
 			Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);

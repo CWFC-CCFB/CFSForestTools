@@ -326,7 +326,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 	 */
 	private void setVersion(BetaHdSpecies species) {
 
-		setDefaultBeta(betaMatrixReferenceMap.get(species));
+		setParameterEstimates(betaMatrixReferenceMap.get(species));
 
 //		defaultRandomEffects.clear();
 		setDefaultRandomEffects(HierarchicalLevel.PLOT, plotRandomEffectReferenceMap.get(species));
@@ -546,7 +546,7 @@ public class BetaHeightPredictor extends ModelBasedSimulator {
 		Map<String, GaussianEstimate> blupsReferences = blupsLibraryPlotReferenceMap.get(regElement.species); 
 		for (String subjectID : blupsReferences.keySet()) {
 			GaussianEstimate estimate = blupsReferences.get(subjectID);
-			setBlupsForThisSubject(HierarchicalLevel.PLOT, subjectID, estimate);	// TODO FP check if this is properly implemented
+//			setBlupsForThisSubject(HierarchicalLevel.PLOT, subjectID, estimate);	// TODO FP check if this is properly implemented
 		}
 		Matrix randomEffects = getRandomEffectsForThisSubject(new BetaHeightableStandMonteCarlo(stand, regElement.species));
 		return regElement.Z_tree.multiply(randomEffects).m_afData[0][0];

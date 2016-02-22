@@ -142,7 +142,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	public GeneralHeightPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
 		init();
-		oXVector = new Matrix(1,getDefaultBeta().getMean().m_iRows);
+		oXVector = new Matrix(1,getParameterEstimates().getMean().m_iRows);
 	}
 
 	/**
@@ -163,7 +163,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
 			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
-			setDefaultBeta(new SASParameterEstimate(defaultBetaMean, defaultBetaVariance));
+			setParameterEstimates(new SASParameterEstimate(defaultBetaMean, defaultBetaVariance));
 			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
 			
 			Matrix matrixG = covParms.getSubMatrix(0, 19, 0, 0).matrixDiagonal();
@@ -183,9 +183,9 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	}
 	
 	@Override
-	protected synchronized RegressionElements fixedEffectsPrediction(HeightableStand stand, HeightableTree t) {
-		Matrix modelParameters = getParametersForThisRealization(stand);
-		
+	protected synchronized RegressionElements fixedEffectsPrediction(HeightableStand stand, HeightableTree t, Matrix beta) {
+//		Matrix modelParameters = getParametersForThisRealization(stand);
+		Matrix modelParameters = beta;
 		double basalArea = stand.getBasalAreaM2Ha();
 		double averageTemp = stand.getMeanAnnualTemperatureC();
 		DrainageGroup drainageGroup = getDrainageGroup(stand);
@@ -240,7 +240,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 		RegressionElements regElements = new RegressionElements();
 		
 		regElements.fixedPred = fResult;
-		regElements.Z_tree = matZ_i;
+		regElements.vectorZ = matZ_i;
 		regElements.species = species;
 		
 		return regElements;
@@ -265,8 +265,8 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	 * @param stand
 	 */
 	public Matrix getBlups(HeightableStand stand) {
-		if (getBlupsAtThisLevel(HierarchicalLevel.PLOT) != null) {
-			return getBlupsAtThisLevel(HierarchicalLevel.PLOT).get(stand.getSubjectId()).getMean();
+		if (doBlupsExistForThisSubject(stand)) {
+			return getBlupsForThisSubject(stand).getMean();
 		} else {
 			return null;
 		}
