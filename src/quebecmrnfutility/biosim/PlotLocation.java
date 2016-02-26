@@ -14,8 +14,8 @@ public class PlotLocation implements Serializable, GeographicalCoordinatesProvid
 	
 	public PlotLocation(String plotID, GeographicalCoordinatesProvider geographicalProvider) {
 		this.plotID = plotID;
-		latitude = geographicalProvider.getLatitude();
-		longitude = geographicalProvider.getLongitude();
+		latitude = geographicalProvider.getLatitudeDeg();
+		longitude = geographicalProvider.getLongitudeDeg();
 		elevationM = geographicalProvider.getElevationM();
 	}
 
@@ -23,10 +23,10 @@ public class PlotLocation implements Serializable, GeographicalCoordinatesProvid
 	public double getElevationM() {return elevationM;}
 
 	@Override
-	public double getLatitude() {return latitude;}
+	public double getLatitudeDeg() {return latitude;}
 
 	@Override
-	public double getLongitude() {return longitude;}
+	public double getLongitudeDeg() {return longitude;}
 
 	public String getPlotId() {return plotID;}
 }
