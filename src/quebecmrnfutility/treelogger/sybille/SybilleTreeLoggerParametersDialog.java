@@ -43,11 +43,6 @@ public class SybilleTreeLoggerParametersDialog extends TreeLoggerParametersDialo
 
 	
 	@Override
-	protected String getTreeLoggerName() {
-		return "Sybille Tree Logger";
-	}
-
-	@Override
 	protected void initUI() {
 		super.initUI();
 		mnSpecies.setEnabled(false);			//	the species cannot be changed in SybilleTreeLogger
