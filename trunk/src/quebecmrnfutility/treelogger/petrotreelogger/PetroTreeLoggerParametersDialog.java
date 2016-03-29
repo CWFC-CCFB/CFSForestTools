@@ -43,11 +43,6 @@ public class PetroTreeLoggerParametersDialog extends TreeLoggerParametersDialog<
 	}
 
 	@Override
-	protected String getTreeLoggerName() {
-		return "Petro Tree Logger";
-	}
-
-	@Override
 	protected void initUI() {
 		super.initUI();
 		mnFile.setEnabled(false);
