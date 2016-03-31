@@ -487,7 +487,7 @@ public class PetroTreeLogger extends TreeLogger<PetroTreeLoggerParameters, Petro
 	}
 
 	@Override
-	public boolean matchWith(Object referent) {
+	public boolean isCompatibleWith(Object referent) {
 		return referent instanceof PetroLoggableTree;
 	}
 

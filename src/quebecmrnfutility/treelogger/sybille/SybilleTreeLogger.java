@@ -168,7 +168,7 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 
 
 	@Override
-	public boolean matchWith(Object referent) {
+	public boolean isCompatibleWith(Object referent) {
 		return referent instanceof SybilleLoggableTree;
 	}
 
