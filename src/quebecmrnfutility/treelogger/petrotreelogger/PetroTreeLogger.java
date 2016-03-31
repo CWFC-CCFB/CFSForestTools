@@ -53,10 +53,6 @@ import repicea.util.ObjectUtility;
  */
 public class PetroTreeLogger extends TreeLogger<PetroTreeLoggerParameters, PetroLoggableTree> {
 
-	static {
-		TreeLogger.registerTreeLogger(PetroTreeLogger.class);
-	}
-	
 	// TODO implement the stochastic mode
 	
 	private static final int PRESENCE = 1;
