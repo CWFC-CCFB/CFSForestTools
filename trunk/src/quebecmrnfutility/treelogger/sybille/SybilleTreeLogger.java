@@ -42,6 +42,10 @@ import repicea.stats.integral.TrapezoidalRule;
  */
 public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, SybilleLoggableTree> {
 
+	static {
+		TreeLogger.registerTreeLogger(SybilleTreeLogger.class);
+	}
+	
 	private StemTaperPredictor stp;
 	private StemTaperSegmentList segments;
 	
@@ -160,6 +164,12 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 			}
 		}
 		return null;
+	}
+
+
+	@Override
+	public boolean matchWith(Object referent) {
+		return referent instanceof SybilleLoggableTree;
 	}
 
 
