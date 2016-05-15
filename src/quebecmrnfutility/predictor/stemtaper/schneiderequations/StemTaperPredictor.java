@@ -608,7 +608,7 @@ public final class StemTaperPredictor extends StemTaperModel {
 		Matrix correlations = distance.powMatrix(rho);			
 		Matrix x = heights.scalarAdd(-1.3).scalarMultiply(1d / (tree.getHeightM() - 1.3)).getAbsoluteValue();
 		Matrix l = heights.scalarMultiply(-1d).scalarAdd(tree.getHeightM());
-		Matrix stdDevMatrix = l.elementWiseMultiply(x).elementWiseMultiply(x.scalarMultiply(-1d).scalarAdd(1d).elementwisePower(3d)).elementwisePower(varFunctionParm2)
+		Matrix stdDevMatrix = l.elementWiseMultiply(x).elementWiseMultiply(x.scalarMultiply(-1d).scalarAdd(1d).elementWisePower(3d)).elementWisePower(varFunctionParm2)
 								.scalarAdd(varFunctionParm1).matrixDiagonal();
 		rMatrix = stdDevMatrix.multiply(correlations).multiply(stdDevMatrix).scalarMultiply(residualStdDev * residualStdDev);
 		rMatrixChol = rMatrix.getLowerCholTriangle();
