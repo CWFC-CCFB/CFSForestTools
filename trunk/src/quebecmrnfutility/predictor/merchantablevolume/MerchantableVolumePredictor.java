@@ -27,8 +27,8 @@ package quebecmrnfutility.predictor.merchantablevolume;
 import quebecmrnfutility.predictor.merchantablevolume.VolumableTree.VolSpecies;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
-import repicea.simulation.ModelBasedSimulator;
 import repicea.simulation.ParameterLoader;
+import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
 import repicea.stats.estimates.GaussianEstimate;
@@ -41,7 +41,7 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - October 2009
  * @see Fortin, M., DeBlois, J., Bernier, S., and Blais, G. 2007. Mise au point d'un tarif de cubage g�n�ral pour les for�ts qu�b�coises: une approche pour mieux �valuer l'incertitude associ�e aux pr�visions. Forestry Chronicle 83(5) 754-765.
  */
-public final class MerchantableVolumePredictor extends ModelBasedSimulator {
+public final class MerchantableVolumePredictor extends REpiceaPredictor {
 
 	private static final long serialVersionUID = 20100804L;
 

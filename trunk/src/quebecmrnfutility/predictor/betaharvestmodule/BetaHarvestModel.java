@@ -31,8 +31,8 @@ import java.util.Vector;
 import quebecmrnfutility.predictor.betaharvestmodule.BetaHarvestableTree.BetaHarvestableSpecies;
 import quebecmrnfutility.predictor.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
-import repicea.simulation.LogisticModelBasedSimulator;
 import repicea.simulation.ParameterLoader;
+import repicea.simulation.REpiceaLogisticPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
 import repicea.util.ObjectUtility;
@@ -43,7 +43,7 @@ import repicea.util.REpiceaTranslator;
  * @author Mathieu Fortin - October 2009
  */
 @Deprecated
-public final class BetaHarvestModel extends LogisticModelBasedSimulator<BetaHarvestableStand, BetaHarvestableTree>{
+public final class BetaHarvestModel extends REpiceaLogisticPredictor<BetaHarvestableStand, BetaHarvestableTree>{
 	
 	private static final long serialVersionUID = 20100905L;
 

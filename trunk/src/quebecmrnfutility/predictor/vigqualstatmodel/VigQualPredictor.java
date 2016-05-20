@@ -24,7 +24,7 @@
  */
 package quebecmrnfutility.predictor.vigqualstatmodel;
 
-import repicea.simulation.ModelBasedSimulator;
+import repicea.simulation.REpiceaPredictor;
 
 /**
  * The VigQualPredictor class implements a bivariate probit regression whose margins
@@ -32,7 +32,7 @@ import repicea.simulation.ModelBasedSimulator;
  * effects. Consequently the random effect variability is disabled.
  * @author Mathieu Fortin - July 2012
  */
-public class VigQualPredictor extends ModelBasedSimulator {
+public class VigQualPredictor extends REpiceaPredictor {
 
 	private static final long serialVersionUID = 20120705L;
 
