@@ -34,7 +34,7 @@ import java.util.Vector;
 
 import quebecmrnfutility.predictor.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
-import repicea.simulation.LogisticModelBasedSimulator;
+import repicea.simulation.REpiceaLogisticPredictor;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -44,7 +44,7 @@ import repicea.util.REpiceaTranslator;
  * @author M. Fortin - August 2010
  */
 @Deprecated
-public class FormerOfficialHarvestModel extends LogisticModelBasedSimulator<FormerOfficialHarvestableStand, FormerOfficialHarvestableTree> {
+public class FormerOfficialHarvestModel extends REpiceaLogisticPredictor<FormerOfficialHarvestableStand, FormerOfficialHarvestableTree> {
 	
 	private static final long serialVersionUID = 20100905L;
 

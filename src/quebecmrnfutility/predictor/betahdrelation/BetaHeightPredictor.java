@@ -10,8 +10,8 @@ import quebecmrnfutility.predictor.betahdrelation.BetaHeightableTree.BetaHdSpeci
 import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
 import repicea.simulation.HierarchicalLevel;
-import repicea.simulation.ModelBasedSimulator;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.GaussianErrorTerm;
@@ -32,7 +32,7 @@ import repicea.util.ObjectUtility;
  *      Qu�bec, Minist�re des Ressources naturelles et de la Faune, Direction de
  *      la recherche foresti�re. M�moire de recherche foresti�re no 153. 22 p.
  */
-public class BetaHeightPredictor extends ModelBasedSimulator {
+public class BetaHeightPredictor extends REpiceaPredictor {
 	
 	private static class RegressionElements implements Serializable {
 		private static final long serialVersionUID = 20100804L;

@@ -35,7 +35,7 @@ import java.util.Vector;
 
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
-import repicea.simulation.LogisticModelBasedSimulator;
+import repicea.simulation.REpiceaLogisticPredictor;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -44,7 +44,7 @@ import repicea.util.REpiceaTranslator;
  * Based on database provided by Gordon Weber on March 1st, 2010.
  * @author M. Fortin - August 2010
  */
-public final class OfficialHarvestModel extends LogisticModelBasedSimulator<OfficialHarvestableStand, OfficialHarvestableTree> {
+public final class OfficialHarvestModel extends REpiceaLogisticPredictor<OfficialHarvestableStand, OfficialHarvestableTree> {
 	
 	private static final long serialVersionUID = 20100905L;
 

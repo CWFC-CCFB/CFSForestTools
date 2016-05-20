@@ -25,15 +25,15 @@
 package quebecmrnfutility.predictor.formerofficialharvestmodule;
 
 import repicea.math.Matrix;
-import repicea.simulation.ModelBasedSimulator;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 
 /**
  * This private class contains a specific version of the harvest module. The versions depend on the nature of the treatment.
  * @author Mathieu Fortin - October 2011
  */
-class FormerOfficialHarvestSubmodel extends ModelBasedSimulator {
+class FormerOfficialHarvestSubmodel extends REpiceaPredictor {
 
 	private static final long serialVersionUID = 20100906L;
 
