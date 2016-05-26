@@ -105,7 +105,7 @@ public class SybilleTreeLoggerParameters extends TreeLoggerParameters<SybilleTre
 
 
 	@Override
-	public SybilleTreeLoggerParametersDialog getGuiInterface(Container parent) {
+	public SybilleTreeLoggerParametersDialog getUI(Container parent) {
 		if (guiInterface == null) {
 			guiInterface = new SybilleTreeLoggerParametersDialog((Window) parent, this);
 		}
@@ -153,7 +153,7 @@ public class SybilleTreeLoggerParameters extends TreeLoggerParameters<SybilleTre
 		SybilleTreeLoggerParameters stlp = new SybilleTreeLoggerParameters();
 //		stlp.setReadWritePermissionGranted(new DefaultREpiceaGUIPermission(false));
 		stlp.initializeDefaultLogCategories();
-		stlp.showInterface(null);
+		stlp.showUI(null);
 //		stlp.showInterface(null);
 		System.exit(0);
 	}

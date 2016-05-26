@@ -128,7 +128,7 @@ public class PetroTreeLogger extends TreeLogger<PetroTreeLoggerParameters, Petro
 	@Override
 	public void setTreeLoggerParameters() {
 		setTreeLoggerParameters(null);
-		params.showInterface(null);
+		params.showUI(null);
 	}
 
 	

@@ -109,7 +109,7 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 	@Override
 	public void setTreeLoggerParameters() {
 		SybilleTreeLoggerParameters stlp = createDefaultTreeLoggerParameters();				
-		stlp.showInterface(null);
+		stlp.showUI(null);
 		setTreeLoggerParameters(stlp);
 	}
 

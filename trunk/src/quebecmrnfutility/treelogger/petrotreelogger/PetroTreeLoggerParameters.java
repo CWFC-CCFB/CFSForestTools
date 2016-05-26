@@ -76,7 +76,7 @@ public final class PetroTreeLoggerParameters extends TreeLoggerParameters<PetroT
 	public boolean isCorrect() {return true;}		// the default log categories are always valid
 
 	@Override
-	public PetroTreeLoggerParametersDialog getGuiInterface(Container parent) {
+	public PetroTreeLoggerParametersDialog getUI(Container parent) {
 		if (guiInterface == null) {
 			guiInterface = new PetroTreeLoggerParametersDialog((Window) parent, this);
 		}
@@ -89,8 +89,8 @@ public final class PetroTreeLoggerParameters extends TreeLoggerParameters<PetroT
 	public static void main(String[] args) {
 		PetroTreeLoggerParameters stlp = new PetroTreeLoggerParameters();
 		stlp.initializeDefaultLogCategories();
-		stlp.showInterface(null);
-		stlp.showInterface(null);
+		stlp.showUI(null);
+		stlp.showUI(null);
 		System.exit(0);
 	}
 
