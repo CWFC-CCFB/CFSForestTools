@@ -153,7 +153,7 @@ public class SybilleTreeLogCategory extends TreeLogCategory {
 	}
 	
 	@Override
-	public SybilleTreeLogCategoryPanel getGuiInterface() {
+	public SybilleTreeLogCategoryPanel getUI() {
 		return new SybilleTreeLogCategoryPanel(this);
 	}
 
