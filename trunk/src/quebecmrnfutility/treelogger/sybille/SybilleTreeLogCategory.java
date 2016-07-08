@@ -106,7 +106,7 @@ public class SybilleTreeLogCategory extends TreeLogCategory {
 	 * @param smallEndDiameterCm the small-end diameter (cm)
 	 */
 	protected SybilleTreeLogCategory(String logName, String species, LengthID lengthID, double smallEndDiameterCm) {
-		super(logName);
+		super(logName, false);
 		setSpecies(species);
 		setLogLengthM(lengthID);
 		setSmallEndDiameterCm(smallEndDiameterCm);

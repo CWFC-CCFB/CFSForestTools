@@ -74,6 +74,7 @@ public class GeneralSettings {
 		NEIGET(Level.plotLevel),
 
 		SPECIES(Level.treeLevel),
+		TREEID(Level.treeLevel),
 		TREESTATUS(Level.treeLevel),
 		TREEFREQ(Level.treeLevel),
 		TREEDHPCM(Level.treeLevel),
