@@ -59,7 +59,7 @@ public class PetroTreeLogCategory extends TreeLogCategory {
 	 * @param productType
 	 */
 	protected PetroTreeLogCategory(ProductType productType, String species) {
-		super(productType.getName());
+		super(productType.getName(), false);
 		setSpecies(species);
 		this.productType = productType;
 	}
