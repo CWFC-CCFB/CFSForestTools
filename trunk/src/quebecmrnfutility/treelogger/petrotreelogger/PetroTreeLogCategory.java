@@ -53,6 +53,8 @@ public class PetroTreeLogCategory extends TreeLogCategory {
 		
 
 	protected ProductType productType;
+
+	private transient PetroTreeLogCategoryPanel guiInterface;
 	
 	/**
 	 * Constructor.
@@ -76,7 +78,15 @@ public class PetroTreeLogCategory extends TreeLogCategory {
 
 	@Override
 	public PetroTreeLogCategoryPanel getUI() {
-		return new PetroTreeLogCategoryPanel(this);
+		if (guiInterface == null) {
+			guiInterface = new PetroTreeLogCategoryPanel(this);
+		}
+		return guiInterface;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return guiInterface != null && guiInterface.isVisible();
 	}
 	
 }
