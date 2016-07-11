@@ -83,6 +83,11 @@ public final class PetroTreeLoggerParameters extends TreeLoggerParameters<PetroT
 		return guiInterface;
 	}
 
+	@Override
+	public boolean isVisible() {
+		return guiInterface != null && guiInterface.isVisible();
+	}
+
 	/*
 	 * For testing.
 	 */

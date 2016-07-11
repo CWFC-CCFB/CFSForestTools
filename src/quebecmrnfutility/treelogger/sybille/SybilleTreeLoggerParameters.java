@@ -146,6 +146,11 @@ public class SybilleTreeLoggerParameters extends TreeLoggerParameters<SybilleTre
 	 */
 	public boolean isIntegrationOptimizationEnabled() {return integrationOptimization;}
 
+	@Override
+	public boolean isVisible() {
+		return guiInterface != null && guiInterface.isVisible();
+	}
+
 	/*
 	 * For testing.
 	 */

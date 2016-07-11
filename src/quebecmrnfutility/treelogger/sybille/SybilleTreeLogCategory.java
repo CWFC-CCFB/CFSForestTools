@@ -97,6 +97,8 @@ public class SybilleTreeLogCategory extends TreeLogCategory {
 	private double smallEndDiameterCm = 0;
 	
 	private LengthID lengthID = LengthID.FourFeetLong;
+	
+	private transient SybilleTreeLogCategoryPanel guiInterface;
 
 
 	/**
@@ -154,7 +156,16 @@ public class SybilleTreeLogCategory extends TreeLogCategory {
 	
 	@Override
 	public SybilleTreeLogCategoryPanel getUI() {
-		return new SybilleTreeLogCategoryPanel(this);
+		if (guiInterface == null) {
+			guiInterface = new SybilleTreeLogCategoryPanel(this);
+		}
+		return guiInterface;
+	}
+
+	
+	@Override
+	public boolean isVisible() {
+		return guiInterface != null && guiInterface.isVisible();
 	}
 
 
