@@ -191,30 +191,28 @@ public class PetroTreeLogger extends TreeLogger<PetroTreeLoggerParameters, Petro
 	
 	
 	private void loadParameters() {
-		//	if (!loaded) {
-			try {
-				loadDefaultParameters();
-			} catch (IOException e) {
-				throw new InvalidParameterException("Unable to initialize the PetroTreeLogger instance");
-			}
+		try {
+			loadDefaultParameters();
+		} catch (IOException e) {
+			throw new InvalidParameterException("Unable to initialize the PetroTreeLogger instance");
+		}
 
-			defaultBeta.put(PetroTreeLogger.PRESENCE, betaPres.get(selectedVersion.getId()));
-			defaultBeta.put(PetroTreeLogger.VOLUME, betaVol.get(selectedVersion.getId()));
-			matrixOmega.put(PetroTreeLogger.PRESENCE, omegaPres.get(selectedVersion.getId()));
-			matrixOmega.put(PetroTreeLogger.VOLUME, omegaVol.get(selectedVersion.getId()));
-			matrixR.put(PetroTreeLogger.VOLUME, covParmsVol.get(selectedVersion.getId()));
+		defaultBeta.put(PetroTreeLogger.PRESENCE, betaPres.get(selectedVersion.getId()));
+		defaultBeta.put(PetroTreeLogger.VOLUME, betaVol.get(selectedVersion.getId()));
+		matrixOmega.put(PetroTreeLogger.PRESENCE, omegaPres.get(selectedVersion.getId()));
+		matrixOmega.put(PetroTreeLogger.VOLUME, omegaVol.get(selectedVersion.getId()));
+		matrixR.put(PetroTreeLogger.VOLUME, covParmsVol.get(selectedVersion.getId()));
 
-			lowerCholOmegaMatrix = copyMatrixMapToLowerCholMap(matrixOmega);
-			lowerCholRMatrix = copyMatrixMapToLowerCholMap(matrixR);
+		lowerCholOmegaMatrix = copyMatrixMapToLowerCholMap(matrixOmega);
+		lowerCholRMatrix = copyMatrixMapToLowerCholMap(matrixR);
 
-			oXVectorPres = new Matrix(1,this.defaultBeta.get(PetroTreeLogger.PRESENCE).m_iRows);
-			oXVectorVol = new Matrix(1,this.defaultBeta.get(PetroTreeLogger.VOLUME).m_iRows);
-			
-			// all the parameters related to dbh are square for deterministic correction
-			Matrix betaVolume = this.defaultBeta.get(PetroTreeLogger.VOLUME);
-			Matrix dbhParam = betaVolume.getSubMatrix(betaVolume.m_iRows-5, betaVolume.m_iRows-1, 0, 0);
-			this.m_matDBHCorrFact = dbhParam.elementWiseMultiply(dbhParam);
-		//	}
+		oXVectorPres = new Matrix(1,this.defaultBeta.get(PetroTreeLogger.PRESENCE).m_iRows);
+		oXVectorVol = new Matrix(1,this.defaultBeta.get(PetroTreeLogger.VOLUME).m_iRows);
+
+		// all the parameters related to dbh are square for deterministic correction
+		Matrix betaVolume = this.defaultBeta.get(PetroTreeLogger.VOLUME);
+		Matrix dbhParam = betaVolume.getSubMatrix(betaVolume.m_iRows-5, betaVolume.m_iRows-1, 0, 0);
+		this.m_matDBHCorrFact = dbhParam.elementWiseMultiply(dbhParam);
 	}
 	
 	private Map<Integer,Matrix> copyMatrixMapToLowerCholMap(Map<Integer,Matrix> oInputMap) {

@@ -36,11 +36,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
-import repicea.simulation.treelogger.TreeLogCategoryPanel;
+import repicea.simulation.treelogger.LogCategoryPanel;
 import repicea.util.REpiceaTranslator;
 
 @SuppressWarnings("serial")
-public class PetroTreeLogCategoryPanel extends TreeLogCategoryPanel<PetroTreeLogCategory> {
+public class PetroTreeLogCategoryPanel extends LogCategoryPanel<PetroTreeLogCategory> {
 
 	protected PetroTreeLogCategoryPanel(PetroTreeLogCategory logCategory) {
 		super(logCategory);

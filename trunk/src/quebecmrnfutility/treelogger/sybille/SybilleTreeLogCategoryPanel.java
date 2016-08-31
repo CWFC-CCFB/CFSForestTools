@@ -1,25 +1,25 @@
 /*
  * English version follows
  * 
- * Ce fichier fait partie de la bibliothèque mrnf-foresttools.
- * Il est protégé par la loi sur le droit d'auteur (L.R.C.,cC-42) et par les
+ * Ce fichier fait partie de la bibliothï¿½que mrnf-foresttools.
+ * Il est protï¿½gï¿½ par la loi sur le droit d'auteur (L.R.C.,cC-42) et par les
  * conventions internationales. Toute reproduction de ce fichier sans l'accord 
- * du ministère des Ressources naturelles et de la Faune du Gouvernement du 
- * Québec est strictement interdite.
+ * du ministï¿½re des Ressources naturelles et de la Faune du Gouvernement du 
+ * Quï¿½bec est strictement interdite.
  * 
- * Copyright (C) 2009-2012 Gouvernement du Québec - Rouge-Epicea
+ * Copyright (C) 2009-2012 Gouvernement du Quï¿½bec - Rouge-Epicea
  * 	Pour information, contactez Jean-Pierre Saucier, 
- * 			Ministère des Ressources naturelles et de la Faune du Québec
+ * 			Ministï¿½re des Ressources naturelles et de la Faune du Quï¿½bec
  * 			jean-pierre.saucier@mrnf.gouv.qc.ca
  *
  * This file is part of the mrnf-foresttools library. It is 
  * protected by copyright law (L.R.C., cC-42) and by international agreements. 
- * Any reproduction of this file without the agreement of Québec Ministry of 
+ * Any reproduction of this file without the agreement of Quï¿½bec Ministry of 
  * Natural Resources and Wildlife is strictly prohibited.
  *
- * Copyright (C) 2009-2012 Gouvernement du Québec 
+ * Copyright (C) 2009-2012 Gouvernement du Quï¿½bec 
  * 	For further information, please contact Jean-Pierre Saucier,
- * 			Ministère des Ressources naturelles et de la Faune du Québec
+ * 			Ministï¿½re des Ressources naturelles et de la Faune du Quï¿½bec
  * 			jean-pierre.saucier@mrnf.gouv.qc.ca
  */
 package quebecmrnfutility.treelogger.sybille;
@@ -47,7 +47,7 @@ import repicea.gui.components.NumberFormatFieldFactory.NumberFieldDocument.Numbe
 import repicea.gui.components.NumberFormatFieldFactory.NumberFieldListener;
 import repicea.gui.components.NumberFormatFieldFactory.Range;
 import repicea.gui.components.NumberFormatFieldFactory.Type;
-import repicea.simulation.treelogger.TreeLogCategoryPanel;
+import repicea.simulation.treelogger.LogCategoryPanel;
 
 
 /**	
@@ -56,7 +56,7 @@ import repicea.simulation.treelogger.TreeLogCategoryPanel;
  *	@author Mathieu Fortin - January 2012
  */
 @SuppressWarnings("serial")
-public class SybilleTreeLogCategoryPanel extends TreeLogCategoryPanel<SybilleTreeLogCategory> implements ActionListener, NumberFieldListener {
+public class SybilleTreeLogCategoryPanel extends LogCategoryPanel<SybilleTreeLogCategory> implements ActionListener, NumberFieldListener {
 	
 	private JFormattedNumericField smallEndDiameterCmTextField;;
 	private JFormattedNumericField logLengthMTextField;
@@ -93,7 +93,7 @@ public class SybilleTreeLogCategoryPanel extends TreeLogCategoryPanel<SybilleTre
 		Component horizontalStrut = Box.createHorizontalStrut(20);
 		logCategoryNamePanel.add(horizontalStrut);
 		
-		JLabel nameLabel = new JLabel(TreeLogCategoryPanel.MessageID.LogGradeName.toString());
+		JLabel nameLabel = new JLabel(LogCategoryPanel.MessageID.LogGradeName.toString());
 		nameLabel.setFont(new Font("Arial", Font.BOLD, 12));
 		nameLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		logCategoryNamePanel.add(nameLabel);
@@ -119,7 +119,7 @@ public class SybilleTreeLogCategoryPanel extends TreeLogCategoryPanel<SybilleTre
 		fl_labelPanel1.setAlignment(FlowLayout.LEFT);
 		featurePanel1.add(labelPanel1, BorderLayout.CENTER);
 		
-		JLabel featureLabel1 = new JLabel(TreeLogCategoryPanel.MessageID.SmallEndDiameter.toString());
+		JLabel featureLabel1 = new JLabel(LogCategoryPanel.MessageID.SmallEndDiameter.toString());
 		featureLabel1.setFont(new Font("Arial", Font.PLAIN, 12));
 		labelPanel1.add(featureLabel1);
 		
@@ -163,7 +163,7 @@ public class SybilleTreeLogCategoryPanel extends TreeLogCategoryPanel<SybilleTre
 		flowLayout_4.setAlignment(FlowLayout.LEFT);
 		featurePanel3.add(labelPanel3, BorderLayout.CENTER);
 		
-		JLabel featureLabel3 = new JLabel(TreeLogCategoryPanel.MessageID.LongLength.toString());
+		JLabel featureLabel3 = new JLabel(LogCategoryPanel.MessageID.LongLength.toString());
 		featureLabel3.setFont(new Font("Arial", Font.PLAIN, 12));
 		labelPanel3.add(featureLabel3);
 		

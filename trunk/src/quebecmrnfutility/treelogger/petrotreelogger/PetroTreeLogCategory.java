@@ -25,10 +25,10 @@
 package quebecmrnfutility.treelogger.petrotreelogger;
 
 import repicea.math.Matrix;
-import repicea.simulation.treelogger.TreeLogCategory;
+import repicea.simulation.treelogger.LogCategory;
 import repicea.simulation.treelogger.WoodPiece;
 
-public class PetroTreeLogCategory extends TreeLogCategory {
+public class PetroTreeLogCategory extends LogCategory {
 
 	private static final long serialVersionUID = 20100804L;
 
