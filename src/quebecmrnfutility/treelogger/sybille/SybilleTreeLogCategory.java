@@ -33,8 +33,8 @@ import repicea.math.Matrix;
 import repicea.simulation.stemtaper.StemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
+import repicea.simulation.treelogger.LogCategory;
 import repicea.simulation.treelogger.LoggableTree;
-import repicea.simulation.treelogger.TreeLogCategory;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.stats.estimates.Estimate;
 import repicea.util.REpiceaTranslator;
@@ -44,7 +44,7 @@ import repicea.util.REpiceaTranslator.TextableEnum;
  * The SybilleTreeLogCategory is the TreeLogCategory implementation for the SybilleTreeLogger.
  * @author Mathieu Fortin and Jean-Fran�ois Lavoie - January 2012
  */
-public class SybilleTreeLogCategory extends TreeLogCategory {
+public class SybilleTreeLogCategory extends LogCategory {
 	
 	protected static enum LengthID implements TextableEnum {
 		FourFeetLong(1.2446, "124.5 cm (4'1\")", "124,5 cm (4'1\")"),
