@@ -21,11 +21,11 @@ package quebecmrnfutility.predictor.loggradespetro;
 import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroLoggerVersion;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
 import repicea.simulation.covariateproviders.treelevel.MSCRPriorityProvider.MSCRPriority;
 import repicea.simulation.covariateproviders.treelevel.VigorClassProvider.VigorClass;
 import repicea.stats.StatisticalUtility;
-import repicea.stats.estimates.GaussianEstimate;
 
 @SuppressWarnings("serial")
 abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
@@ -37,16 +37,10 @@ abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
 		this.version = version;
 	}
 
-	/*
-	 * For extended visibility (non-Javadoc)
-	 * @see repicea.simulation.REpiceaPredictor#setParameterEstimates(repicea.stats.estimates.GaussianEstimate)
-	 */
-	@Override
-	protected void setParameterEstimates(GaussianEstimate gaussianEstimate) {
+	protected void setParameterEstimates(SASParameterEstimates gaussianEstimate) {
 		super.setParameterEstimates(gaussianEstimate);
 		oXVector = new Matrix(1, getParameterEstimates().getNumberOfFixedEffectParameters());
 	}
-	
 	
 	@Override
 	protected void init() {}

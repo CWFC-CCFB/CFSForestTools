@@ -26,8 +26,8 @@ import repicea.math.Matrix;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.SASParameterEstimates;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
-import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
 
 /**
@@ -86,10 +86,10 @@ public class PetroGradePredictor extends REpiceaPredictor {
 			for (PetroLoggerVersion version : PetroLoggerVersion.values()) {
 				beta = betaPres.get(version.getId());
 				omega = omegaPres.get(version.getId()).squareSym(); 
-				presenceSubModules.get(version).setParameterEstimates(new GaussianEstimate(beta,omega));
+				presenceSubModules.get(version).setParameterEstimates(new SASParameterEstimates(beta,omega));
 				beta = betaVol.get(version.getId());
 				omega = omegaVol.get(version.getId()).squareSym(); 
-				volumeSubModules.get(version).setParameterEstimates(new GaussianEstimate(beta,omega));
+				volumeSubModules.get(version).setParameterEstimates(new SASParameterEstimates(beta,omega));
 				errorCovariance = covParmsVol.get(version.getId()).squareSym();
 				volumeSubModules.get(version).setDefaultResidualError(new GaussianErrorTermEstimate(errorCovariance));
 			}

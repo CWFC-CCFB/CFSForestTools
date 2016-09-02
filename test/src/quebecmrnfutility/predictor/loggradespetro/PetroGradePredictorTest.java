@@ -116,9 +116,11 @@ public class PetroGradePredictorTest {
 		Matrix actual = estimate.getMean();
 
 		double relDiff;
+		double diff;
 		for (int i = 0; i < actual.m_iRows; i++) {
+			diff = Math.abs(actual.m_afData[i][0] - expected.m_afData[i][0]); 
 			relDiff = Math.abs(1 - actual.m_afData[i][0] / expected.m_afData[i][0]); 
-			Assert.assertEquals(0, relDiff, .05);
+			Assert.assertTrue(relDiff < 0.05 || diff < 0.02);
 		}
 			
 	}
