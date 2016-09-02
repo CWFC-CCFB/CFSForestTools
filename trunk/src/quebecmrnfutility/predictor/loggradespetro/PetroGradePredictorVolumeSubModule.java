@@ -18,13 +18,13 @@
  */
 package quebecmrnfutility.predictor.loggradespetro;
 
+import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroLoggerVersion;
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.ProductType;
-import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroLoggerVersion;
 import repicea.math.Matrix;
+import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
-import repicea.stats.estimates.GaussianEstimate;
 
 @SuppressWarnings("serial")
 class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
@@ -44,7 +44,7 @@ class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 	 * @see repicea.simulation.REpiceaPredictor#setParameterEstimates(repicea.stats.estimates.GaussianEstimate)
 	 */
 	@Override
-	protected void setParameterEstimates(GaussianEstimate gaussianEstimate) {
+	protected void setParameterEstimates(SASParameterEstimates gaussianEstimate) {
 		super.setParameterEstimates(gaussianEstimate);
 		Matrix betaVolume = gaussianEstimate.getMean();
 		Matrix dbhParam = betaVolume.getSubMatrix(betaVolume.m_iRows-5, betaVolume.m_iRows-1, 0, 0);
