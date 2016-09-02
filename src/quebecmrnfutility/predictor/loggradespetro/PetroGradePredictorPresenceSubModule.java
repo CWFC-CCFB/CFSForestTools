@@ -18,9 +18,9 @@
  */
 package quebecmrnfutility.predictor.loggradespetro;
 
-import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
-import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.ProductType;
 import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroLoggerVersion;
+import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
+import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.math.Matrix;
 import repicea.stats.StatisticalUtility;
 
@@ -44,12 +44,12 @@ class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule 
 		double dbh = tree.getDbhCm();
 		double dbh2 = tree.getSquaredDbhCm();
 
-		Matrix oMat = new Matrix(ProductType.values().length,1);
+		Matrix oMat = new Matrix(PetroGradeType.values().length,1);
 		Matrix dummySpecies = species.getDummy();
 
 		//		List<PetroTreeLogCategory> logCategories = getTreeLoggerParameters().getSpeciesLogCategories(species.name());
 
-		for (ProductType productType : ProductType.values()) {
+		for (PetroGradeType productType : PetroGradeType.values()) {
 			oXVector.resetMatrix();
 			int pointer = 0;
 			Matrix dummyProduct = productType.getDummy();

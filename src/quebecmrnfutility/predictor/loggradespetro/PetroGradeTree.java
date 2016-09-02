@@ -72,7 +72,7 @@ public interface PetroGradeTree extends DbhCmProvider,
 
 	}
 	
-	public static enum ProductType {
+	public static enum PetroGradeType {
 		PETRO_F1("F1"),
 		PETRO_F2("F2"), 
 		PETRO_F3("F3"),
@@ -82,7 +82,7 @@ public interface PetroGradeTree extends DbhCmProvider,
 		String name;
 		Matrix dummy;
 
-		ProductType(String name) {
+		PetroGradeType(String name) {
 			this.name = name;
 			this.dummy = new Matrix(1,5);
 			dummy.m_afData[0][this.ordinal()] = 1d;

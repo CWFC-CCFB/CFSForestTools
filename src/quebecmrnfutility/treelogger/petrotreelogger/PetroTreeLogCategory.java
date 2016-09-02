@@ -24,7 +24,7 @@
  */
 package quebecmrnfutility.treelogger.petrotreelogger;
 
-import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.ProductType;
+import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.simulation.treelogger.LogCategory;
 import repicea.simulation.treelogger.WoodPiece;
 
@@ -52,7 +52,7 @@ public class PetroTreeLogCategory extends LogCategory {
 //	}
 		
 
-	protected ProductType productType;
+	protected PetroGradeType productType;
 
 	private transient PetroTreeLogCategoryPanel guiInterface;
 	
@@ -60,13 +60,13 @@ public class PetroTreeLogCategory extends LogCategory {
 	 * Constructor.
 	 * @param productType
 	 */
-	protected PetroTreeLogCategory(ProductType productType, String species) {
+	protected PetroTreeLogCategory(PetroGradeType productType, String species) {
 		super(productType.getName(), false);
 		setSpecies(species);
 		this.productType = productType;
 	}
 
-	public ProductType getProductType() {
+	public PetroGradeType getProductType() {
 		return productType;
 	}
 	

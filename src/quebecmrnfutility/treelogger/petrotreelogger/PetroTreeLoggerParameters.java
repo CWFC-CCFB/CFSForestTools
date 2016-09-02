@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
-import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.ProductType;
+import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.simulation.treelogger.TreeLoggerParameters;
 
 @SuppressWarnings("serial")
@@ -54,19 +54,19 @@ public final class PetroTreeLoggerParameters extends TreeLoggerParameters<PetroT
 		
 		List<PetroTreeLogCategory> productList = new ArrayList<PetroTreeLogCategory>();
 		getLogCategories().put(PetroGradeSpecies.BOJ.name(), productList);
-		productList.add(new PetroTreeLogCategory(ProductType.PETRO_F1, PetroGradeSpecies.BOJ.name()));
-		productList.add(new PetroTreeLogCategory(ProductType.PETRO_F2, PetroGradeSpecies.BOJ.name()));
-		productList.add(new PetroTreeLogCategory(ProductType.PETRO_F3, PetroGradeSpecies.BOJ.name()));
-		productList.add(new PetroTreeLogCategory(ProductType.PETRO_F4, PetroGradeSpecies.BOJ.name()));
-		productList.add(new PetroTreeLogCategory(ProductType.PETRO_P, PetroGradeSpecies.BOJ.name()));
+		productList.add(new PetroTreeLogCategory(PetroGradeType.PETRO_F1, PetroGradeSpecies.BOJ.name()));
+		productList.add(new PetroTreeLogCategory(PetroGradeType.PETRO_F2, PetroGradeSpecies.BOJ.name()));
+		productList.add(new PetroTreeLogCategory(PetroGradeType.PETRO_F3, PetroGradeSpecies.BOJ.name()));
+		productList.add(new PetroTreeLogCategory(PetroGradeType.PETRO_F4, PetroGradeSpecies.BOJ.name()));
+		productList.add(new PetroTreeLogCategory(PetroGradeType.PETRO_P, PetroGradeSpecies.BOJ.name()));
 		
 		productList = new ArrayList<PetroTreeLogCategory>();
 		getLogCategories().put(PetroGradeSpecies.ERS.name(), productList);
-		productList.add(new PetroTreeLogCategory(ProductType.PETRO_F1, PetroGradeSpecies.ERS.name()));
-		productList.add(new PetroTreeLogCategory(ProductType.PETRO_F2, PetroGradeSpecies.ERS.name()));
-		productList.add(new PetroTreeLogCategory(ProductType.PETRO_F3, PetroGradeSpecies.ERS.name()));
-		productList.add(new PetroTreeLogCategory(ProductType.PETRO_F4, PetroGradeSpecies.ERS.name()));
-		productList.add(new PetroTreeLogCategory(ProductType.PETRO_P, PetroGradeSpecies.ERS.name()));
+		productList.add(new PetroTreeLogCategory(PetroGradeType.PETRO_F1, PetroGradeSpecies.ERS.name()));
+		productList.add(new PetroTreeLogCategory(PetroGradeType.PETRO_F2, PetroGradeSpecies.ERS.name()));
+		productList.add(new PetroTreeLogCategory(PetroGradeType.PETRO_F3, PetroGradeSpecies.ERS.name()));
+		productList.add(new PetroTreeLogCategory(PetroGradeType.PETRO_F4, PetroGradeSpecies.ERS.name()));
+		productList.add(new PetroTreeLogCategory(PetroGradeType.PETRO_P, PetroGradeSpecies.ERS.name()));
 		getLogCategories().put(PetroGradeSpecies.ERS.name(), productList);
 		
 		setFilename("");
