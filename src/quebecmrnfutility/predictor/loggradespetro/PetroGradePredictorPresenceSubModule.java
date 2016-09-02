@@ -77,7 +77,7 @@ class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule 
 		}
 
 		if (isResidualVariabilityEnabled) {
-			for (int i = 0; i < oMat.m_iCols; i++) {
+			for (int i = 0; i < oMat.m_iRows; i++) {
 				double deviate = random.nextDouble();
 				if (deviate < oMat.m_afData[i][0]) {
 					oMat.m_afData[i][0] = 1d;
