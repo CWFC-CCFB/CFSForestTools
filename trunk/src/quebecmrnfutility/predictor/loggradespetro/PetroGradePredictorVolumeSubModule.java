@@ -20,7 +20,7 @@ package quebecmrnfutility.predictor.loggradespetro;
 
 import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroLoggerVersion;
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
-import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.ProductType;
+import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.math.Matrix;
 import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
@@ -63,10 +63,10 @@ class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 		double dbh = tree.getDbhCm();
 		Matrix beta = getParametersForThisRealization(tree);
 
-		Matrix oMat = new Matrix(ProductType.values().length, 1);
+		Matrix oMat = new Matrix(PetroGradeType.values().length, 1);
 		Matrix dummySpecies = species.getDummy();
 		
-		for (ProductType productType : ProductType.values()) {
+		for (PetroGradeType productType : PetroGradeType.values()) {
 			oXVector.resetMatrix();
 			int pointer = 0;
 			Matrix dummyProduct = productType.getDummy();
