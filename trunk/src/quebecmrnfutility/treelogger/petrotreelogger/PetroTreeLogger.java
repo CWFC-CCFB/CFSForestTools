@@ -49,7 +49,7 @@ public class PetroTreeLogger extends TreeLogger<PetroTreeLoggerParameters, Petro
 	 */
 	public PetroTreeLogger() {
 		super();
-		predictor = new PetroGradePredictor(true, true);
+		predictor = new PetroGradePredictor(false, false);
 	}
 
 	/**

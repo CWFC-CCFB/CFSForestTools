@@ -1,15 +1,17 @@
 package quebecmrnfutility.treelogger.petrotreelogger;
 
+import repicea.simulation.HierarchicalLevel;
+
 public class PetroLoggableTreeImpl implements PetroLoggableTree {
 
-	final PetroLoggerSpecies species;
+	final PetroGradeSpecies species;
 	final double dbhCm;
 	VigorClass vigorClass;
 	MSCRPriority mscrPriority;
 	ABCDQuality abcdQuality;
 	
 	
-	private PetroLoggableTreeImpl(PetroLoggerSpecies species, double dbhCm, VigorClass vigorClass, MSCRPriority mscrPriority, ABCDQuality abcdQuality) {
+	private PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, VigorClass vigorClass, MSCRPriority mscrPriority, ABCDQuality abcdQuality) {
 		this.species = species;
 		this.dbhCm = dbhCm;
 		this.vigorClass = vigorClass;
@@ -18,19 +20,19 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 	}
 
 	
-	PetroLoggableTreeImpl(PetroLoggerSpecies species, double dbhCm) {
+	PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm) {
 		this(species, dbhCm, null, null, null);
 	}
 
-	PetroLoggableTreeImpl(PetroLoggerSpecies species, double dbhCm, VigorClass vigorClass) {
+	PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, VigorClass vigorClass) {
 		this(species, dbhCm, vigorClass, null, null);
 	}
 
-	PetroLoggableTreeImpl(PetroLoggerSpecies species, double dbhCm, MSCRPriority mscrPriority) {
+	PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, MSCRPriority mscrPriority) {
 		this(species, dbhCm, null, mscrPriority, null);
 	}
 
-	PetroLoggableTreeImpl(PetroLoggerSpecies species, double dbhCm, ABCDQuality abcdQuality) {
+	PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, ABCDQuality abcdQuality) {
 		this(species, dbhCm, null, null, abcdQuality);
 	}
 	
@@ -42,7 +44,7 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 
 	@Override
 	public String getSpeciesName() {
-		return getPetroLoggableTreeSpecies().toString();
+		return getPetroGradeSpecies().toString();
 	}
 
 	@Override
@@ -86,8 +88,26 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 	}
 
 	@Override
-	public PetroLoggerSpecies getPetroLoggableTreeSpecies() {
+	public PetroGradeSpecies getPetroGradeSpecies() {
 		return species;
+	}
+
+
+	@Override
+	public String getSubjectId() {
+		return "";
+	}
+
+
+	@Override
+	public HierarchicalLevel getHierarchicalLevel() {
+		return HierarchicalLevel.TREE;
+	}
+
+
+	@Override
+	public int getMonteCarloRealizationId() {
+		return 0;
 	}
 
 }
