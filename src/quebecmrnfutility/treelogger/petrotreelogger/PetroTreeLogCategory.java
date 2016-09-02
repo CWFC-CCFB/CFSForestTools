@@ -24,7 +24,7 @@
  */
 package quebecmrnfutility.treelogger.petrotreelogger;
 
-import repicea.math.Matrix;
+import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.ProductType;
 import repicea.simulation.treelogger.LogCategory;
 import repicea.simulation.treelogger.WoodPiece;
 
@@ -32,24 +32,24 @@ public class PetroTreeLogCategory extends LogCategory {
 
 	private static final long serialVersionUID = 20100804L;
 
-	public static enum ProductType {PETRO_F1("F1"),
-		PETRO_F2("F2"), 
-		PETRO_F3("F3"),
-		PETRO_F4("F4"),
-		PETRO_P("P");
-
-		String name;
-		Matrix dummy;
-
-		ProductType(String name) {
-			this.name = name;
-			this.dummy = new Matrix(1,5);
-			dummy.m_afData[0][this.ordinal()] = 1d;
-		}	
-
-		public String getName() {return this.name;}
-		public Matrix getDummy() {return this.dummy;}
-	}
+//	public static enum ProductType {PETRO_F1("F1"),
+//		PETRO_F2("F2"), 
+//		PETRO_F3("F3"),
+//		PETRO_F4("F4"),
+//		PETRO_P("P");
+//
+//		String name;
+//		Matrix dummy;
+//
+//		ProductType(String name) {
+//			this.name = name;
+//			this.dummy = new Matrix(1,5);
+//			dummy.m_afData[0][this.ordinal()] = 1d;
+//		}	
+//
+//		public String getName() {return this.name;}
+//		public Matrix getDummy() {return this.dummy;}
+//	}
 		
 
 	protected ProductType productType;
@@ -70,7 +70,7 @@ public class PetroTreeLogCategory extends LogCategory {
 		return productType;
 	}
 	
-	
+	@Override
 	public double getYieldFromThisPiece(WoodPiece piece) throws Exception {
 		// TODO: find a more realistic value
 		return 0.9;
