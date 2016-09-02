@@ -8,6 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({quebecmrnfutility.test.LanguageSettings.class,
 	quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestModelTest.class,					// tests harvest module
 	quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictorTest.class,
+	quebecmrnfutility.predictor.loggradespetro.PetroGradePredictorTest.class,
 	quebecmrnfutility.treelogger.petrotreelogger.PetroTreeLoggerTest.class,
 	quebecmrnfutility.treelogger.sybille.SybilleTreeLoggerTest.class})
 public class AllForestToolsTests {}
