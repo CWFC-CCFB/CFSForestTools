@@ -1,5 +1,6 @@
 package quebecmrnfutility.predictor.loggradespetro;
 
+import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 
 public class PetroGradeTreeImpl implements PetroGradeTree {
@@ -10,6 +11,7 @@ public class PetroGradeTreeImpl implements PetroGradeTree {
 	MSCRPriority mscrPriority;
 	ABCDQuality abcdQuality;
 	int realization;
+	private Matrix realizedValues;
 	
 	
 	private PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, VigorClass vigorClass, MSCRPriority mscrPriority, ABCDQuality abcdQuality) {
@@ -21,6 +23,13 @@ public class PetroGradeTreeImpl implements PetroGradeTree {
 		realization = 0;
 	}
 
+	void setRealizedValues(Matrix values) {
+		this.realizedValues = values;
+	}
+
+	Matrix getRealizedValues() {
+		return realizedValues;
+	}
 	
 	PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm) {
 		this(species, dbhCm, null, null, null);

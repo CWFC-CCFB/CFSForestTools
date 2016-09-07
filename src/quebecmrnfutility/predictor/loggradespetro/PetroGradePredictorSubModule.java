@@ -18,7 +18,9 @@
  */
 package quebecmrnfutility.predictor.loggradespetro;
 
-import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroLoggerVersion;
+import java.security.InvalidParameterException;
+
+import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroGradePredictorVersion;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
@@ -26,18 +28,23 @@ import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQ
 import repicea.simulation.covariateproviders.treelevel.MSCRPriorityProvider.MSCRPriority;
 import repicea.simulation.covariateproviders.treelevel.VigorClassProvider.VigorClass;
 import repicea.stats.StatisticalUtility;
+import repicea.stats.estimates.GaussianEstimate;
 
 @SuppressWarnings("serial")
 abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
 
-	final PetroLoggerVersion version;
+	final PetroGradePredictorVersion version;
 
-	PetroGradePredictorSubModule(boolean isParametersVariabilityEnabled,	boolean isResidualVariabilityEnabled, PetroLoggerVersion version) {
+	PetroGradePredictorSubModule(boolean isParametersVariabilityEnabled,	boolean isResidualVariabilityEnabled, PetroGradePredictorVersion version) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
 		this.version = version;
 	}
 
-	protected void setParameterEstimates(SASParameterEstimates gaussianEstimate) {
+	@Override
+	protected void setParameterEstimates(GaussianEstimate gaussianEstimate) {
+		if (!(gaussianEstimate instanceof SASParameterEstimates)) {
+			throw new InvalidParameterException("The instance should be of the SASParameterEstimates class");
+		}
 		super.setParameterEstimates(gaussianEstimate);
 		oXVector = new Matrix(1, getParameterEstimates().getNumberOfFixedEffectParameters());
 	}
@@ -77,5 +84,13 @@ abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
 		return oMat;
 	}
 
-	
+	/*
+	 * For manuscript purposes.
+	 */
+	void replaceBeta() {
+		Matrix newMean = getParameterEstimates().getRandomDeviate();
+		Matrix variance = getParameterEstimates().getVariance();
+		setParameterEstimates(new SASParameterEstimates(newMean, variance));
+	}
+
 }

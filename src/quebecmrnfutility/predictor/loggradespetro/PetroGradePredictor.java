@@ -37,53 +37,70 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("serial")
 public class PetroGradePredictor extends REpiceaPredictor {
 
-	public static enum PetroLoggerVersion {
+	private static ParameterMap betaPres;
+	private static ParameterMap betaVol;
+	private static ParameterMap omegaPres;
+	private static ParameterMap omegaVol;
+	private static ParameterMap covParmsVol;
+	private static boolean loaded;
+	
+	protected static enum PetroGradePredictorVersion {
 		WITH_NO_VARIABLE,
 		WITH_VIGOUR_1234,
 		WITH_QUALITY_ABCD,
 		WITH_HARV_PRIOR_MSCR;
 
-		PetroLoggerVersion() {}
+		PetroGradePredictorVersion() {}
 
 		public int getId() {return this.ordinal() + 1;}
 	}
 
-	private final Map<PetroLoggerVersion, PetroGradePredictorPresenceSubModule> presenceSubModules;
-	private final Map<PetroLoggerVersion, PetroGradePredictorVolumeSubModule> volumeSubModules;
+	private final Map<PetroGradePredictorVersion, PetroGradePredictorPresenceSubModule> presenceSubModules;
+	private final Map<PetroGradePredictorVersion, PetroGradePredictorVolumeSubModule> volumeSubModules;
 	
 	public PetroGradePredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
-		presenceSubModules = new HashMap<PetroLoggerVersion, PetroGradePredictorPresenceSubModule>();
-		volumeSubModules = new HashMap<PetroLoggerVersion, PetroGradePredictorVolumeSubModule>();
-		for (PetroLoggerVersion version : PetroLoggerVersion.values()) {
+		presenceSubModules = new HashMap<PetroGradePredictorVersion, PetroGradePredictorPresenceSubModule>();
+		volumeSubModules = new HashMap<PetroGradePredictorVersion, PetroGradePredictorVolumeSubModule>();
+		for (PetroGradePredictorVersion version : PetroGradePredictorVersion.values()) {
 			presenceSubModules.put(version, new PetroGradePredictorPresenceSubModule(isParametersVariabilityEnabled, isResidualVariabilityEnabled, version));
 			volumeSubModules.put(version, new PetroGradePredictorVolumeSubModule(isParametersVariabilityEnabled, isResidualVariabilityEnabled, version));
 		}
 		init();
 	}
 
-	@Override
-	protected void init() {
-		try {
+	private synchronized void loadParametersFromFile() throws IOException {
+		if (!loaded) {
 			String path = ObjectUtility.getRelativePackagePath(getClass());
 
 			String strParametersPresencePath = path + "0_PetroProductPresBeta.csv";
 			String strParametersVolumePath = path + "0_PetroProductVolBeta.csv";
-			ParameterMap betaPres = ParameterLoader.loadVectorFromFile(1, strParametersPresencePath);
-			ParameterMap betaVol = ParameterLoader.loadVectorFromFile(1, strParametersVolumePath);
+			betaPres = ParameterLoader.loadVectorFromFile(1, strParametersPresencePath);
+			betaVol = ParameterLoader.loadVectorFromFile(1, strParametersVolumePath);
 			
 			String strOmegaPresencePath = path + "0_PetroProductPresOmega.csv";
 			String strOmegaVolumePath = path + "0_PetroProductVolOmega.csv";
-			ParameterMap omegaPres = ParameterLoader.loadVectorFromFile(1, strOmegaPresencePath);
-			ParameterMap omegaVol = ParameterLoader.loadVectorFromFile(1, strOmegaVolumePath);
+			omegaPres = ParameterLoader.loadVectorFromFile(1, strOmegaPresencePath);
+			omegaVol = ParameterLoader.loadVectorFromFile(1, strOmegaVolumePath);
 
 			String strCovParmsVolumePath = path + "0_PetroProductVolCovParms.csv";
-			ParameterMap covParmsVol = ParameterLoader.loadVectorFromFile(1, strCovParmsVolumePath);
+			covParmsVol = ParameterLoader.loadVectorFromFile(1, strCovParmsVolumePath);
+			loaded = true;
+		}
+	}
+	
+	@Override
+	protected void init() {
+		try {
 
+			if (!loaded) {
+				loadParametersFromFile();
+			}
+			
 			Matrix beta;
 			Matrix omega;
 			Matrix errorCovariance;
-			for (PetroLoggerVersion version : PetroLoggerVersion.values()) {
+			for (PetroGradePredictorVersion version : PetroGradePredictorVersion.values()) {
 				beta = betaPres.get(version.getId());
 				omega = omegaPres.get(version.getId()).squareSym(); 
 				presenceSubModules.get(version).setParameterEstimates(new SASParameterEstimates(beta,omega));
@@ -107,7 +124,10 @@ public class PetroGradePredictor extends REpiceaPredictor {
 	 * @return a 5x1 matrix
 	 */
 	public Matrix getPredictedGradeVolumes(PetroGradeTree tree) {
-		PetroLoggerVersion selectedVersion = getAppropriateVersion(tree);
+		if (tree.getDbhCm() <= 23d) {
+			return new Matrix(5,1);		// return a matrix of 0 : the trees must have at least 23.1 cm in dbh
+		}
+		PetroGradePredictorVersion selectedVersion = getAppropriateVersion(tree);
 		PetroGradePredictorPresenceSubModule presenceSubModule = presenceSubModules.get(selectedVersion);
 		Matrix presenceProbabilities = presenceSubModule.getPredictedGradePresences(tree);
 
@@ -121,26 +141,33 @@ public class PetroGradePredictor extends REpiceaPredictor {
 	/**
 	 * This method sets the appropriate version according to the features of the typical tree.
 	 */
-	private PetroLoggerVersion getAppropriateVersion(PetroGradeTree typicalTree) {
+	private PetroGradePredictorVersion getAppropriateVersion(PetroGradeTree typicalTree) {
 
 		Object qualiteABCD = typicalTree.getABCDQuality();
 		if (qualiteABCD != null) {
-			return PetroLoggerVersion.WITH_QUALITY_ABCD;
+			return PetroGradePredictorVersion.WITH_QUALITY_ABCD;
 		} 
 
 		Object harvestPriorityMSCR = typicalTree.getMSCRPriority();
 		if (harvestPriorityMSCR != null) {
-			return PetroLoggerVersion.WITH_HARV_PRIOR_MSCR;
+			return PetroGradePredictorVersion.WITH_HARV_PRIOR_MSCR;
 		}
 
 		Object vigor1234 = typicalTree.getVigorClass();
 		if (vigor1234 != null) {
-			return PetroLoggerVersion.WITH_VIGOUR_1234;
+			return PetroGradePredictorVersion.WITH_VIGOUR_1234;
 		}
 
-		return PetroLoggerVersion.WITH_NO_VARIABLE;
+		return PetroGradePredictorVersion.WITH_NO_VARIABLE;
 	}
 
+	/*
+	 * For manuscript purposes
+	 */
+	void replaceBeta() {
+		presenceSubModules.get(PetroGradePredictorVersion.WITH_NO_VARIABLE).replaceBeta();
+		volumeSubModules.get(PetroGradePredictorVersion.WITH_NO_VARIABLE).replaceBeta();
+	}
 	
 //	public static void main(String[] args) {
 //		new PetroTreeLoggerPredictor(false, false);

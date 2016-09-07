@@ -18,20 +18,20 @@
  */
 package quebecmrnfutility.predictor.loggradespetro;
 
-import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroLoggerVersion;
+import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroGradePredictorVersion;
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.math.Matrix;
-import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
+import repicea.stats.estimates.GaussianEstimate;
 
 @SuppressWarnings("serial")
 class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 
 	private Matrix m_matDBHCorrFact;
 	
-	PetroGradePredictorVolumeSubModule(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled, PetroLoggerVersion version) {
+	PetroGradePredictorVolumeSubModule(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled, PetroGradePredictorVersion version) {
 		super(isParametersVariabilityEnabled, isResidualVariabilityEnabled, version);
 	}
 
@@ -44,7 +44,7 @@ class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 	 * @see repicea.simulation.REpiceaPredictor#setParameterEstimates(repicea.stats.estimates.GaussianEstimate)
 	 */
 	@Override
-	protected void setParameterEstimates(SASParameterEstimates gaussianEstimate) {
+	protected void setParameterEstimates(GaussianEstimate gaussianEstimate) {
 		super.setParameterEstimates(gaussianEstimate);
 		Matrix betaVolume = gaussianEstimate.getMean();
 		Matrix dbhParam = betaVolume.getSubMatrix(betaVolume.m_iRows-5, betaVolume.m_iRows-1, 0, 0);
@@ -71,7 +71,7 @@ class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 			int pointer = 0;
 			Matrix dummyProduct = productType.getDummy();
 			
-			if (version != PetroLoggerVersion.WITH_NO_VARIABLE) {
+			if (version != PetroGradePredictorVersion.WITH_NO_VARIABLE) {
 				Matrix dummyVersion = getDummyVsSelectedVersion(dummyProduct, tree);
 				oXVector.setSubMatrix(dummyVersion, 0, pointer);
 				pointer += dummyVersion.m_iCols;
