@@ -18,7 +18,7 @@
  */
 package quebecmrnfutility.predictor.loggradespetro;
 
-import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroLoggerVersion;
+import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroGradePredictorVersion;
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.math.Matrix;
@@ -27,7 +27,7 @@ import repicea.stats.StatisticalUtility;
 @SuppressWarnings("serial")
 class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule {
 
-	PetroGradePredictorPresenceSubModule(boolean isParametersVariabilityEnabled,	boolean isResidualVariabilityEnabled, PetroLoggerVersion version) {
+	PetroGradePredictorPresenceSubModule(boolean isParametersVariabilityEnabled,	boolean isResidualVariabilityEnabled, PetroGradePredictorVersion version) {
 		super(isParametersVariabilityEnabled, isResidualVariabilityEnabled, version);
 	}
 	
@@ -54,7 +54,7 @@ class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule 
 			int pointer = 0;
 			Matrix dummyProduct = productType.getDummy();
 
-			if (version != PetroLoggerVersion.WITH_NO_VARIABLE) {
+			if (version != PetroGradePredictorVersion.WITH_NO_VARIABLE) {
 				Matrix dummyVersion = getDummyVsSelectedVersion(dummyProduct, tree);
 				oXVector.setSubMatrix(dummyVersion, 0, pointer);
 				pointer += dummyVersion.m_iCols;
@@ -89,6 +89,7 @@ class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule 
 		
 		return oMat;
 	}
+
 
 	
 	
