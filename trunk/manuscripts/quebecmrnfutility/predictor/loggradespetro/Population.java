@@ -1,12 +1,20 @@
 package quebecmrnfutility.predictor.loggradespetro;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
+import repicea.io.FormatField;
+import repicea.io.javacsv.CSVField;
+import repicea.io.javacsv.CSVWriter;
 import repicea.math.Matrix;
 import repicea.stats.estimates.HorvitzThompsonTauEstimate;
+import repicea.stats.estimates.HybridMonteCarloHorvitzThompsonEstimate;
+import repicea.util.ObjectUtility;
 
 public class Population {
 
@@ -64,27 +72,51 @@ public class Population {
 	}
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(1);
+		long start = System.currentTimeMillis();
 		int populationSize = 1000;
 		Population pop = new Population(populationSize);
-		int nbRealizations = 100;
+		int nbRealizations = 5;
 		int nbInternalReal = 1000;
-		int sampleSize = 10;
+		int sampleSize = 25;
+		String filename = ObjectUtility.getPackagePath(Population.class) + "simulation" + sampleSize + ".csv";
+		CSVWriter writer = new CSVWriter(new File(filename), false);
+		List<FormatField> fields = new ArrayList<FormatField>();
+		// TODO fix the field list and the record export
+		fields.add(new CSVField("TrueTau"));
+		fields.add(new CSVField("EstTau"));
+		fields.add(new CSVField("UncorrVar"));
+		fields.add(new CSVField("CorrVar"));
+		writer.setFields(fields);
+
+		List<Realization> realizations = new ArrayList<Realization>();
+		long timeDiff;
 		for (int real = 0; real < nbRealizations; real++) {
 			setRealizedValues(pop.sampleUnits, pop.superModel);
 			Matrix total = pop.getTotal();
 			PetroGradePredictor currentModel = new PetroGradePredictor(true, true); // the current model must account for the errors in the parameter estimates
 			currentModel.replaceBeta();	// the parameter estimates are drawn at random in the distribution
 			PlotList sample = pop.getSample(sampleSize);
+			HybridMonteCarloHorvitzThompsonEstimate hybHTEstimate = new HybridMonteCarloHorvitzThompsonEstimate();
 			for (int internalReal = 0; internalReal < nbInternalReal; internalReal++) {
 				sample.setRealization(internalReal);
 				setRealizedValues(sample, currentModel);
-				HorvitzThompsonTauEstimate estimate = sample.getHorvitzThompsonEstimate(populationSize);
-				Matrix totalEstimated = estimate.getTotal();
-				int u = 0;
+				HorvitzThompsonTauEstimate htEstimator = sample.getHorvitzThompsonEstimate(populationSize);
+				Matrix tauHat = htEstimator.getTotal();
+				Matrix varTau = htEstimator.getVarianceOfTotalEstimate();
+				hybHTEstimate.addHTEstimate(htEstimator);
 			}
-			System.out.println("Running realization " + real);
+			Realization thisRealization = new Realization(total, hybHTEstimate.getTotal(), hybHTEstimate.getTotalVarianceUncorrected(), hybHTEstimate.getVarianceOfTotalEstimate());
+			realizations.add(thisRealization);
+			writer.addRecord(thisRealization.getRecord());
+			timeDiff = System.currentTimeMillis() - start;
+		    double timeByReal = timeDiff / (real + 1);
+		    double remainingTime = timeByReal * (nbRealizations - (real + 1)) * 0.001 / 60;
+			System.out.println("Running realization " + real +"; Remaining time " + nf.format(remainingTime) + " min.");
 		}
+		writer.close();
 	}
 	
 }
