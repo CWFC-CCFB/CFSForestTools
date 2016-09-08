@@ -78,17 +78,26 @@ public class Population {
 		long start = System.currentTimeMillis();
 		int populationSize = 1000;
 		Population pop = new Population(populationSize);
-		int nbRealizations = 5;
+		int nbRealizations = 10000;
 		int nbInternalReal = 1000;
-		int sampleSize = 25;
+		int sampleSize = 50;
 		String filename = ObjectUtility.getPackagePath(Population.class) + "simulation" + sampleSize + ".csv";
+		filename = filename.replace("bin", "manuscripts");
 		CSVWriter writer = new CSVWriter(new File(filename), false);
 		List<FormatField> fields = new ArrayList<FormatField>();
-		// TODO fix the field list and the record export
-		fields.add(new CSVField("TrueTau"));
-		fields.add(new CSVField("EstTau"));
-		fields.add(new CSVField("UncorrVar"));
-		fields.add(new CSVField("CorrVar"));
+		for (int i = 1; i <= 5; i++) {
+			fields.add(new CSVField("TrueTau" + i));
+		}
+		for (int i = 1; i <= 5; i++) {
+			fields.add(new CSVField("EstTau" + i));
+		}
+		for (int i = 1; i <= 5; i++) {
+			fields.add(new CSVField("UncorrVar" + i));
+		}
+		for (int i = 1; i <= 5; i++) {
+			fields.add(new CSVField("CorrVar" + i));
+		}
+
 		writer.setFields(fields);
 
 		List<Realization> realizations = new ArrayList<Realization>();
@@ -104,8 +113,8 @@ public class Population {
 				sample.setRealization(internalReal);
 				setRealizedValues(sample, currentModel);
 				HorvitzThompsonTauEstimate htEstimator = sample.getHorvitzThompsonEstimate(populationSize);
-				Matrix tauHat = htEstimator.getTotal();
-				Matrix varTau = htEstimator.getVarianceOfTotalEstimate();
+//				Matrix tauHat = htEstimator.getTotal();
+//				Matrix varTau = htEstimator.getVarianceOfTotalEstimate();
 				hybHTEstimate.addHTEstimate(htEstimator);
 			}
 			Realization thisRealization = new Realization(total, hybHTEstimate.getTotal(), hybHTEstimate.getTotalVarianceUncorrected(), hybHTEstimate.getVarianceOfTotalEstimate());
