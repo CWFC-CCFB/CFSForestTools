@@ -2,8 +2,10 @@ package quebecmrnfutility.predictor.betahdrelation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.hdrelationships.HDRelationshipStand;
 
 public class BetaHeightableStandImpl implements BetaHeightableStand {
 
@@ -105,6 +107,14 @@ public class BetaHeightableStandImpl implements BetaHeightableStand {
 	@Override
 	public Collection getTrees() {
 		return trees;
+	}
+
+
+	@Override
+	public List<HDRelationshipStand> getAllHDStands() {
+		List<HDRelationshipStand> stands = new ArrayList<HDRelationshipStand>();
+		stands.add(this);
+		return stands;
 	}
 
 }

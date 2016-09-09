@@ -28,12 +28,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import repicea.math.Matrix;
-import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmPlus1Provider;
 import repicea.simulation.covariateproviders.treelevel.SquaredLnDbhCmPlus1Provider;
-import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
+import repicea.simulation.hdrelationships.HDRelationshipTree;
 
 /**
  * The HeightableTree interface ensures the compatibility with the HD
@@ -41,13 +39,12 @@ import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
  * 
  * @author Denis Hache - Fev. 2014
  */
-public interface BetaHeightableTree extends MonteCarloSimulationCompliantObject, 
-										HeightMProvider,
+public interface BetaHeightableTree extends HDRelationshipTree,
 										DbhCmProvider,
 										LnDbhCmPlus1Provider,
-										SquaredLnDbhCmPlus1Provider,
-//										BasalAreaLargerThanSubjectM2Provider,
-										IndexableErrorTerm {
+										SquaredLnDbhCmPlus1Provider
+//										BasalAreaLargerThanSubjectM2Provider 
+										{
 
 	public enum BetaHdSpecies {	
 		BOJ,
