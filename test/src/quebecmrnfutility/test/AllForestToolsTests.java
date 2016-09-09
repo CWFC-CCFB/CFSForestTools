@@ -11,6 +11,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	quebecmrnfutility.predictor.loggradespetro.PetroGradePredictorTest.class,
 	quebecmrnfutility.treelogger.petrotreelogger.PetroTreeLoggerTest.class,
 	quebecmrnfutility.treelogger.sybille.SybilleTreeLoggerTest.class,
-	quebecmrnfutility.predictor.betahdrelation.BetaHDRelationTests.class})
+	quebecmrnfutility.predictor.betahdrelation.GeneralHeight2014PredictorTests.class})
 public class AllForestToolsTests {}
 
