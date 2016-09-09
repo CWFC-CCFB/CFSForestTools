@@ -13,7 +13,7 @@ class Heightable2014TreeImpl implements Heightable2014Tree {
 	final int subjectID;
 	double heightM;
 	final double predictedHeightM;
-	final BetaHdSpecies speciesCode;
+	final Hd2014Species speciesCode;
 	
 	Heightable2014TreeImpl(Heightable2014StandImpl stand,
 			double dbhCm,
@@ -25,7 +25,7 @@ class Heightable2014TreeImpl implements Heightable2014Tree {
 		this.dbhCm = dbhCm;
 		this.predictedHeightM = predictedHeightM;
 		this.subjectID = subjectID;
-		speciesCode = BetaHdSpecies.valueOf(species.toUpperCase().trim());
+		speciesCode = Hd2014Species.valueOf(species.toUpperCase().trim());
 	}
 	
 	
@@ -70,7 +70,7 @@ class Heightable2014TreeImpl implements Heightable2014Tree {
 	}
 
 	@Override
-	public BetaHdSpecies getBetaHeightableTreeSpecies() {
+	public Hd2014Species getHeightable2014TreeSpecies() {
 		return speciesCode;
 	}
 
