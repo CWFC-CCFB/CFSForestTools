@@ -14,6 +14,7 @@ import repicea.io.javacsv.CSVWriter;
 import repicea.math.Matrix;
 import repicea.stats.estimates.HorvitzThompsonTauEstimate;
 import repicea.stats.estimates.HybridMonteCarloHorvitzThompsonEstimate;
+import repicea.stats.estimates.HybridMonteCarloHorvitzThompsonEstimate.VariancePointEstimate;
 import repicea.util.ObjectUtility;
 
 public class Population {
@@ -87,15 +88,11 @@ public class Population {
 		List<FormatField> fields = new ArrayList<FormatField>();
 		for (int i = 1; i <= 5; i++) {
 			fields.add(new CSVField("TrueTau" + i));
-		}
-		for (int i = 1; i <= 5; i++) {
 			fields.add(new CSVField("EstTau" + i));
-		}
-		for (int i = 1; i <= 5; i++) {
 			fields.add(new CSVField("UncorrVar" + i));
-		}
-		for (int i = 1; i <= 5; i++) {
 			fields.add(new CSVField("CorrVar" + i));
+			fields.add(new CSVField("Samp" + i));
+			fields.add(new CSVField("Model" + i));
 		}
 
 		writer.setFields(fields);
@@ -117,7 +114,13 @@ public class Population {
 //				Matrix varTau = htEstimator.getVarianceOfTotalEstimate();
 				hybHTEstimate.addHTEstimate(htEstimator);
 			}
-			Realization thisRealization = new Realization(total, hybHTEstimate.getTotal(), hybHTEstimate.getTotalVarianceUncorrected(), hybHTEstimate.getVarianceOfTotalEstimate());
+			VariancePointEstimate correctedVarEstimate = hybHTEstimate.getVarianceOfTotalEstimate();
+			Realization thisRealization = new Realization(total, 
+					hybHTEstimate.getTotal(), 
+					hybHTEstimate.getTotalVarianceUncorrected(), 
+					correctedVarEstimate.getTotalVariance(), 
+					correctedVarEstimate.getSamplingRelatedVariance(), 
+					correctedVarEstimate.getModelRelatedVariance());
 			realizations.add(thisRealization);
 			writer.addRecord(thisRealization.getRecord());
 			timeDiff = System.currentTimeMillis() - start;
