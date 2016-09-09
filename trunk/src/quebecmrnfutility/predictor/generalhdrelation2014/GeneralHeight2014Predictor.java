@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree.BetaHdSpecies;
+import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree.Hd2014Species;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
@@ -44,7 +44,7 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor {
 		private String subjectID;
 		private HierarchicalLevel	hieraLevel;
 
-		protected BetaHeightableStandMonteCarlo(MonteCarloSimulationCompliantObject subject, BetaHdSpecies species) {
+		protected BetaHeightableStandMonteCarlo(MonteCarloSimulationCompliantObject subject, Hd2014Species species) {
 			String id = (subject.getMonteCarloRealizationId() + "_" + species.ordinal());
 			this.monteCarloRealization = id.hashCode();
 			subjectID = subject.getSubjectId();
@@ -132,11 +132,11 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor {
 //	private Map<BetaHdSpecies, Matrix> oXVectorReferenceMap = new  HashMap<BetaHdSpecies, Matrix>();
 //	private Map<BetaHdSpecies, Map<String, GaussianEstimate>> blupsLibraryPlotReferenceMap = new HashMap<BetaHdSpecies, Map<String, GaussianEstimate>>();
 
-	private final Map<BetaHdSpecies, GeneralHeight2014InternalPredictor> internalPredictors;
+	private final Map<Hd2014Species, GeneralHeight2014InternalPredictor> internalPredictors;
 	
 	public GeneralHeight2014Predictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
-		internalPredictors = new HashMap<BetaHdSpecies, GeneralHeight2014InternalPredictor>();
+		internalPredictors = new HashMap<Hd2014Species, GeneralHeight2014InternalPredictor>();
 		init();
 	}
 
@@ -152,7 +152,7 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor {
 	@Override
 	protected final void init() {
 		try {
-			for (BetaHdSpecies species : BetaHdSpecies.values()) {		
+			for (Hd2014Species species : Hd2014Species.values()) {		
 				GeneralHeight2014InternalPredictor internalPredictor = new GeneralHeight2014InternalPredictor(species, 
 						isParametersVariabilityEnabled, 
 						isRandomEffectsVariabilityEnabled, 
@@ -283,7 +283,7 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor {
 	 * @return the predicted height (m)
 	 */
 	public synchronized double predictHeight(Heightable2014Stand stand, Heightable2014Tree tree) {
-		BetaHdSpecies species = tree.getBetaHeightableTreeSpecies();
+		Hd2014Species species = tree.getHeightable2014TreeSpecies();
 		return internalPredictors.get(species).predictHeight(stand, tree);
 //		double predictedHeight = 0;
 //		if (!isBlupEstimationDone) {

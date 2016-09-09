@@ -13,7 +13,7 @@ import org.junit.Test;
 import quebecmrnfutility.predictor.generalhdrelation2014.GeneralHeight2014Predictor;
 import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Stand;
 import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree;
-import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree.BetaHdSpecies;
+import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree.Hd2014Species;
 import repicea.io.javacsv.CSVReader;
 import repicea.util.ObjectUtility;
 
@@ -80,7 +80,7 @@ public class GeneralHeight2014PredictorTests {
 		GeneralHeight2014Predictor predictor = new GeneralHeight2014Predictor();
 		
 		int goodMatches = 0;
-		List<BetaHdSpecies> goodMatchingSpecies = new ArrayList<BetaHdSpecies>();
+		List<Hd2014Species> goodMatchingSpecies = new ArrayList<Hd2014Species>();
 		for (Heightable2014Stand stand : standMap.values()) {
 			Collection<Heightable2014Tree> trees = stand.getTrees();
 			for (Heightable2014Tree t : trees) {
@@ -88,11 +88,11 @@ public class GeneralHeight2014PredictorTests {
 				double expected = ((Heightable2014TreeImpl) t).getPredictedHeight();
 				if (Math.abs(expected-actual) < 1E-8) {
 					goodMatches++;
-					if (!goodMatchingSpecies.contains(t.getBetaHeightableTreeSpecies())) {
-						goodMatchingSpecies.add(t.getBetaHeightableTreeSpecies());
+					if (!goodMatchingSpecies.contains(t.getHeightable2014TreeSpecies())) {
+						goodMatchingSpecies.add(t.getHeightable2014TreeSpecies());
 					}
 				} else {
-					goodMatchingSpecies.remove(t.getBetaHeightableTreeSpecies());
+					goodMatchingSpecies.remove(t.getHeightable2014TreeSpecies());
 				}
 				Assert.assertEquals("Comparing predicted Heights", expected, actual, 1E-8);
 				goodMatches++;

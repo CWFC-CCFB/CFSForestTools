@@ -46,7 +46,7 @@ public interface Heightable2014Tree extends HDRelationshipTree,
 //										BasalAreaLargerThanSubjectM2Provider 
 										{
 
-	public enum BetaHdSpecies {	
+	public enum Hd2014Species {	
 		BOJ,
 		BOP,
 		CHR,
@@ -76,7 +76,7 @@ public interface Heightable2014Tree extends HDRelationshipTree,
 		PIR;
 		private Matrix	dummy;
 		
-		BetaHdSpecies() {
+		Hd2014Species() {
 			dummy = new Matrix(1, 27);
 			dummy.m_afData[0][this.ordinal()] = 1d;								
 		}
@@ -90,10 +90,10 @@ public interface Heightable2014Tree extends HDRelationshipTree,
 		 * @param speciesName the species name
 		 * @return the appropriate enum or null if the string does not match any species
 		 */
-		public static BetaHdSpecies findEligibleSpecies(String speciesName) {
+		public static Hd2014Species findEligibleSpecies(String speciesName) {
 			if (eligibleSpeciesNames == null) {
 				eligibleSpeciesNames = new HashSet<String>();
-				for (BetaHdSpecies species : BetaHdSpecies.values()) {
+				for (Hd2014Species species : Hd2014Species.values()) {
 					eligibleSpeciesNames.add(species.name());
 				}
 			}
@@ -102,7 +102,7 @@ public interface Heightable2014Tree extends HDRelationshipTree,
 			} else {
 				String formattedSpeciesName = speciesName.trim().toUpperCase();
 				if (eligibleSpeciesNames.contains(formattedSpeciesName)) {
-					return BetaHdSpecies.valueOf(formattedSpeciesName);
+					return Hd2014Species.valueOf(formattedSpeciesName);
 				} else {
 					return null;
 				}
@@ -115,15 +115,8 @@ public interface Heightable2014Tree extends HDRelationshipTree,
 	 * This method ensures the species compatibility with the hd relationship.
 	 * @return a HdSpecies enum instance
 	 */
-	public BetaHdSpecies getBetaHeightableTreeSpecies();
+	public Hd2014Species getHeightable2014TreeSpecies();
 	
-	
-//	/**
-//	 * This method returns the social status index calculated as the 
-//	 * squared difference between tree dbh and mean quadratic diameter.
-//	 * @return a double
-//	 */
-//	public double getSocialStatusIndex();
 	
 	
 }

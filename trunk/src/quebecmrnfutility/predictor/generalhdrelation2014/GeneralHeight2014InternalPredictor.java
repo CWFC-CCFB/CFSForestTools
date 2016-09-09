@@ -7,7 +7,7 @@ import java.util.Map;
 
 import quebecmrnfutility.predictor.generalhdrelation2014.GeneralHeight2014Predictor.DisturbanceType;
 import quebecmrnfutility.predictor.generalhdrelation2014.GeneralHeight2014Predictor.Effect;
-import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree.BetaHdSpecies;
+import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree.Hd2014Species;
 import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
 import repicea.simulation.HierarchicalLevel;
@@ -20,14 +20,14 @@ import repicea.stats.estimates.GaussianEstimate;
 @SuppressWarnings("serial")
 class GeneralHeight2014InternalPredictor extends HDRelationshipModel<Heightable2014Stand, Heightable2014Tree> {
 
-	private final BetaHdSpecies species;
+	private final Hd2014Species species;
 	private Map<String, Matrix> subDomainDummyMap;
 	private Map<String, Matrix> vegPotDummyMap;
 	private Map<String, Matrix> ecoTypeDummyMap;
 	private Map<String, Matrix> disturbanceDummyMap;
 	private List<Effect> effectList;
 	
-	protected GeneralHeight2014InternalPredictor(BetaHdSpecies species, boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	protected GeneralHeight2014InternalPredictor(Hd2014Species species, boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
 		this.species = species;
 	}
@@ -125,7 +125,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipModel<Heightable2
 		oXVector.resetMatrix();
 		
 		int pointeur = 0;
-		BetaHdSpecies species = t.getBetaHeightableTreeSpecies();
+		Hd2014Species species = t.getHeightable2014TreeSpecies();
 		double lnDbh = t.getLnDbhCmPlus1();		
 		double lnDbh2 = t.getSquaredLnDbhCmPlus1();
 		
@@ -222,7 +222,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipModel<Heightable2
 			for (Object tree : trees) {
 				if (tree instanceof Heightable2014Tree) {
 					Heightable2014Tree t = (Heightable2014Tree) tree;
-					if (t.getBetaHeightableTreeSpecies() == species) {
+					if (t.getHeightable2014TreeSpecies() == species) {
 						treesToBeReturned.add(t);
 					}
 				}
