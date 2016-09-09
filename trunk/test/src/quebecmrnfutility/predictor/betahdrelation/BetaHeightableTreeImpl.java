@@ -1,6 +1,7 @@
 package quebecmrnfutility.predictor.betahdrelation;
 
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.REpiceaPredictor.ErrorTermGroup;
 
 class BetaHeightableTreeImpl implements BetaHeightableTree {
 
@@ -52,7 +53,7 @@ class BetaHeightableTreeImpl implements BetaHeightableTree {
 	@Override
 	public double getSquaredLnDbhCmPlus1() {
 		double lnDbhCmPlus1 = this.getLnDbhCmPlus1();
-		return lnDbhCmPlus1;
+		return lnDbhCmPlus1 * lnDbhCmPlus1;
 	}
 
 //	@Override
@@ -77,4 +78,11 @@ class BetaHeightableTreeImpl implements BetaHeightableTree {
 //	}
 
 	protected double getPredictedHeight() {return predictedHeightM;}
+
+
+
+	@Override
+	public Enum<?> getHDRelationshipTreeErrorGroup() {
+		return ErrorTermGroup.Default;
+	}
 }

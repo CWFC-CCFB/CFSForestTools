@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import quebecmrnfutility.predictor.betahdrelation.BetaHeightableTree.BetaHdSpecies;
@@ -73,7 +74,7 @@ public class BetaHDRelationTests {
 		}
 		List<Integer> measurementDates = new ArrayList<Integer>();
 		measurementDates.add(2015);
-		BetaHeightPredictor predictor = new BetaHeightPredictor(measurementDates);
+		BetaHeightPredictor predictor = new BetaHeightPredictor();
 		
 		int goodMatches = 0;
 		List<BetaHdSpecies> goodMatchingSpecies = new ArrayList<BetaHdSpecies>();
@@ -90,8 +91,8 @@ public class BetaHDRelationTests {
 				} else {
 					goodMatchingSpecies.remove(t.getBetaHeightableTreeSpecies());
 				}
-//				assertEquals("Comparing predicted Heights", expected, actual, 1E-8);
-//				goodMatches++;
+				Assert.assertEquals("Comparing predicted Heights", expected, actual, 1E-8);
+				goodMatches++;
 			}
 		}
 		System.out.println("BetaHDRelationTests.comparePredictionsWithSAS - Successful comparisons " + goodMatches);

@@ -26,7 +26,6 @@ package quebecmrnfutility.predictor.betahdrelation;
 
 import java.util.Collection;
 
-import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.standlevel.EcologicalRegionProvider;
 import repicea.simulation.covariateproviders.standlevel.EcologicalTypeProvider;
@@ -35,9 +34,10 @@ import repicea.simulation.covariateproviders.standlevel.InterventionResultProvid
 import repicea.simulation.covariateproviders.standlevel.MeanAnnualPrecipitationMmProvider;
 import repicea.simulation.covariateproviders.standlevel.MeanAnnualTemperatureCProvider;
 import repicea.simulation.covariateproviders.standlevel.SpruceBudwormDefoliatedProvider;
+import repicea.simulation.hdrelationships.HDRelationshipStand;
 
 
-public interface BetaHeightableStand extends MonteCarloSimulationCompliantObject,
+public interface BetaHeightableStand extends HDRelationshipStand,
 										BasalAreaM2HaProvider,
 										MeanAnnualTemperatureCProvider, 
 										EcologicalRegionProvider,
