@@ -23,7 +23,7 @@ public class PetroGradePredictorTest {
 		PetroGradePredictor stoPredictor = new PetroGradePredictor(true, true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		
-		for (int realization = 0; realization < 10000; realization++) {
+		for (int realization = 0; realization < 50000; realization++) {
 			tree.setRealization(realization);
 			estimate.addRealization(stoPredictor.getPredictedGradeVolumes(tree));
 		}
