@@ -48,10 +48,19 @@ public class PetroTreeLogger extends TreeLogger<PetroTreeLoggerParameters, Petro
 	 * Official constructor for the extension
 	 */
 	public PetroTreeLogger() {
-		super();
-		predictor = new PetroGradePredictor(false, false);
+		this(false, false);
 	}
 
+	/**
+	 * General constructor. 
+	 * @param isParametersVariabilityEnabled true to enable the variability in the parameter estimates
+	 * @param isResidualVariabilityEnabled true to enable the residual error 
+	 */
+	public PetroTreeLogger(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+		super();
+		predictor = new PetroGradePredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled);
+	}
+	
 	/**
 	 * Constructor for script mode.
 	 * @param params a PetroTreeLoggerParameters instance

@@ -122,6 +122,13 @@ public class PetroGradePredictor extends REpiceaPredictor {
 	 * according to the ProductType enum variable.
 	 * @param tree a PetroGradeTree instance
 	 * @return a 5x1 matrix
+ 	 * <ul>
+	 * <li> slot 0 : volume of grade F1 (m3) </li>
+	 * <li> slot 1 : volume of grade F2 (m3) </li>
+	 * <li> slot 2 : volume of grade F3 (m3) </li>
+	 * <li> slot 3 : volume of grade F4 (m3) </li>
+	 * <li> slot 4 : volume of grade P (m3) </li>
+	 * </ul>
 	 */
 	public Matrix getPredictedGradeVolumes(PetroGradeTree tree) {
 		if (tree.getDbhCm() <= 23d) {
@@ -132,7 +139,7 @@ public class PetroGradePredictor extends REpiceaPredictor {
 		Matrix presenceProbabilities = presenceSubModule.getPredictedGradePresences(tree);
 
 		PetroGradePredictorVolumeSubModule volumeSubModule = volumeSubModules.get(selectedVersion);
-		Matrix conditionalVolumes = volumeSubModule.getPredictedLogTransformedGradeVolumes(tree);
+		Matrix conditionalVolumes = volumeSubModule.getPredictedGradeVolumes(tree);
 		
 		Matrix volumes = presenceProbabilities.elementWiseMultiply(conditionalVolumes);
 		return volumes;
