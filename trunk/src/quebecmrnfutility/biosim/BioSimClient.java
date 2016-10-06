@@ -21,6 +21,7 @@
 package quebecmrnfutility.biosim;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -33,9 +34,34 @@ import repicea.net.server.BasicClient;
  */
 public class BioSimClient extends BasicClient {
 
+	public static enum BioSimVersion {
+		VERSION_1971_2000, 
+		VERSION_1981_2010;
+	}
 	
-	public BioSimClient() throws UnknownHostException, IOException, ClassNotFoundException {
+	@SuppressWarnings("serial")
+	public static class Request implements Serializable {
+		private final BioSimVersion version;
+		private final List<PlotLocation> locations;
+		
+		private Request(BioSimVersion version, List<PlotLocation> locations) {
+			this.version = version;
+			this.locations = locations;
+		}
+		
+		public BioSimVersion getBioSimVersion() {return version;}
+		public List<PlotLocation> getLocations() {return locations;}
+	}
+
+	private final BioSimVersion version;
+	
+	public BioSimClient(BioSimVersion version) throws UnknownHostException, IOException, ClassNotFoundException {
 		super(new InetSocketAddress("rouge-epicea.dyndns.org", 18000));
+		if (version == null) {
+			this.version = BioSimVersion.VERSION_1971_2000;
+		} else {
+			this.version = version;
+		}
 	}
 
 	/**
@@ -46,7 +72,7 @@ public class BioSimClient extends BasicClient {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<ClimateVariables> getClimateVariables(List<PlotLocation> obj) {
-		return (List) super.processRequest(obj);
+		return (List) super.processRequest(new Request(version, obj));
 	}
 	
 }
