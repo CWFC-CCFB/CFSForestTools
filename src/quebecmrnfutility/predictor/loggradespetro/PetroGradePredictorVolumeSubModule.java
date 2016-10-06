@@ -58,7 +58,7 @@ class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 	 * @param tree a PetroLoggableTree instance
 	 * @return the resulting matrix
 	 */
-	protected Matrix getPredictedLogTransformedGradeVolumes(PetroGradeTree tree) {
+	protected Matrix getPredictedGradeVolumes(PetroGradeTree tree) {
 		PetroGradeSpecies species = tree.getPetroGradeSpecies();
 		double dbh = tree.getDbhCm();
 		Matrix beta = getParametersForThisRealization(tree);
