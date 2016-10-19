@@ -38,7 +38,7 @@ import repicea.stats.integral.TrapezoidalRule;
 /**
  * The SybilleTreeLogger class is a TreeLogger extended class that relies on Schneider et al.'s taper
  * equations to buck the trees into logs of user-specified length.
- * @author Mathieu Fortin and Jean-Fran�ois Lavoie - January 2012
+ * @author Mathieu Fortin and Jean-Francois Lavoie - January 2012
  */
 public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, SybilleLoggableTree> {
 
@@ -47,9 +47,8 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 	
 	/**
 	 * Constructor. 
-	 * @throws IOException if the StemTaperPredictor cannot be instantiated properly
 	 */
-	public SybilleTreeLogger() throws IOException {
+	public SybilleTreeLogger() {
 		super();
 		stp = new StemTaperPredictor();
 		segments = new StemTaperSegmentList();
