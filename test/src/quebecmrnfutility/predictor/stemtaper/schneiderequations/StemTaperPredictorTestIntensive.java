@@ -12,8 +12,8 @@ import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredict
 import repicea.io.FormatReader;
 import repicea.io.javacsv.CSVReader;
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
-import repicea.simulation.stemtaper.StemTaperEstimate;
 import repicea.util.ObjectUtility;
 
 public class StemTaperPredictorTestIntensive {
@@ -42,7 +42,7 @@ public class StemTaperPredictorTestIntensive {
 		public String getSubjectId() {return "0";}
 
 		@Override
-		public HierarchicalLevel getHierarchicalLevel() {return null;}
+		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 
 		@Override
@@ -97,7 +97,7 @@ public class StemTaperPredictorTestIntensive {
 		public String getSubjectId() {return "0";}
 
 		@Override
-		public HierarchicalLevel getHierarchicalLevel() {return null;}
+		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
 		@Override
 		public int getMonteCarloRealizationId() {return 0;}
@@ -158,10 +158,9 @@ public class StemTaperPredictorTestIntensive {
 			System.out.println("Testing species: " + species);
 			List<StemTaperTree> trees = getTreeList(species);
 			StemTaperPredictor stm = new StemTaperPredictor();
-			stm.setEstimationMethod(EstimationMethod.FirstOrderMeanOnly);
 			for (StemTaperTree tree : trees) {
 //				stm.setTree(tree);
-				StemTaperEstimate estimate = stm.getPredictedTaperForTheseHeights(tree, ((StemTaperTreeImpl) tree).getHeightList());
+				AbstractStemTaperEstimate estimate = stm.getPredictedTaperForTheseHeights(tree, ((StemTaperTreeImpl) tree).getHeightList(), EstimationMethod.FirstOrderMeanOnly);
 				double newValue = estimate.getMean().m_afData[0][0];
 				double oldValue = ((StemTaperTreeImpl) tree).getPredicted();
 				assertEquals("Testing species " + species, 

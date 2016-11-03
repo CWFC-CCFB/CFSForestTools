@@ -27,7 +27,7 @@ package quebecmrnfutility.treelogger.sybille;
 import java.io.IOException;
 
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor;
-import repicea.simulation.stemtaper.StemTaperEstimate;
+import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
 import repicea.simulation.treelogger.LoggableTree;
@@ -57,7 +57,6 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 
 	@Override
 	protected void logThisTree(SybilleLoggableTree tree) {
-		stp.setEstimationMethod(getTreeLoggerParameters().getEstimationMethod());
 		boolean optimize = getTreeLoggerParameters().isIntegrationOptimizationEnabled();
 
 		SybilleLoggableTree t = (SybilleLoggableTree) tree;
@@ -65,7 +64,7 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 		StemTaperSegment segment;
 		double heightM;
 		String speciesName;
-		StemTaperEstimate estimate;
+		AbstractStemTaperEstimate estimate;
 		
 		segments.clear(); 
 		speciesName = t.getStemTaperTreeSpecies().name();
@@ -86,9 +85,7 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 			}
 		}
 
-//		stp.setTree(t);
-
-		estimate = stp.getPredictedTaperForTheseSegments(t, segments);
+		estimate = stp.getPredictedTaperForTheseSegments(t, segments, getTreeLoggerParameters().getEstimationMethod());
 		SybilleWoodPiece wp;
 		do {
 			wp = null;

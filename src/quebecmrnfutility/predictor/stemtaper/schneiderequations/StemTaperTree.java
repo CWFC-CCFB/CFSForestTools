@@ -33,7 +33,7 @@ import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
-import repicea.simulation.stemtaper.StemTaperModel.BasicStemTaperTree;
+import repicea.simulation.stemtaper.AbstractStemTaperPredictor.BasicStemTaperTree;
 
 /**
  * This interface ensures that the object is compatible with the StemTaperEquation class.

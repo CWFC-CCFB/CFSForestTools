@@ -26,7 +26,6 @@ package quebecmrnfutility.predictor.stemtaper.schneiderequations;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,15 +34,12 @@ import java.util.Map;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
-import repicea.math.MatrixUtility;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
+import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
+import repicea.simulation.stemtaper.AbstractStemTaperPredictor;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
-import repicea.simulation.stemtaper.StemTaperEstimate;
-import repicea.simulation.stemtaper.StemTaperModel;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
-import repicea.stats.Distribution;
-import repicea.stats.StatisticalUtility;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
 
@@ -62,10 +58,10 @@ import repicea.util.ObjectUtility;
  * 
  * @author Mathieu Fortin - September 2011
  */
-public final class StemTaperPredictor extends StemTaperModel {
+public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	
 	@SuppressWarnings("serial")
-	public static class SchneiderStemTaperEstimate extends StemTaperEstimate {
+	public static class SchneiderStemTaperEstimate extends AbstractStemTaperEstimate {
 		
 		public SchneiderStemTaperEstimate(boolean isMonteCarlo, List<Double> computedHeights) {
 			super(isMonteCarlo, computedHeights);
@@ -94,256 +90,52 @@ public final class StemTaperPredictor extends StemTaperModel {
 	
 	public static int[] timer = new int[15]; 
 
-	private static boolean loaded;
-	
-	private static Map<ModelType, Map<StemTaperTreeSpecies, GaussianEstimate>>	betaMatrixReferenceMap			= new HashMap<ModelType, Map<StemTaperTreeSpecies, GaussianEstimate>>();
-	private static Map<ModelType, Map<StemTaperTreeSpecies, GaussianEstimate>>	plotRandomEffectReferenceMap	= new HashMap<ModelType, Map<StemTaperTreeSpecies, GaussianEstimate>>();
-	private static Map<ModelType, Map<StemTaperTreeSpecies, GaussianEstimate>>	treeRandomEffectReferenceMap	= new HashMap<ModelType, Map<StemTaperTreeSpecies, GaussianEstimate>>();
-	private static Map<ModelType, Map<StemTaperTreeSpecies, Matrix>>		varianceParamReferenceMap		= new HashMap<ModelType, Map<StemTaperTreeSpecies, Matrix>>();
-	private static Map<ModelType, Map<StemTaperTreeSpecies, Matrix>>		corrParamReferenceMap			= new HashMap<ModelType, Map<StemTaperTreeSpecies, Matrix>>();
-	private static Map<ModelType, Map<StemTaperTreeSpecies, Matrix>>		resStdDevReferenceMap			= new HashMap<ModelType, Map<StemTaperTreeSpecies, Matrix>>();
-	
 	public static enum EstimationMethod {FirstOrder, 
 		SecondOrder, 
 		MonteCarlo,
 		FirstOrderMeanOnly,
 		SecondOrderMeanOnly}
 
-	private double rho;
-	private double varFunctionParm1;
-	private double varFunctionParm2;
-	private Double residualStdDev;
-
-	private InternalStatisticalExpressions linearExpressions;
+	private final Map<ModelType, Map<StemTaperTreeSpecies, StemTaperSubModule>> subModules;
 	
-	protected Matrix heights;
 	
-	protected Matrix relativeHeights;
-	protected Matrix coreExpression;
-	protected Matrix heightsSectionRespectToDbh;
 	
-	private Matrix plotRandomEffects;
-	private Matrix treeRandomEffects;
-	
-	private Matrix rMatrix;
-	private Matrix rMatrixChol;
-	private Matrix residualErrors;
-	
-	private Matrix correctionMatrix;
-	private int numberOfMonteCarloRealizations;
-	
-	private StemTaperTree tree;
-	private StemTaperTreeSpecies species;
-	
-	private EstimationMethod estimationMethod;
-	private boolean isResetNeeded;
-	protected ModelType typeModel;	//the type of equation model to use Tree or Hybrid
 		
 	/**
-	 * Constructor.
+	 * Simple constructor with no variability.
 	 * @throws Exception
 	 */
 	public StemTaperPredictor() {
-		super(false, false, false);
-		
-		init();
-	
-		estimationMethod = EstimationMethod.SecondOrder;
-		setNumberOfMonteCarloRealizations(1); 	
-		typeModel = ModelType.HYBRIDMODEL;	//default model
-	}
-
-	/**
-	 * This method sets the number of Monte Carlo realizations. By default, this number is set to 1, which means the
-	 * model is to be used in a deterministic manner. 
-	 * @param numberOfMonteCarloRealizations an Integer
-	 */
-	private void setNumberOfMonteCarloRealizations(int numberOfMonteCarloRealizations) {
-		this.numberOfMonteCarloRealizations = numberOfMonteCarloRealizations;
-		isParametersVariabilityEnabled = estimationMethod == EstimationMethod.MonteCarlo;
-		isRandomEffectsVariabilityEnabled = estimationMethod == EstimationMethod.MonteCarlo;
-		isResidualVariabilityEnabled = estimationMethod == EstimationMethod.MonteCarlo;
-	}
-	
-	@Override
-	protected final void init() {
-		if (!loaded) {
-			loadDefaultParameters();
-		}
-	}
-	
-	
-	
-	/**
-	 * This method computes the stem taper in mm2.
-	 * @param heightMeasures a List of Double that represent the height (m)
-	 * @return a StemTaperEstimate instance with the cross section squared diameter
-	 */
-	public StemTaperEstimate getPredictedTaperForTheseHeights(BasicStemTaperTree t, List<Double> heightMeasures) {
-		if (!(t instanceof StemTaperTree)) {
-			throw new InvalidParameterException("The StemTaperPredictor class is designed to work with StemTaperTree instances only!"); 
-		}
-		StemTaperTree tree = (StemTaperTree) t;
-		setTree(tree);
-		setHeights(new Matrix(heightMeasures));
-		Matrix pred;
-		
-		double randomEffects0 = 0d;
-		double randomEffects1 = 0d;
-		
-		int numberOfRuns = 1;
-		if (estimationMethod == EstimationMethod.MonteCarlo) {
-			numberOfRuns = numberOfMonteCarloRealizations;
-		}
-		
-		StemTaperEstimate prediction = new SchneiderStemTaperEstimate(estimationMethod == EstimationMethod.MonteCarlo, heightMeasures);
-		
-		for (int iter = 0; iter < numberOfRuns; iter++) {
-			pred = new Matrix(heights.m_iRows, 1);
-			if (estimationMethod == EstimationMethod.MonteCarlo) {
-//				tree.setMonteCarloRealizationId(iter);
-//				tree.getStand().setMonteCarloRealizationId(iter);
-				randomizeCoefficients();
-				randomEffects0 = plotRandomEffects.m_afData[0][0] + treeRandomEffects.m_afData[0][0];
-				randomEffects1 = plotRandomEffects.m_afData[1][0] + treeRandomEffects.m_afData[1][0];
-			} else {
-				if (isResetNeeded) {
-					resetCoefficients();
-				}
-				if (estimationMethod == EstimationMethod.SecondOrder || estimationMethod == EstimationMethod.SecondOrderMeanOnly) {
-					setCorrectionMatrix();
-				} 
-			}
-			
-			Matrix parameters = linearExpressions.getValues();
-			double alpha;
-			double exponent;
-			double correctionFactor = 0;
-			for (int i = 0; i < heights.m_iRows; i++) {
-				alpha = parameters.m_afData[i][0] + randomEffects0;
-				exponent = parameters.m_afData[i][1] + randomEffects1; 
-				if (estimationMethod == EstimationMethod.SecondOrder || estimationMethod == EstimationMethod.SecondOrderMeanOnly) {
-					correctionFactor = correctionMatrix.m_afData[i][0];
-				}
-				pred.m_afData[i][0] = alpha * tree.getSquaredDbhCm() * 100 * coreExpression.m_afData[i][0] * Math.pow(heightsSectionRespectToDbh.m_afData[i][0], 2 - exponent) 
-						+ correctionFactor + residualErrors.m_afData[i][0];
-			}
-			
-			if (estimationMethod == EstimationMethod.MonteCarlo) {
-				prediction.addRealization(pred);
-			} else {
-				prediction.setMean(pred);
-			}
-		}
-		
-		if (estimationMethod == EstimationMethod.FirstOrder || estimationMethod == EstimationMethod.SecondOrder) {
-			prediction.setVariance(getStemTaperVariance());
-		}
-		
-		return prediction;
-
-	}
-	
-	
-	/**
-	 * This method computes the stem taper in mm2.
-	 * @param stemTaperSegments a List of StemTaperSegment instances
-	 * @return a StemTaperEstimate instance with the cross section diameter in mm2
-	 */
-	public StemTaperEstimate getPredictedTaperForTheseSegments(StemTaperTree tree, StemTaperSegmentList stemTaperSegments) {		
-		List<Double> currentHeightsToEvaluate = stemTaperSegments.getHeightsWithoutReplicates();	
-		return getPredictedTaperForTheseHeights(tree, currentHeightsToEvaluate);		
-	}
-	
-	
-
-	/**
-	 * This method generates random deviates for all the Monte Carlo components of the model.
-	 */
-	private void randomizeCoefficients() {
-		plotRandomEffects = getRandomEffectsForThisSubject(tree.getStand());
-		treeRandomEffects = getRandomEffectsForThisSubject(tree);
-		Matrix beta = getParametersForThisRealization(tree.getStand());
-		linearExpressions.setParameters(beta);
-		residualErrors = rMatrixChol.multiply(StatisticalUtility.drawRandomVector(heights.m_iRows, Distribution.Type.GAUSSIAN));
-		isResetNeeded = true;
-	}
-	
-	
-	/**
-	 * This method resets all the Monte Carlo components to 0.
-	 */
-	private void resetCoefficients() {
-		plotRandomEffects = getDefaultRandomEffects(HierarchicalLevel.PLOT).getMean();
-		treeRandomEffects = getDefaultRandomEffects(HierarchicalLevel.TREE).getMean();
-		linearExpressions.setParameters(getParameterEstimates().getMean());
-		residualErrors.resetMatrix();
-		isResetNeeded = false;
+		this(false);
 	}
 
 	
-	/**
-	 * This method sets the tree height and dbh. The StemTaperTree object provides these
-	 * two variables.
-	 * @param tree a StemTaperTree instance
-	 */
-	private void setTree(StemTaperTree tree) {
-		ModelType typeModelNew = StemTaperEquationSettings.getModelTypeEquation(tree);
-		if (species == null || !species.equals(tree.getStemTaperTreeSpecies()) || typeModelNew != typeModel) {	// if the species is different update the parameters of the equation
-			species = tree.getStemTaperTreeSpecies();
-			typeModel = typeModelNew;
-			setVersion(species);
-			isResetNeeded = true;
-		}
-		this.tree = tree;
-	}
 	
 	/**
-	 * This method sets the estimation method. It is the correction factor for marginal predictions. BY DEFAULT, this method is 
-	 * set to the second order estimation method.
-	 * @param estimationMethod a Mode enum variable 
-	 */
-	public void setEstimationMethod(EstimationMethod estimationMethod) {this.estimationMethod = estimationMethod;}
-
-	
-	/**
-	 * This method sets the height sections.
-	 * @param heights a Matrix (a column vector) that contains the location of the height sections (m)
+	 * General constructor.
 	 * @throws Exception
 	 */
-	private void setHeights(Matrix heights) {
-		if (!heights.equals(this.heights)) {
-			for (int i = 0; i < heights.m_iRows; i++) {
-				heights.m_afData[i][0] = Math.round(heights.m_afData[i][0] * 1000) * 0.001;
-			}
-			if (heights.m_afData[heights.m_iRows - 1][0] >= tree.getHeightM()) {
-				heights.m_afData[heights.m_iRows - 1][0] = tree.getHeightM() - 1E-4;
-			}
-			this.heights = heights;
-			relativeHeights = heights.scalarMultiply(1d / tree.getHeightM());
-			Matrix treeHeightMatrix = new Matrix(heights.m_iRows, 1, tree.getHeightM(), 0d);
-			
-			MatrixUtility.subtract(treeHeightMatrix, heights);
-			MatrixUtility.scalarMultiply(treeHeightMatrix, 1d / (tree.getHeightM() - 1.3));
-			coreExpression =  treeHeightMatrix;
-			
-			heightsSectionRespectToDbh = heights.scalarMultiply(1d / 1.3);
-			if (estimationMethod == EstimationMethod.FirstOrder || estimationMethod == EstimationMethod.SecondOrder) {
-				setRMatrix();
-			}
-			residualErrors = new Matrix(heights.m_iRows, 1);
-		}
+	public StemTaperPredictor(boolean isVariabilityEnabled) {
+		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
+		subModules = new HashMap<ModelType, Map<StemTaperTreeSpecies, StemTaperSubModule>>();
+		
+		init();
 	}
-	
-	
-	private synchronized void loadDefaultParameters() {
-		if (!loaded) {
-			try {
+
+	@Override
+	protected final void init() {
+		try {
+			for (ModelType modelType : ModelType.values()) {
+				subModules.put(modelType, new HashMap<StemTaperTreeSpecies, StemTaperSubModule>());
 				for (StemTaperTreeSpecies species : StemTaperTreeSpecies.values()) {
-					for (ModelType modelType : ModelType.values()) {
-						if (species == StemTaperTreeSpecies.PIB && modelType == ModelType.HYBRIDMODEL) {
-							break;//no hybrid model for PIB
-						}
+					boolean doIt = true;
+					if (species == StemTaperTreeSpecies.PIB && modelType == ModelType.HYBRIDMODEL) {
+						doIt = false;
+					}
+					if (doIt) {
+						StemTaperSubModule currentSubModule = new StemTaperSubModule(modelType, species, isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
+						subModules.get(modelType).put(species, currentSubModule);
+						
 						String path = ObjectUtility.getRelativePackagePath(getClass());
 						String prefix = modelType + "param" + "/" + species.name().toLowerCase() + "/";
 						prefix = prefix.toLowerCase();
@@ -359,29 +151,17 @@ public final class StemTaperPredictor extends StemTaperModel {
 
 						Matrix beta = ParameterLoader.loadVectorFromFile(parameterFilename).get();
 						Matrix omega = ParameterLoader.loadMatrixFromFile(omegaFilename);
-
-						if (StemTaperPredictor.betaMatrixReferenceMap.get(modelType) == null) {
-							StemTaperPredictor.betaMatrixReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, GaussianEstimate>());
-						}
-						StemTaperPredictor.betaMatrixReferenceMap.get(modelType).put(species, new GaussianEstimate(beta, omega));
+						
+						currentSubModule.setParameterEstimates(new GaussianEstimate(beta, omega));
 
 						Matrix g = ParameterLoader.loadMatrixFromFile(plotRandomEffectsFilename);
-						if (StemTaperPredictor.plotRandomEffectReferenceMap.get(modelType) == null) {
-							StemTaperPredictor.plotRandomEffectReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, GaussianEstimate>());
-						}
-						StemTaperPredictor.plotRandomEffectReferenceMap.get(modelType).put(species, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
+						currentSubModule.setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
 
 						g = ParameterLoader.loadMatrixFromFile(treeRandomEffectsFilename);
-						if (StemTaperPredictor.treeRandomEffectReferenceMap.get(modelType) == null) {
-							StemTaperPredictor.treeRandomEffectReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, GaussianEstimate>());
-						}
-						StemTaperPredictor.treeRandomEffectReferenceMap.get(modelType).put(species, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
+						currentSubModule.setDefaultRandomEffects(HierarchicalLevel.TREE, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
 
 						Matrix oVec = ParameterLoader.loadVectorFromFile(varFunctFilename).get();
-						if (StemTaperPredictor.varianceParamReferenceMap.get(modelType) == null) {
-							StemTaperPredictor.varianceParamReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, Matrix>());
-						}
-						StemTaperPredictor.varianceParamReferenceMap.get(modelType).put(species, oVec);
+						currentSubModule.setVarianceParameters(oVec);
 
 						oVec = ParameterLoader.loadVectorFromFile(correlationStructureFilename).get();
 						double currentValue, expCurrentValue;
@@ -390,62 +170,60 @@ public final class StemTaperPredictor extends StemTaperModel {
 							expCurrentValue = Math.exp(currentValue);
 							oVec.m_afData[i][0] = expCurrentValue / (1 + expCurrentValue);
 						}
-						if (StemTaperPredictor.corrParamReferenceMap.get(modelType) == null) {
-							StemTaperPredictor.corrParamReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, Matrix>());
-						}
-						StemTaperPredictor.corrParamReferenceMap.get(modelType).put(species, oVec);
+						currentSubModule.setCorrelationParameter(oVec.m_afData[0][0]); // TODO check if the implementation is ok here was a matrix before make sure the matrix was 1x1
 
 						oVec = ParameterLoader.loadVectorFromFile(residStdDevFilename).get();
-						if (StemTaperPredictor.resStdDevReferenceMap.get(modelType) == null) {
-							StemTaperPredictor.resStdDevReferenceMap.put(modelType, new HashMap<StemTaperTreeSpecies, Matrix>());
-						}
-						StemTaperPredictor.resStdDevReferenceMap.get(modelType).put(species, oVec);
+						currentSubModule.setResidualStdDev(oVec.m_afData[0][0]); // TODO check if the implementation is ok here was a matrix before make sure the matrix was 1x1
 					}
 				}
-				loaded = true;
-				
-			} catch (IOException e) {
-				System.out.println("Error while reading parameters in StemTaperPredictor class");
 			}
+		} catch (IOException e) {
+			System.out.println("Error while reading parameters in StemTaperPredictor class");
 		}
 	}
 	
 	
 	
 	/**
-	 * This method initializes all the parameters of the stem taper model.
-	 * 
-	 * @param species the tree species
-	 * @param pModelType the equation model type
-	 * @throws Exception
+	 * This method computes the stem taper in mm2.
+	 * @param heightMeasures a List of Double that represent the height (m)
+	 * @return a StemTaperEstimate instance with the cross section squared diameter
 	 */
-	private void setVersion(StemTaperTreeSpecies species) {
-		linearExpressions = new InternalStatisticalExpressions(this, species);
-
-		setParameterEstimates(StemTaperPredictor.betaMatrixReferenceMap.get(typeModel).get(species));
-		linearExpressions.setParameters(getParameterEstimates().getMean());
-
-//		defaultRandomEffects.clear();
-		setDefaultRandomEffects(HierarchicalLevel.PLOT, StemTaperPredictor.plotRandomEffectReferenceMap.get(typeModel).get(species));
-		setDefaultRandomEffects(HierarchicalLevel.TREE, StemTaperPredictor.treeRandomEffectReferenceMap.get(typeModel).get(species));
+	public AbstractStemTaperEstimate getPredictedTaperForTheseHeights(BasicStemTaperTree t, List<Double> heightMeasures, Object... additionalParameters) {
+		if (!(t instanceof StemTaperTree)) {
+			throw new InvalidParameterException("The StemTaperPredictor class is designed to work with StemTaperTree instances only!"); 
+		}
+		StemTaperTree tree = (StemTaperTree) t;
+		ModelType mType = StemTaperEquationSettings.getModelTypeEquation(tree);
 		
-		Matrix varianceParameters = StemTaperPredictor.varianceParamReferenceMap.get(typeModel).get(species);
-		if (varianceParameters.m_iRows > 1) {
-			this.varFunctionParm1 = Math.exp(varianceParameters.m_afData[0][0]);
-			this.varFunctionParm2 = varianceParameters.m_afData[1][0];
-		} else {
-			this.varFunctionParm1 = 1d;
-			this.varFunctionParm2 = varianceParameters.m_afData[0][0];
+		Map<StemTaperTreeSpecies, StemTaperSubModule> innerMap = subModules.get(mType);
+		StemTaperTreeSpecies species = tree.getStemTaperTreeSpecies();
+		if (!innerMap.containsKey(species)) {
+			throw new InvalidParameterException("This species is not recognized!");
+		}
+
+		EstimationMethod estimationMethod = null;
+
+		if (additionalParameters != null && additionalParameters.length >= 1) {
+			if (additionalParameters[0] instanceof EstimationMethod) {
+				estimationMethod = (EstimationMethod) additionalParameters[0];
+			}
 		}
 		
-		Matrix correlationParameters = StemTaperPredictor.corrParamReferenceMap.get(typeModel).get(species);
-		this.rho = correlationParameters.m_afData[0][0];
-		
-		Matrix residualStdDev = StemTaperPredictor.resStdDevReferenceMap.get(typeModel).get(species);
-		this.residualStdDev = residualStdDev.m_afData[0][0];
-		
+		StemTaperSubModule subModule = innerMap.get(species);
+		return subModule.getPredictedTaperForTheseHeights(tree, heightMeasures, estimationMethod);
 	}
 	
+	
+	/**
+	 * This method computes the stem taper in mm2.
+	 * @param stemTaperSegments a List of StemTaperSegment instances
+	 * @return a StemTaperEstimate instance with the cross section diameter in mm2
+	 */
+	public AbstractStemTaperEstimate getPredictedTaperForTheseSegments(StemTaperTree tree, StemTaperSegmentList stemTaperSegments, EstimationMethod method) {		
+		List<Double> currentHeightsToEvaluate = stemTaperSegments.getHeightsWithoutReplicates();	
+		return getPredictedTaperForTheseHeights(tree, currentHeightsToEvaluate, method);		
+	}
 	
 	
 
@@ -484,141 +262,5 @@ public final class StemTaperPredictor extends StemTaperModel {
 		
 	}
 	
-	
-	/**
-	 * This method computes the analytical variance according to the analytical estimator.
-	 * @return a Matrix instance
-	 */
-	private Matrix getStemTaperVariance() {
-		Matrix gradients = linearExpressions.getGradients(); 
-		Matrix gPlot = getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance();
-		Matrix gTree = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance();
-		Matrix z = gradients.getSubMatrix(0, gradients.m_iRows - 1, 0, 1);
-		
-		Matrix fixedEffectParameterPart = gradients.multiply(getParameterEstimates().getVariance()).multiply(gradients.transpose());
-		Matrix zGPlotzT = z.multiply(gPlot).multiply(z.transpose());
-		Matrix zGTreezT = z.multiply(gTree).multiply(z.transpose());
-		Matrix v = zGPlotzT;
-		MatrixUtility.add(v, zGTreezT);
-		MatrixUtility.add(v, rMatrix);
-		MatrixUtility.add(v, fixedEffectParameterPart);
-		Matrix w = v;
-		
-		if (estimationMethod == EstimationMethod.SecondOrder) {
-			MatrixUtility.subtract(w, correctionMatrix.multiply(correctionMatrix.transpose()));		// c*cT
-			Matrix isserlisComponent;
-			try {
-				isserlisComponent = getIsserlisVarianceComponents();
-				MatrixUtility.add(w, isserlisComponent);
-			} catch (Exception e) {
-				System.out.println("StemTaperEquation.getVolumeVariance(): Unable to calculate the isserlisComponent Matrix, will assume this matrix is null!");
-				e.printStackTrace();
-			}
-		}
-		return w;
-	}
-
-	
-	
-	/**
-	 * This method sets the correction matrix.
-	 */
-	private void setCorrectionMatrix() {
-		Matrix correctionFactor = new Matrix(heights.m_iRows, 1);
-		Matrix hessians = linearExpressions.getHessians();
-		StemTaperTreeSpecies species = tree.getStemTaperTreeSpecies();
-		int index = StemTaperEquationSettings.getInterceptLocation(species, typeModel); // we need to know where is the intercept for the z matrix +1 for the alpha parameter 
-		List<Integer> indices = new ArrayList<Integer>();		// this variable serves to extract the proper zMatrix from the xMatrix
-		indices.add(0);											// for the alpha parameters
-		if (species == StemTaperTreeSpecies.PEG) {	// species is a little bit different because two parameters applied for a single variable
-			indices.add(index + 2);
-		} else {
-			indices.add(index + 1);
-		}
-		Matrix zPrime;
-		Matrix xPrime;
-		Matrix gPlot = getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance();
-		Matrix gTree = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance();
-		Matrix variances = gPlot.add(gTree);
-		for (int i = 0; i < correctionFactor.m_iRows; i++) {
-			xPrime = hessians.getSubMatrix(i, i, 0, hessians.m_iCols - 1).transpose().squareSym();
-//			zPrime = xPrime.getSubMatrix(0,1,0,1);
-			zPrime = xPrime.getSubMatrix(indices, indices);
-			
-			MatrixUtility.elementWiseMultiply(zPrime, variances);
-			MatrixUtility.elementWiseMultiply(xPrime, getParameterEstimates().getVariance());
-			
-			correctionFactor.m_afData[i][0] = zPrime.getSumOfElements() * .5 + xPrime.getSumOfElements() * .5;
-		}
-		correctionMatrix = correctionFactor;
-	}
-
-	/**
-	 * This method returns the variance component that is due to the second term of the Taylor expansion. It
-	 * relies on Isserlis' theorem.
-	 * @return a Matrix instance
-	 * @throws Exception 
-	 */
-	private Matrix getIsserlisVarianceComponents() {
-		Matrix output = new Matrix(heights.m_iRows, heights.m_iRows);
-		Matrix hessians = linearExpressions.getHessians();
-		Matrix xPrimeI;
-		Matrix zPrimeI;
-		Matrix xPrimeJ;
-		Matrix zPrimeJ;
-		double result;
-		Matrix isserlisPlot = getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance().getIsserlisMatrix();
-		Matrix isserlisTree = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance().getIsserlisMatrix();
-		MatrixUtility.add(isserlisPlot, isserlisTree);
-		Matrix isserlisCombine = isserlisPlot;
-		Matrix isserlisOmega = getParameterEstimates().getVariance().getIsserlisMatrix();
-		for (int i = 0; i < heights.m_iRows; i++) {
-			xPrimeI = hessians.getSubMatrix(i, i, 0, hessians.m_iCols - 1).transpose().squareSym();
-			zPrimeI = xPrimeI.getSubMatrix(0, 1, 0, 1);
-			for (int j = i; j < heights.m_iRows; j++) {
-				xPrimeJ = hessians.getSubMatrix(j, j, 0, hessians.m_iCols - 1).transpose().squareSym();
-				zPrimeJ = xPrimeJ.getSubMatrix(0, 1, 0, 1);
-				// a .25 factor has been added MF20110919 (had been forgotten in the first version). Needed because
-				// the second order term is always multiplied by .5 and consequently the product of
-				// two second order term is always affected by a .25 constant.
-				Matrix zPKronzP = zPrimeI.getKroneckerProduct(zPrimeJ);
-				MatrixUtility.elementWiseMultiply(zPKronzP, isserlisCombine);
-				
-				Matrix xPKronxP = xPrimeI.getKroneckerProduct(xPrimeJ);
-				MatrixUtility.elementWiseMultiply(xPKronxP, isserlisOmega);
-				
-				result = zPKronzP.getSumOfElements() * .25 + xPKronxP.getSumOfElements() * .25;
-//				result = zPrimeI.getKroneckerProduct(zPrimeJ).elementWiseMultiply(isserlisCombine).getSumOfElements() + xPrimeI.getKroneckerProduct(xPrimeJ).elementWiseMultiply(isserlisOmega).getSumOfElements();
-				output.m_afData[i][j] = result;
-				if (i != j) {
-					output.m_afData[j][i] = result;		// to ensure the symmetry and not to have to calculate again
-				}
-			}
-		}
-		return output;
-	}
-	
-	
-	/**
-	 * This method returns the R matrix.
-	 * @return a Matrix instance
-	 */
-	private void setRMatrix() {
-		Matrix distance = heights.repeat(1, heights.m_iRows).subtract(heights.transpose().repeat(heights.m_iRows, 1)).getAbsoluteValue();
-		Matrix correlations = distance.powMatrix(rho);			
-		Matrix x = heights.scalarAdd(-1.3).scalarMultiply(1d / (tree.getHeightM() - 1.3)).getAbsoluteValue();
-		Matrix l = heights.scalarMultiply(-1d).scalarAdd(tree.getHeightM());
-		Matrix stdDevMatrix = l.elementWiseMultiply(x).elementWiseMultiply(x.scalarMultiply(-1d).scalarAdd(1d).elementWisePower(3d)).elementWisePower(varFunctionParm2)
-								.scalarAdd(varFunctionParm1).matrixDiagonal();
-		rMatrix = stdDevMatrix.multiply(correlations).multiply(stdDevMatrix).scalarMultiply(residualStdDev * residualStdDev);
-		rMatrixChol = rMatrix.getLowerCholTriangle();
-	}
-	
-	
-	/**
-	 * This method returns the tree whose taper is being predicted.
-	 * @return a StemTaperTree instance
- 	 */
-	protected StemTaperTree getTree() {return tree;}
 	
 }

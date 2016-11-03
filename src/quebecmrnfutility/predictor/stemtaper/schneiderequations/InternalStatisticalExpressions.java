@@ -41,7 +41,7 @@ import repicea.stats.LinearStatisticalExpression;
  */
 class InternalStatisticalExpressions {
 
-	private StemTaperPredictor stemTaperPredictor;
+	private final StemTaperSubModule stemTaperPredictor;
 	private LinearStatisticalExpression firstLinearTerm;
 	private AbstractMathematicalFunction secondLinearTerm;		// abstract because it can be linear or nonlinear sometimes
 	
@@ -184,8 +184,8 @@ class InternalStatisticalExpressions {
 	 * Constructor.
 	 * @param stemTaperPredictor a StemTaperPredictor instance
 	 */
-	InternalStatisticalExpressions(StemTaperPredictor stemTaperPredictor, StemTaperTreeSpecies species) {
-		this.stemTaperPredictor = stemTaperPredictor;
+	InternalStatisticalExpressions(StemTaperSubModule stemTaperSubModule, StemTaperTreeSpecies species) {
+		this.stemTaperPredictor = stemTaperSubModule;
 
 		firstLinearTerm = new LinearStatisticalExpression();
 		firstLinearTerm.setVariableValue(0, 1d);		// only an intercept for the first term
@@ -218,7 +218,7 @@ class InternalStatisticalExpressions {
 
 		int formerIndex;
 		StemTaperStand currentStand = currentTree.getStand();
-		List<Effect> effects = StemTaperEquationSettings.EFFECTS_MAP.get(stemTaperPredictor.typeModel).get(currentTree.getStemTaperTreeSpecies());
+		List<Effect> effects = StemTaperEquationSettings.EFFECTS_MAP.get(stemTaperPredictor.modelType).get(currentTree.getStemTaperTreeSpecies());
 		for (Effect effect : effects) {
 			if (isNewTree) {	
 				formerIndex = variableIndex;

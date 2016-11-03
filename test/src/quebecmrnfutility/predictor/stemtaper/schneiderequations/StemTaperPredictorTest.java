@@ -19,7 +19,7 @@ import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredict
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
 import repicea.serial.DeprecatedObject;
-import repicea.simulation.stemtaper.StemTaperEstimate;
+import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
 import repicea.stats.estimates.Estimate;
 import repicea.util.ObjectUtility;
@@ -32,9 +32,8 @@ public class StemTaperPredictorTest {
 	
 	
 	
-	private Map<StemTaperTreeSpecies, StemTaperEstimate> runSimulation(EstimationMethod method) throws Exception {
+	private Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> runSimulation(EstimationMethod method) throws Exception {
 		StemTaperPredictor ste = new StemTaperPredictor();
-		ste.setEstimationMethod(method);
 		StemTaperStandImpl stand = new StemTaperStandImpl(20, 700);		// 20 m2/ha and 700 stems / ha
 		List<StemTaperTreeImpl> trees = new ArrayList<StemTaperTreeImpl>();
 		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.BOP, stand, 30, 20));	// 30 cm in dbh and 20 m in height
@@ -49,12 +48,12 @@ public class StemTaperPredictorTest {
 		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.PIB, stand, 30, 20));
 
 
-		StemTaperEstimate stemTaper;
-		Map<StemTaperTreeSpecies, StemTaperEstimate> outputMap = new HashMap<StemTaperTreeSpecies, StemTaperEstimate>();
+		AbstractStemTaperEstimate stemTaper;
+		Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> outputMap = new HashMap<StemTaperTreeSpecies, AbstractStemTaperEstimate>();
 		for (StemTaperTreeImpl tree : trees) {
 //			heights = tree.getHeightsForTaper();
 //			ste.setTree(tree);
-			stemTaper = ste.getPredictedTaperForTheseSegments(tree, tree.getSegments());
+			stemTaper = ste.getPredictedTaperForTheseSegments(tree, tree.getSegments(), method);
 			outputMap.put(tree.getStemTaperTreeSpecies(), stemTaper);
 		}
 		
@@ -84,10 +83,10 @@ public class StemTaperPredictorTest {
 	@Test
 	public void TestStemProfileWithFirstOrderApprox() throws Exception {
 		String referenceFilename = path + "refTaperFirstOrderApprox.ser";
-		Map<StemTaperTreeSpecies, StemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.FirstOrder);
+		Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.FirstOrder);
 		
 		Map<StemTaperTreeSpecies, Matrix> outputMap = new HashMap<StemTaperTreeSpecies, Matrix>();
-		StemTaperEstimate taperEstimate;
+		AbstractStemTaperEstimate taperEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			outputMap.put(species, taperEstimate.getMean());
@@ -145,10 +144,10 @@ public class StemTaperPredictorTest {
 	@Test
 	public void TestStemProfileWithFirstOrderApproxMeanOnly() throws Exception {
 		String referenceFilename = path + "refTaperFirstOrderApprox.ser";
-		Map<StemTaperTreeSpecies, StemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.FirstOrderMeanOnly);
+		Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.FirstOrderMeanOnly);
 		
 		Map<StemTaperTreeSpecies, Matrix> outputMap = new HashMap<StemTaperTreeSpecies, Matrix>();
-		StemTaperEstimate taperEstimate;
+		AbstractStemTaperEstimate taperEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			outputMap.put(species, taperEstimate.getMean());
@@ -197,10 +196,10 @@ public class StemTaperPredictorTest {
 	@Test
 	public void TestMeanVolumeWithFirstOrderApprox() throws Exception {
 		String referenceFilename = path + "refVolumesFirstOrderApprox.ser";
-		Map<StemTaperTreeSpecies, StemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.FirstOrder);
+		Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.FirstOrder);
 		
 		Map<StemTaperTreeSpecies, Double> outputMap = new HashMap<StemTaperTreeSpecies, Double>();
-		StemTaperEstimate taperEstimate;
+		AbstractStemTaperEstimate taperEstimate;
 		Estimate<?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
@@ -252,10 +251,10 @@ public class StemTaperPredictorTest {
 	@Test
 	public void TestVarianceVolumeWithFirstOrderApprox() throws Exception {
 		String referenceFilename = path + "refVariancesFirstOrderApprox.ser";
-		Map<StemTaperTreeSpecies, StemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.FirstOrder);
+		Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.FirstOrder);
 
 		Map<StemTaperTreeSpecies, Double> outputMap = new HashMap<StemTaperTreeSpecies, Double>();
-		StemTaperEstimate taperEstimate;
+		AbstractStemTaperEstimate taperEstimate;
 		Estimate<?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
@@ -312,10 +311,10 @@ public class StemTaperPredictorTest {
 	@Test
 	public void TestStemProfileWithSecondOrderApprox() throws Exception {
 		String referenceFilename = path + "refTaperSecondOrderApprox.ser";
-		Map<StemTaperTreeSpecies, StemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.SecondOrder);
+		Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.SecondOrder);
 		
 		Map<StemTaperTreeSpecies, Matrix> outputMap = new HashMap<StemTaperTreeSpecies, Matrix>();
-		StemTaperEstimate taperEstimate;
+		AbstractStemTaperEstimate taperEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			outputMap.put(species, taperEstimate.getMean());
@@ -369,10 +368,10 @@ public class StemTaperPredictorTest {
 	@Test
 	public void TestStemProfileWithSecondOrderApproxMeanOnly() throws Exception {
 		String referenceFilename = path + "refTaperSecondOrderApprox.ser";
-		Map<StemTaperTreeSpecies, StemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.SecondOrderMeanOnly);
+		Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.SecondOrderMeanOnly);
 		
 		Map<StemTaperTreeSpecies, Matrix> outputMap = new HashMap<StemTaperTreeSpecies, Matrix>();
-		StemTaperEstimate taperEstimate;
+		AbstractStemTaperEstimate taperEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			outputMap.put(species, taperEstimate.getMean());
@@ -422,10 +421,10 @@ public class StemTaperPredictorTest {
 	@Test
 	public void TestMeanVolumeWithSecondOrderApprox() throws Exception {
 		String referenceFilename = path + "refVolumesSecondOrderApprox.ser";
-		Map<StemTaperTreeSpecies, StemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.SecondOrder);
+		Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.SecondOrder);
 		
 		Map<StemTaperTreeSpecies, Double> outputMap = new HashMap<StemTaperTreeSpecies, Double>();
-		StemTaperEstimate taperEstimate;
+		AbstractStemTaperEstimate taperEstimate;
 		Estimate<?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
@@ -477,10 +476,10 @@ public class StemTaperPredictorTest {
 	@Test
 	public void TestVarianceVolumeWithSecondOrderApprox() throws Exception {
 		String referenceFilename = path + "refVariancesSecondOrderApprox.ser";
-		Map<StemTaperTreeSpecies, StemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.SecondOrder);
+		Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> tmpMap =  runSimulation(EstimationMethod.SecondOrder);
 
 		Map<StemTaperTreeSpecies, Double> outputMap = new HashMap<StemTaperTreeSpecies, Double>();
-		StemTaperEstimate taperEstimate;
+		AbstractStemTaperEstimate taperEstimate;
 		Estimate<?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
@@ -534,13 +533,12 @@ public class StemTaperPredictorTest {
 	public void TestComparisonGaussLegendreAndTrapezoidalRuleForBottomSections() throws Exception {
 	
 		StemTaperPredictor ste = new StemTaperPredictor();
-		ste.setEstimationMethod(EstimationMethod.SecondOrder);
 		StemTaperStandImpl stand = new StemTaperStandImpl(20, 700);		// 20 m2/ha and 700 stems / ha
 		StemTaperTreeImpl tree = new StemTaperTreeImpl(StemTaperTreeSpecies.EPB, stand, 30, 20); 
 
 //		ste.setTree(tree);
 		StemTaperSegmentList segments = tree.getGaussLegendreBottomSegments();
-		StemTaperEstimate taperEstimate = ste.getPredictedTaperForTheseSegments(tree, segments);
+		AbstractStemTaperEstimate taperEstimate = ste.getPredictedTaperForTheseSegments(tree, segments, EstimationMethod.SecondOrder);
 			
 		Estimate<?> volumeEstimate = taperEstimate.getVolumeEstimate(segments);
 		double volume = volumeEstimate.getMean().getSumOfElements();

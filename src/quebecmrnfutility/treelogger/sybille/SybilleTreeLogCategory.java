@@ -30,7 +30,7 @@ import java.util.List;
 
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree;
 import repicea.math.Matrix;
-import repicea.simulation.stemtaper.StemTaperEstimate;
+import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
 import repicea.simulation.treelogger.LogCategory;
@@ -180,7 +180,7 @@ public class SybilleTreeLogCategory extends LogCategory {
 			throw new InvalidParameterException("Sybille only uses trees that implement the StemTaperTree interface!");
 		} 
 		
-		StemTaperEstimate estimate = (StemTaperEstimate) params[0];
+		AbstractStemTaperEstimate estimate = (AbstractStemTaperEstimate) params[0];
 		double height = (Double) params[1];
 		boolean optimize = (Boolean) params[2];
 
