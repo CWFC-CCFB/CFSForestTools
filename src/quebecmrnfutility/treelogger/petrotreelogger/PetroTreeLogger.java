@@ -53,12 +53,12 @@ public class PetroTreeLogger extends TreeLogger<PetroTreeLoggerParameters, Petro
 
 	/**
 	 * General constructor. 
-	 * @param isParametersVariabilityEnabled true to enable the variability in the parameter estimates
-	 * @param isResidualVariabilityEnabled true to enable the residual error 
+	 * @param isParameterVariabilityEnabled true to enable the variability in the parameter estimates
+	 * @param isResidualVariabilityEnabled true to enable the residual variability 
 	 */
-	public PetroTreeLogger(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	public PetroTreeLogger(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super();
-		predictor = new PetroGradePredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled);
+		predictor = new PetroGradePredictor(isParameterVariabilityEnabled, isResidualVariabilityEnabled);
 	}
 	
 	/**

@@ -18,7 +18,9 @@ import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.io.FormatReader;
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.treelogger.LogCategory;
 import repicea.simulation.treelogger.LoggableTree;
+import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
 
@@ -483,6 +485,57 @@ public class SybilleTreeLoggerTest {
 
 	}
 
+	@Test
+	public void testInStochasticMode() {
+		double dbhCm = 25;
+		double heightM = 16;
+		int nbRealizations = 1000;
+		Collection<SybilleLoggableTree> coll = new ArrayList<SybilleLoggableTree>();
+		for (int i = 0; i < nbRealizations; i++) {
+			StemTaperStandImplTest stand = new StemTaperStandImplTest();
+			stand.setMonteCarloRealizationId(i);
+			coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.BOP, dbhCm, heightM));
+		}
+
+		SybilleTreeLogger treeLogger = new SybilleTreeLogger(true);	// true : in stochastic mode
+		treeLogger.init(coll);
+		treeLogger.setTreeLoggerParameters(treeLogger.createDefaultTreeLoggerParameters());
+		treeLogger.run();
+
+		double factor = 1d/nbRealizations;
+		Map<LogCategory, Double> obsMapStochastic = this.getMap(factor, treeLogger);
+		int u = 0;
+
+		
+		coll = new ArrayList<SybilleLoggableTree>();
+		StemTaperStandImplTest stand = new StemTaperStandImplTest();
+		coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.BOP, dbhCm, heightM));
+		treeLogger = new SybilleTreeLogger();	// in deterministic mode
+		treeLogger.init(coll);
+		treeLogger.setTreeLoggerParameters(treeLogger.createDefaultTreeLoggerParameters());
+		treeLogger.run();
+		Map<LogCategory, Double> obsMapDeterministic = getMap(1d, treeLogger);
+		int z= 0;
+		
+	}
+
 	
+	private Map<LogCategory, Double> getMap(double factor, TreeLogger<?,?> treeLogger) {
+//		double factor = 1d/nbRealizations;
+		Map<LogCategory, Double> obsMap = new HashMap<LogCategory, Double>();
+		for (Collection<WoodPiece> collWP : treeLogger.getWoodPieces().values()) {
+			for (WoodPiece wp : collWP) {
+				LogCategory lc = wp.getLogCategory();
+				double value;
+				if (!obsMap.containsKey(lc)) {
+					value = wp.getVolumeM3() * factor;
+				} else {
+					value = obsMap.get(lc) + wp.getVolumeM3() * factor;
+				}
+				obsMap.put(lc, value);
+			}
+		}
+		return obsMap;
+	}
 	
 }

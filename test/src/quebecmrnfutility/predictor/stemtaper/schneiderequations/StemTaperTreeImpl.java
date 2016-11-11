@@ -3,6 +3,8 @@ package quebecmrnfutility.predictor.stemtaper.schneiderequations;
 
 import java.util.List;
 
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.stemtaper.StemTaperCrossSection;

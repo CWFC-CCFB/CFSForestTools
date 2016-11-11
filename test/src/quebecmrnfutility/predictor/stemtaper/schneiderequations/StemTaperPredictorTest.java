@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethod;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;

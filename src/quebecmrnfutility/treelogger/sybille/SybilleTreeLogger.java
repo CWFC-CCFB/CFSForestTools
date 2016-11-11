@@ -44,13 +44,22 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 
 	private StemTaperPredictor stp;
 	private StemTaperSegmentList segments;
+
 	
 	/**
-	 * Constructor. 
+	 * Official constructor for the extension
 	 */
 	public SybilleTreeLogger() {
+		this(false);
+	}
+	
+	/**
+	 * General constructor. 
+	 * @param isVariabilityEnabled true to enable the stochastic mode 
+	 */
+	public SybilleTreeLogger(boolean isVariabilityEnabled) {
 		super();
-		stp = new StemTaperPredictor();
+		stp = new StemTaperPredictor(isVariabilityEnabled);
 		segments = new StemTaperSegmentList();
 	}
 	

@@ -8,6 +8,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor;
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree;
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethod;
 import repicea.io.FormatReader;
 import repicea.io.javacsv.CSVReader;
@@ -159,10 +163,12 @@ public class StemTaperPredictorTestIntensive {
 			List<StemTaperTree> trees = getTreeList(species);
 			StemTaperPredictor stm = new StemTaperPredictor();
 			for (StemTaperTree tree : trees) {
-//				stm.setTree(tree);
-				AbstractStemTaperEstimate estimate = stm.getPredictedTaperForTheseHeights(tree, ((StemTaperTreeImpl) tree).getHeightList(), EstimationMethod.FirstOrderMeanOnly);
+				AbstractStemTaperEstimate estimate = stm.getPredictedTaperForTheseHeights(tree, ((StemTaperTreeImpl) tree).getHeightList(), EstimationMethod.FirstOrderMeanOnly, ModelType.TREEMODEL);
 				double newValue = estimate.getMean().m_afData[0][0];
 				double oldValue = ((StemTaperTreeImpl) tree).getPredicted();
+//				if (Math.abs(oldValue - newValue) > 1E-8) {
+//					int u = 0;
+//				}
 				assertEquals("Testing species " + species, 
 						oldValue, 
 						newValue,

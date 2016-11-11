@@ -1,5 +1,6 @@
 package quebecmrnfutility.predictor.stemtaper.schneiderequations;
 
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
 import repicea.simulation.HierarchicalLevel;
 
 class StemTaperStandImpl implements StemTaperStand {

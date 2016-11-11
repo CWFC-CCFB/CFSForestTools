@@ -13,7 +13,6 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 	private StemTaperTreeSpecies species;
 	private double dbhmm;
 	private double heightm;
-	private int monteCarloId;
 	private double refVolume;
 	
 	
@@ -41,9 +40,6 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
-//	@Override
-//	public void setMonteCarloRealizationId(int i) {this.monteCarloId = i;}
-
 	@Override
 	public StemTaperStand getStand() {return stand;}
 
@@ -70,7 +66,7 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 
 	@Override
 	public int getMonteCarloRealizationId() {
-		return monteCarloId;
+		return getStand().getMonteCarloRealizationId();
 	}
 
 

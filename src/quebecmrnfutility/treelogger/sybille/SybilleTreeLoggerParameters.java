@@ -129,7 +129,7 @@ public class SybilleTreeLoggerParameters extends TreeLoggerParameters<SybilleTre
 	
 	/**
 	 * This method sets the estimation method for the stem taper integration. The available methods are: first-order and second-order Taylor 
-	 * expansion as well as Monte Carlo. By default, it is set to the second-order expansion. 
+	 * expansion. By default, it is set to the second-order expansion. 
 	 * @param estimationMethod an EstimationMethod enum 
 	 */
 	public void setEstimationMethod(EstimationMethod estimationMethod) {this.estimationMethod = estimationMethod;}
