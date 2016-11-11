@@ -540,7 +540,16 @@ class StemTaperEquationSettings implements Serializable {
 	 * @return the model type equation
 	 */
 	public static ModelType getModelTypeEquation(StemTaperTree tree) {
-		ModelType modelType = ModelType.HYBRIDMODEL;
+//	public static ModelType getModelTypeEquation(StemTaperTree tree, Object... additionalParameters) {
+		ModelType modelType = null;
+//		if (additionalParameters != null) {
+//			for (Object obj : additionalParameters) {
+//				if (obj instanceof ModelType) {
+//					return (ModelType) obj;
+//				}
+//			}
+//		}
+		modelType = ModelType.HYBRIDMODEL;
 		StemTaperTreeSpecies species = tree.getStemTaperTreeSpecies();
 		StemTaperStand stand = tree.getStand();
 		if (EFFECTS_MAP.get(modelType).get(species).contains(Effect.VegPot)) {

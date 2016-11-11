@@ -100,29 +100,29 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	 * @throws Exception
 	 */
 	private void setHeights(Matrix heights, EstimationMethod estimationMethod) {
-		if (!heights.equals(this.heights)) {
-			for (int i = 0; i < heights.m_iRows; i++) {
-				heights.m_afData[i][0] = Math.round(heights.m_afData[i][0] * 1000) * 0.001;
-			}
-			if (heights.m_afData[heights.m_iRows - 1][0] >= tree.getHeightM()) {
-				heights.m_afData[heights.m_iRows - 1][0] = tree.getHeightM() - 1E-4;
-			}
-			this.heights = heights;
-			relativeHeights = heights.scalarMultiply(1d / tree.getHeightM());
-			Matrix treeHeightMatrix = new Matrix(heights.m_iRows, 1, tree.getHeightM(), 0d);
-			
-			MatrixUtility.subtract(treeHeightMatrix, heights);
-			MatrixUtility.scalarMultiply(treeHeightMatrix, 1d / (tree.getHeightM() - 1.3));
-			coreExpression =  treeHeightMatrix;
-			
-			heightsSectionRespectToDbh = heights.scalarMultiply(1d / 1.3);
-			if (!isResidualVariabilityEnabled) { // deterministic implementation then
-				if (estimationMethod == EstimationMethod.FirstOrder || estimationMethod == EstimationMethod.SecondOrder) {
-					setRMatrix();
-				}
-			}
-			residualErrors = new Matrix(heights.m_iRows, 1);
+		for (int i = 0; i < heights.m_iRows; i++) {
+			heights.m_afData[i][0] = Math.round(heights.m_afData[i][0] * 1000) * 0.001;
 		}
+		if (heights.m_afData[heights.m_iRows - 1][0] >= tree.getHeightM()) {
+			heights.m_afData[heights.m_iRows - 1][0] = tree.getHeightM() - 1E-4;
+		}
+		this.heights = heights;
+		relativeHeights = heights.scalarMultiply(1d / tree.getHeightM());
+		Matrix treeHeightMatrix = new Matrix(heights.m_iRows, 1, tree.getHeightM(), 0d);
+
+		MatrixUtility.subtract(treeHeightMatrix, heights);
+		MatrixUtility.scalarMultiply(treeHeightMatrix, 1d / (tree.getHeightM() - 1.3));
+		coreExpression =  treeHeightMatrix;
+
+		heightsSectionRespectToDbh = heights.scalarMultiply(1d / 1.3);
+		if (isResidualVariabilityEnabled) { // stochastic implementation
+			setRMatrix();
+		} else { // deterministic implementation then
+			if (estimationMethod == EstimationMethod.FirstOrder || estimationMethod == EstimationMethod.SecondOrder) {
+				setRMatrix();	// must be also set because we need it for the variance
+			}
+		}
+		residualErrors = new Matrix(heights.m_iRows, 1); // TODO find a way to not create this object every time
 	}
 	
 	@Override

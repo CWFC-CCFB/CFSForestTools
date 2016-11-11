@@ -170,10 +170,10 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 							expCurrentValue = Math.exp(currentValue);
 							oVec.m_afData[i][0] = expCurrentValue / (1 + expCurrentValue);
 						}
-						currentSubModule.setCorrelationParameter(oVec.m_afData[0][0]); // TODO check if the implementation is ok here was a matrix before make sure the matrix was 1x1
+						currentSubModule.setCorrelationParameter(oVec.m_afData[0][0]);
 
 						oVec = ParameterLoader.loadVectorFromFile(residStdDevFilename).get();
-						currentSubModule.setResidualStdDev(oVec.m_afData[0][0]); // TODO check if the implementation is ok here was a matrix before make sure the matrix was 1x1
+						currentSubModule.setResidualStdDev(oVec.m_afData[0][0]); 
 					}
 				}
 			}
@@ -194,6 +194,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 			throw new InvalidParameterException("The StemTaperPredictor class is designed to work with StemTaperTree instances only!"); 
 		}
 		StemTaperTree tree = (StemTaperTree) t;
+//		ModelType mType = StemTaperEquationSettings.getModelTypeEquation(tree, additionalParameters);
 		ModelType mType = StemTaperEquationSettings.getModelTypeEquation(tree);
 		
 		Map<StemTaperTreeSpecies, StemTaperSubModule> innerMap = subModules.get(mType);
