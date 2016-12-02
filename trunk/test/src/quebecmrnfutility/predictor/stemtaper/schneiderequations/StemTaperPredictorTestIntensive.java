@@ -12,7 +12,7 @@ import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredict
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethod;
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
 import repicea.io.FormatReader;
 import repicea.io.javacsv.CSVReader;
 import repicea.simulation.HierarchicalLevel;
@@ -163,7 +163,7 @@ public class StemTaperPredictorTestIntensive {
 			List<StemTaperTree> trees = getTreeList(species);
 			StemTaperPredictor stm = new StemTaperPredictor();
 			for (StemTaperTree tree : trees) {
-				AbstractStemTaperEstimate estimate = stm.getPredictedTaperForTheseHeights(tree, ((StemTaperTreeImpl) tree).getHeightList(), EstimationMethod.FirstOrderMeanOnly, ModelType.TREEMODEL);
+				AbstractStemTaperEstimate estimate = stm.getPredictedTaperForTheseHeights(tree, ((StemTaperTreeImpl) tree).getHeightList(), EstimationMethodInDeterministicMode.FirstOrderMeanOnly, ModelType.TREEMODEL);
 				double newValue = estimate.getMean().m_afData[0][0];
 				double oldValue = ((StemTaperTreeImpl) tree).getPredicted();
 //				if (Math.abs(oldValue - newValue) > 1E-8) {

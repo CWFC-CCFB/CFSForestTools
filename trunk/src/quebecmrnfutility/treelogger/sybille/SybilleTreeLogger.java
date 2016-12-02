@@ -44,7 +44,7 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 
 	private StemTaperPredictor stp;
 	private StemTaperSegmentList segments;
-
+	private final boolean isVariabilityEnabled;
 	
 	/**
 	 * Official constructor for the extension
@@ -59,11 +59,11 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 	 */
 	public SybilleTreeLogger(boolean isVariabilityEnabled) {
 		super();
+		this.isVariabilityEnabled = isVariabilityEnabled;
 		stp = new StemTaperPredictor(isVariabilityEnabled);
 		segments = new StemTaperSegmentList();
 	}
 	
-
 	@Override
 	protected void logThisTree(SybilleLoggableTree tree) {
 		boolean optimize = getTreeLoggerParameters().isIntegrationOptimizationEnabled();
@@ -114,8 +114,8 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 	@Override
 	public void setTreeLoggerParameters() {
 		SybilleTreeLoggerParameters stlp = createDefaultTreeLoggerParameters();				
-		stlp.showUI(null);
 		setTreeLoggerParameters(stlp);
+		stlp.showUI(null);
 	}
 
 	@Override
@@ -124,38 +124,7 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 		stlp.initializeDefaultLogCategories();
 		return stlp;
 	}
-
-//	@Override
-//	public void init(Collection<SybilleLoggableTree> loggableTrees) {
-//		Collection<SybilleLoggableTree> sybilleLoggableTrees = getValidSybilleLoggableTreesFromACollection(loggableTrees);
-//		super.init(sybilleLoggableTrees);
-//	}
-
-//	/**
-//	 * This method extracts a collection of TreePetroLoggable objects from a collection of LoggableTree instances.
-//	 * @param trees a Collection of LoggableTree-derived instances
-//	 * @return a Collection of PetroLoggableTree instances
-//	 */
-//	private Collection<SybilleLoggableTree> getValidSybilleLoggableTreesFromACollection(Collection<? extends LoggableTree> loggableTrees) {
-//		Collection<SybilleLoggableTree> sybilleLoggableTrees = new ArrayList<SybilleLoggableTree>();
-//		for (LoggableTree t : loggableTrees) {
-//			if (t instanceof SybilleLoggableTree) {
-//				SybilleLoggableTree tree = (SybilleLoggableTree) t;
-//				if (isEligible(tree)) {
-//					sybilleLoggableTrees.add(tree);
-//				}
-//			}
-//		}
-//		return sybilleLoggableTrees;
-//	}
-
 	
-	public static void main (String[] args) throws IOException {
-		SybilleTreeLogger log = new SybilleTreeLogger();
-		log.setTreeLoggerParameters();
-	}
-
-
 	@Override
 	public SybilleLoggableTree getEligible(LoggableTree t) {
 		if (t instanceof SybilleLoggableTree) {
@@ -167,6 +136,7 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 		return null;
 	}
 
+	protected boolean isVariabilityEnabled() {return isVariabilityEnabled;}
 
 	@Override
 	public boolean isCompatibleWith(Object referent) {
@@ -174,6 +144,10 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 	}
 
 
+	public static void main (String[] args) throws IOException {
+		SybilleTreeLogger log = new SybilleTreeLogger();
+		log.setTreeLoggerParameters();
+	}
 
 
 }

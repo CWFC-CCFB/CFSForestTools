@@ -43,7 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethod;
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
 import repicea.gui.OwnedWindow;
 import repicea.gui.REpiceaDialog;
 import repicea.gui.UIControlManager;
@@ -231,10 +231,10 @@ public class SybilleTreeLoggerOptionDialog extends REpiceaDialog
 	public void itemStateChanged(ItemEvent arg0) {
 		if (arg0.getSource().equals(rdbtnFirstOrder) || arg0.getSource().equals(rdbtnSecondOrder)) {
 			if (rdbtnFirstOrder.isSelected()) {
-				parameters.setEstimationMethod(EstimationMethod.FirstOrderMeanOnly);
+				parameters.setEstimationMethod(EstimationMethodInDeterministicMode.FirstOrderMeanOnly);
 			} 
 			if (rdbtnSecondOrder.isSelected()) {
-				parameters.setEstimationMethod(EstimationMethod.SecondOrderMeanOnly);
+				parameters.setEstimationMethod(EstimationMethodInDeterministicMode.SecondOrderMeanOnly);
 			}
 		} else  if (arg0.getSource().equals(optimizeCheckBox)) {
 			parameters.setIntegrationOptimizationEnabled(optimizeCheckBox.isSelected());
@@ -263,7 +263,7 @@ public class SybilleTreeLoggerOptionDialog extends REpiceaDialog
 
 	@Override
 	public void unpackMemorizerPackage(MemorizerPackage wasMemorized) {
-		parameters.setEstimationMethod((EstimationMethod) wasMemorized.get(0));
+		parameters.setEstimationMethod((EstimationMethodInDeterministicMode) wasMemorized.get(0));
 		parameters.setStumpHeightM((Double) wasMemorized.get(1));
 		parameters.setIntegrationOptimizationEnabled((Boolean) wasMemorized.get(2));
 	}
@@ -281,12 +281,14 @@ public class SybilleTreeLoggerOptionDialog extends REpiceaDialog
 	public void synchronizeUIWithOwner() {
 		stumpHeightFld.setText(((Double) parameters.getStumpHeightM()).toString());
 		
-		
-		if (parameters.getEstimationMethod() == EstimationMethod.SecondOrderMeanOnly) {
+		if (parameters.getEstimationMethod() == EstimationMethodInDeterministicMode.SecondOrderMeanOnly) {
 			rdbtnSecondOrder.setSelected(true);
 		} else {
 			rdbtnFirstOrder.setSelected(true);
 		}
+
+		rdbtnSecondOrder.setEnabled(!parameters.isVariabilityEnabled());
+		rdbtnFirstOrder.setEnabled(!parameters.isVariabilityEnabled());
 		
 		optimizeCheckBox.setSelected(parameters.isIntegrationOptimizationEnabled());
 	}
