@@ -34,6 +34,7 @@ import java.util.Map;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
+import repicea.serial.xml.XmlSerializerChangeMonitor;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
@@ -60,11 +61,18 @@ import repicea.util.ObjectUtility;
  */
 public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	
+	
+	static {
+		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethod", 
+				"quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethodInDeterministicMode");
+	}
+	
+	
 	@SuppressWarnings("serial")
 	public static class SchneiderStemTaperEstimate extends AbstractStemTaperEstimate {
 		
-		public SchneiderStemTaperEstimate(boolean isMonteCarlo, List<Double> computedHeights) {
-			super(isMonteCarlo, computedHeights);
+		public SchneiderStemTaperEstimate(List<Double> computedHeights) {
+			super(computedHeights);
 		}
 
 		@Override
@@ -90,17 +98,18 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	
 	public static int[] timer = new int[15]; 
 
-	public static enum EstimationMethod {FirstOrder, 
+	/**
+	 * This enum variable applies for estimation methods in deterministic mode. It
+	 * is useless when the stem taper model is stochastic.
+	 * @author Mathieu Fortin - December 2016
+	 */
+	public static enum EstimationMethodInDeterministicMode {FirstOrder, 
 		SecondOrder, 
-		MonteCarlo,
 		FirstOrderMeanOnly,
 		SecondOrderMeanOnly}
 
 	private final Map<ModelType, Map<StemTaperTreeSpecies, StemTaperSubModule>> subModules;
 	
-	
-	
-		
 	/**
 	 * Simple constructor with no variability.
 	 * @throws Exception
@@ -108,8 +117,6 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	public StemTaperPredictor() {
 		this(false);
 	}
-
-	
 	
 	/**
 	 * General constructor.
@@ -203,11 +210,11 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 			throw new InvalidParameterException("This species is not recognized!");
 		}
 
-		EstimationMethod estimationMethod = null;
+		EstimationMethodInDeterministicMode estimationMethod = null;
 
 		if (additionalParameters != null && additionalParameters.length >= 1) {
-			if (additionalParameters[0] instanceof EstimationMethod) {
-				estimationMethod = (EstimationMethod) additionalParameters[0];
+			if (additionalParameters[0] instanceof EstimationMethodInDeterministicMode) {
+				estimationMethod = (EstimationMethodInDeterministicMode) additionalParameters[0];
 			}
 		}
 		
@@ -221,7 +228,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	 * @param stemTaperSegments a List of StemTaperSegment instances
 	 * @return a StemTaperEstimate instance with the cross section diameter in mm2
 	 */
-	public AbstractStemTaperEstimate getPredictedTaperForTheseSegments(StemTaperTree tree, StemTaperSegmentList stemTaperSegments, EstimationMethod method) {		
+	public AbstractStemTaperEstimate getPredictedTaperForTheseSegments(StemTaperTree tree, StemTaperSegmentList stemTaperSegments, EstimationMethodInDeterministicMode method) {		
 		List<Double> currentHeightsToEvaluate = stemTaperSegments.getHeightsWithoutReplicates();	
 		return getPredictedTaperForTheseHeights(tree, currentHeightsToEvaluate, method);		
 	}

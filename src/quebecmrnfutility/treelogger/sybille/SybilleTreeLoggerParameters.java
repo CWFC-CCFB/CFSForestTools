@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethod;
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import quebecmrnfutility.treelogger.sybille.SybilleTreeLogCategory.LengthID;
 import repicea.simulation.treelogger.TreeLoggerParameters;
@@ -69,7 +69,7 @@ public class SybilleTreeLoggerParameters extends TreeLoggerParameters<SybilleTre
 	 */
 	private double stumpHeightM = 0.15;
 	
-	private EstimationMethod estimationMethod = EstimationMethod.SecondOrderMeanOnly;
+	private EstimationMethodInDeterministicMode estimationMethod = EstimationMethodInDeterministicMode.SecondOrderMeanOnly;
 	
 	private boolean integrationOptimization = true;			// means CompositeSimpsonRule is given priority over TrapezoidalRule
 
@@ -125,14 +125,14 @@ public class SybilleTreeLoggerParameters extends TreeLoggerParameters<SybilleTre
 	 */
 	public void setStumpHeightM(double stumpHeightM) {this.stumpHeightM = stumpHeightM;}
 	
-	protected EstimationMethod getEstimationMethod() {return estimationMethod;}
+	protected EstimationMethodInDeterministicMode getEstimationMethod() {return estimationMethod;}
 	
 	/**
 	 * This method sets the estimation method for the stem taper integration. The available methods are: first-order and second-order Taylor 
 	 * expansion. By default, it is set to the second-order expansion. 
 	 * @param estimationMethod an EstimationMethod enum 
 	 */
-	public void setEstimationMethod(EstimationMethod estimationMethod) {this.estimationMethod = estimationMethod;}
+	public void setEstimationMethod(EstimationMethodInDeterministicMode estimationMethod) {this.estimationMethod = estimationMethod;}
 
 	/**
 	 * This method enables or disables the integration optimization. By default, the optimization is enabled.
@@ -151,6 +151,14 @@ public class SybilleTreeLoggerParameters extends TreeLoggerParameters<SybilleTre
 		return guiInterface != null && guiInterface.isVisible();
 	}
 
+	protected boolean isVariabilityEnabled() {
+		if (treeLogger != null) {
+			return ((SybilleTreeLogger) treeLogger).isVariabilityEnabled();
+		} else {
+			return false;
+		}
+	}
+
 	/*
 	 * For testing.
 	 */
@@ -162,6 +170,7 @@ public class SybilleTreeLoggerParameters extends TreeLoggerParameters<SybilleTre
 //		stlp.showInterface(null);
 		System.exit(0);
 	}
+
 
 	
 }

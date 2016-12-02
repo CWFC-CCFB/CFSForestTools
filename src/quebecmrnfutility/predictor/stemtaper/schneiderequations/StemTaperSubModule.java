@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethod;
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.SchneiderStemTaperEstimate;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
@@ -99,7 +99,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	 * @param estimationMethod
 	 * @throws Exception
 	 */
-	private void setHeights(Matrix heights, EstimationMethod estimationMethod) {
+	private void setHeights(Matrix heights, EstimationMethodInDeterministicMode estimationMethod) {
 		for (int i = 0; i < heights.m_iRows; i++) {
 			heights.m_afData[i][0] = Math.round(heights.m_afData[i][0] * 1000) * 0.001;
 		}
@@ -118,7 +118,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		if (isResidualVariabilityEnabled) { // stochastic implementation
 			setRMatrix();
 		} else { // deterministic implementation then
-			if (estimationMethod == EstimationMethod.FirstOrder || estimationMethod == EstimationMethod.SecondOrder) {
+			if (estimationMethod == EstimationMethodInDeterministicMode.FirstOrder || estimationMethod == EstimationMethodInDeterministicMode.SecondOrder) {
 				setRMatrix();	// must be also set because we need it for the variance
 			}
 		}
@@ -130,23 +130,23 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		this.tree = (StemTaperTree) t;
 		Matrix parametersForThisRealization = getParametersForThisRealization(tree);
 		linearExpressions.setParameters(parametersForThisRealization);
-		EstimationMethod estimationMethod = EstimationMethod.SecondOrder;
+		EstimationMethodInDeterministicMode estimationMethod = EstimationMethodInDeterministicMode.SecondOrder;
 		if (additionalParameters != null && additionalParameters.length >= 1) {
-			if (additionalParameters[0] instanceof EstimationMethod) {
-				estimationMethod = (EstimationMethod) additionalParameters[0];
+			if (additionalParameters[0] instanceof EstimationMethodInDeterministicMode) {
+				estimationMethod = (EstimationMethodInDeterministicMode) additionalParameters[0];
 			}
 		}
 		setHeights(new Matrix(heightMeasures), estimationMethod);
 		
 		
-		AbstractStemTaperEstimate prediction = new SchneiderStemTaperEstimate(estimationMethod == EstimationMethod.MonteCarlo, heightMeasures);
+		AbstractStemTaperEstimate prediction = new SchneiderStemTaperEstimate(heightMeasures);
 		
 		Matrix pred = new Matrix(heights.m_iRows, 1);
 		Matrix sumOfRandomEffects = getRandomEffectsForThisSubject(tree.getStand()).add(getRandomEffectsForThisSubject(tree));
 		double randomEffects0 = sumOfRandomEffects.m_afData[0][0];
 		double randomEffects1 = sumOfRandomEffects.m_afData[1][0];
 		if (!isResidualVariabilityEnabled) {
-			if (estimationMethod == EstimationMethod.SecondOrder || estimationMethod == EstimationMethod.SecondOrderMeanOnly) {
+			if (estimationMethod == EstimationMethodInDeterministicMode.SecondOrder || estimationMethod == EstimationMethodInDeterministicMode.SecondOrderMeanOnly) {
 				setCorrectionMatrix();
 			} 
 			residualErrors.resetMatrix(); 
@@ -162,7 +162,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 			alpha = parameters.m_afData[i][0] + randomEffects0;
 			exponent = parameters.m_afData[i][1] + randomEffects1;
 			if (!isResidualVariabilityEnabled) {
-				if (estimationMethod == EstimationMethod.SecondOrder || estimationMethod == EstimationMethod.SecondOrderMeanOnly) {
+				if (estimationMethod == EstimationMethodInDeterministicMode.SecondOrder || estimationMethod == EstimationMethodInDeterministicMode.SecondOrderMeanOnly) {
 					correctionFactor = correctionMatrix.m_afData[i][0];
 				}
 			}	
@@ -173,7 +173,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		prediction.setMean(pred);
 		
 		if (!isResidualVariabilityEnabled) {
-			if (estimationMethod == EstimationMethod.FirstOrder || estimationMethod == EstimationMethod.SecondOrder) {
+			if (estimationMethod == EstimationMethodInDeterministicMode.FirstOrder || estimationMethod == EstimationMethodInDeterministicMode.SecondOrder) {
 				prediction.setVariance(getStemTaperVariance(estimationMethod));
 			}
 		}
@@ -217,7 +217,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	 * This method computes the analytical variance according to the analytical estimator.
 	 * @return a Matrix instance
 	 */
-	private Matrix getStemTaperVariance(EstimationMethod estimationMethod) {
+	private Matrix getStemTaperVariance(EstimationMethodInDeterministicMode estimationMethod) {
 		Matrix gradients = linearExpressions.getGradients(); 
 		Matrix gPlot = getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance();
 		Matrix gTree = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance();
@@ -232,7 +232,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		MatrixUtility.add(v, fixedEffectParameterPart);
 		Matrix w = v;
 		
-		if (estimationMethod == EstimationMethod.SecondOrder) {
+		if (estimationMethod == EstimationMethodInDeterministicMode.SecondOrder) {
 			MatrixUtility.subtract(w, correctionMatrix.multiply(correctionMatrix.transpose()));		// c*cT
 			Matrix isserlisComponent;
 			try {

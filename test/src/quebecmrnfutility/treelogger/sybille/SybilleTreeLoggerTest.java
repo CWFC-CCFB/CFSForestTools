@@ -13,7 +13,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethod;
+import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.io.FormatReader;
@@ -130,7 +130,7 @@ public class SybilleTreeLoggerTest {
 		}
 	}
 	
-	private Map<String, Double> getObservedMap(EstimationMethod estimationMethod, boolean optimization) throws IOException {
+	private Map<String, Double> getObservedMap(EstimationMethodInDeterministicMode estimationMethod, boolean optimization) throws IOException {
 		StemTaperStand stand = new StemTaperStandImplTest();
 		
 		Collection<SybilleLoggableTree> coll = new ArrayList<SybilleLoggableTree>();
@@ -175,7 +175,7 @@ public class SybilleTreeLoggerTest {
 		String path = ObjectUtility.getPackagePath(getClass());
 		String referenceFilename = path + "sybilleLoggingTestWithFirstOrder.ser";
 		
-		Map<String, Double> obsMap = getObservedMap(EstimationMethod.FirstOrder, false);
+		Map<String, Double> obsMap = getObservedMap(EstimationMethodInDeterministicMode.FirstOrder, false);
 		
 //		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
 //  	try {
@@ -214,7 +214,7 @@ public class SybilleTreeLoggerTest {
 		String path = ObjectUtility.getPackagePath(getClass());
 		String referenceFilename = path + "sybilleLoggingTestWithFirstOrder.ser";
 		
-		Map<String, Double> obsMap = getObservedMap(EstimationMethod.FirstOrderMeanOnly, false);
+		Map<String, Double> obsMap = getObservedMap(EstimationMethodInDeterministicMode.FirstOrderMeanOnly, false);
 		
 //		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
 //  	try {
@@ -254,7 +254,7 @@ public class SybilleTreeLoggerTest {
 		String path = ObjectUtility.getPackagePath(getClass());
 		String referenceFilename = path + "sybilleLoggingSimpleTest.ser";
 		
-		Map<String, Double> obsMap = getObservedMap(EstimationMethod.SecondOrder, false);
+		Map<String, Double> obsMap = getObservedMap(EstimationMethodInDeterministicMode.SecondOrder, false);
 	
 //		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
 //  	try {
@@ -294,7 +294,7 @@ public class SybilleTreeLoggerTest {
 		String path = ObjectUtility.getPackagePath(getClass());
 		String referenceFilename = path + "sybilleLoggingSimpleTest.ser";
 		
-		Map<String, Double> obsMap = getObservedMap(EstimationMethod.SecondOrderMeanOnly, false);
+		Map<String, Double> obsMap = getObservedMap(EstimationMethodInDeterministicMode.SecondOrderMeanOnly, false);
 
 //		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
 //  	try {
@@ -333,7 +333,7 @@ public class SybilleTreeLoggerTest {
 		String path = ObjectUtility.getPackagePath(getClass());
 		String referenceFilename = path + "sybilleLoggingTestWithSimpsonRuleFO.ser";
 		
-		Map<String, Double> obsMap = getObservedMap(EstimationMethod.FirstOrder, true);
+		Map<String, Double> obsMap = getObservedMap(EstimationMethodInDeterministicMode.FirstOrder, true);
 		
 //		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
 //		try {
@@ -372,7 +372,7 @@ public class SybilleTreeLoggerTest {
 		String path = ObjectUtility.getPackagePath(getClass());
 		String referenceFilename = path + "sybilleLoggingTestWithSimpsonRuleFO.ser";
 		
-		Map<String, Double> obsMap = getObservedMap(EstimationMethod.FirstOrderMeanOnly, true);
+		Map<String, Double> obsMap = getObservedMap(EstimationMethodInDeterministicMode.FirstOrderMeanOnly, true);
 		
 //		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
 //		try {
@@ -411,7 +411,7 @@ public class SybilleTreeLoggerTest {
 		String path = ObjectUtility.getPackagePath(getClass());
 		String referenceFilename = path + "sybilleLoggingTestWithSimpsonRuleSO.ser";
 		
-		Map<String, Double> obsMap = getObservedMap(EstimationMethod.SecondOrder, true);
+		Map<String, Double> obsMap = getObservedMap(EstimationMethodInDeterministicMode.SecondOrder, true);
 		
 //		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
 //		try {
@@ -451,7 +451,7 @@ public class SybilleTreeLoggerTest {
 		String path = ObjectUtility.getPackagePath(getClass());
 		String referenceFilename = path + "sybilleLoggingTestWithSimpsonRuleSO.ser";
 		
-		Map<String, Double> obsMap = getObservedMap(EstimationMethod.SecondOrderMeanOnly, true);
+		Map<String, Double> obsMap = getObservedMap(EstimationMethodInDeterministicMode.SecondOrderMeanOnly, true);
 		
 //		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
 //		try {
@@ -485,11 +485,15 @@ public class SybilleTreeLoggerTest {
 
 	}
 
+	/* 
+	 * This test compares stochastic and deterministic simulations that are supposed to be similar. Changing the height and the diameter
+	 * of the tree will lead to different results because of Jensen's inequality.
+	 */
 	@Test
 	public void testInStochasticMode() {
 		double dbhCm = 25;
-		double heightM = 16;
-		int nbRealizations = 1000;
+		double heightM = 20;
+		int nbRealizations = 10000;
 		Collection<SybilleLoggableTree> coll = new ArrayList<SybilleLoggableTree>();
 		for (int i = 0; i < nbRealizations; i++) {
 			StemTaperStandImplTest stand = new StemTaperStandImplTest();
@@ -504,8 +508,6 @@ public class SybilleTreeLoggerTest {
 
 		double factor = 1d/nbRealizations;
 		Map<LogCategory, Double> obsMapStochastic = this.getMap(factor, treeLogger);
-		int u = 0;
-
 		
 		coll = new ArrayList<SybilleLoggableTree>();
 		StemTaperStandImplTest stand = new StemTaperStandImplTest();
@@ -515,8 +517,25 @@ public class SybilleTreeLoggerTest {
 		treeLogger.setTreeLoggerParameters(treeLogger.createDefaultTreeLoggerParameters());
 		treeLogger.run();
 		Map<LogCategory, Double> obsMapDeterministic = getMap(1d, treeLogger);
-		int z= 0;
 		
+		Assert.assertTrue(!obsMapDeterministic.isEmpty() && !obsMapStochastic.isEmpty());
+		Assert.assertTrue(obsMapDeterministic.size() == obsMapStochastic.size());
+		for (LogCategory key : obsMapDeterministic.keySet()) {
+			double volumeDet = obsMapDeterministic.get(key);
+			boolean found = false;
+			double volumeSto = -1d;
+			for (LogCategory key2 : obsMapStochastic.keySet()) {
+				if (key2.equals(key)) {
+					found = true;
+					volumeSto = obsMapStochastic.get(key2);
+					break;
+				}
+			}
+			if (!found) {
+				Assert.fail("This log grade cannot be found : " + key.toString());
+			}
+			Assert.assertEquals("Comparing log grade " + key.toString(), volumeDet, volumeSto, 1E-2);
+		}
 	}
 
 	
