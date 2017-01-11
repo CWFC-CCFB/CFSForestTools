@@ -92,7 +92,6 @@ public class PetroGradePredictor extends REpiceaPredictor {
 	@Override
 	protected void init() {
 		try {
-
 			if (!loaded) {
 				loadParametersFromFile();
 			}
@@ -171,9 +170,9 @@ public class PetroGradePredictor extends REpiceaPredictor {
 	/*
 	 * For manuscript purposes
 	 */
-	void replaceBeta() {
-		presenceSubModules.get(PetroGradePredictorVersion.WITH_NO_VARIABLE).replaceBeta();
-		volumeSubModules.get(PetroGradePredictorVersion.WITH_NO_VARIABLE).replaceBeta();
+	void replaceModelParameters() {
+		presenceSubModules.get(PetroGradePredictorVersion.WITH_NO_VARIABLE).replaceModelParameters();
+		volumeSubModules.get(PetroGradePredictorVersion.WITH_NO_VARIABLE).replaceModelParameters();
 	}
 	
 //	public static void main(String[] args) {
