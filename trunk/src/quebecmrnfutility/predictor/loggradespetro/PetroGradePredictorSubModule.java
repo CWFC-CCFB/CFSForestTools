@@ -28,6 +28,7 @@ import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQ
 import repicea.simulation.covariateproviders.treelevel.MSCRPriorityProvider.MSCRPriority;
 import repicea.simulation.covariateproviders.treelevel.VigorClassProvider.VigorClass;
 import repicea.stats.StatisticalUtility;
+import repicea.stats.distributions.ChiSquaredDistribution;
 import repicea.stats.estimates.GaussianEstimate;
 
 @SuppressWarnings("serial")
@@ -35,7 +36,9 @@ abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
 
 	final PetroGradePredictorVersion version;
 
-	PetroGradePredictorSubModule(boolean isParametersVariabilityEnabled,	boolean isResidualVariabilityEnabled, PetroGradePredictorVersion version) {
+	ChiSquaredDistribution distributionForVCovRandomDeviates;
+	
+	PetroGradePredictorSubModule(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled, PetroGradePredictorVersion version) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
 		this.version = version;
 	}
@@ -84,13 +87,5 @@ abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
 		return oMat;
 	}
 
-	/*
-	 * For manuscript purposes.
-	 */
-	void replaceBeta() {
-		Matrix newMean = getParameterEstimates().getRandomDeviate();
-		Matrix variance = getParameterEstimates().getVariance();
-		setParameterEstimates(new SASParameterEstimates(newMean, variance));
-	}
 
 }

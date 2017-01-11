@@ -22,12 +22,14 @@ import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroGrade
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.math.Matrix;
+import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
+import repicea.stats.distributions.ChiSquaredDistribution;
 
 @SuppressWarnings("serial")
 class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule {
 
-	PetroGradePredictorPresenceSubModule(boolean isParametersVariabilityEnabled,	boolean isResidualVariabilityEnabled, PetroGradePredictorVersion version) {
+	PetroGradePredictorPresenceSubModule(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled, PetroGradePredictorVersion version) {
 		super(isParametersVariabilityEnabled, isResidualVariabilityEnabled, version);
 	}
 	
@@ -91,7 +93,22 @@ class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule 
 	}
 
 
-	
+	/*
+	 * For manuscript purposes.
+	 */
+	void replaceModelParameters() {
+		int totalDegreesOfFreedom = 1595; // total number of trees
+		int numberParameters = getParameterEstimates().getTrueParameterIndices().size() / 5;
+//		Matrix currentMean = getParameterEstimates().getMean();
+		Matrix newMean = getParameterEstimates().getRandomDeviate();
+		Matrix variance = getParameterEstimates().getVariance();
+		if (distributionForVCovRandomDeviates == null) {
+			distributionForVCovRandomDeviates = new ChiSquaredDistribution(totalDegreesOfFreedom - numberParameters, variance);
+		}
+		Matrix newVariance = distributionForVCovRandomDeviates.getRandomRealization();
+		setParameterEstimates(new SASParameterEstimates(newMean, newVariance));
+	}
+
 	
 
 }
