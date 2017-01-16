@@ -115,14 +115,20 @@ class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 	void replaceModelParameters() {
 		int totalDegreesOfFreedom = 602; // average number of trees in each log category
 		int numberParameters = getParameterEstimates().getTrueParameterIndices().size() / 5;
+		int residualDegreesOfFreedom = totalDegreesOfFreedom - numberParameters;
 //		Matrix currentMean = getParameterEstimates().getMean();
 		Matrix newMean = getParameterEstimates().getRandomDeviate();
 		Matrix variance = getParameterEstimates().getVariance();
 		if (distributionForVCovRandomDeviates == null) {
-			distributionForVCovRandomDeviates = new ChiSquaredDistribution(totalDegreesOfFreedom - numberParameters, variance);
+			distributionForVCovRandomDeviates = new ChiSquaredDistribution(residualDegreesOfFreedom, variance);
 		}
 		Matrix newVariance = distributionForVCovRandomDeviates.getRandomRealization();
 		setParameterEstimates(new SASParameterEstimates(newMean, newVariance));
+		
+		Matrix currentResidualVariance = getDefaultResidualError(ErrorTermGroup.Default).getVariance();
+		ChiSquaredDistribution residualVarianceDistribution = new ChiSquaredDistribution(residualDegreesOfFreedom, currentResidualVariance);
+		Matrix newResidualVariance = residualVarianceDistribution.getRandomRealization();
+		setDefaultResidualError(new GaussianErrorTermEstimate(newResidualVariance));
 	}
 
 }
