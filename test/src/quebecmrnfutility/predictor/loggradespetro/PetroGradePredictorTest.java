@@ -20,7 +20,7 @@ public class PetroGradePredictorTest {
 		
 		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50);
 		
-		PetroGradePredictor stoPredictor = new PetroGradePredictor(true, true);
+		PetroGradePredictor stoPredictor = new PetroGradePredictor(true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		
 		for (int realization = 0; realization < 50000; realization++) {
@@ -28,7 +28,7 @@ public class PetroGradePredictorTest {
 			estimate.addRealization(stoPredictor.getPredictedGradeVolumes(tree));
 		}
 	
-		PetroGradePredictor detPredictor = new PetroGradePredictor(false, false);
+		PetroGradePredictor detPredictor = new PetroGradePredictor(false);
 		Matrix expected = detPredictor.getPredictedGradeVolumes(tree);
 		
 		Matrix actual = estimate.getMean();
@@ -48,7 +48,7 @@ public class PetroGradePredictorTest {
 			
 		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, MSCRPriority.C);
 		
-		PetroGradePredictor stoPredictor = new PetroGradePredictor(true, true);
+		PetroGradePredictor stoPredictor = new PetroGradePredictor(true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		
 		for (int realization = 0; realization < 10000; realization++) {
@@ -56,7 +56,7 @@ public class PetroGradePredictorTest {
 			estimate.addRealization(stoPredictor.getPredictedGradeVolumes(tree));
 		}
 	
-		PetroGradePredictor detPredictor = new PetroGradePredictor(false, false);
+		PetroGradePredictor detPredictor = new PetroGradePredictor(false);
 		Matrix expected = detPredictor.getPredictedGradeVolumes(tree);
 		
 		Matrix actual = estimate.getMean();
@@ -75,7 +75,7 @@ public class PetroGradePredictorTest {
 		
 		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, ABCDQuality.B);
 		
-		PetroGradePredictor stoPredictor = new PetroGradePredictor(true, true);
+		PetroGradePredictor stoPredictor = new PetroGradePredictor(true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		
 		for (int realization = 0; realization < 10000; realization++) {
@@ -83,7 +83,7 @@ public class PetroGradePredictorTest {
 			estimate.addRealization(stoPredictor.getPredictedGradeVolumes(tree));
 		}
 	
-		PetroGradePredictor detPredictor = new PetroGradePredictor(false, false);
+		PetroGradePredictor detPredictor = new PetroGradePredictor(false);
 		Matrix expected = detPredictor.getPredictedGradeVolumes(tree);
 		
 		Matrix actual = estimate.getMean();
@@ -102,7 +102,7 @@ public class PetroGradePredictorTest {
 		
 		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, VigorClass.V2);
 		
-		PetroGradePredictor stoPredictor = new PetroGradePredictor(true, true);
+		PetroGradePredictor stoPredictor = new PetroGradePredictor(true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		
 		for (int realization = 0; realization < 10000; realization++) {
@@ -110,7 +110,7 @@ public class PetroGradePredictorTest {
 			estimate.addRealization(stoPredictor.getPredictedGradeVolumes(tree));
 		}
 	
-		PetroGradePredictor detPredictor = new PetroGradePredictor(false, false);
+		PetroGradePredictor detPredictor = new PetroGradePredictor(false);
 		Matrix expected = detPredictor.getPredictedGradeVolumes(tree);
 		
 		Matrix actual = estimate.getMean();

@@ -58,8 +58,12 @@ public class PetroGradePredictor extends REpiceaPredictor {
 	private final Map<PetroGradePredictorVersion, PetroGradePredictorPresenceSubModule> presenceSubModules;
 	private final Map<PetroGradePredictorVersion, PetroGradePredictorVolumeSubModule> volumeSubModules;
 	
-	public PetroGradePredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
-		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
+	public PetroGradePredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled);
+	}
+	
+	PetroGradePredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);
 		presenceSubModules = new HashMap<PetroGradePredictorVersion, PetroGradePredictorPresenceSubModule>();
 		volumeSubModules = new HashMap<PetroGradePredictorVersion, PetroGradePredictorVolumeSubModule>();
 		for (PetroGradePredictorVersion version : PetroGradePredictorVersion.values()) {

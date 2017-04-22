@@ -49,14 +49,10 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 
 	/**
 	 * General constructor for all combinations of uncertainty sources.
-	 * @param isParametersVariabilityEnabled = a boolean that enables the variability at the parameter level
-	 * @param isRandomEffectsVariabilityEnabled = a boolean that enables the variability at the random effect level
-	 * @param isResidualVariabilityEnabled = a boolean that enables the variability at the tree level
+	 * @param isVariabilityEnabled = a boolean that enables the variability at the parameter level
 	 */
-	public MerchantableVolumePredictor(boolean isParametersVariabilityEnabled,
-			boolean isRandomEffectsVariabilityEnabled,
-			boolean isResidualVariabilityEnabled) {
-		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
+	public MerchantableVolumePredictor(boolean isVariabilityEnabled) {
+		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
 		init();
 		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
 	}
@@ -65,7 +61,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	 * Default constructor with all sources of uncertainty disabled.
 	 */
 	public MerchantableVolumePredictor() {
-		this(false, false, false);
+		this(false);
 	}
 
 	@Override

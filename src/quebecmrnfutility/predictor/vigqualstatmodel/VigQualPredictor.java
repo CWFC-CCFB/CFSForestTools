@@ -38,11 +38,10 @@ public class VigQualPredictor extends REpiceaPredictor {
 
 	/**
 	 * General constructor.
-	 * @param isParametersVariabilityEnabled true to enable the parameter variability or false to run in deterministic mode
-	 * @param isResidualVariabilityEnabled true to enable the residual variability or false to run in deterministic mode
+	 * @param isVariabilityEnabled true to enable the parameter variability or false to run in deterministic mode
 	 */
-	public VigQualPredictor(boolean isParametersVariabilityEnabled,	boolean isResidualVariabilityEnabled) {
-		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect
+	public VigQualPredictor(boolean isVariabilityEnabled) {
+		super(isVariabilityEnabled, false, isVariabilityEnabled);		// no random effect
 	}
 
 	@Override

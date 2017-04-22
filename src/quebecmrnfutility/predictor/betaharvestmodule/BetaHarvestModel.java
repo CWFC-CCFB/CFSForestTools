@@ -94,9 +94,8 @@ public final class BetaHarvestModel extends REpiceaLogisticPredictor<BetaHarvest
 	 * @param isResidualVariabilityEnabled = a boolean that enables the residual variability
 	 */
 	@Deprecated
-	public BetaHarvestModel(boolean isParameterVariabilityEnabled,
-			boolean isResidualVariabilityEnabled) {
-		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);
+	public BetaHarvestModel(boolean isVariabilityEnabled) {
+		super(isVariabilityEnabled, false, isVariabilityEnabled);
 		isCorrectlyInitialized = false;
 		init();
 		oXVector = new Matrix(1,getParameterEstimates().getMean().m_iRows);
@@ -108,7 +107,7 @@ public final class BetaHarvestModel extends REpiceaLogisticPredictor<BetaHarvest
 	 */
 	@Deprecated
 	public BetaHarvestModel() {
-		this(false, false);
+		this(false);
 	}
 	
 	@Override
