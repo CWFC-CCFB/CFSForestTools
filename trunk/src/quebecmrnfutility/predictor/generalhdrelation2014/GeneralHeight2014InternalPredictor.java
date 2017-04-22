@@ -27,8 +27,8 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipModel<Heightable2
 	private Map<String, Matrix> disturbanceDummyMap;
 	private List<Effect> effectList;
 	
-	protected GeneralHeight2014InternalPredictor(Hd2014Species species, boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
-		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
+	protected GeneralHeight2014InternalPredictor(Hd2014Species species, boolean isVariabilityEnabled) {
+		super(isVariabilityEnabled);
 		this.species = species;
 	}
 
