@@ -119,34 +119,19 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor {
 		}
 	}
 
-//	private boolean									isBlupEstimationDone;
-
-//	private Map<BetaHdSpecies, SASParameterEstimates>	betaMatrixReferenceMap	= new HashMap<BetaHdSpecies, SASParameterEstimates>();
-//	private Map<BetaHdSpecies, GaussianEstimate>	plotRandomEffectReferenceMap	= new HashMap<BetaHdSpecies, GaussianEstimate>();
-//	private Map<BetaHdSpecies, GaussianEstimate> treeRandomEffectReferenceMap = new HashMap<BetaHdSpecies, GaussianEstimate>();
-//	private Map<BetaHdSpecies, Map<String, Matrix>>	subDomainDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
-//	private Map<BetaHdSpecies, Map<String, Matrix>>	vegPotDummyReferenceMap			= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
-//	private Map<BetaHdSpecies, Map<String, Matrix>>	ecoTypeDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
-//	private Map<BetaHdSpecies, Map<String, Matrix>>	disturbDummyReferenceMap		= new HashMap<BetaHdSpecies, Map<String, Matrix>>();
-//	private Map<BetaHdSpecies, List<Effect>>			listEffectReferenceMap			= new HashMap<BetaHdSpecies, List<Effect>>();
-//	private Map<BetaHdSpecies, Matrix> oXVectorReferenceMap = new  HashMap<BetaHdSpecies, Matrix>();
-//	private Map<BetaHdSpecies, Map<String, GaussianEstimate>> blupsLibraryPlotReferenceMap = new HashMap<BetaHdSpecies, Map<String, GaussianEstimate>>();
-
 	private final Map<Hd2014Species, GeneralHeight2014InternalPredictor> internalPredictors;
 	
-	public GeneralHeight2014Predictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
-		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
+	public GeneralHeight2014Predictor(boolean isVariabilityEnabled) {
+		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
 		internalPredictors = new HashMap<Hd2014Species, GeneralHeight2014InternalPredictor>();
 		init();
 	}
 
 	/**
 	 * Default constructor with all sources of uncertainty disabled.
-	 * @param measurementDates a list of integers that define the measurement
-	 *            dates
 	 */
 	public GeneralHeight2014Predictor() {
-		this(false, false, false);
+		this(false);
 	}
 
 	@Override

@@ -136,12 +136,10 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	
 	/**
 	 * General constructor for all combinations of uncertainty sources.
-	 * @param isParametersVariabilityEnabled a boolean that enables the variability at the parameter level
-	 * @param isRandomEffectsVariabilityEnabled a boolean that enables the variability at the random effect level
-	 * @param isResidualVariabilityEnabled a boolean that enables the variability at the tree level
+	 * @param isVariabilityEnabled a boolean that enables the stochastic mode
 	 */
-	public GeneralHeightPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
-		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
+	public GeneralHeightPredictor(boolean isVariabilityEnabled) {
+		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
 		init();
 		oXVector = new Matrix(1,getParameterEstimates().getMean().m_iRows);
 	}
@@ -151,7 +149,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	 * @param measurementDates a list of integers that define the measurement dates
 	 */
 	public GeneralHeightPredictor() {
-		this(false, false, false);
+		this(false);
 	}
 
 	@Override
