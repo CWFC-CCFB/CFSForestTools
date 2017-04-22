@@ -139,9 +139,7 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor {
 		try {
 			for (Hd2014Species species : Hd2014Species.values()) {		
 				GeneralHeight2014InternalPredictor internalPredictor = new GeneralHeight2014InternalPredictor(species, 
-						isParametersVariabilityEnabled, 
-						isRandomEffectsVariabilityEnabled, 
-						isResidualVariabilityEnabled);
+						isParametersVariabilityEnabled);
 				internalPredictors.put(species, internalPredictor);
 				String path = ObjectUtility.getRelativePackagePath(getClass()) + species.name().toLowerCase() + "/";
 				String suffix = species.name().toUpperCase().concat(".csv");

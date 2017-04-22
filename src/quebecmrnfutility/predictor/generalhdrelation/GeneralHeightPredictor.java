@@ -139,7 +139,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	 * @param isVariabilityEnabled a boolean that enables the stochastic mode
 	 */
 	public GeneralHeightPredictor(boolean isVariabilityEnabled) {
-		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
+		super(isVariabilityEnabled);
 		init();
 		oXVector = new Matrix(1,getParameterEstimates().getMean().m_iRows);
 	}
