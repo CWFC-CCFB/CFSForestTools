@@ -48,6 +48,7 @@ public class GeneralSettings {
 		
 		PLOT(Level.plotLevel),
 		PLOT_AREA(Level.plotLevel),
+		PLOTMEASUREMENTID(Level.plotLevel),
 		
 		LATITUDE(Level.plotLevel),
 		LONGITUDE(Level.plotLevel),
@@ -127,6 +128,8 @@ public class GeneralSettings {
 				"Ce champ identifie les strates qui sont comprises dans votre fichier d'entr\u00E9e. Ce champs est facultatif. Si vous ne lui associez aucun champ, le module consid\u00E8re que votre fichier ne contient qu'une seule strate. Dans le cas contraire, le module vous offrira la possibilit\u00E9 de s\u00E9lectionner une des strates de votre fichier d'entr\u00E9e si celui-ci en contient plus d'une."),
 		DescPlotName("Plot Identifier (String)", "Identifiant de placette (String)"),
 		HelpPlotName("This field indicates the plots in the input file. This field is mandatory.", "Ce champ identifie les placettes qui sont comprises dans votre fichier d'entr\u00E9e. Ce champ est obligatoire."),
+		DescPlotMeasurementName("Plot Measurement Identifier (String)", "Identifiant de mesure de placette (String)"),
+		HelpPlotMeasurementName("This field indicates the plot measurement in the input file. This field is mandatory.", "Ce champ identifie les mesures des placettes qui sont comprises dans votre fichier d'entr\u00E9e. Ce champ est obligatoire."),
 		DescPlotYCoord("Latitude (Double)", "Latitude (Double)"),
 		HelpPlotYCoord("This field indicates the latitude of the plots in the input file. This field is mandatory. The latitude must be in a degree-decimal format (e.g.: 48.54383).", 
 				"Ce champ identifie la latitude des placettes comprises dans votre fichier d'entr\u00E9e. Ce champ est obligatoire. La latitude doit \u00EAtre lue dans un format degr\u00E9-d\u00E9cimal (p.ex.: 48.54383)."),
