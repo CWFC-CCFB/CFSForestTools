@@ -71,8 +71,8 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 		CRS("CRS Outaouais", "CRS Outaouais"),
 		CJP("Selection cutting CIMOTFF","Coupes jardinage CIMOTFF"),
 		CJPG_QM("Selection cutting group of trees CIMOTFF","Coupe jardinage par groupe d'arbres CIMOTFF"),
-		CPI_CP_CIMOTF("CPI_CP CIMOTFF", "Coupe progressive irr�guli�re couvert permanent CIMOTFF"),
-		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irr�guli�re � r�g�n�ration lente CIMOTFF");
+		CPI_CP_CIMOTF("CPI_CP CIMOTFF", "Coupe progressive irr\u00E9guli\u00E8re couvert permanent CIMOTFF"),
+		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irr\u00E9guli\u00E8re \u00E0 r\u00E9g\u00E9n\u00E9ration lente CIMOTFF");
 		
 		TreatmentType(String englishText, String frenchText) {
 			setText(englishText, frenchText);
