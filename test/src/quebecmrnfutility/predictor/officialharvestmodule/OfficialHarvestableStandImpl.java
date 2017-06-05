@@ -52,5 +52,13 @@ public class OfficialHarvestableStandImpl implements OfficialHarvestableStand {
 	public double getBasalAreaM2Ha() {		
 		return 0;
 	}
+
+	/*
+	 * Useless for the tests.
+	 */
+	@Override
+	public String getPotentialVegetation() {
+		return null;
+	}
 	
 }

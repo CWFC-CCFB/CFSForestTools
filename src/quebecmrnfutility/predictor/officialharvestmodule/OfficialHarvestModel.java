@@ -72,8 +72,9 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 		CJP("Selection cutting CIMOTFF","Coupes jardinage CIMOTFF"),
 		CJPG_QM("Selection cutting group of trees CIMOTFF","Coupe jardinage par groupe d'arbres CIMOTFF"),
 		CPI_CP_CIMOTF("CPI_CP CIMOTFF", "Coupe progressive irr\u00E9guli\u00E8re couvert permanent CIMOTFF"),
-		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irr\u00E9guli\u00E8re \u00E0 r\u00E9g\u00E9n\u00E9ration lente CIMOTFF");
-		
+		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irr\u00E9guli\u00E8re \u00E0 r\u00E9g\u00E9n\u00E9ration lente CIMOTFF"),
+		CPRS("Harvesting with soil and regeneration protection", "CPRS - Coupe avec protection de la r\u00E9g\u00E9n\u00E9ration et des sols"),
+		;		
 		TreatmentType(String englishText, String frenchText) {
 			setText(englishText, frenchText);
 		}
@@ -97,6 +98,8 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 	private FixedEffectVectorFactory xVectorFactory;
 	private Map<TreatmentType, OfficialHarvestSubmodel> modelParametersLibrairy;
 	protected static Map<TreatmentType, Map<String, String>> speciesMap;
+	private OfficialHarvestSubmodelSelector selector;
+	
 	
 	/**
 	 * General constructor that enables the stochastic implementation. NOTE: there is no random effect variability in this model.
@@ -114,6 +117,14 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 	 */
 	public OfficialHarvestModel() {
 		this(false);
+	}
+	
+	/**
+	 * This method sets a selector for the different treatments.
+	 * @param selector an OfficialHarvestSubmodelSelector instance
+	 */
+	public void setOfficialHarvestSubmodelSelector(OfficialHarvestSubmodelSelector selector) {
+		this.selector = selector;
 	}
 	
 	@Override
@@ -144,30 +155,42 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 	
 	@Override
 	public synchronized double predictEventProbability(OfficialHarvestableStand stand, OfficialHarvestableTree tree, Object... parms) {
-		Enum<?> treatment = (Enum<?>) parms[0];
-		int modifier = (Integer) parms[1];
-		
-		OfficialHarvestSubmodel submodel = modelParametersLibrairy.get(treatment);		
-		Matrix modelParameters = submodel.getSubParametersForThisStand(stand);
-		oXVector = xVectorFactory.getFixedEffectVector(stand, tree, (TreatmentType) treatment);
-		double xBeta = oXVector.multiply(modelParameters).m_afData[0][0];
-		double fExpXBeta = Math.exp(xBeta);
-		double eventProbability = fExpXBeta / (1.0 + fExpXBeta);
-		
-		double modifierFactor = 1;
-		
-		
-		if (modifier != 0) {
-			modifierFactor += (double) modifier / 100;
+		Enum<?> treatment;
+		int modifier;
+		if (selector == null) {
+			treatment = (Enum<?>) parms[0];
+			modifier = (Integer) parms[1];
+		} else {
+			treatment = selector.getTreatment(stand.getPotentialVegetation());
+			modifier = 0;
 		}
-		
-		eventProbability *= modifierFactor;
-		
-		if (eventProbability > 1) {
+
+		double eventProbability;
+		if (treatment == TreatmentType.CPRS) {
 			eventProbability = 1;
-		} else if (eventProbability < 0) {
-			eventProbability = 0;
-		}
+		} else {
+			OfficialHarvestSubmodel submodel = modelParametersLibrairy.get(treatment);		
+			Matrix modelParameters = submodel.getSubParametersForThisStand(stand);
+			oXVector = xVectorFactory.getFixedEffectVector(stand, tree, (TreatmentType) treatment);
+			double xBeta = oXVector.multiply(modelParameters).m_afData[0][0];
+			double fExpXBeta = Math.exp(xBeta);
+			eventProbability = fExpXBeta / (1.0 + fExpXBeta);
+			
+			double modifierFactor = 1;
+			
+			
+			if (modifier != 0) {
+				modifierFactor += (double) modifier / 100;
+			}
+			
+			eventProbability *= modifierFactor;
+			
+			if (eventProbability > 1) {
+				eventProbability = 1;
+			} else if (eventProbability < 0) {
+				eventProbability = 0;
+			}
+		} 
 		return eventProbability;
 	}
 	
