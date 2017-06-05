@@ -101,7 +101,10 @@ public class OfficialHarvestSubmodelSelector implements REpiceaShowableUIWithPar
 	protected Enum<?> singleTreatment;
 	private transient OfficialHarvestSubmodelSelectorDialog guiInterface;
 
-	protected OfficialHarvestSubmodelSelector() {
+	/**
+	 * Official constructor.
+	 */
+	public OfficialHarvestSubmodelSelector() {
 		potentialTreatments = new ArrayList<Enum<?>>();
 		mode = Mode.SingleTreatment;
 		addPotentialTreatments(OfficialHarvestModel.TreatmentType.values());
