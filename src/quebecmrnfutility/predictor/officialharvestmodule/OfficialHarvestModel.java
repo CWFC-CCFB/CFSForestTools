@@ -127,6 +127,13 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 		this.selector = selector;
 	}
 	
+	/**
+	 * This method provides access to the selector of treatments.
+	 * @return an OfficialHarvestSubmodelSelector instance
+	 */
+	public OfficialHarvestSubmodelSelector getSelector() {return selector;}
+	
+	
 	@Override
 	protected final void init() {
 		try {
