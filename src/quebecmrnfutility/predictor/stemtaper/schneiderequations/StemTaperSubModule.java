@@ -21,6 +21,9 @@ import repicea.stats.estimates.GaussianEstimate;
 @SuppressWarnings("serial")
 final class StemTaperSubModule extends AbstractStemTaperPredictor {
 
+	private static final Matrix FakeMatrixForMissingRandomEffects = new Matrix(2,1);
+	private static final Matrix FakeVarianceMatrixForMissingRandomEffects = new Matrix(2,2);
+	
 	protected final StemTaperTreeSpecies species;
 	
 	private final InternalStatisticalExpressions linearExpressions;
@@ -142,7 +145,10 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		AbstractStemTaperEstimate prediction = new SchneiderStemTaperEstimate(heightMeasures);
 		
 		Matrix pred = new Matrix(heights.m_iRows, 1);
-		Matrix sumOfRandomEffects = getRandomEffectsForThisSubject(tree.getStand()).add(getRandomEffectsForThisSubject(tree));
+		Matrix plotRandomEffects = getPlotRandomEffects(tree.getStand());
+		Matrix treeRandomEffects = getTreeRandomEffects(tree);
+		
+		Matrix sumOfRandomEffects = plotRandomEffects.add(treeRandomEffects);
 		double randomEffects0 = sumOfRandomEffects.m_afData[0][0];
 		double randomEffects1 = sumOfRandomEffects.m_afData[1][0];
 		if (!isResidualVariabilityEnabled) {
@@ -181,6 +187,20 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		return prediction;
 	}
 
+	private Matrix getTreeRandomEffects(StemTaperTree tree) {
+		if (getDefaultRandomEffects(tree.getHierarchicalLevel()) != null) {
+			return getRandomEffectsForThisSubject(tree); 
+		}
+		return FakeMatrixForMissingRandomEffects;
+	}
+
+	private Matrix getPlotRandomEffects(StemTaperStand stand) {
+		if (getDefaultRandomEffects(stand.getHierarchicalLevel()) != null) {
+			return getRandomEffectsForThisSubject(stand); 
+		}
+		return FakeMatrixForMissingRandomEffects;
+	}
+
 	/**
 	 * This method sets the correction matrix.
 	 */
@@ -198,8 +218,10 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		}
 		Matrix zPrime;
 		Matrix xPrime;
-		Matrix gPlot = getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance();
-		Matrix gTree = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance();
+//		Matrix gPlot = getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance();
+//		Matrix gTree = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance();
+		Matrix gPlot = getRandomEffectVariance(HierarchicalLevel.PLOT);
+		Matrix gTree = getRandomEffectVariance(HierarchicalLevel.TREE);
 		Matrix variances = gPlot.add(gTree);
 		for (int i = 0; i < correctionFactor.m_iRows; i++) {
 			xPrime = hessians.getSubMatrix(i, i, 0, hessians.m_iCols - 1).transpose().squareSym();
@@ -213,14 +235,22 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		correctionMatrix = correctionFactor;
 	}
 
+	private Matrix getRandomEffectVariance(HierarchicalLevel level) {
+		if (getDefaultRandomEffects(level) != null) {
+			return getDefaultRandomEffects(level).getVariance();
+		} else {
+			return FakeVarianceMatrixForMissingRandomEffects;
+		}
+	}
+
 	/**
 	 * This method computes the analytical variance according to the analytical estimator.
 	 * @return a Matrix instance
 	 */
 	private Matrix getStemTaperVariance(EstimationMethodInDeterministicMode estimationMethod) {
 		Matrix gradients = linearExpressions.getGradients(); 
-		Matrix gPlot = getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance();
-		Matrix gTree = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance();
+		Matrix gPlot = getRandomEffectVariance(HierarchicalLevel.PLOT);
+		Matrix gTree = getRandomEffectVariance(HierarchicalLevel.TREE);
 		Matrix z = gradients.getSubMatrix(0, gradients.m_iRows - 1, 0, 1);
 		
 		Matrix fixedEffectParameterPart = gradients.multiply(getParameterEstimates().getVariance()).multiply(gradients.transpose());
@@ -261,8 +291,8 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		Matrix xPrimeJ;
 		Matrix zPrimeJ;
 		double result;
-		Matrix isserlisPlot = getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance().getIsserlisMatrix();
-		Matrix isserlisTree = getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance().getIsserlisMatrix();
+		Matrix isserlisPlot = getRandomEffectVariance(HierarchicalLevel.PLOT).getIsserlisMatrix();
+		Matrix isserlisTree = getRandomEffectVariance(HierarchicalLevel.TREE).getIsserlisMatrix();
 		MatrixUtility.add(isserlisPlot, isserlisTree);
 		Matrix isserlisCombine = isserlisPlot;
 		Matrix isserlisOmega = getParameterEstimates().getVariance().getIsserlisMatrix();
