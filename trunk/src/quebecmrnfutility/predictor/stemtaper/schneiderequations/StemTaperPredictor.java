@@ -162,10 +162,18 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 						currentSubModule.setParameterEstimates(new GaussianEstimate(beta, omega));
 
 						Matrix g = ParameterLoader.loadMatrixFromFile(plotRandomEffectsFilename);
-						currentSubModule.setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
+						if (g.anyElementDifferentFrom(0d)) {
+							currentSubModule.setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
+						} else { // means there is no random effect at this level
+//							System.out.println("Schneider stem taper predictor : No random effect at " + HierarchicalLevel.PLOT.toString() + " level for species " + species.name() + " for version " + modelType.name());
+						}
 
 						g = ParameterLoader.loadMatrixFromFile(treeRandomEffectsFilename);
-						currentSubModule.setDefaultRandomEffects(HierarchicalLevel.TREE, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
+						if (g.anyElementDifferentFrom(0d)) {
+							currentSubModule.setDefaultRandomEffects(HierarchicalLevel.TREE, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
+						} else { // means there is no random effect at this level
+//							System.out.println("Schneider stem taper predictor : No random effect at " + HierarchicalLevel.TREE.toString() + " level for species " + species.name() + " for version " + modelType.name());
+						}
 
 						Matrix oVec = ParameterLoader.loadVectorFromFile(varFunctFilename).get();
 						currentSubModule.setVarianceParameters(oVec);
@@ -270,5 +278,8 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 		
 	}
 	
+	public static void main(String[] args) {
+		new StemTaperPredictor();
+	}
 	
 }
