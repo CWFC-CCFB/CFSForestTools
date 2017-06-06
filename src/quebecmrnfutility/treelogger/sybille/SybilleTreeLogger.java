@@ -88,7 +88,11 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 				topHeight = bottomHeight + SybilleTreeLogCategory.FOUR_FEET;
 			}
 			if (bottomHeight > 0 && bottomHeight < (t.getHeightM() - StemTaperSegment.VERY_SMALL)) {
-				segments.add(new StemTaperSegment(bottomHeight, t.getHeightM() - StemTaperSegment.VERY_SMALL, new CompositeSimpsonRule(2)));
+				if (bottomHeight - (t.getHeightM() - StemTaperSegment.VERY_SMALL) > 0.5) {	// if the section is more than 0.5 m long
+					segments.add(new StemTaperSegment(bottomHeight, t.getHeightM() - StemTaperSegment.VERY_SMALL, new CompositeSimpsonRule(2)));
+				} else {		// if less, than a simple segment
+					segments.add(new StemTaperSegment(bottomHeight, t.getHeightM() - StemTaperSegment.VERY_SMALL, new TrapezoidalRule(1d)));
+				}
 			}
 		} else {
 			segments.add(new StemTaperSegment(heightM, t.getHeightM()- StemTaperSegment.VERY_SMALL, new TrapezoidalRule(0.0254 * 10)));
