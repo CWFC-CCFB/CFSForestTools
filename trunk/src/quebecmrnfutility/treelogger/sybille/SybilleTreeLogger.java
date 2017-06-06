@@ -87,15 +87,22 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 				bottomHeight += SybilleTreeLogCategory.FOUR_FEET;
 				topHeight = bottomHeight + SybilleTreeLogCategory.FOUR_FEET;
 			}
-			if (bottomHeight > 0 && bottomHeight < (t.getHeightM() - StemTaperSegment.VERY_SMALL)) {
-				if (bottomHeight - (t.getHeightM() - StemTaperSegment.VERY_SMALL) > 0.5) {	// if the section is more than 0.5 m long
+			if (bottomHeight > 0 && bottomHeight < (t.getHeightM() - 2 * StemTaperSegment.VERY_SMALL)) { // there must be at least 2mm between bottom height and tree height leaving a clearance of 1mm
+				if ((t.getHeightM() - StemTaperSegment.VERY_SMALL) - bottomHeight > SybilleTreeLogCategory.FOUR_FEET * 0.5) {	// if the section is more than 0.5 m long
 					segments.add(new StemTaperSegment(bottomHeight, t.getHeightM() - StemTaperSegment.VERY_SMALL, new CompositeSimpsonRule(2)));
 				} else {		// if less, than a simple segment
 					segments.add(new StemTaperSegment(bottomHeight, t.getHeightM() - StemTaperSegment.VERY_SMALL, new TrapezoidalRule(1d)));
 				}
 			}
 		} else {
-			segments.add(new StemTaperSegment(heightM, t.getHeightM()- StemTaperSegment.VERY_SMALL, new TrapezoidalRule(0.0254 * 10)));
+			double preferredLength = 0.0254 * 10; // ten inches
+			double boleLength = t.getHeightM() - StemTaperSegment.VERY_SMALL - getTreeLoggerParameters().getStumpHeightM();
+			int nbOfCompleteSegments = (int) Math.floor(boleLength / preferredLength);
+			while (boleLength - nbOfCompleteSegments * preferredLength < StemTaperSegment.VERY_SMALL) {	// the remainder is too small so we will reduce the preferred length
+				preferredLength -= .0001;
+				nbOfCompleteSegments = (int) Math.floor(boleLength / preferredLength);
+			}
+			segments.add(new StemTaperSegment(heightM, t.getHeightM()- StemTaperSegment.VERY_SMALL, new TrapezoidalRule(preferredLength)));
 		}
 
 		try {
