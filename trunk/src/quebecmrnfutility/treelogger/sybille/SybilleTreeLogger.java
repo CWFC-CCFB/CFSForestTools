@@ -78,9 +78,7 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 		segments.clear(); 
 		speciesName = t.getStemTaperTreeSpecies().name();
 		heightM = getTreeLoggerParameters().getStumpHeightM();		// always starts from the specified stump height
-		if (!optimize) {
-			segments.add(new StemTaperSegment(heightM, t.getHeightM()- StemTaperSegment.VERY_SMALL, new TrapezoidalRule(0.0254 * 10)));
-		} else {
+		if (optimize) {
 			double bottomHeight = heightM;
 			double topHeight = bottomHeight + SybilleTreeLogCategory.FOUR_FEET; 	// four feet long sections
 			while (topHeight < t.getHeightM()) {
@@ -90,25 +88,51 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 				topHeight = bottomHeight + SybilleTreeLogCategory.FOUR_FEET;
 			}
 			if (bottomHeight > 0 && bottomHeight < (t.getHeightM() - StemTaperSegment.VERY_SMALL)) {
-				segments.add(new StemTaperSegment(bottomHeight, t.getHeightM() - StemTaperSegment.VERY_SMALL, new TrapezoidalRule(1d)));
+				segments.add(new StemTaperSegment(bottomHeight, t.getHeightM() - StemTaperSegment.VERY_SMALL, new CompositeSimpsonRule(2)));
 			}
+		} else {
+			segments.add(new StemTaperSegment(heightM, t.getHeightM()- StemTaperSegment.VERY_SMALL, new TrapezoidalRule(0.0254 * 10)));
 		}
 
-		estimate = stp.getPredictedTaperForTheseSegments(t, segments, getTreeLoggerParameters().getEstimationMethod());
-		SybilleWoodPiece wp;
-		do {
-			wp = null;
-			for (SybilleTreeLogCategory logCategory : getTreeLoggerParameters().getLogCategories().get(speciesName)) {
-				wp = logCategory.extractFromTree(t, estimate, heightM, optimize);
-				if (wp != null) {
-					heightM += wp.getLength();		// we add the length of the log to the heightM variable
-					break;
+		try {
+			estimate = stp.getPredictedTaperForTheseSegments(t, segments, getTreeLoggerParameters().getEstimationMethod());
+			SybilleWoodPiece wp;
+			do {
+				wp = null;
+				for (SybilleTreeLogCategory logCategory : getTreeLoggerParameters().getLogCategories().get(speciesName)) {
+					wp = logCategory.extractFromTree(t, estimate, heightM, optimize);
+					if (wp != null) {
+						heightM += wp.getLength();		// we add the length of the log to the heightM variable
+						break;
+					}
 				}
-			}
-			if (wp != null) {				// if wp is null it means that no log grade could be extracted, i.e. the log grade requirements are not met
-				addWoodPiece(t, wp);
-			} 
-		} while (wp != null);
+				if (wp != null) {				// if wp is null it means that no log grade could be extracted, i.e. the log grade requirements are not met
+					addWoodPiece(t, wp);
+				} 
+			} while (wp != null);
+//			if (getWoodPieces().get(t) == null) {
+//				System.out.println("Sybille could not extract any wood piece from tree : " + t.getSpeciesName() + t.getSubjectId());
+//				heightM = getTreeLoggerParameters().getStumpHeightM();
+//				do {
+//					wp = null;
+//					for (SybilleTreeLogCategory logCategory : getTreeLoggerParameters().getLogCategories().get(speciesName)) {
+//						wp = logCategory.extractFromTree(t, estimate, heightM, optimize);
+//						if (wp != null) {
+//							heightM += wp.getLength();		// we add the length of the log to the heightM variable
+//							break;
+//						}
+//					}
+//					if (wp != null) {				// if wp is null it means that no log grade could be extracted, i.e. the log grade requirements are not met
+//						addWoodPiece(t, wp);
+//					} 
+//				} while (wp != null);
+//			}
+		} catch (Exception e) {
+			System.out.println("Sybille could not log tree : " + t.getSpeciesName() + t.getSubjectId());
+			e.printStackTrace();
+			heightM = getTreeLoggerParameters().getStumpHeightM();
+			estimate = stp.getPredictedTaperForTheseSegments(t, segments, getTreeLoggerParameters().getEstimationMethod());
+		}
 	}
 
 	@Override
