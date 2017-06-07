@@ -12,6 +12,7 @@ import java.awt.event.ItemListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -19,6 +20,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.table.TableCellEditor;
 
 import quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector.Mode;
 import repicea.gui.OwnedWindow;
@@ -72,15 +74,20 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaDialog impleme
 	private final JRadioButton treatmentByPotentialVegetationButton;
 	private final WindowSettings windowSettings;
 	private final JComboBox<TextableEnum> uniqueTreatmentComboBox;
-		
+	private final JButton okButton;
+	private final JButton cancelButton;
+	private boolean isCancelled;
+	
 	protected OfficialHarvestSubmodelSelectorDialog(OfficialHarvestSubmodelSelector caller, Window parent) {
 		super(parent);
 		windowSettings = new WindowSettings(REpiceaSystem.getJavaIOTmpDir() + getClass().getSimpleName()+ ".ser", this);
-		setCancelOnClose(false);
 		this.caller = caller;
 		load = UIControlManager.createCommonMenuItem(CommonControlID.Open);
 		save = UIControlManager.createCommonMenuItem(CommonControlID.Save);
 		saveAs = UIControlManager.createCommonMenuItem(CommonControlID.SaveAs);
+
+		okButton = UIControlManager.createCommonButton(CommonControlID.Ok);
+		cancelButton = UIControlManager.createCommonButton(CommonControlID.Cancel);
 		
 		new REpiceaIOFileHandlerUI(this, caller, save, saveAs, load);
 		
@@ -104,6 +111,34 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaDialog impleme
 
 	}
 	
+	protected JPanel getControlPanel() {
+		JPanel pane = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		pane.add(okButton);
+		pane.add(cancelButton);
+		return pane;
+	}
+	
+	
+	@Override
+	public void cancelAction() {
+		super.cancelAction();
+		this.isCancelled = true;
+	}
+
+	/**
+	 * This method returns true if the window has been cancelled.
+	 * @return a boolean
+	 */
+	public boolean hasBeenCancelled() {return isCancelled;}
+	
+	@Override
+	public void setVisible(boolean bool) {
+		if (!isVisible() && bool) {
+			isCancelled = false;
+		}
+		super.setVisible(bool);
+	}
+	
 	@Override
 	public void refreshInterface() {
 		singleTreatmentButton.setSelected(caller.getMode() == Mode.SingleTreatment);
@@ -123,6 +158,12 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaDialog impleme
 	
 	protected void checkFeaturesToEnable() {
 		uniqueTreatmentComboBox.setEnabled(singleTreatmentButton.isSelected());
+		if (!treatmentByPotentialVegetationButton.isSelected()) {
+			TableCellEditor editor = table.getCellEditor();
+			if (editor != null) {
+				editor.cancelCellEditing();
+			}
+		}
 		table.setEnabled(treatmentByPotentialVegetationButton.isSelected());
 	}
 
@@ -132,6 +173,8 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaDialog impleme
 		singleTreatmentButton.addActionListener(this);
 		treatmentByPotentialVegetationButton.addActionListener(this);
 		uniqueTreatmentComboBox.addItemListener(this);
+		okButton.addActionListener(this);
+		cancelButton.addActionListener(this);
 	}
 
 	@Override
@@ -140,6 +183,8 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaDialog impleme
 		singleTreatmentButton.removeActionListener(this);
 		treatmentByPotentialVegetationButton.removeActionListener(this);
 		uniqueTreatmentComboBox.removeItemListener(this);
+		okButton.removeActionListener(this);
+		cancelButton.removeActionListener(this);
 	}
 
 	@Override
@@ -167,6 +212,8 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaDialog impleme
 		JScrollPane scrollPane = new JScrollPane(table);
 		pane.add(createSimplePanel(scrollPane, 20));
 		pane.add(Box.createVerticalStrut(10));
+		
+		getContentPane().add(getControlPanel(), BorderLayout.SOUTH);
 	}
 
 	
@@ -235,6 +282,10 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaDialog impleme
 				caller.mode = Mode.TreatmentByPotentialVegetation;
 				checkFeaturesToEnable();
 			}
+		} else if (e.getSource().equals(okButton)) {
+			okAction();
+		} else if (e.getSource().equals(cancelButton)) {
+			cancelAction();
 		}
 	}
 
