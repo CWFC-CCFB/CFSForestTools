@@ -64,7 +64,7 @@ public class PetroGradePredictorTest {
 		double relDiff;
 		for (int i = 0; i < actual.m_iRows; i++) {
 			relDiff = Math.abs(1 - actual.m_afData[i][0] / expected.m_afData[i][0]); 
-			Assert.assertEquals(0, relDiff, .05);
+			Assert.assertEquals(0, relDiff, .06);
 		}
 	}
 
