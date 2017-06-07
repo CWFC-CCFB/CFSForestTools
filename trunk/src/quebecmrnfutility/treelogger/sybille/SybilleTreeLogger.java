@@ -141,8 +141,8 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 		} catch (Exception e) {
 			System.out.println("Sybille could not log tree : " + t.getSpeciesName() + t.getSubjectId());
 			e.printStackTrace();
-			heightM = getTreeLoggerParameters().getStumpHeightM();
-			estimate = stp.getPredictedTaperForTheseSegments(t, segments, getTreeLoggerParameters().getEstimationMethod());
+//			heightM = getTreeLoggerParameters().getStumpHeightM();
+//			estimate = stp.getPredictedTaperForTheseSegments(t, segments, getTreeLoggerParameters().getEstimationMethod());
 		}
 	}
 

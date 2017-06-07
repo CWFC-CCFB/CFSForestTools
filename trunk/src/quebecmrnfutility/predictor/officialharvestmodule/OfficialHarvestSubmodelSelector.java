@@ -244,7 +244,10 @@ public class OfficialHarvestSubmodelSelector implements REpiceaShowableUIWithPar
 	
 	
 	public static void main(String[] args) {
-		new OfficialHarvestSubmodelSelector().showUI(null);
+		OfficialHarvestSubmodelSelector selector = new OfficialHarvestSubmodelSelector();
+		selector.showUI(null);
+		boolean cancelled = selector.getUI(null).hasBeenCancelled();
+		System.out.println("The dialog has been cancelled : " + cancelled);
 	}
 
 }
