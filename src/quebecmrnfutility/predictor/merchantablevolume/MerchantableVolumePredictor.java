@@ -76,10 +76,17 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
 			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance));
 			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
-			Matrix matrixG = covParms.getSubMatrix(0, 2, 0, 0).squareSym().add(covParms.getSubMatrix(3, 5, 0, 0).squareSym());
-			Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);
+
+			Matrix matrixGPlotLevel =  covParms.getSubMatrix(0, 2, 0, 0).squareSym();
+			Matrix defaultRandomEffectsPlotLevel = new Matrix(matrixGPlotLevel.m_iRows, 1);
+
+			Matrix matrixGCruiseLineLevel = covParms.getSubMatrix(3, 5, 0, 0).squareSym();
+			Matrix defaultRandomEffectsCruiseLineLevel = new Matrix(matrixGCruiseLineLevel.m_iRows, 1);
+			
 			sigma2 = covParms.getSubMatrix(6, covParms.m_iRows - 1, 0, 0);
-			setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
+
+			setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsPlotLevel, matrixGPlotLevel));
+			setDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE, new GaussianEstimate(defaultRandomEffectsCruiseLineLevel, matrixGCruiseLineLevel));
 		} catch (Exception e) {
 			System.out.println("GeneralVolumeCalculator.init() : Unable to initialize the GeneralVolumeEquation");
 		}
@@ -155,8 +162,15 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	 * @return a simulated random effect (double)
 	 */
 	private double blupImplementation(VolumableStand stand, VolumableTree t) {
-		if (isRandomEffectsVariabilityEnabled) {					// only to save time !!!!
-			Matrix randomEffects = getRandomEffectsForThisSubject(stand);
+		if (isRandomEffectsVariabilityEnabled) {					
+			String cruiseLineID = stand.getCruiseLineID();
+			if (cruiseLineID == null) {
+				cruiseLineID = stand.getSubjectId();
+			}
+			CruiseLine cruiseLine = getCruiseLineForThisSubject(cruiseLineID, stand);
+			Matrix cruiseLineRandomEffects = getRandomEffectsForThisSubject(cruiseLine);
+			Matrix plotRandomEffects = getRandomEffectsForThisSubject(stand);
+			Matrix totalRandomEffects = cruiseLineRandomEffects.add(plotRandomEffects);
 			VolSpecies species = t.getVolumableTreeSpecies();
 			double dbh2 = t.getSquaredDbhCm();
 
@@ -164,7 +178,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			if (species.getSpeciesType() == SpeciesType.ConiferousSpecies) {
 				type = 0;
 			}
-			return randomEffects.m_afData[type][0]*dbh2;
+			return totalRandomEffects.m_afData[type][0]*dbh2;
 		} else {
 			return 0d;
 		}
@@ -188,20 +202,20 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		}
 	}
 
-//	/**
-//	 * For testing purpose.
-//	 * @param args
-//	 */
-//	public static void main (String[] args) {
-//		@SuppressWarnings("unused")
-//		MerchantableVolumePredictor test = new MerchantableVolumePredictor(false, false, false);
-//		try {
-//			System.out.println("Done without problems.");
-//		} catch (Exception e) {
-//			System.out.println("Problems!!!!!");
-//			e.printStackTrace();
-//		}
-//	}
+	/**
+	 * For testing purpose.
+	 * @param args
+	 */
+	public static void main (String[] args) {
+		@SuppressWarnings("unused")
+		MerchantableVolumePredictor test = new MerchantableVolumePredictor(false);
+		try {
+			System.out.println("Done without problems.");
+		} catch (Exception e) {
+			System.out.println("Problems!!!!!");
+			e.printStackTrace();
+		}
+	}
 
 	
 	
