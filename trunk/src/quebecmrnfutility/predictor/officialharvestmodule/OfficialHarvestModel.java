@@ -96,7 +96,7 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 	}
 	
 	private FixedEffectVectorFactory xVectorFactory;
-	private Map<TreatmentType, OfficialHarvestSubmodel> modelParametersLibrairy;
+	private Map<TreatmentType, OfficialHarvestSubmodel> modelParametersLibrary;
 	protected static Map<TreatmentType, Map<String, String>> speciesMap;
 	private OfficialHarvestSubmodelSelector selector;
 	
@@ -107,7 +107,7 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 	 */
 	public OfficialHarvestModel(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled, false, isVariabilityEnabled);
-		modelParametersLibrairy = new HashMap<TreatmentType, OfficialHarvestSubmodel>();
+		modelParametersLibrary = new HashMap<TreatmentType, OfficialHarvestSubmodel>();
 		init();
 		xVectorFactory = new FixedEffectVectorFactory();
 	}
@@ -150,7 +150,7 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 				if (betas.containsKey(treatment) && variances.containsKey(treatment)) {
 					OfficialHarvestSubmodel calculatorForThisTreatment = new OfficialHarvestSubmodel(isParametersVariabilityEnabled, isResidualVariabilityEnabled);
 					calculatorForThisTreatment.setParameterEstimates(betas.get(treatment), variances.get(treatment));
-					modelParametersLibrairy.put(treatment, calculatorForThisTreatment);
+					modelParametersLibrary.put(treatment, calculatorForThisTreatment);
 				}
 			}
 			
@@ -176,7 +176,7 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 		if (treatment == TreatmentType.CPRS) {
 			eventProbability = 1;
 		} else {
-			OfficialHarvestSubmodel submodel = modelParametersLibrairy.get(treatment);		
+			OfficialHarvestSubmodel submodel = modelParametersLibrary.get(treatment);		
 			Matrix modelParameters = submodel.getSubParametersForThisStand(stand);
 			oXVector = xVectorFactory.getFixedEffectVector(stand, tree, (TreatmentType) treatment);
 			double xBeta = oXVector.multiply(modelParameters).m_afData[0][0];
@@ -296,6 +296,12 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 		} 
 	}
 
+	@Override
+	public void clear() {
+		for (OfficialHarvestSubmodel p : modelParametersLibrary.values()) {
+			p.clear();
+		}
+	}
 
 //	/**
 //	 * For algorithm testing.

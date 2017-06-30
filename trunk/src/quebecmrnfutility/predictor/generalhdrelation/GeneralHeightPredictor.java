@@ -277,4 +277,9 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 		return stand.getTrees(StatusClass.alive);
 	}
 	
+	@Override
+	public void clear() {
+		clearDeviates();
+	}
+
 }

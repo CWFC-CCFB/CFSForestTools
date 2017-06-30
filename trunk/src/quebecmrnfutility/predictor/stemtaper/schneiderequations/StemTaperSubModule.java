@@ -355,6 +355,10 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
  	 */
 	protected StemTaperTree getTree() {return tree;}
 
-	
+	@Override
+	public void clear() {
+		clearDeviates();
+	}
+
 	
 }

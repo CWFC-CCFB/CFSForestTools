@@ -277,9 +277,20 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 		}
 		
 	}
+
 	
-	public static void main(String[] args) {
-		new StemTaperPredictor();
+	@Override
+	public void clear() {
+		for (Map<StemTaperTreeSpecies, StemTaperSubModule> innerMap : subModules.values()) {
+			for (StemTaperSubModule p : innerMap.values()) {
+				p.clear();
+			}
+		}
 	}
+
+	
+//	public static void main(String[] args) {
+//		new StemTaperPredictor();
+//	}
 	
 }

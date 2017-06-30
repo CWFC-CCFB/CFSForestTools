@@ -194,6 +194,14 @@ public class FormerOfficialHarvestModel extends REpiceaLogisticPredictor<FormerO
 			}
 	}
 
+	
+	@Override
+	public void clear() {
+		for (FormerOfficialHarvestSubmodel p : modelParametersLibrary.values()) {
+			p.clear();
+		}
+	}
+
 //	/**
 //	 * For algorithm testing.
 //	 * @param args
