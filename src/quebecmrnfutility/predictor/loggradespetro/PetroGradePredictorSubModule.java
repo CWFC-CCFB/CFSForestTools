@@ -88,4 +88,9 @@ abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
 	}
 
 
+	@Override
+	public void clear() {
+		clearDeviates();
+	}
+
 }

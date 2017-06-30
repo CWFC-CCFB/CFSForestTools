@@ -71,4 +71,10 @@ class OfficialHarvestSubmodel extends REpiceaPredictor {
 	 */
 	@Override
 	protected void init() {}
+	
+	@Override
+	public void clear() {
+		clearDeviates();
+	}
+
 }

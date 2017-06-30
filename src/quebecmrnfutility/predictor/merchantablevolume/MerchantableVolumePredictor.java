@@ -201,21 +201,27 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			return 0d;
 		}
 	}
-
-	/**
-	 * For testing purpose.
-	 * @param args
-	 */
-	public static void main (String[] args) {
-		@SuppressWarnings("unused")
-		MerchantableVolumePredictor test = new MerchantableVolumePredictor(false);
-		try {
-			System.out.println("Done without problems.");
-		} catch (Exception e) {
-			System.out.println("Problems!!!!!");
-			e.printStackTrace();
-		}
+	
+	@Override
+	public void clear() {
+		clearDeviates();
 	}
+
+
+//	/**
+//	 * For testing purpose.
+//	 * @param args
+//	 */
+//	public static void main (String[] args) {
+//		@SuppressWarnings("unused")
+//		MerchantableVolumePredictor test = new MerchantableVolumePredictor(false);
+//		try {
+//			System.out.println("Done without problems.");
+//		} catch (Exception e) {
+//			System.out.println("Problems!!!!!");
+//			e.printStackTrace();
+//		}
+//	}
 
 	
 	
