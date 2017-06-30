@@ -180,12 +180,12 @@ public class PetroGradePredictor extends REpiceaPredictor {
 	}
 	
 	@Override
-	public void clear() {
+	public void clearDeviates() {
 		for (PetroGradePredictorPresenceSubModule p : presenceSubModules.values()) {
-			p.clear();
+			p.clearDeviates();
 		}
 		for (PetroGradePredictorVolumeSubModule p : volumeSubModules.values()) {
-			p.clear();
+			p.clearDeviates();
 		}
 	}
 

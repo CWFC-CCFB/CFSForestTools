@@ -193,10 +193,6 @@ public final class BetaHarvestModel extends REpiceaLogisticPredictor<BetaHarvest
 		
 	}
 	
-	@Override
-	public void clear() {
-		clearDeviates();
-	}
 
 //	/**
 //	 * For testing purpose.
