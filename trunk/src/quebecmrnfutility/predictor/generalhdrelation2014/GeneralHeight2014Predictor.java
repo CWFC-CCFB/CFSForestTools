@@ -272,9 +272,9 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor {
 
 
 	@Override
-	public void clear() {
+	public void clearDeviates() {
 		for (GeneralHeight2014InternalPredictor p : internalPredictors.values()) {
-			p.clear();
+			p.clearDeviates();
 		}
 	}
 

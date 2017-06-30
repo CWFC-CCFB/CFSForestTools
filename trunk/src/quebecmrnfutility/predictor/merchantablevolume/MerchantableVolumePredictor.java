@@ -202,12 +202,6 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		}
 	}
 	
-	@Override
-	public void clear() {
-		clearDeviates();
-	}
-
-
 //	/**
 //	 * For testing purpose.
 //	 * @param args

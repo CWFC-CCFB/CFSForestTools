@@ -232,10 +232,4 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipModel<Heightable2
 
 	}
 
-	@Override
-	public void clear() {
-		clearDeviates();
-	}
-
-	
 }

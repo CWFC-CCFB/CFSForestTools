@@ -50,11 +50,5 @@ public class VigQualPredictor extends REpiceaPredictor {
 		
 	}
 
-	@Override
-	public void clear() {
-		clearDeviates();
-	}
-
-	
 	
 }
