@@ -1,5 +1,6 @@
 package quebecmrnfutility.predictor.generalhdrelation2014;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -96,6 +97,9 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipModel<Heightable2
 //		Matrix modelParameters = getParametersForThisRealization(new BetaHeightableStandMonteCarlo(stand, t.getBetaHeightableTreeSpecies()));
 
 		double basalArea = stand.getBasalAreaM2Ha();
+		if (basalArea <= 0d) {
+			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
+		}
 		double averageTemp = stand.getMeanAnnualTemperatureC();	
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();
