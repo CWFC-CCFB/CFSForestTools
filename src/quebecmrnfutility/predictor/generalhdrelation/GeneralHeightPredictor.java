@@ -24,6 +24,7 @@
  */
 package quebecmrnfutility.predictor.generalhdrelation;
 
+import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -186,6 +187,9 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 //		Matrix modelParameters = getParametersForThisRealization(stand);
 		Matrix modelParameters = beta;
 		double basalArea = stand.getBasalAreaM2Ha();
+		if (basalArea <= 0d) {
+			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
+		}
 		double averageTemp = stand.getMeanAnnualTemperatureC();
 		DrainageGroup drainageGroup = getDrainageGroup(stand);
 		String ecoRegion = stand.getEcoRegion();
