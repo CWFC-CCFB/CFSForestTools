@@ -98,6 +98,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipModel<Heightable2
 
 		double basalArea = stand.getBasalAreaM2Ha();
 		if (basalArea <= 0d) {
+			System.out.println("Error in HD relationship: The basal area of the plot has not been calculated yet!");
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
 		double averageTemp = stand.getMeanAnnualTemperatureC();	
