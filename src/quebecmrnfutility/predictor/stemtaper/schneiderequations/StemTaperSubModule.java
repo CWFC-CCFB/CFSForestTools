@@ -171,11 +171,15 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 				if (estimationMethod == EstimationMethodInDeterministicMode.SecondOrder || estimationMethod == EstimationMethodInDeterministicMode.SecondOrderMeanOnly) {
 					correctionFactor = correctionMatrix.m_afData[i][0];
 				}
-			}	
-			pred.m_afData[i][0] = alpha * tree.getSquaredDbhCm() * 100 * coreExpression.m_afData[i][0] * Math.pow(heightsSectionRespectToDbh.m_afData[i][0], 2 - exponent) 
+			}
+			double crudePrediction = alpha * tree.getSquaredDbhCm() * 100 * coreExpression.m_afData[i][0] * Math.pow(heightsSectionRespectToDbh.m_afData[i][0], 2 - exponent) 
 					+ correctionFactor + residualErrors.m_afData[i][0];
+			if (crudePrediction < 0) {
+				crudePrediction = 0;
+			}
+			pred.m_afData[i][0] = crudePrediction;
 		}
-		
+				
 		prediction.setMean(pred);
 		
 		if (!isResidualVariabilityEnabled) {

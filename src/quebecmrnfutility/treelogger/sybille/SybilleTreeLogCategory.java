@@ -46,7 +46,7 @@ import repicea.util.REpiceaTranslator.TextableEnum;
  */
 public class SybilleTreeLogCategory extends LogCategory {
 	
-	protected static enum LengthID implements TextableEnum {
+	public static enum LengthID implements TextableEnum {
 		FourFeetLong(1.2446, "124.5 cm (4'1\")", "124,5 cm (4'1\")"),
 		EightFeetLong(2.4892, "248.9 cm (8'2\")", "248,9 cm (8'2\")"),
 		TwelveFeetLong(3.7338, "373.4 cm (12'3\")", "373,4 cm (12'3\")"),
@@ -107,7 +107,7 @@ public class SybilleTreeLogCategory extends LogCategory {
 	 * @param logLengthM the log length (m)
 	 * @param smallEndDiameterCm the small-end diameter (cm)
 	 */
-	protected SybilleTreeLogCategory(String logName, String species, LengthID lengthID, double smallEndDiameterCm) {
+	public SybilleTreeLogCategory(String logName, String species, LengthID lengthID, double smallEndDiameterCm) {
 		super(logName, false);
 		setSpecies(species);
 		setLogLengthM(lengthID);
