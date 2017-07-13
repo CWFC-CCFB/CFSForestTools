@@ -111,15 +111,15 @@ public class ComparisonPredictions {
 	}
 	
 	void predictTheseTrees() throws IOException {
-		List<StemTaperTreeSpecies> speciesList = new ArrayList<StemTaperTreeSpecies>();
-		speciesList.add(StemTaperTreeSpecies.EPB);
-		speciesList.add(StemTaperTreeSpecies.EPN);
-		speciesList.add(StemTaperTreeSpecies.EPR);
-		speciesList.add(StemTaperTreeSpecies.PIB);
-		speciesList.add(StemTaperTreeSpecies.PIG);
-		speciesList.add(StemTaperTreeSpecies.SAB);
+//		List<StemTaperTreeSpecies> speciesList = new ArrayList<StemTaperTreeSpecies>();
+//		speciesList.add(StemTaperTreeSpecies.EPB);
+//		speciesList.add(StemTaperTreeSpecies.EPN);
+//		speciesList.add(StemTaperTreeSpecies.EPR);
+//		speciesList.add(StemTaperTreeSpecies.PIB);
+//		speciesList.add(StemTaperTreeSpecies.PIG);
+//		speciesList.add(StemTaperTreeSpecies.SAB);
 
-		for (StemTaperTreeSpecies species : speciesList) {
+		for (StemTaperTreeSpecies species : StemTaperTreeSpecies.values()) {
 			for (double dbhCm = 15; dbhCm <= 40; dbhCm += 5) {
 				double heightIncrement = (25d-10d) / (40d -15d); 
 				double heightM = 10d + heightIncrement * (dbhCm - 15d);
