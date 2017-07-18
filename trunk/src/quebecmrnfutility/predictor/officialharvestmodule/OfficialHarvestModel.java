@@ -104,10 +104,10 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 	
 	/**
 	 * General constructor that enables the stochastic implementation. NOTE: there is no random effect variability in this model.
-	 * @param isVariabilityEnabled = a boolean that enables the parameter variability
+	 * @param isParameterVariabilityEnabled = a boolean that enables the parameter variability
 	 */
-	public OfficialHarvestModel(boolean isVariabilityEnabled) {
-		super(isVariabilityEnabled, false, isVariabilityEnabled);
+	public OfficialHarvestModel(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {		// temporary implementation to correct for the bug due to the lack of digits in the parameter estimates
+		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);
 		modelParametersLibrary = new HashMap<TreatmentType, OfficialHarvestSubmodel>();
 		init();
 		xVectorFactory = new FixedEffectVectorFactory();
@@ -117,7 +117,7 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 	 * Default constructor with all uncertainty sources disabled.
 	 */
 	public OfficialHarvestModel() {
-		this(false);
+		this(false, false);
 	}
 	
 	/**
