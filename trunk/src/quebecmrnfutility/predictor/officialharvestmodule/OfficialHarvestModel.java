@@ -74,6 +74,7 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 		CPI_CP_CIMOTF("CPI_CP CIMOTFF", "Coupe progressive irr\u00E9guli\u00E8re couvert permanent CIMOTFF"),
 		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irr\u00E9guli\u00E8re \u00E0 r\u00E9g\u00E9n\u00E9ration lente CIMOTFF"),
 		CPRS("Harvesting with soil and regeneration protection", "CPRS - Coupe avec protection de la r\u00E9g\u00E9n\u00E9ration et des sols"),
+		PROTECTION("No harvest", "Aucune coupe")
 		;		
 		TreatmentType(String englishText, String frenchText) {
 			setText(englishText, frenchText);
@@ -174,7 +175,9 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 
 		double eventProbability;
 		if (treatment == TreatmentType.CPRS) {
-			eventProbability = 1;
+			eventProbability = 1d;
+		} else if (treatment == TreatmentType.PROTECTION) {
+			eventProbability = 0d;
 		} else {
 			OfficialHarvestSubmodel submodel = modelParametersLibrary.get(treatment);		
 			Matrix modelParameters = submodel.getSubParametersForThisStand(stand);
