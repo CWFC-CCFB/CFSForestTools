@@ -1,32 +1,33 @@
 /*
  * English version follows
  * 
- * Ce fichier fait partie de la bibliothèque mrnf-foresttools.
- * Il est protégé par la loi sur le droit d'auteur (L.R.C.,cC-42) et par les
+ * Ce fichier fait partie de la bibliothï¿½que mrnf-foresttools.
+ * Il est protï¿½gï¿½ par la loi sur le droit d'auteur (L.R.C.,cC-42) et par les
  * conventions internationales. Toute reproduction de ce fichier sans l'accord 
- * du ministère des Ressources naturelles et de la Faune du Gouvernement du 
- * Québec est strictement interdite.
+ * du ministï¿½re des Ressources naturelles et de la Faune du Gouvernement du 
+ * Quï¿½bec est strictement interdite.
  * 
- * Copyright (C) 2009-2012 Gouvernement du Québec - Rouge-Epicea
+ * Copyright (C) 2009-2012 Gouvernement du Quï¿½bec - Rouge-Epicea
  * 	Pour information, contactez Jean-Pierre Saucier, 
- * 			Ministère des Ressources naturelles et de la Faune du Québec
+ * 			Ministï¿½re des Ressources naturelles et de la Faune du Quï¿½bec
  * 			jean-pierre.saucier@mrnf.gouv.qc.ca
  *
  * This file is part of the mrnf-foresttools library. It is 
  * protected by copyright law (L.R.C., cC-42) and by international agreements. 
- * Any reproduction of this file without the agreement of Québec Ministry of 
+ * Any reproduction of this file without the agreement of Quï¿½bec Ministry of 
  * Natural Resources and Wildlife is strictly prohibited.
  *
- * Copyright (C) 2009-2012 Gouvernement du Québec 
+ * Copyright (C) 2009-2012 Gouvernement du Quï¿½bec 
  * 	For further information, please contact Jean-Pierre Saucier,
- * 			Ministère des Ressources naturelles et de la Faune du Québec
+ * 			Ministï¿½re des Ressources naturelles et de la Faune du Quï¿½bec
  * 			jean-pierre.saucier@mrnf.gouv.qc.ca
  */
 package quebecmrnfutility.predictor.officialharvestmodule;
 
-import java.util.EnumSet;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,29 +59,34 @@ public interface OfficialHarvestableTree extends DbhCmProvider,
 		THO,
 		TIL;
 		
-		private static EnumSet<OfficialHarvestableSpecies>	setEnumOther	= EnumSet.of(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, PIN, RES, SAB, THO);
-		private static EnumSet<OfficialHarvestableSpecies>	setEnum35	= EnumSet.of(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
-		private static EnumSet<OfficialHarvestableSpecies>	setEnum45	= EnumSet.of(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, SAB, THO);
-		private static EnumSet<OfficialHarvestableSpecies>	setEnumCPI_CP	= EnumSet.of(BOJ, ERR, ERS, FEU, HEG, RES, SAB);
-		private static EnumSet<OfficialHarvestableSpecies>	setEnumCPI_RL	= EnumSet.of(AUT, BOJ, ERR, ERS, HEG, SAB, TIL);
-		private static EnumSet<OfficialHarvestableSpecies>	setEnumCRS	= EnumSet.of(AUT, ERS, HEG);
-		private static EnumSet<OfficialHarvestableSpecies>	setEnumCJP	= EnumSet.of(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
-		private static EnumSet<OfficialHarvestableSpecies>	setEnumCJPG_QM	= EnumSet.of(ERS, FEU, HEG, RES);
-		private static EnumSet<OfficialHarvestableSpecies>	setEnumCPI_CP_CIMOTF = EnumSet.of(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
-		private static EnumSet<OfficialHarvestableSpecies>	setEnumCPI_RL_CIMOTF = EnumSet.of(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
+		private static List<OfficialHarvestableSpecies>	setEnumOther	= Arrays.asList(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, PIN, RES, SAB, THO);
+		private static List<OfficialHarvestableSpecies>	setEnum35	= Arrays.asList(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
+		private static List<OfficialHarvestableSpecies>	setEnum45	= Arrays.asList(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, SAB, THO);		// FIXME : does not contain RES
+		private static List<OfficialHarvestableSpecies>	setEnumCPI_CP	= Arrays.asList(BOJ, ERR, ERS, FEU, HEG, RES, SAB);
+		private static List<OfficialHarvestableSpecies>	setEnumCPI_RL	= Arrays.asList(AUT, BOJ, ERR, ERS, HEG, SAB, TIL);	// FIXME : does not contain RES or FEU
+		private static List<OfficialHarvestableSpecies>	setEnumCRS	= Arrays.asList(AUT, ERS, HEG);	// FIXME : does not contain RES or FEU
+		private static List<OfficialHarvestableSpecies>	setEnumCJP	= Arrays.asList(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
+		private static List<OfficialHarvestableSpecies>	setEnumCJPG_QM	= Arrays.asList(ERS, FEU, HEG, RES);
+		private static List<OfficialHarvestableSpecies>	setEnumCPI_CP_CIMOTF = Arrays.asList(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
+		private static List<OfficialHarvestableSpecies>	setEnumCPI_RL_CIMOTF = Arrays.asList(BOJ, BOP, EPX, ERR, ERS, FEU, HEG, PEU, RES, SAB, THO);
 		private OfficialHarvestableSpecies() {		
 		}
 		
 		public Matrix getDummy(TreatmentType treatment) {
-			EnumSet<OfficialHarvestableSpecies>	setEnum = null;
-			setEnum = getEnumSet(treatment);
-			int pos = 0;
-			for (OfficialHarvestableSpecies species : setEnum) {
-				if (species == this) {
-					break;
-				}
-				pos++;
+			List<OfficialHarvestableSpecies> setEnum = getListRelatedToTreatment(treatment);
+			int pos = setEnum.indexOf(this);
+			if (pos == -1) {
+				pos = setEnum.indexOf(AUT);		// correct for setEnumCPI_RL and setEnumCRS
 			}
+			if (pos == -1) {
+				pos = setEnum.indexOf(FEU);		// correct for setEnum45
+			}
+//			for (OfficialHarvestableSpecies species : setEnum) {
+//				if (species == this) {
+//					break;
+//				}
+//				pos++;
+//			}
 			Matrix dummyTmp = new Matrix(1, setEnum.size());
 			dummyTmp.m_afData[0][pos] = 1d;
 			return dummyTmp;
@@ -101,7 +107,7 @@ public interface OfficialHarvestableTree extends DbhCmProvider,
 			if (eligibleSpeciesNames.get(pTreatment.toString()) == null) {
 				Set<String> eligibleSpeciesNamesSet = new HashSet<String>();
 				eligibleSpeciesNames.put(pTreatment.toString(), eligibleSpeciesNamesSet);
-				for (OfficialHarvestableSpecies species : getEnumSet(pTreatment)) {
+				for (OfficialHarvestableSpecies species : getListRelatedToTreatment(pTreatment)) {
 					eligibleSpeciesNamesSet.add(species.name());
 				}
 			}
@@ -124,8 +130,8 @@ public interface OfficialHarvestableTree extends DbhCmProvider,
 			}
 		}
 		
-		private static EnumSet<OfficialHarvestableSpecies> getEnumSet(TreatmentType treatment) {
-			EnumSet<OfficialHarvestableSpecies> set = null;
+		private static List<OfficialHarvestableSpecies> getListRelatedToTreatment(TreatmentType treatment) {
+			List<OfficialHarvestableSpecies> set = null;
 			if (TreatmentType.CP_35 == treatment){
 				set = setEnum35;
 			} else if(TreatmentType.CP_45 == treatment) {
