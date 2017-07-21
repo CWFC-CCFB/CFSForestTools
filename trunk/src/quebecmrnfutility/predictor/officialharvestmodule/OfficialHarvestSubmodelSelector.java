@@ -167,7 +167,7 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 	}
 
 	@Override
-	protected Enum<OfficialHarvestModel.TreatmentType> getMatch(String potentialVegetation) {
+	public Enum<OfficialHarvestModel.TreatmentType> getMatch(Object potentialVegetation) {
 		if (mode == Mode.SingleTreatment) {
 			return singleTreatment;
 		} else {
