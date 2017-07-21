@@ -169,7 +169,7 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 			treatment = (Enum<?>) parms[0];
 			modifier = (Integer) parms[1];
 		} else {
-			treatment = selector.getTreatment(stand.getPotentialVegetation());
+			treatment = selector.getMatch(stand.getPotentialVegetation());
 			modifier = 0;
 		}
 
