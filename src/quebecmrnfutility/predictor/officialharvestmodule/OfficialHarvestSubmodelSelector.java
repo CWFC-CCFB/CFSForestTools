@@ -28,51 +28,17 @@ import java.awt.Container;
 import java.awt.Window;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.filechooser.FileFilter;
-
-import repicea.gui.REpiceaShowableUIWithParent;
-import repicea.gui.components.REpiceaTableModel;
-import repicea.io.IOUserInterfaceableObject;
-import repicea.io.GFileFilter.FileType;
+import repicea.gui.components.REpiceaMatchSelector;
 import repicea.predictor.QuebecGeneralSettings;
-import repicea.serial.Memorizable;
 import repicea.serial.MemorizerPackage;
 import repicea.serial.xml.XmlDeserializer;
 import repicea.serial.xml.XmlMarshallException;
-import repicea.serial.xml.XmlSerializer;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
-public class OfficialHarvestSubmodelSelector implements REpiceaShowableUIWithParent, 
-														TableModelListener, 
-														IOUserInterfaceableObject, 
-														Memorizable {
-
-
-//	public static enum BasicDefaultTreatment implements TextableEnum {
-//		CPRS("Harvesting with soil and regeneration protection", "Coupe avec protection de la r\u00E9g\u00E9n\u00E9ration et des sols (CPRS)"),
-//		CPPTM("Harvesting with advanced regeneration protection (HARP)", "Coupe avec protection des petites tiges marchandes (CPPTM)");
-//		
-//		BasicDefaultTreatment(String englishText, String frenchText) {
-//			setText(englishText, frenchText);
-//		}
-//		
-//		@Override
-//		public void setText(String englishText, String frenchText) {
-//			REpiceaTranslator.setString(this, englishText, frenchText);
-//		}
-//		
-//		@Override
-//		public String toString() {return REpiceaTranslator.getString(this);}
-//	}
+public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<OfficialHarvestModel.TreatmentType> {
 		
 	protected static enum Mode implements TextableEnum {
 		SingleTreatment("Single treatment", "Traitement unique"),
@@ -91,94 +57,73 @@ public class OfficialHarvestSubmodelSelector implements REpiceaShowableUIWithPar
 		public String toString() {return REpiceaTranslator.getString(this);}
 	}
 	
+	private static enum ColumnID implements TextableEnum {
+		PotentialVegetation("Potential vegetation", "V\u00E9g\u00E9tation potentielle"),
+		SilviculturalTreatment("Treatment", "Traitement");
+
+		ColumnID(String englishText, String frenchText) {
+			setText(englishText, frenchText);
+		}
+		
+		@Override
+		public void setText(String englishText, String frenchText) {
+			REpiceaTranslator.setString(this, englishText, frenchText);
+		}
+		
+		@Override
+		public String toString() {return REpiceaTranslator.getString(this);}
+	}
+
 	
 	
-	
-	protected final Map<String, Enum<?>> treatmentMatchMap;
-	protected final List<Enum<?>> potentialTreatments;
-	private String filename;
+//	protected final Map<String, Enum<?>> treatmentMatchMap;
+//	protected final List<Enum<?>> potentialTreatments;
+//	private String filename;
 	protected Mode mode;
-	protected Enum<?> singleTreatment;
-	private transient OfficialHarvestSubmodelSelectorDialog guiInterface;
+	protected Enum<OfficialHarvestModel.TreatmentType> singleTreatment;
 
 	/**
 	 * Official constructor.
 	 */
 	public OfficialHarvestSubmodelSelector() {
-		potentialTreatments = new ArrayList<Enum<?>>();
+		super(QuebecGeneralSettings.POTENTIAL_VEGETATION_LIST.toArray(), 
+				OfficialHarvestModel.TreatmentType.values(), 
+				OfficialHarvestModel.TreatmentType.CPRS, 
+				ColumnID.values());
 		mode = Mode.SingleTreatment;
-		addPotentialTreatments(OfficialHarvestModel.TreatmentType.values());
-		singleTreatment = potentialTreatments.get(potentialTreatments.size() - 1);
-		treatmentMatchMap = new TreeMap<String, Enum<?>>();
-		for (String potentialVegetation : QuebecGeneralSettings.POTENTIAL_VEGETATION_LIST) {
-			treatmentMatchMap.put(potentialVegetation, potentialTreatments.get(potentialTreatments.size() - 1));
-		}
+		singleTreatment = OfficialHarvestModel.TreatmentType.CPRS;
 	}
 	
 	protected Mode getMode() {return mode;}
 
-	/**
-	 * This method adds a potential treatment to the list of available treatments
-	 * @param enumValues an array of enum variable 
+	/*
+	 * For extended visibility only (non-Javadoc)
+	 * @see repicea.gui.components.REpiceaMatchSelector#getPotentialMatches()
 	 */
-	public void addPotentialTreatments(Enum<?>[] enumValues) {
-		for (Enum<?> enumValue : enumValues) {
-			if (!potentialTreatments.contains(enumValue)) {
-				potentialTreatments.add(enumValue);
-			}
-		}
+	@Override
+	protected List<Enum<OfficialHarvestModel.TreatmentType>> getPotentialMatches() {
+		return super.getPotentialMatches();
 	}
 	
-	
-	
+//	/**
+//	 * This method adds a potential treatment to the list of available treatments
+//	 * @param enumValues an array of enum variable 
+//	 */
+//	public void addPotentialTreatments(Enum<?>[] enumValues) {
+//		for (Enum<?> enumValue : enumValues) {
+//			if (!potentialTreatments.contains(enumValue)) {
+//				potentialTreatments.add(enumValue);
+//			}
+//		}
+//	}
+		
 	@Override
 	public OfficialHarvestSubmodelSelectorDialog getUI(Container parent) {
 		if (guiInterface == null) {
-			guiInterface = new OfficialHarvestSubmodelSelectorDialog(this, (Window) parent);
+			guiInterface = new OfficialHarvestSubmodelSelectorDialog(this, (Window) parent, columnNames);
 		}
-		return guiInterface;
+		return (OfficialHarvestSubmodelSelectorDialog) guiInterface;
 	}
-
-	@Override
-	public boolean isVisible() {
-		if (guiInterface != null && guiInterface.isVisible()) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public void showUI(Window parent) {
-		getUI(parent).setVisible(true);
-	}
-
-	
-	@Override
-	public void tableChanged(TableModelEvent e) {
-		if (e.getType() == TableModelEvent.UPDATE) {
-			if (e.getSource() instanceof REpiceaTableModel) {
-				REpiceaTableModel model = (REpiceaTableModel) e.getSource();
-				String potentialVegetation = (String) model.getValueAt(e.getLastRow(), 0);
-				Enum<?> treatement = (Enum<?>) model.getValueAt(e.getLastRow(), 1);
-				treatmentMatchMap.put(potentialVegetation, treatement);
-			}
-		}
-	}
-
-
-	@Override
-	public void save(String filename) throws IOException {
-		setFilename(filename);
-		XmlSerializer serializer = new XmlSerializer(filename);
-		try {
-			serializer.writeObject(this);
-		} catch (XmlMarshallException e) {
-			throw new IOException("A XmlMarshallException occurred while saving the file!");
-		}
-	}
-	
-	private void setFilename(String filename) {this.filename = filename;}
-
 
 	@Override
 	public void load(String filename) throws IOException {
@@ -205,40 +150,28 @@ public class OfficialHarvestSubmodelSelector implements REpiceaShowableUIWithPar
 
 
 	@Override
-	public FileFilter getFileFilter() {return FileType.XML.getFileFilter();}
-
-
-	@Override
-	public String getFilename() {return filename;}
-
-
-	@Override
 	public MemorizerPackage getMemorizerPackage() {
-		MemorizerPackage mp = new MemorizerPackage();
-		mp.add((Serializable) treatmentMatchMap);
-		mp.add((Serializable) potentialTreatments);
+		MemorizerPackage mp = super.getMemorizerPackage();
 		mp.add(mode);
 		mp.add(singleTreatment);
 		return mp;
 	}
 
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	@Override
 	public void unpackMemorizerPackage(MemorizerPackage wasMemorized) {
-		treatmentMatchMap.clear();
-		treatmentMatchMap.putAll((Map) wasMemorized.get(0));
-		potentialTreatments.clear();
-		potentialTreatments.addAll((List) wasMemorized.get(1));
+		super.unpackMemorizerPackage(wasMemorized);
 		mode = (Mode) wasMemorized.get(2);
-		singleTreatment = (Enum<?>) wasMemorized.get(3);
+		singleTreatment = (Enum<OfficialHarvestModel.TreatmentType>) wasMemorized.get(3);
 	}
 
-	protected Enum<?> getTreatment(String potentialVegetation) {
+	@Override
+	protected Enum<OfficialHarvestModel.TreatmentType> getMatch(String potentialVegetation) {
 		if (mode == Mode.SingleTreatment) {
 			return singleTreatment;
 		} else {
-			return treatmentMatchMap.get(potentialVegetation);
+			return super.getMatch(potentialVegetation);
 		}
 	}
 	
