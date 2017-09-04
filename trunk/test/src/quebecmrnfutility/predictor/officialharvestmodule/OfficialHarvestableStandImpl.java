@@ -17,7 +17,7 @@ public class OfficialHarvestableStandImpl implements OfficialHarvestableStand {
 	 * Constructor
 	 * @param numberOfStemsHa number of stems per hectare
 	 */
-	public OfficialHarvestableStandImpl(double numberOfStemsHa, String treatment) {
+	protected OfficialHarvestableStandImpl(double numberOfStemsHa, String treatment) {
 		this.numberOfStemsHa = numberOfStemsHa;
 		this.treatment = TreatmentType.valueOf(treatment.toUpperCase().trim());
 		trees = new ArrayList<OfficialHarvestableTree>();
@@ -27,7 +27,7 @@ public class OfficialHarvestableStandImpl implements OfficialHarvestableStand {
 		trees.add(tree);
 	}
 
-	public TreatmentType getTreatment() {return treatment;}
+	protected TreatmentType getTreatment() {return treatment;}
 	
 	protected Collection<OfficialHarvestableTree> getTrees() {return trees;}
 	

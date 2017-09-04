@@ -7,11 +7,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import org.junit.Test;
 
+import quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestModel.TreatmentType;
+import quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestableTree.OfficialHarvestableSpecies;
 import repicea.util.ObjectUtility;
 
 
@@ -57,11 +60,27 @@ public class OfficialHarvestModelTest {
 		
 	}
 
+	@Test
+    public void PredictedProbabilitiesTestUnderStochasticImplementation() throws Exception {
+		List<OfficialHarvestableStand> stands = readData();
+		OfficialHarvestModel harvester = new OfficialHarvestModel(true, true);
+		OfficialHarvestableStand stand = stands.get(0);
+		List<OfficialHarvestableTree> trees = new ArrayList<OfficialHarvestableTree>();
+		for (OfficialHarvestableSpecies species : OfficialHarvestableSpecies.values()) {
+			trees.add(new OfficialHarvestableTreeImpl(species, 30d, 0d));
+		}
+		for (TreatmentType treatment : TreatmentType.values()) {
+			for (OfficialHarvestableTree tree : trees) {
+				System.out.println("Testing treatment : " + treatment.name() + " and species " + tree.getOfficialHarvestableTreeSpecies(treatment));
+				harvester.predictEventProbability(stand, tree, treatment, 0);
+			}
+		}
+	}
+
 	
 	
-	
-	private static Collection<OfficialHarvestableStand> readData() throws Exception {
-		Collection<OfficialHarvestableStand> stands = new ArrayList<OfficialHarvestableStand>();
+	private static List<OfficialHarvestableStand> readData() throws Exception {
+		List<OfficialHarvestableStand> stands = new ArrayList<OfficialHarvestableStand>();
 		String path = ObjectUtility.getRelativePackagePath(OfficialHarvestModelTest.class);
 		InputStream fileToRead = ClassLoader.getSystemResourceAsStream(path + "testTrees.txt");
 		try {
