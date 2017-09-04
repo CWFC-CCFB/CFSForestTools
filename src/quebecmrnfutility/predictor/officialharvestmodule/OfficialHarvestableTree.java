@@ -158,5 +158,5 @@ public interface OfficialHarvestableTree extends DbhCmProvider,
 	}
 	
 	
-	public OfficialHarvestableSpecies getOfficialHarvestableTreeSpecies(TreatmentType treatment);
+	public OfficialHarvestableSpecies getOfficialHarvestableTreeSpecies(TreatmentType treatment);	// TODO : check if the treatment is strictly required. This should be handled internally
 }
