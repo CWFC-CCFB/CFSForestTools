@@ -63,7 +63,7 @@ public class OfficialHarvestModelTest {
 	@Test
     public void PredictedProbabilitiesTestUnderStochasticImplementation() throws Exception {
 		List<OfficialHarvestableStand> stands = readData();
-		OfficialHarvestModel harvester = new OfficialHarvestModel(true, true);
+		OfficialHarvestModel harvester = new OfficialHarvestModel(true);
 		OfficialHarvestableStand stand = stands.get(0);
 		List<OfficialHarvestableTree> trees = new ArrayList<OfficialHarvestableTree>();
 		for (OfficialHarvestableSpecies species : OfficialHarvestableSpecies.values()) {
