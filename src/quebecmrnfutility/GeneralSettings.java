@@ -233,62 +233,123 @@ public class GeneralSettings {
 		public FormerOfficialHarvestableSpecies getPrelSpecies() {return speciesPrel;}
 	}
 	
-
-	public static Map<String, SpeciesMatch> SPECIES_LIST = new HashMap<String, SpeciesMatch>();
+	/**
+	 * This enum contains the list of tree species in Québec.
+	 * @author Mathieu Fortin - Octobre 2017
+	 */
+	public static enum QcSpecies {
+		BOG,
+		BOJ,
+		BOP,
+		CAC,
+		CAF,
+		CAR,
+		CEO,
+		CET,
+		CHR, 
+		CHG,
+		CHB,
+		CRA,
+		EPB,
+		EPR,
+		EPN,
+		EPO,
+		ERA,
+		ERG,
+		ERN,
+		ERR,
+		ERP,
+		ERS,
+		FRA,
+		FRN,
+		FRP,
+		HEG,
+		JUV,
+		MAS,
+		MEJ,
+		MEL,
+		MEU,
+		NOC,
+		ORA,
+		ORR,
+		ORT,
+		OSV,
+		PET,
+		PED,
+		PEG,
+		PEB,
+		PID,
+		PIG,
+		PIB,
+		PIR,
+		PIS,
+		PRP,
+		PRU,
+		SAB,
+		SAL,
+		SOA,
+		SOD,
+		THO,
+		TIL;
+	}
+	
+	
+	
+	public static Map<QcSpecies, SpeciesMatch> SPECIES_LIST = new HashMap<QcSpecies, SpeciesMatch>();
 	static {
-		SPECIES_LIST.put("BOG", new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.BOP));
-		SPECIES_LIST.put("BOJ", new SpeciesMatch(HdSpecies.BOJ, VolSpecies.BOJ, FormerOfficialHarvestableSpecies.BOJ));
-		SPECIES_LIST.put("BOP", new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOP, FormerOfficialHarvestableSpecies.BOP));
-		SPECIES_LIST.put("CAC", new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("CAF", new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("CAR", new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("CEO", new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("CET", new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("CHR", new SpeciesMatch(HdSpecies.CHR, VolSpecies.CHR, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("CHG", new SpeciesMatch(HdSpecies.CHR, VolSpecies.CHR, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("CHB", new SpeciesMatch(HdSpecies.CHR, VolSpecies.CHR, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("CRA", new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("EPB", new SpeciesMatch(HdSpecies.EPB, VolSpecies.EPB, FormerOfficialHarvestableSpecies.EPX));
-		SPECIES_LIST.put("EPR", new SpeciesMatch(HdSpecies.EPR, VolSpecies.EPR, FormerOfficialHarvestableSpecies.EPX));
-		SPECIES_LIST.put("EPN", new SpeciesMatch(HdSpecies.EPN, VolSpecies.EPN, FormerOfficialHarvestableSpecies.EPX));
-		SPECIES_LIST.put("EPO", new SpeciesMatch(HdSpecies.EPB, VolSpecies.EPB, FormerOfficialHarvestableSpecies.EPX));
-		SPECIES_LIST.put("ERA", new SpeciesMatch(HdSpecies.ERS, VolSpecies.ERS, FormerOfficialHarvestableSpecies.ERS));
-		SPECIES_LIST.put("ERG", new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("ERN", new SpeciesMatch(HdSpecies.ERS, VolSpecies.ERS, FormerOfficialHarvestableSpecies.ERS));
-		SPECIES_LIST.put("ERR", new SpeciesMatch(HdSpecies.ERR, VolSpecies.ERR, FormerOfficialHarvestableSpecies.ERR));
-		SPECIES_LIST.put("ERP", new SpeciesMatch(HdSpecies.ERR, VolSpecies.ERR, FormerOfficialHarvestableSpecies.ERR));
-		SPECIES_LIST.put("ERS", new SpeciesMatch(HdSpecies.ERS, VolSpecies.ERS, FormerOfficialHarvestableSpecies.ERS));
-		SPECIES_LIST.put("FRA", new SpeciesMatch(HdSpecies.FRN, VolSpecies.FRA, FormerOfficialHarvestableSpecies.F_0));
-		SPECIES_LIST.put("FRN", new SpeciesMatch(HdSpecies.FRN, VolSpecies.FRN, FormerOfficialHarvestableSpecies.F_0));
-		SPECIES_LIST.put("FRP", new SpeciesMatch(HdSpecies.FRN, VolSpecies.FRA, FormerOfficialHarvestableSpecies.F_0));
-		SPECIES_LIST.put("HEG", new SpeciesMatch(HdSpecies.HEG, VolSpecies.HEG, FormerOfficialHarvestableSpecies.HEG));
-		SPECIES_LIST.put("JUV", new SpeciesMatch(HdSpecies.THO, VolSpecies.THO, FormerOfficialHarvestableSpecies.RES));
-		SPECIES_LIST.put("MAS", new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("MEJ", new SpeciesMatch(HdSpecies.MEL, VolSpecies.MEL, FormerOfficialHarvestableSpecies.RES));
-		SPECIES_LIST.put("MEL", new SpeciesMatch(HdSpecies.MEL, VolSpecies.MEL, FormerOfficialHarvestableSpecies.RES));
-		SPECIES_LIST.put("MEU", new SpeciesMatch(HdSpecies.MEL, VolSpecies.MEL, FormerOfficialHarvestableSpecies.RES));
-		SPECIES_LIST.put("NOC", new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("ORA", new SpeciesMatch(HdSpecies.BOP, VolSpecies.ORA, FormerOfficialHarvestableSpecies.F_0));
-		SPECIES_LIST.put("ORR", new SpeciesMatch(HdSpecies.BOP, VolSpecies.ORA, FormerOfficialHarvestableSpecies.F_0));
-		SPECIES_LIST.put("ORT", new SpeciesMatch(HdSpecies.BOP, VolSpecies.ORA, FormerOfficialHarvestableSpecies.F_0));
-		SPECIES_LIST.put("OSV", new SpeciesMatch(HdSpecies.OSV, VolSpecies.OSV, FormerOfficialHarvestableSpecies.F_0));
-		SPECIES_LIST.put("PET", new SpeciesMatch(HdSpecies.PET, VolSpecies.PET, FormerOfficialHarvestableSpecies.PEU));
-		SPECIES_LIST.put("PED", new SpeciesMatch(HdSpecies.PET, VolSpecies.PEG, FormerOfficialHarvestableSpecies.PEU));
-		SPECIES_LIST.put("PEG", new SpeciesMatch(HdSpecies.PEG, VolSpecies.PEG, FormerOfficialHarvestableSpecies.PEU));
-		SPECIES_LIST.put("PEB", new SpeciesMatch(HdSpecies.PET, VolSpecies.PEB, FormerOfficialHarvestableSpecies.PEU));
-		SPECIES_LIST.put("PID", new SpeciesMatch(HdSpecies.PIG, VolSpecies.PIG, FormerOfficialHarvestableSpecies.PIN));
-		SPECIES_LIST.put("PIG", new SpeciesMatch(HdSpecies.PIG, VolSpecies.PIG, FormerOfficialHarvestableSpecies.PIN));
-		SPECIES_LIST.put("PIB", new SpeciesMatch(HdSpecies.PIB, VolSpecies.PIB, FormerOfficialHarvestableSpecies.PIN));
-		SPECIES_LIST.put("PIR", new SpeciesMatch(HdSpecies.PIB, VolSpecies.PIR, FormerOfficialHarvestableSpecies.PIN));
-		SPECIES_LIST.put("PIS", new SpeciesMatch(HdSpecies.PIB, VolSpecies.PIR, FormerOfficialHarvestableSpecies.PIN));
-		SPECIES_LIST.put("PRP", new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("PRU", new SpeciesMatch(HdSpecies.PRU, VolSpecies.PRU, FormerOfficialHarvestableSpecies.RES));
-		SPECIES_LIST.put("SAB", new SpeciesMatch(HdSpecies.SAB, VolSpecies.SAB, FormerOfficialHarvestableSpecies.SAB));
-		SPECIES_LIST.put("SAL", new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("SOA", new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("SOD", new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
-		SPECIES_LIST.put("THO", new SpeciesMatch(HdSpecies.THO, VolSpecies.THO, FormerOfficialHarvestableSpecies.THO));
-		SPECIES_LIST.put("TIL", new SpeciesMatch(HdSpecies.TIL, VolSpecies.TIL, FormerOfficialHarvestableSpecies.F_0));
+		SPECIES_LIST.put(QcSpecies.BOG, new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.BOP));
+		SPECIES_LIST.put(QcSpecies.BOJ, new SpeciesMatch(HdSpecies.BOJ, VolSpecies.BOJ, FormerOfficialHarvestableSpecies.BOJ));
+		SPECIES_LIST.put(QcSpecies.BOP, new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOP, FormerOfficialHarvestableSpecies.BOP));
+		SPECIES_LIST.put(QcSpecies.CAC, new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.CAF, new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.CAR, new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.CEO, new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.CET, new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.CHR, new SpeciesMatch(HdSpecies.CHR, VolSpecies.CHR, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.CHG, new SpeciesMatch(HdSpecies.CHR, VolSpecies.CHR, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.CHB, new SpeciesMatch(HdSpecies.CHR, VolSpecies.CHR, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.CRA, new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.EPB, new SpeciesMatch(HdSpecies.EPB, VolSpecies.EPB, FormerOfficialHarvestableSpecies.EPX));
+		SPECIES_LIST.put(QcSpecies.EPR, new SpeciesMatch(HdSpecies.EPR, VolSpecies.EPR, FormerOfficialHarvestableSpecies.EPX));
+		SPECIES_LIST.put(QcSpecies.EPN, new SpeciesMatch(HdSpecies.EPN, VolSpecies.EPN, FormerOfficialHarvestableSpecies.EPX));
+		SPECIES_LIST.put(QcSpecies.EPO, new SpeciesMatch(HdSpecies.EPB, VolSpecies.EPB, FormerOfficialHarvestableSpecies.EPX));
+		SPECIES_LIST.put(QcSpecies.ERA, new SpeciesMatch(HdSpecies.ERS, VolSpecies.ERS, FormerOfficialHarvestableSpecies.ERS));
+		SPECIES_LIST.put(QcSpecies.ERG, new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.ERN, new SpeciesMatch(HdSpecies.ERS, VolSpecies.ERS, FormerOfficialHarvestableSpecies.ERS));
+		SPECIES_LIST.put(QcSpecies.ERR, new SpeciesMatch(HdSpecies.ERR, VolSpecies.ERR, FormerOfficialHarvestableSpecies.ERR));
+		SPECIES_LIST.put(QcSpecies.ERP, new SpeciesMatch(HdSpecies.ERR, VolSpecies.ERR, FormerOfficialHarvestableSpecies.ERR));
+		SPECIES_LIST.put(QcSpecies.ERS, new SpeciesMatch(HdSpecies.ERS, VolSpecies.ERS, FormerOfficialHarvestableSpecies.ERS));
+		SPECIES_LIST.put(QcSpecies.FRA, new SpeciesMatch(HdSpecies.FRN, VolSpecies.FRA, FormerOfficialHarvestableSpecies.F_0));
+		SPECIES_LIST.put(QcSpecies.FRN, new SpeciesMatch(HdSpecies.FRN, VolSpecies.FRN, FormerOfficialHarvestableSpecies.F_0));
+		SPECIES_LIST.put(QcSpecies.FRP, new SpeciesMatch(HdSpecies.FRN, VolSpecies.FRA, FormerOfficialHarvestableSpecies.F_0));
+		SPECIES_LIST.put(QcSpecies.HEG, new SpeciesMatch(HdSpecies.HEG, VolSpecies.HEG, FormerOfficialHarvestableSpecies.HEG));
+		SPECIES_LIST.put(QcSpecies.JUV, new SpeciesMatch(HdSpecies.THO, VolSpecies.THO, FormerOfficialHarvestableSpecies.RES));
+		SPECIES_LIST.put(QcSpecies.MAS, new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.MEJ, new SpeciesMatch(HdSpecies.MEL, VolSpecies.MEL, FormerOfficialHarvestableSpecies.RES));
+		SPECIES_LIST.put(QcSpecies.MEL, new SpeciesMatch(HdSpecies.MEL, VolSpecies.MEL, FormerOfficialHarvestableSpecies.RES));
+		SPECIES_LIST.put(QcSpecies.MEU, new SpeciesMatch(HdSpecies.MEL, VolSpecies.MEL, FormerOfficialHarvestableSpecies.RES));
+		SPECIES_LIST.put(QcSpecies.NOC, new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.ORA, new SpeciesMatch(HdSpecies.BOP, VolSpecies.ORA, FormerOfficialHarvestableSpecies.F_0));
+		SPECIES_LIST.put(QcSpecies.ORR, new SpeciesMatch(HdSpecies.BOP, VolSpecies.ORA, FormerOfficialHarvestableSpecies.F_0));
+		SPECIES_LIST.put(QcSpecies.ORT, new SpeciesMatch(HdSpecies.BOP, VolSpecies.ORA, FormerOfficialHarvestableSpecies.F_0));
+		SPECIES_LIST.put(QcSpecies.OSV, new SpeciesMatch(HdSpecies.OSV, VolSpecies.OSV, FormerOfficialHarvestableSpecies.F_0));
+		SPECIES_LIST.put(QcSpecies.PET, new SpeciesMatch(HdSpecies.PET, VolSpecies.PET, FormerOfficialHarvestableSpecies.PEU));
+		SPECIES_LIST.put(QcSpecies.PED, new SpeciesMatch(HdSpecies.PET, VolSpecies.PEG, FormerOfficialHarvestableSpecies.PEU));
+		SPECIES_LIST.put(QcSpecies.PEG, new SpeciesMatch(HdSpecies.PEG, VolSpecies.PEG, FormerOfficialHarvestableSpecies.PEU));
+		SPECIES_LIST.put(QcSpecies.PEB, new SpeciesMatch(HdSpecies.PET, VolSpecies.PEB, FormerOfficialHarvestableSpecies.PEU));
+		SPECIES_LIST.put(QcSpecies.PID, new SpeciesMatch(HdSpecies.PIG, VolSpecies.PIG, FormerOfficialHarvestableSpecies.PIN));
+		SPECIES_LIST.put(QcSpecies.PIG, new SpeciesMatch(HdSpecies.PIG, VolSpecies.PIG, FormerOfficialHarvestableSpecies.PIN));
+		SPECIES_LIST.put(QcSpecies.PIB, new SpeciesMatch(HdSpecies.PIB, VolSpecies.PIB, FormerOfficialHarvestableSpecies.PIN));
+		SPECIES_LIST.put(QcSpecies.PIR, new SpeciesMatch(HdSpecies.PIB, VolSpecies.PIR, FormerOfficialHarvestableSpecies.PIN));
+		SPECIES_LIST.put(QcSpecies.PIS, new SpeciesMatch(HdSpecies.PIB, VolSpecies.PIR, FormerOfficialHarvestableSpecies.PIN));
+		SPECIES_LIST.put(QcSpecies.PRP, new SpeciesMatch(HdSpecies.BOP, VolSpecies.CET, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.PRU, new SpeciesMatch(HdSpecies.PRU, VolSpecies.PRU, FormerOfficialHarvestableSpecies.RES));
+		SPECIES_LIST.put(QcSpecies.SAB, new SpeciesMatch(HdSpecies.SAB, VolSpecies.SAB, FormerOfficialHarvestableSpecies.SAB));
+		SPECIES_LIST.put(QcSpecies.SAL, new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.SOA, new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.SOD, new SpeciesMatch(HdSpecies.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
+		SPECIES_LIST.put(QcSpecies.THO, new SpeciesMatch(HdSpecies.THO, VolSpecies.THO, FormerOfficialHarvestableSpecies.THO));
+		SPECIES_LIST.put(QcSpecies.TIL, new SpeciesMatch(HdSpecies.TIL, VolSpecies.TIL, FormerOfficialHarvestableSpecies.F_0));
 	}
 
 }
