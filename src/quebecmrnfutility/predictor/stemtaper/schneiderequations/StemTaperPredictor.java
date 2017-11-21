@@ -279,14 +279,14 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	}
 
 	
-	@Override
-	public void clearDeviates() {
-		for (Map<StemTaperTreeSpecies, StemTaperSubModule> innerMap : subModules.values()) {
-			for (StemTaperSubModule p : innerMap.values()) {
-				p.clearDeviates();
-			}
-		}
-	}
+//	@Override
+//	public void clearDeviates() {
+//		for (Map<StemTaperTreeSpecies, StemTaperSubModule> innerMap : subModules.values()) {
+//			for (StemTaperSubModule p : innerMap.values()) {
+//				p.clearDeviates();
+//			}
+//		}
+//	}
 
 	
 //	public static void main(String[] args) {

@@ -179,15 +179,15 @@ public class PetroGradePredictor extends REpiceaPredictor {
 		volumeSubModules.get(PetroGradePredictorVersion.WITH_NO_VARIABLE).replaceModelParameters();
 	}
 	
-	@Override
-	public void clearDeviates() {
-		for (PetroGradePredictorPresenceSubModule p : presenceSubModules.values()) {
-			p.clearDeviates();
-		}
-		for (PetroGradePredictorVolumeSubModule p : volumeSubModules.values()) {
-			p.clearDeviates();
-		}
-	}
+//	@Override
+//	public void clearDeviates() {
+//		for (PetroGradePredictorPresenceSubModule p : presenceSubModules.values()) {
+//			p.clearDeviates();
+//		}
+//		for (PetroGradePredictorVolumeSubModule p : volumeSubModules.values()) {
+//			p.clearDeviates();
+//		}
+//	}
 
 //	public static void main(String[] args) {
 //		new PetroTreeLoggerPredictor(false, false);

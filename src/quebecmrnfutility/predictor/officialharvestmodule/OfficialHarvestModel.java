@@ -299,12 +299,12 @@ public final class OfficialHarvestModel extends REpiceaLogisticPredictor<Officia
 		} 
 	}
 
-	@Override
-	public void clearDeviates() {
-		for (OfficialHarvestSubmodel p : modelParametersLibrary.values()) {
-			p.clearDeviates();
-		}
-	}
+//	@Override
+//	public void clearDeviates() {
+//		for (OfficialHarvestSubmodel p : modelParametersLibrary.values()) {
+//			p.clearDeviates();
+//		}
+//	}
 
 //	/**
 //	 * For algorithm testing.
