@@ -71,7 +71,7 @@ public class BioSimClient extends BasicClient {
 	 * @return a List of mean annual temperatures and precipitations
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<ClimateVariables> getClimateVariables(List<PlotLocation> obj) {
+	public List<ClimateVariables> getClimateVariables(List<PlotLocation> obj) throws IOException {
 		return (List) super.processRequest(new Request(version, obj));
 	}
 	
