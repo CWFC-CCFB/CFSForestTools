@@ -1,7 +1,5 @@
 package quebecmrnfutility.biosim;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import quebecmrnfutility.biosim.BioSimClient.BioSimVersion;
+import repicea.net.server.BasicClient.BasicClientException;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 
 public class BioSimClientTest {
@@ -39,7 +38,7 @@ public class BioSimClientTest {
 	
 	
 	@Test
-	public void simpleConnectionTest() throws UnknownHostException, ClassNotFoundException, IOException {
+	public void simpleConnectionTest() throws BasicClientException {
 		BioSimClient client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
 		List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
 		plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));

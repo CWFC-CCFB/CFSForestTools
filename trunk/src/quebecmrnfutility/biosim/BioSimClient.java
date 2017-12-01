@@ -20,10 +20,8 @@
  */
 package quebecmrnfutility.biosim;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 
 import repicea.net.server.BasicClient;
@@ -55,8 +53,8 @@ public class BioSimClient extends BasicClient {
 
 	private final BioSimVersion version;
 	
-	public BioSimClient(BioSimVersion version) throws UnknownHostException, IOException, ClassNotFoundException {
-		super(new InetSocketAddress("rouge-epicea.dyndns.org", 18000));
+	public BioSimClient(BioSimVersion version) throws BasicClientException {
+		super(new InetSocketAddress("rouge-epicea.dyndns.org", 18000), 10); // 10 sec before timeout.
 		if (version == null) {
 			this.version = BioSimVersion.VERSION_1971_2000;
 		} else {
@@ -69,9 +67,10 @@ public class BioSimClient extends BasicClient {
 	 * a list of Double[2] (mean annual temperature, mean annual precipitation)
 	 * @param obj a List of PlotLocation instances
 	 * @return a List of mean annual temperatures and precipitations
+	 * @throws BasicClientException if an exception occurs while sending and processing the request
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<ClimateVariables> getClimateVariables(List<PlotLocation> obj) throws IOException {
+	public List<ClimateVariables> getClimateVariables(List<PlotLocation> obj) throws BasicClientException {
 		return (List) super.processRequest(new Request(version, obj));
 	}
 	
