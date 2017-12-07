@@ -54,7 +54,7 @@ public class BioSimClient extends BasicClient {
 	private final BioSimVersion version;
 	
 	public BioSimClient(BioSimVersion version) throws BasicClientException {
-		super(new InetSocketAddress("rouge-epicea.dyndns.org", 18000), 10); // 10 sec before timeout.
+		super(new InetSocketAddress("rouge-epicea.dyndns.org", 18000), 20); // 20 sec before timeout.
 		if (version == null) {
 			this.version = BioSimVersion.VERSION_1971_2000;
 		} else {
