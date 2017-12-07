@@ -54,7 +54,7 @@ public class BioSimClient extends BasicClient {
 	private final BioSimVersion version;
 	
 	public BioSimClient(BioSimVersion version) throws BasicClientException {
-		super(new InetSocketAddress("rouge-epicea.dyndns.org", 18000), 20); // 20 sec before timeout.
+		super(new InetSocketAddress("rouge-epicea.dyndns.org", 18000), 20); // 30 sec before timeout.
 		if (version == null) {
 			this.version = BioSimVersion.VERSION_1971_2000;
 		} else {
@@ -72,6 +72,15 @@ public class BioSimClient extends BasicClient {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<ClimateVariables> getClimateVariables(List<PlotLocation> obj) throws BasicClientException {
 		return (List) super.processRequest(new Request(version, obj));
+	}
+
+	/*
+	 * For extended visibility (non-Javadoc)
+	 * @see repicea.net.server.BasicClient#setBypassTimeout(boolean)
+	 */
+	@Override
+	public void setBypassTimeout(boolean bypass) {
+		super.setBypassTimeout(bypass);
 	}
 	
 }

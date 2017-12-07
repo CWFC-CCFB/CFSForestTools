@@ -29,4 +29,5 @@ public class PlotLocation implements Serializable, GeographicalCoordinatesProvid
 	public double getLongitudeDeg() {return longitude;}
 
 	public String getPlotId() {return plotID;}
+	
 }
