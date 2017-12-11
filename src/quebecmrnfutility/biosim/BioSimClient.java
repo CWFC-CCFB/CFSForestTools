@@ -22,7 +22,10 @@ package quebecmrnfutility.biosim;
 
 import java.io.Serializable;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import repicea.net.server.BasicClient;
 
@@ -32,6 +35,16 @@ import repicea.net.server.BasicClient;
  */
 public class BioSimClient extends BasicClient {
 
+	protected static final Map<BioSimVersion, Map<String, ClimateVariables>> RecordedClimateVariables = new ConcurrentHashMap<BioSimVersion, Map<String, ClimateVariables>>();
+	static {
+		RecordedClimateVariables.put(BioSimVersion.VERSION_1971_2000, new ConcurrentHashMap<String, ClimateVariables>());
+		RecordedClimateVariables.put(BioSimVersion.VERSION_1981_2010, new ConcurrentHashMap<String, ClimateVariables>());
+	}
+	
+
+	boolean byPassConnectionForTesting = false;
+	
+	
 	public static enum BioSimVersion {
 		VERSION_1971_2000, 
 		VERSION_1981_2010;
@@ -52,9 +65,14 @@ public class BioSimClient extends BasicClient {
 	}
 
 	private final BioSimVersion version;
-	
+
+	/**
+	 * Constructor.
+	 * @param version a BioSimVersion enum
+	 * @throws BasicClientException
+	 */
 	public BioSimClient(BioSimVersion version) throws BasicClientException {
-		super(new InetSocketAddress("rouge-epicea.dyndns.org", 18000), 20); // 30 sec before timeout.
+		super(new InetSocketAddress("rouge-epicea.dyndns.org", 18000), 20); // 20 sec before timeout.
 		if (version == null) {
 			this.version = BioSimVersion.VERSION_1971_2000;
 		} else {
@@ -71,7 +89,35 @@ public class BioSimClient extends BasicClient {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<ClimateVariables> getClimateVariables(List<PlotLocation> obj) throws BasicClientException {
-		return (List) super.processRequest(new Request(version, obj));
+		List<ClimateVariables> climVar = new ArrayList<ClimateVariables>();
+		List<PlotLocation> plotLocationsToBeSent = new ArrayList<PlotLocation>();
+		for (PlotLocation plotLocation : obj) {
+			if (RecordedClimateVariables.get(version).containsKey(plotLocation.toString())) {
+				climVar.add(RecordedClimateVariables.get(version).get(plotLocation.toString()));
+			} else {
+				plotLocationsToBeSent.add(plotLocation);
+			}
+		}
+		
+		List<ClimateVariables> climVarReceived;
+		if (byPassConnectionForTesting) {
+			climVarReceived = new ArrayList<ClimateVariables>();
+		} else {
+			climVarReceived = (List) super.processRequest(new Request(version, plotLocationsToBeSent));
+		}
+		
+		for (ClimateVariables cv : climVarReceived) {
+			for (int i = 0; i < plotLocationsToBeSent.size(); i++) {
+				PlotLocation pl = plotLocationsToBeSent.get(i);
+				if (cv.getPlotId().equals(pl.getPlotId())) {
+					RecordedClimateVariables.get(version).put(pl.toString(), cv);
+					plotLocationsToBeSent.remove(pl);
+					break;
+				}
+			}
+		}
+		climVar.addAll(climVarReceived);
+		return climVar;
 	}
 
 	/*
@@ -82,5 +128,13 @@ public class BioSimClient extends BasicClient {
 	public void setBypassTimeout(boolean bypass) {
 		super.setBypassTimeout(bypass);
 	}
+
+	
+	
+	
+	
+	
+	
+	
 	
 }

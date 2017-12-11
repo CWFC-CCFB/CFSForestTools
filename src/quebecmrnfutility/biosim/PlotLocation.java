@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 
-@SuppressWarnings("serial")
 public class PlotLocation implements Serializable, GeographicalCoordinatesProvider {
+	
+	private static final long serialVersionUID = -2185075635699712693L;
 	
 	private final double elevationM;
 	private final double latitude;
@@ -29,5 +30,8 @@ public class PlotLocation implements Serializable, GeographicalCoordinatesProvid
 	public double getLongitudeDeg() {return longitude;}
 
 	public String getPlotId() {return plotID;}
+	
+	@Override
+	public String toString() {return latitude + "_" + longitude + "_" + elevationM;}
 	
 }
