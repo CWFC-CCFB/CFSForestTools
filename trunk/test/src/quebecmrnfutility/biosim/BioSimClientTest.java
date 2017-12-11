@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import quebecmrnfutility.biosim.BioSimClient.BioSimVersion;
+import quebecmrnfutility.biosim.ClimateVariables.Variable;
 import repicea.net.server.BasicClient.BasicClientException;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 
@@ -49,6 +50,43 @@ public class BioSimClientTest {
 		client.close();
 	}
 
+	@Test
+	public void climateRecordingTestWithConnectionDisabled() throws Exception {
+		BioSimClient client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+		List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
+		plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
+		plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300, 48, -70)));
+		List<ClimateVariables> refVariables	= client.getClimateVariables(plotLocations);
+		client.close();
+		
+		BioSimClient client2 = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+		client2.byPassConnectionForTesting = true;
+		plotLocations = new ArrayList<PlotLocation>();
+		plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
+		plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300, 48, -70)));
+		List<ClimateVariables> variables = client2.getClimateVariables(plotLocations);
+		client2.close();
+		
+		Assert.assertTrue("Testing size", refVariables.size() == variables.size());
+		for (ClimateVariables cv : refVariables) {
+			boolean found = false;
+			for (ClimateVariables cv2 : variables) {
+				if (cv.getPlotId().equals(cv2.getPlotId())) {
+					found = true;
+					Assert.assertEquals(cv.getVariable(Variable.MeanAnnualTempC),
+							cv2.getVariable(Variable.MeanAnnualTempC),
+							1E-8);
+					Assert.assertEquals(cv.getVariable(Variable.MeanAnnualPrecMm),
+							cv2.getVariable(Variable.MeanAnnualPrecMm),
+							1E-8);
+					break;
+				}
+			}
+			if (!found) {
+				throw new Exception("The plot id could not be found in the received climate variables!");
+			}
+		}
+	}
 
 	
 	
