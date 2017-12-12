@@ -2,12 +2,10 @@ package quebecmrnfutility.predictor.betahdrelation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Stand;
 import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree;
 import repicea.simulation.HierarchicalLevel;
-import repicea.simulation.hdrelationships.HDRelationshipStand;
 
 public class Heightable2014StandImpl implements Heightable2014Stand {
 
@@ -112,11 +110,11 @@ public class Heightable2014StandImpl implements Heightable2014Stand {
 	}
 
 
-	@Override
-	public List<HDRelationshipStand> getAllHDStands() {
-		List<HDRelationshipStand> stands = new ArrayList<HDRelationshipStand>();
-		stands.add(this);
-		return stands;
-	}
+//	@Override
+//	public List<HDRelationshipStand> getAllHDStands() {
+//		List<HDRelationshipStand> stands = new ArrayList<HDRelationshipStand>();
+//		stands.add(this);
+//		return stands;
+//	}
 
 }

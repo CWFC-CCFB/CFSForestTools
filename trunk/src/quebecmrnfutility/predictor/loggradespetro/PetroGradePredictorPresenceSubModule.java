@@ -98,7 +98,7 @@ class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule 
 	 */
 	void replaceModelParameters() {
 		int totalDegreesOfFreedom = 1595; // total number of trees
-		int numberParameters = getParameterEstimates().getTrueParameterIndices().size() / 5;
+		int numberParameters = getParameterEstimates().getMean().m_iRows / 5;
 //		Matrix currentMean = getParameterEstimates().getMean();
 		Matrix newMean = getParameterEstimates().getRandomDeviate();
 		Matrix variance = getParameterEstimates().getVariance();
