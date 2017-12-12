@@ -49,7 +49,7 @@ abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
 			throw new InvalidParameterException("The instance should be of the SASParameterEstimates class");
 		}
 		super.setParameterEstimates(gaussianEstimate);
-		oXVector = new Matrix(1, getParameterEstimates().getNumberOfFixedEffectParameters());
+		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
 	}
 	
 	@Override

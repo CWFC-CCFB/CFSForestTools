@@ -114,7 +114,7 @@ class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 	 */
 	void replaceModelParameters() {
 		int totalDegreesOfFreedom = 602; // average number of trees in each log category
-		int numberParameters = getParameterEstimates().getTrueParameterIndices().size() / 5;
+		int numberParameters = getParameterEstimates().getMean().m_iRows / 5;
 		int residualDegreesOfFreedom = totalDegreesOfFreedom - numberParameters;
 //		Matrix currentMean = getParameterEstimates().getMean();
 		Matrix newMean = getParameterEstimates().getRandomDeviate();
