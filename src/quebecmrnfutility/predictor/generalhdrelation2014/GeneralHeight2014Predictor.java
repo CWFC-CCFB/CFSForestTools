@@ -259,7 +259,7 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor {
 	 * implements the
 	 * Monte Carlo simulation automatically. In case of exception, it also
 	 * returns -1.
-	 * If the predicted height is lower than 1.3, this method returns 1.3.
+	 * If the predicted height is lower than 3, this method returns 3.
 	 * 
 	 * @param stand a HeightableStand object
 	 * @param tree a HeightableTree object
@@ -267,7 +267,11 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor {
 	 */
 	public synchronized double predictHeight(Heightable2014Stand stand, Heightable2014Tree tree) {
 		Hd2014Species species = tree.getHeightable2014TreeSpecies();
-		return internalPredictors.get(species).predictHeight(stand, tree);
+		double height = internalPredictors.get(species).predictHeight(stand, tree);
+		if(height < 3.0d)
+			height = 3.0d;
+		
+		return height;
 	}
 
 
