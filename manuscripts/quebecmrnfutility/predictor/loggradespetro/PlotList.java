@@ -3,7 +3,8 @@ package quebecmrnfutility.predictor.loggradespetro;
 import java.util.ArrayList;
 
 import repicea.math.Matrix;
-import repicea.stats.estimates.HorvitzThompsonTauEstimate;
+import repicea.stats.estimates.PopulationTotalEstimate;
+import repicea.stats.sampling.PopulationUnitWithUnequalInclusionProbability;
 
 @SuppressWarnings("serial")
 class PlotList extends ArrayList<Plot> {
@@ -16,15 +17,15 @@ class PlotList extends ArrayList<Plot> {
 		}
 	}
 	
-	HorvitzThompsonTauEstimate getHorvitzThompsonEstimate(int populationSize) {
-		HorvitzThompsonTauEstimate estimate = new HorvitzThompsonTauEstimate(populationSize);
+	PopulationTotalEstimate getHorvitzThompsonEstimate(int populationSize) {
+		PopulationTotalEstimate estimate = new PopulationTotalEstimate();
 		
 		for (Plot plot : this) {
 			Matrix plotTotal = new Matrix(5,1);
 			for (PetroGradeTreeImpl tree : plot.getTrees()) {
 				plotTotal = plotTotal.add(tree.getRealizedValues());
 			}
-			estimate.addObservation(plotTotal, 1d/populationSize);
+			estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(plotTotal, 1d/populationSize));
 		}
 		return estimate;
 	}
