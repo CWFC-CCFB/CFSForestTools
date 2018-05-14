@@ -12,9 +12,9 @@ import repicea.io.FormatField;
 import repicea.io.javacsv.CSVField;
 import repicea.io.javacsv.CSVWriter;
 import repicea.math.Matrix;
-import repicea.stats.estimates.HorvitzThompsonTauEstimate;
-import repicea.stats.estimates.HybridMonteCarloHorvitzThompsonEstimate;
-import repicea.stats.estimates.HybridMonteCarloHorvitzThompsonEstimate.VariancePointEstimate;
+import repicea.stats.estimates.BootstrapHybridTauEstimate;
+import repicea.stats.estimates.BootstrapHybridTauEstimate.VariancePointEstimate;
+import repicea.stats.estimates.PopulationTotalEstimate;
 import repicea.util.ObjectUtility;
 
 public class Population {
@@ -117,15 +117,15 @@ public class Population {
 			PetroGradePredictor currentModel = new PetroGradePredictor(true); // the current model must account for the errors in the parameter estimates
 			currentModel.replaceModelParameters();	// the parameter estimates are drawn at random in the distribution
 			PlotList sample = pop.getSample(sampleSize);
-			HybridMonteCarloHorvitzThompsonEstimate hybHTEstimate = new HybridMonteCarloHorvitzThompsonEstimate();
+			BootstrapHybridTauEstimate hybHTEstimate = new BootstrapHybridTauEstimate();
 			for (int internalReal = 0; internalReal < nbInternalReal; internalReal++) {
 				sample.setRealization(internalReal);
 				setRealizedValues(sample, currentModel);
-				HorvitzThompsonTauEstimate htEstimator = sample.getHorvitzThompsonEstimate(populationSize);
+				PopulationTotalEstimate htEstimator = sample.getHorvitzThompsonEstimate(populationSize);
 				hybHTEstimate.addHTEstimate(htEstimator);
 				if (real == 0 && internalReal >= 1) {
 					recordStabilizer[0] = internalReal;
-					Matrix totalReal = hybHTEstimate.getTotal();
+					Matrix totalReal = hybHTEstimate.getMean();
 					Matrix varReal = hybHTEstimate.getVarianceOfTotalEstimate().getTotalVariance();
 					for (int ii = 0; ii < totalReal.m_iRows; ii++) {
 						recordStabilizer[ii*2 + 1] = totalReal.m_afData[ii][0];
@@ -139,8 +139,8 @@ public class Population {
 			}
 			VariancePointEstimate correctedVarEstimate = hybHTEstimate.getVarianceOfTotalEstimate();
 			Realization thisRealization = new Realization(total, 
-					hybHTEstimate.getTotal(), 
-					hybHTEstimate.getTotalVarianceUncorrected(), 
+					hybHTEstimate.getMean(), 
+					hybHTEstimate.getUncorrectedVariance(), 
 					correctedVarEstimate.getTotalVariance(), 
 					correctedVarEstimate.getSamplingRelatedVariance(), 
 					correctedVarEstimate.getModelRelatedVariance());
