@@ -41,6 +41,7 @@ import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.AbstractStemTaperPredictor;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
+import repicea.stats.estimates.ConfidenceInterval;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
 
@@ -88,6 +89,11 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 		@Override
 		protected double getScalingFactor() {
 			return Math.PI *.25 * 1E-3;
+		}
+
+		@Override
+		public ConfidenceInterval getConfidenceIntervalBounds(double oneMinusAlpha) {
+			return null;
 		}
 		
 	}
