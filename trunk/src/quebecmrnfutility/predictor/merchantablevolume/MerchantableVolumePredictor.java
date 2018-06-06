@@ -30,7 +30,7 @@ import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
-import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
 

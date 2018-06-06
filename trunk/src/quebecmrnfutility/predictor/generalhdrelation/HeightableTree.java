@@ -31,7 +31,7 @@ import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmPlus1Provider;
-import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredLnDbhCmPlus1Provider;
 import repicea.simulation.hdrelationships.HDRelationshipTree;
 
@@ -44,7 +44,7 @@ public interface HeightableTree extends HDRelationshipTree,
 										LnDbhCmPlus1Provider,
 										SquaredLnDbhCmPlus1Provider {
 
-	public enum HdSpecies {
+	public enum HdSpecies implements SpeciesTypeProvider {
 		BOJ,
 		BOP,
 		CHR,
@@ -82,6 +82,7 @@ public interface HeightableTree extends HDRelationshipTree,
 			}
 		}
 		
+		@Override
 		public SpeciesType getSpeciesType() {return this.speciesType;}
 		public Matrix getDummy() {return this.dummy;}
 		

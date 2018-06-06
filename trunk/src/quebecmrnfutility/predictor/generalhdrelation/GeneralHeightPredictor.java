@@ -36,7 +36,7 @@ import repicea.predictor.QuebecGeneralSettings.DrainageGroup;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
-import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.hdrelationships.HDRelationshipModel;
 import repicea.stats.StatisticalUtility.TypeMatrixR;

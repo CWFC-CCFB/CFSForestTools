@@ -31,7 +31,7 @@ import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
-import repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider.SpeciesType;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 
 
@@ -44,7 +44,7 @@ public interface VolumableTree extends DbhCmProvider,
 										SquaredDbhCmProvider,
 										HeightMProvider {
 	
-	public enum VolSpecies {
+	public enum VolSpecies implements SpeciesTypeProvider {
 		BOG,
 		BOJ,
 		BOP,
@@ -88,6 +88,7 @@ public interface VolumableTree extends DbhCmProvider,
 			}
 		}
 		
+		@Override
 		public SpeciesType getSpeciesType() {return this.speciesType;}
 		public Matrix getDummy() {return this.dummy;}
 		
