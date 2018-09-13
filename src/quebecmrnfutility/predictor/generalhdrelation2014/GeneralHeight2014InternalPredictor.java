@@ -12,11 +12,11 @@ import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree.Hd20
 import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.hdrelationships.HDRelationshipModel;
 import repicea.stats.distributions.StandardGaussianDistribution;
 import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
-import repicea.stats.estimates.GaussianEstimate;
 
 @SuppressWarnings("serial")
 class GeneralHeight2014InternalPredictor extends HDRelationshipModel<Heightable2014Stand, Heightable2014Tree> {
@@ -49,7 +49,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipModel<Heightable2
 	 * For extended visibility
 	 */
 	@Override
-	protected void setParameterEstimates(GaussianEstimate defaultBeta) {
+	protected void setParameterEstimates(ModelParameterEstimates defaultBeta) {
 		super.setParameterEstimates(defaultBeta);
 		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
 	}

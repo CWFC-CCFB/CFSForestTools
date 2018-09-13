@@ -36,6 +36,7 @@ import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.St
 import repicea.math.Matrix;
 import repicea.serial.xml.XmlSerializerChangeMonitor;
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.AbstractStemTaperPredictor;
@@ -165,7 +166,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 						Matrix beta = ParameterLoader.loadVectorFromFile(parameterFilename).get();
 						Matrix omega = ParameterLoader.loadMatrixFromFile(omegaFilename);
 						
-						currentSubModule.setParameterEstimates(new GaussianEstimate(beta, omega));
+						currentSubModule.setParameterEstimates(new ModelParameterEstimates(beta, omega));
 
 						Matrix g = ParameterLoader.loadMatrixFromFile(plotRandomEffectsFilename);
 						if (g.anyElementDifferentFrom(0d)) {

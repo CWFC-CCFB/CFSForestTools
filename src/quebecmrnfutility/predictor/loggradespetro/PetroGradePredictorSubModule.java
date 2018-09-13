@@ -22,6 +22,7 @@ import java.security.InvalidParameterException;
 
 import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor.PetroGradePredictorVersion;
 import repicea.math.Matrix;
+import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
@@ -29,7 +30,6 @@ import repicea.simulation.covariateproviders.treelevel.MSCRPriorityProvider.MSCR
 import repicea.simulation.covariateproviders.treelevel.VigorClassProvider.VigorClass;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.ChiSquaredDistribution;
-import repicea.stats.estimates.GaussianEstimate;
 
 @SuppressWarnings("serial")
 abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
@@ -44,7 +44,7 @@ abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
 	}
 
 	@Override
-	protected void setParameterEstimates(GaussianEstimate gaussianEstimate) {
+	protected void setParameterEstimates(ModelParameterEstimates gaussianEstimate) {
 		if (!(gaussianEstimate instanceof SASParameterEstimates)) {
 			throw new InvalidParameterException("The instance should be of the SASParameterEstimates class");
 		}

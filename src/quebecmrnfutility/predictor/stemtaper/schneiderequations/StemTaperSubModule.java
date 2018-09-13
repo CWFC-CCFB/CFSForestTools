@@ -10,13 +10,13 @@ import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.St
 import repicea.math.Matrix;
 import repicea.math.MatrixUtility;
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.AbstractStemTaperPredictor;
 import repicea.stats.Distribution;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.StandardGaussianDistribution;
 import repicea.stats.estimates.Estimate;
-import repicea.stats.estimates.GaussianEstimate;
 
 @SuppressWarnings("serial")
 final class StemTaperSubModule extends AbstractStemTaperPredictor {
@@ -332,7 +332,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	 * @see repicea.simulation.REpiceaPredictor#setParameterEstimates(repicea.stats.estimates.GaussianEstimate)
 	 */
 	@Override
-	protected final void setParameterEstimates(GaussianEstimate gaussianEstimate) {
+	protected final void setParameterEstimates(ModelParameterEstimates gaussianEstimate) {
 		super.setParameterEstimates(gaussianEstimate);
 	}
 
