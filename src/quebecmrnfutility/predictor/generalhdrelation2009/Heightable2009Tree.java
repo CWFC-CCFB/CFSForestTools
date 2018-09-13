@@ -39,12 +39,12 @@ import repicea.simulation.hdrelationships.HDRelationshipTree;
  * The HeightableTree interface ensures the compatibility with the HD relationship.
  * @author Mathieu Fortin - November 2012
  */
-public interface HeightableTree extends HDRelationshipTree, 
+public interface Heightable2009Tree extends HDRelationshipTree, 
 										DbhCmProvider,
 										LnDbhCmPlus1Provider,
 										SquaredLnDbhCmPlus1Provider {
 
-	public enum HdSpecies implements SpeciesTypeProvider {
+	public enum Hd2009Species implements SpeciesTypeProvider {
 		BOJ,
 		BOP,
 		CHR,
@@ -72,7 +72,7 @@ public interface HeightableTree extends HDRelationshipTree,
 		private Matrix dummy;
 		private SpeciesType speciesType;
 		
-		HdSpecies() {
+		Hd2009Species() {
 			dummy = new Matrix(1,20);
 			dummy.m_afData[0][this.ordinal()] = 1d;
 			if (QuebecGeneralSettings.CONIFEROUS_SPECIES.contains(this.name().toUpperCase().trim())) {
@@ -87,10 +87,10 @@ public interface HeightableTree extends HDRelationshipTree,
 		public Matrix getDummy() {return this.dummy;}
 		
 		
-		public static HdSpecies findEligibleSpecies(String speciesName) {
+		public static Hd2009Species findEligibleSpecies(String speciesName) {
 			if (eligibleSpeciesNames == null) {
 				eligibleSpeciesNames = new HashSet<String>();
-				for (HdSpecies species : HdSpecies.values()) {
+				for (Hd2009Species species : Hd2009Species.values()) {
 					eligibleSpeciesNames.add(species.name());
 				}
 			}
@@ -99,7 +99,7 @@ public interface HeightableTree extends HDRelationshipTree,
 			} else {
 				String formattedSpeciesName = speciesName.trim().toUpperCase();
 				if (eligibleSpeciesNames.contains(formattedSpeciesName)) {
-					return HdSpecies.valueOf(formattedSpeciesName);
+					return Hd2009Species.valueOf(formattedSpeciesName);
 				} else {
 					return null;
 				}
@@ -114,7 +114,7 @@ public interface HeightableTree extends HDRelationshipTree,
 	 * This method ensures the species compatibility with the hd relationship.
 	 * @return a HdSpecies enum instance
 	 */
-	public HdSpecies getHeightableTreeSpecies();
+	public Hd2009Species getHeightableTreeSpecies();
 	
 	
 	/**

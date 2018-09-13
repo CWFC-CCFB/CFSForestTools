@@ -35,7 +35,7 @@ import repicea.simulation.covariateproviders.standlevel.TreeStatusCollectionsPro
 import repicea.simulation.hdrelationships.HDRelationshipStand;
 
 
-public interface HeightableStand extends HDRelationshipStand,
+public interface Heightable2009Stand extends HDRelationshipStand,
 										TreeStatusCollectionsProvider,
 										BasalAreaM2HaProvider,
 										MeanAnnualTemperatureCProvider,
