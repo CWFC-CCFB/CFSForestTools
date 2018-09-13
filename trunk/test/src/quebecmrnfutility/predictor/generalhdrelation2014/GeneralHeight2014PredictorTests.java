@@ -1,4 +1,4 @@
-package quebecmrnfutility.predictor.betahdrelation;
+package quebecmrnfutility.predictor.generalhdrelation2014;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,9 +10,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.generalhdrelation2014.GeneralHeight2014Predictor;
-import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Stand;
-import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree;
 import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree.Hd2014Species;
 import repicea.io.javacsv.CSVReader;
 import repicea.util.ObjectUtility;
