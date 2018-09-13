@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import quebecmrnfutility.predictor.generalhdrelation2009.HeightableTree.HdSpecies;
+import quebecmrnfutility.predictor.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
 import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
 import repicea.predictor.QuebecGeneralSettings.DrainageGroup;
@@ -53,7 +53,7 @@ import repicea.util.ObjectUtility;
  * Gouvernement du Quebec, Ministere des Ressources naturelles et de la Faune, Direction de 
  * la recherche forestiere. Memoire de recherche forestiere no 153. 22 p.
  */
-public final class GeneralHeightPredictor extends HDRelationshipModel<HeightableStand, HeightableTree> {
+public final class GeneralHeight2009Predictor extends HDRelationshipModel<Heightable2009Stand, Heightable2009Tree> {
 	
 	private static final long serialVersionUID = 20100804L;
 
@@ -139,7 +139,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	 * General constructor for all combinations of uncertainty sources.
 	 * @param isVariabilityEnabled a boolean that enables the stochastic mode
 	 */
-	public GeneralHeightPredictor(boolean isVariabilityEnabled) {
+	public GeneralHeight2009Predictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled);
 		init();
 		oXVector = new Matrix(1,getParameterEstimates().getMean().m_iRows);
@@ -149,7 +149,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	 * Default constructor with all sources of uncertainty disabled.
 	 * @param measurementDates a list of integers that define the measurement dates
 	 */
-	public GeneralHeightPredictor() {
+	public GeneralHeight2009Predictor() {
 		this(false);
 	}
 
@@ -183,7 +183,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	}
 	
 	@Override
-	protected synchronized RegressionElements fixedEffectsPrediction(HeightableStand stand, HeightableTree t, Matrix beta) {
+	protected synchronized RegressionElements fixedEffectsPrediction(Heightable2009Stand stand, Heightable2009Tree t, Matrix beta) {
 //		Matrix modelParameters = getParametersForThisRealization(stand);
 		Matrix modelParameters = beta;
 		double basalArea = stand.getBasalAreaM2Ha();
@@ -198,7 +198,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 		boolean isDefoliated = stand.isSBWDefoliated();
 		
 		Matrix dummyDrainageClass = drainageGroup.getDrainageDummy();
-		Matrix dummyEcoRegion = GeneralHeightPredictor.DUMMY_ECO_REGION.get(ecoRegion);
+		Matrix dummyEcoRegion = GeneralHeight2009Predictor.DUMMY_ECO_REGION.get(ecoRegion);
 		Matrix dummyDisturbance;
 		if (isInterventionResult) {
 			dummyDisturbance = DisturbanceType.HUMAN.getDummy();
@@ -210,7 +210,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 		
 		oXVector.resetMatrix();
 		int pointeur = 0;
-		HdSpecies species = t.getHeightableTreeSpecies();
+		Hd2009Species species = t.getHeightableTreeSpecies();
 		double lnDbh = t.getLnDbhCmPlus1();
 		double SSI = t.getSocialStatusIndex();
 		double lnDbh2 = t.getSquaredLnDbhCmPlus1();
@@ -251,7 +251,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	}
 	
 	
-	private DrainageGroup getDrainageGroup(HeightableStand stand) {
+	private DrainageGroup getDrainageGroup(Heightable2009Stand stand) {
 		DrainageGroup drainageGroup = QuebecGeneralSettings.DRAINAGE_CLASS_LIST.get(stand.getDrainageClass());
 		if (drainageGroup == null) {
 			if (stand.getEcologicalType() != null && stand.getEcologicalType().length() >= 4) {	// else if the ecological type is available then provide a typical class that corresponds to the grouping XERIC MESIC SUBHYDRIC HYDRIC
@@ -268,7 +268,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 	 * For testing only
 	 * @param stand
 	 */
-	public Matrix getBlups(HeightableStand stand) {
+	public Matrix getBlups(Heightable2009Stand stand) {
 		if (doBlupsExistForThisSubject(stand)) {
 			return getBlupsForThisSubject(stand).getMean();
 		} else {
@@ -278,7 +278,7 @@ public final class GeneralHeightPredictor extends HDRelationshipModel<Heightable
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Collection<HeightableTree> getTreesFromStand(HeightableStand stand) {
+	protected Collection<Heightable2009Tree> getTreesFromStand(Heightable2009Stand stand) {
 		return stand.getTrees(StatusClass.alive);
 	}
 	
