@@ -22,7 +22,7 @@
  * 			Minist�re des Ressources naturelles et de la Faune du Qu�bec
  * 			jean-pierre.saucier@mrnf.gouv.qc.ca
  */
-package quebecmrnfutility.predictor.generalhdrelation;
+package quebecmrnfutility.predictor.generalhdrelation2009;
 
 import java.util.HashSet;
 import java.util.Set;
