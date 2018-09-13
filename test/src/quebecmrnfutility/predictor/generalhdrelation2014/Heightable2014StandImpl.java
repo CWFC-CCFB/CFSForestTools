@@ -1,4 +1,4 @@
-package quebecmrnfutility.predictor.betahdrelation;
+package quebecmrnfutility.predictor.generalhdrelation2014;
 
 import java.util.ArrayList;
 import java.util.Collection;
