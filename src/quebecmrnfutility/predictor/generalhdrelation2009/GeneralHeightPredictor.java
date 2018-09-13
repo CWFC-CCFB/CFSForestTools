@@ -22,14 +22,14 @@
  * 			Minist�re des Ressources naturelles et de la Faune du Qu�bec
  * 			jean-pierre.saucier@mrnf.gouv.qc.ca
  */
-package quebecmrnfutility.predictor.generalhdrelation;
+package quebecmrnfutility.predictor.generalhdrelation2009;
 
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import quebecmrnfutility.predictor.generalhdrelation.HeightableTree.HdSpecies;
+import quebecmrnfutility.predictor.generalhdrelation2009.HeightableTree.HdSpecies;
 import repicea.math.Matrix;
 import repicea.predictor.QuebecGeneralSettings;
 import repicea.predictor.QuebecGeneralSettings.DrainageGroup;
