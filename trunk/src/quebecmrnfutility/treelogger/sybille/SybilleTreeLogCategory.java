@@ -175,6 +175,7 @@ public class SybilleTreeLogCategory extends LogCategory {
 	 * @param params a series of parameters (e.g. the height at which the log is to be extracted)
 	 * @return a WoodPiece instance if the log can be extracted or null otherwise.
 	 */
+	@Override
 	protected SybilleWoodPiece extractFromTree(LoggableTree tree, Object... params) {
 		if (!(tree instanceof StemTaperTree)) {
 			throw new InvalidParameterException("Sybille only uses trees that implement the StemTaperTree interface!");

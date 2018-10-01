@@ -26,31 +26,12 @@ package quebecmrnfutility.treelogger.petrotreelogger;
 
 import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.simulation.treelogger.LogCategory;
+import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.WoodPiece;
 
 public class PetroTreeLogCategory extends LogCategory {
 
 	private static final long serialVersionUID = 20100804L;
-
-//	public static enum ProductType {PETRO_F1("F1"),
-//		PETRO_F2("F2"), 
-//		PETRO_F3("F3"),
-//		PETRO_F4("F4"),
-//		PETRO_P("P");
-//
-//		String name;
-//		Matrix dummy;
-//
-//		ProductType(String name) {
-//			this.name = name;
-//			this.dummy = new Matrix(1,5);
-//			dummy.m_afData[0][this.ordinal()] = 1d;
-//		}	
-//
-//		public String getName() {return this.name;}
-//		public Matrix getDummy() {return this.dummy;}
-//	}
-		
 
 	protected PetroGradeType productType;
 
@@ -87,6 +68,15 @@ public class PetroTreeLogCategory extends LogCategory {
 	@Override
 	public boolean isVisible() {
 		return guiInterface != null && guiInterface.isVisible();
+	}
+
+	/*
+	 * Useless for this logger (non-Javadoc)
+	 * @see repicea.simulation.treelogger.LogCategory#extractFromTree(repicea.simulation.treelogger.LoggableTree, java.lang.Object[])
+	 */
+	@Override
+	protected WoodPiece extractFromTree(LoggableTree tree, Object... parms) {
+		return null;
 	}
 	
 }

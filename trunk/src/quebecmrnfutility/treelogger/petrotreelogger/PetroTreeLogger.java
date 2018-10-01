@@ -31,6 +31,7 @@ import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpeci
 import repicea.math.Matrix;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLogger;
+import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
 
 /**
  * This TreeLogger class makes it possible to estimate the volumes by log grades in
@@ -116,8 +117,8 @@ public class PetroTreeLogger extends TreeLogger<PetroTreeLoggerParameters, Petro
 	}
 
 	@Override
-	public boolean isCompatibleWith(Object referent) {
-		return referent instanceof PetroLoggableTree;
+	public boolean isCompatibleWith(TreeLoggerCompatibilityCheck check) {
+		return check.getTreeInstance() instanceof PetroLoggableTree;
 	}
 
 
