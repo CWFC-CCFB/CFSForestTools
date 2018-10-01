@@ -32,6 +32,7 @@ import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLogger;
+import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
 import repicea.stats.integral.CompositeSimpsonRule;
 import repicea.stats.integral.TrapezoidalRule;
 
@@ -174,8 +175,8 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 	protected boolean isVariabilityEnabled() {return isVariabilityEnabled;}
 
 	@Override
-	public boolean isCompatibleWith(Object referent) {
-		return referent instanceof SybilleLoggableTree;
+	public boolean isCompatibleWith(TreeLoggerCompatibilityCheck check) {
+		return check.getTreeInstance() instanceof SybilleLoggableTree;
 	}
 
 
