@@ -176,7 +176,7 @@ public class SybilleTreeLogCategory extends LogCategory {
 	 * @return a WoodPiece instance if the log can be extracted or null otherwise.
 	 */
 	@Override
-	protected SybilleWoodPiece extractFromTree(LoggableTree tree, Object... params) {
+	protected List<SybilleWoodPiece> extractFromTree(LoggableTree tree, Object... params) {
 		if (!(tree instanceof StemTaperTree)) {
 			throw new InvalidParameterException("Sybille only uses trees that implement the StemTaperTree interface!");
 		} 
@@ -219,7 +219,9 @@ public class SybilleTreeLogCategory extends LogCategory {
 				StemTaperSegmentList segments = StemTaperSegmentList.createStemTaperSegmentList(heightsForTheseSegments, optimize); // true = optimize
 				volumeEstimateForThisSection = estimate.getVolumeEstimate(segments);
 				SybilleWoodPiece wp = new SybilleWoodPiece(this, tree, volumeEstimateForThisSection, trueLengthM);		// the small diameter is large enough
-				return wp;
+				List<SybilleWoodPiece> pieces = new ArrayList<SybilleWoodPiece>();
+				pieces.add(wp);
+				return pieces;
 			} else {
 				return null;
 			}
