@@ -25,6 +25,7 @@
 package quebecmrnfutility.treelogger.sybille;
 
 import java.io.IOException;
+import java.util.List;
 
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
@@ -108,20 +109,23 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 
 		try {
 			estimate = stp.getPredictedTaperForTheseSegments(t, segments, getTreeLoggerParameters().getEstimationMethod());
-			SybilleWoodPiece wp;
+			List<SybilleWoodPiece> pieces;
 			do {
-				wp = null;
+				pieces = null;
 				for (SybilleTreeLogCategory logCategory : getTreeLoggerParameters().getLogCategories().get(speciesName)) {
-					wp = logCategory.extractFromTree(t, estimate, heightM, optimize);
-					if (wp != null) {
-						heightM += wp.getLength();		// we add the length of the log to the heightM variable
+					pieces = logCategory.extractFromTree(t, estimate, heightM, optimize);
+					if (pieces != null) {
+						for (SybilleWoodPiece wp : pieces) {
+							heightM += wp.getLength();		// we add the length of the log to the heightM variable
+							addWoodPiece(t, wp);
+						}
 						break;
 					}
 				}
-				if (wp != null) {				// if wp is null it means that no log grade could be extracted, i.e. the log grade requirements are not met
-					addWoodPiece(t, wp);
-				} 
-			} while (wp != null);
+//				if (pieces != null) {				// if wp is null it means that no log grade could be extracted, i.e. the log grade requirements are not met
+//					addWoodPiece(t, wp);
+//				} 
+			} while (pieces != null);
 //			if (getWoodPieces().get(t) == null) {
 //				System.out.println("Sybille could not extract any wood piece from tree : " + t.getSpeciesName() + t.getSubjectId());
 //				heightM = getTreeLoggerParameters().getStumpHeightM();

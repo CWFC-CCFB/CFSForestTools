@@ -18,6 +18,8 @@
  */
 package quebecmrnfutility.treelogger.wbirchprodvol;
 
+import java.util.List;
+
 import repicea.simulation.treelogger.LogCategory;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.WoodPiece;
@@ -70,7 +72,7 @@ public class WBirchProdVolTreeLogCategory extends LogCategory {
 	 * @see repicea.simulation.treelogger.LogCategory#extractFromTree(repicea.simulation.treelogger.LoggableTree, java.lang.Object[])
 	 */
 	@Override
-	protected WoodPiece extractFromTree(LoggableTree tree, Object... parms) {
+	protected List<WoodPiece> extractFromTree(LoggableTree tree, Object... parms) {
 		return null;
 	}
 
