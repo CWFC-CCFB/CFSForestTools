@@ -104,4 +104,8 @@ class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 	@Override
 	public WBirchLogGradesStand getStand() {return this.stand;}
 
+
+	@Override
+	public double getPlotWeight() {return 1d;}
+
 }
