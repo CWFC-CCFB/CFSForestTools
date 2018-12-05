@@ -84,4 +84,10 @@ public class FakeTree implements VolumableTree, SybilleLoggableTree {
 	@Override
 	public VolSpecies getVolumableTreeSpecies() {return volSpecies;}
 
+
+	@Override
+	public double getPlotWeight() {
+		return 1d;
+	}
+
 }
