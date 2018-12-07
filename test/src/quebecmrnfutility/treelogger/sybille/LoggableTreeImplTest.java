@@ -61,8 +61,6 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 	@Override
 	public String getSpeciesName() {return species.name();}
 
-	@Override
-	public double getNumber() {return 1;}
 
 	@Override
 	public int getMonteCarloRealizationId() {

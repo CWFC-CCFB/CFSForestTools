@@ -48,11 +48,6 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 	}
 
 	@Override
-	public double getNumber() {
-		return 1;
-	}
-
-	@Override
 	public double getDbhCm() {
 		return dbhCm;
 	}

@@ -48,9 +48,6 @@ public class FakeTree implements VolumableTree, SybilleLoggableTree {
 	public String getSpeciesName() {return volSpecies.name();}
 
 	@Override
-	public double getNumber() {return 1d;}
-
-	@Override
 	public StemTaperStand getStand() {return stand;}
 
 	@Override

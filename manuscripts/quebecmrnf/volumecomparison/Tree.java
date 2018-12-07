@@ -86,10 +86,6 @@ class Tree implements SybilleLoggableTree, VolumableTree {
 		return getStemTaperTreeSpecies().name();
 	}
 
-
-	@Override
-	public double getNumber() {return 1d;}
-
 	@Override
 	public String toString() {
 		return "Species " + this.getStemTaperTreeSpecies().name() + " dbhcm = " + this.getDbhCm() + " heightm  = " + this.getHeightM(); 
