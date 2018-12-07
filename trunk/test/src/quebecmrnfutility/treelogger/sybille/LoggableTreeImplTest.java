@@ -80,8 +80,5 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 		return refVolume;
 	}
 
-	@Override
-	public double getPlotWeight() {return 1d;}
-
 
 }
