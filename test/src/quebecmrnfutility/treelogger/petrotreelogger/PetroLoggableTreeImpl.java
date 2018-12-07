@@ -110,8 +110,4 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 		return 0;
 	}
 
-
-	@Override
-	public double getPlotWeight() {return 1d;}
-
 }
