@@ -1,7 +1,6 @@
 package quebecmrnfutility.predictor.loggradespetro;
 
 import repicea.math.Matrix;
-import repicea.simulation.HierarchicalLevel;
 
 public class PetroGradeTreeImpl implements PetroGradeTree {
 
@@ -92,12 +91,6 @@ public class PetroGradeTreeImpl implements PetroGradeTree {
 	@Override
 	public String getSubjectId() {
 		return "test";
-	}
-
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {
-		return HierarchicalLevel.TREE;
 	}
 
 

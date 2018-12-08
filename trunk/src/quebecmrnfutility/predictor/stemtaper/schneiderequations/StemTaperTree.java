@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
@@ -45,6 +46,9 @@ public interface StemTaperTree extends BasicStemTaperTree,
 										SquaredDbhCmProvider,
 										HeightMProvider {
 	
+	@Override
+	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
+
 	public enum StemTaperTreeSpecies {
 		/**
 		 * Betula papyrifera

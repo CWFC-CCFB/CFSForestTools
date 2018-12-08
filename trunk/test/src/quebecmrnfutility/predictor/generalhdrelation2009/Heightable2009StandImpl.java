@@ -3,7 +3,6 @@ package quebecmrnfutility.predictor.generalhdrelation2009;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.covariateproviders.standlevel.MeanQuadraticDiameterCmProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
@@ -44,9 +43,6 @@ public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadrat
 	
 	@Override
 	public String getSubjectId() {return subjectID;}
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 	@Override
 	public int getMonteCarloRealizationId() {

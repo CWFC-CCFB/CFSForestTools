@@ -1,8 +1,5 @@
 package quebecmrnfutility.predictor.generalhdrelation2014;
 
-import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Stand;
-import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree;
-import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.REpiceaPredictor.ErrorTermGroup;
 
 class Heightable2014TreeImpl implements Heightable2014Tree {
@@ -34,9 +31,6 @@ class Heightable2014TreeImpl implements Heightable2014Tree {
 	public String getSubjectId() {
 		return ((Integer) subjectID).toString();
 	}
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
 	@Override
 	public int getMonteCarloRealizationId() {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestModel.TreatmentType;
-import repicea.simulation.HierarchicalLevel;
 
 public class OfficialHarvestableStandImpl implements OfficialHarvestableStand {
 
@@ -33,10 +32,6 @@ public class OfficialHarvestableStandImpl implements OfficialHarvestableStand {
 	
 	@Override
 	public String getSubjectId() {return ((Integer) hashCode()).toString();}
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
-
 
 	@Override
 	public int getMonteCarloRealizationId() {					// no need

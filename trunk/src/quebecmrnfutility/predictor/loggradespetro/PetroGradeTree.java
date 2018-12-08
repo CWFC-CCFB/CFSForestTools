@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import repicea.math.Matrix;
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
@@ -39,6 +40,9 @@ public interface PetroGradeTree extends DbhCmProvider,
 										MSCRPriorityProvider,
 										VigorClassProvider,
 										MonteCarloSimulationCompliantObject {
+
+	@Override
+	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
 	public enum PetroGradeSpecies {
 		BOJ,

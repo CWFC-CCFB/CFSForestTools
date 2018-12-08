@@ -1,9 +1,7 @@
 package quebecmrnfutility.predictor.wbirchloggrades;
 
-import repicea.math.Matrix;
-import quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesStand;
-import repicea.simulation.HierarchicalLevel;
 import quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolLoggableTree;
+import repicea.math.Matrix;
 
 class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 
@@ -67,9 +65,6 @@ class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 
 	@Override
 	public String getSubjectId() {return ((Integer) treeID).toString();}
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
 	@Override
 	public int getMonteCarloRealizationId() {return stand.getMonteCarloRealizationId();}

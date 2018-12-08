@@ -44,6 +44,7 @@ public interface VolumableTree extends DbhCmProvider,
 										SquaredDbhCmProvider,
 										HeightMProvider {
 	
+	
 	public enum VolSpecies implements SpeciesTypeProvider {
 		BOG,
 		BOJ,

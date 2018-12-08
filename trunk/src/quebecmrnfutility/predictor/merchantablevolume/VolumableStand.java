@@ -24,6 +24,7 @@
  */
 package quebecmrnfutility.predictor.merchantablevolume;
 
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.standlevel.CruiseLineProvider;
 
@@ -34,4 +35,7 @@ import repicea.simulation.covariateproviders.standlevel.CruiseLineProvider;
 public interface VolumableStand extends MonteCarloSimulationCompliantObject,
 										CruiseLineProvider {
 	
+	@Override
+	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
+
 }
