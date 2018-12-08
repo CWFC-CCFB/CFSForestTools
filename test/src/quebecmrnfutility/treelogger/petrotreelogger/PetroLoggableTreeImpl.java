@@ -1,7 +1,5 @@
 package quebecmrnfutility.treelogger.petrotreelogger;
 
-import repicea.simulation.HierarchicalLevel;
-
 public class PetroLoggableTreeImpl implements PetroLoggableTree {
 
 	final PetroGradeSpecies species;
@@ -92,13 +90,6 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 	public String getSubjectId() {
 		return "";
 	}
-
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {
-		return HierarchicalLevel.TREE;
-	}
-
 
 	@Override
 	public int getMonteCarloRealizationId() {

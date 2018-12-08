@@ -3,7 +3,6 @@ package quebecmrnfutility.treelogger.sybille;
 import java.util.Vector;
 
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
-import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 
 public class LoggableTreeImplTest implements SybilleLoggableTree {
@@ -36,9 +35,6 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 	
 	@Override
 	public String getSubjectId() {return ((Integer) hashCode()).toString();}
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
 	@Override
 	public StemTaperStand getStand() {return stand;}

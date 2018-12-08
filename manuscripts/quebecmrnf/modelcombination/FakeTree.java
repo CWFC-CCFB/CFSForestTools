@@ -5,7 +5,6 @@ import java.util.List;
 import quebecmrnfutility.predictor.merchantablevolume.VolumableTree;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
 import quebecmrnfutility.treelogger.sybille.SybilleLoggableTree;
-import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 
 public class FakeTree implements VolumableTree, SybilleLoggableTree {
@@ -67,9 +66,6 @@ public class FakeTree implements VolumableTree, SybilleLoggableTree {
 	public String getSubjectId() {
 		return null;
 	}
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
 	/*
 	 * Useless (non-Javadoc)

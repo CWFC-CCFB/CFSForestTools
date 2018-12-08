@@ -3,9 +3,6 @@ package quebecmrnfutility.predictor.wbirchloggrades;
 import java.util.HashMap;
 import java.util.Map;
 
-import quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesStand;
-import repicea.simulation.HierarchicalLevel;
-
 public class WBirchLogGradesStandImpl implements WBirchLogGradesStand {
 
 	private final String plotID;
@@ -21,9 +18,6 @@ public class WBirchLogGradesStandImpl implements WBirchLogGradesStand {
 	
 	@Override
 	public String getSubjectId() {return plotID;}
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 	protected void setMonteCarloRealizationId(int i) {monteCarloId = i;}
 

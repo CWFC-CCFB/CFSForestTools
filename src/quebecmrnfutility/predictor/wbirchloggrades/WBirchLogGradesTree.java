@@ -18,6 +18,7 @@
  */
 package quebecmrnfutility.predictor.wbirchloggrades;
 
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
@@ -30,6 +31,9 @@ import repicea.util.REpiceaTranslator.TextableEnum;
  */
 public interface WBirchLogGradesTree extends DbhCmProvider, ABCDQualityProvider, MonteCarloSimulationCompliantObject {
 	
+	@Override
+	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
+
 	public static enum WBirchProdVolTreeSpecies implements TextableEnum {
 		WhiteBirch("White birch", "Bouleau \u00E0 papier");
 

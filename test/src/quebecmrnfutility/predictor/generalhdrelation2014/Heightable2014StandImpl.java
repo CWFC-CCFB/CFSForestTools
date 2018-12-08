@@ -3,10 +3,6 @@ package quebecmrnfutility.predictor.generalhdrelation2014;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Stand;
-import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree;
-import repicea.simulation.HierarchicalLevel;
-
 public class Heightable2014StandImpl implements Heightable2014Stand {
 
 	final String subjectID;
@@ -44,9 +40,6 @@ public class Heightable2014StandImpl implements Heightable2014Stand {
 	
 	@Override
 	public String getSubjectId() {return subjectID;}
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 	@Override
 	public int getMonteCarloRealizationId() {

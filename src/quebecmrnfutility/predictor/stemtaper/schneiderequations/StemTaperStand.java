@@ -24,6 +24,7 @@
  */
 package quebecmrnfutility.predictor.stemtaper.schneiderequations;
 
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.standlevel.DrainageClassProvider;
@@ -40,8 +41,7 @@ public interface StemTaperStand extends MonteCarloSimulationCompliantObject,
 										DrainageClassProvider,
 										ElevationMProvider {
 	
-	
-//	public void setMonteCarloRealizationId(int id);
-	
-	
+	@Override
+	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
+
 }

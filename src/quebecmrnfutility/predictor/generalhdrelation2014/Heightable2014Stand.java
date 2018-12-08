@@ -45,7 +45,6 @@ public interface Heightable2014Stand extends HDRelationshipStand,
 										InterventionResultProvider,
 										ElevationMProvider,
 										SpruceBudwormDefoliatedProvider,
-//										StemDensityHaProvider,
 										MeanAnnualPrecipitationMmProvider {
 	
 	/**

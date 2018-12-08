@@ -24,6 +24,7 @@
  */
 package quebecmrnfutility.predictor.officialharvestmodule;
 
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.standlevel.PotentialVegetationProvider;
@@ -35,4 +36,7 @@ public interface OfficialHarvestableStand extends MonteCarloSimulationCompliantO
 												BasalAreaM2HaProvider,
 												PotentialVegetationProvider {
 	
+	@Override
+	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
+
 }

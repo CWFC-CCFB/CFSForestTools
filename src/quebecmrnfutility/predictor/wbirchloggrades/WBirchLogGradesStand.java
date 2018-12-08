@@ -18,6 +18,7 @@
  */
 package quebecmrnfutility.predictor.wbirchloggrades;
 
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.standlevel.ElevationMProvider;
 
@@ -25,6 +26,10 @@ import repicea.simulation.covariateproviders.standlevel.ElevationMProvider;
  * This interface ensures the stand object is compatible with the tree logger WBirchProdVol.
  * @author Mathieu Fortin - September 2013
  */
-public interface WBirchLogGradesStand extends MonteCarloSimulationCompliantObject, ElevationMProvider {
+public interface WBirchLogGradesStand extends MonteCarloSimulationCompliantObject, 
+											ElevationMProvider {
+
+	@Override
+	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 }

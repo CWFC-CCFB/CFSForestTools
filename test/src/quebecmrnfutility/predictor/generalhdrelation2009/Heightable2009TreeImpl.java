@@ -1,7 +1,5 @@
 package quebecmrnfutility.predictor.generalhdrelation2009;
 
-import repicea.simulation.HierarchicalLevel;
-
 class Heightable2009TreeImpl implements Heightable2009Tree {
 
 	final double dbhCm;
@@ -37,9 +35,6 @@ class Heightable2009TreeImpl implements Heightable2009Tree {
 	public String getSubjectId() {
 		return ((Integer) subjectID).toString();
 	}
-
-	@Override
-	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
 	@Override
 	public int getMonteCarloRealizationId() {
