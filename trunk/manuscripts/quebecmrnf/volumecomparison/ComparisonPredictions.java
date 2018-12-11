@@ -49,10 +49,10 @@ public class ComparisonPredictions {
 		
 		loggerTree = new SybilleTreeLogger(true);
 		SybilleTreeLoggerParameters parms = loggerTree.createDefaultTreeLoggerParameters();
-		for (String species : parms.getLogCategories().keySet()) {
+		for (Object species : parms.getLogCategories().keySet()) {
 			List<SybilleTreeLogCategory> logCategory = parms.getLogCategories().get(species);
 			logCategory.clear();
-			logCategory.add(new SybilleTreeLogCategory("CommVol", species, LengthID.NoLimit, 9d));
+			logCategory.add(new SybilleTreeLogCategory("CommVol", species.toString(), LengthID.NoLimit, 9d));
 		}
 		loggerTree.setTreeLoggerParameters(parms);
 		trees = new ArrayList<Tree>();
