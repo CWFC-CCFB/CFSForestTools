@@ -28,11 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperEquationSettings.Effect;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
-import repicea.predictor.QuebecGeneralSettings;
 import repicea.stats.LinearStatisticalExpression;
 
 /**
