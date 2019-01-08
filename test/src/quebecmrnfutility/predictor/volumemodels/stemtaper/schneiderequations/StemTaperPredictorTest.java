@@ -2,9 +2,6 @@ package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,9 +13,7 @@ import org.junit.Test;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
-import repicea.serial.DeprecatedObject;
 import repicea.serial.xml.XmlDeserializer;
-import repicea.serial.xml.XmlSerializer;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
 import repicea.stats.estimates.Estimate;
@@ -62,22 +57,6 @@ public class StemTaperPredictorTest {
 
 	
 	
-	@SuppressWarnings("unchecked")
-	private HashMap deserializeMap(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		HashMap refMap = (HashMap) in.readObject();
-		for (Object key : refMap.keySet()) {
-			Object value = refMap.get(key);
-			if (value instanceof DeprecatedObject) {
-				Object newValue = ((DeprecatedObject) value).convertIntoAppropriateClass();
-				refMap.put(key, newValue);
-			}
-		}
-		return refMap;
-	}
-	
-	private quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies convertToFormerSpecies(StemTaperTreeSpecies sp) {
-		return quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies.valueOf(sp.name());
-	}
 	/**
 	 * This test chacks whether the stem taper without approximation is still consistent. A stem taper for a tree that is 30 cm 
 	 * in dbh and 20 m in height is generated for each one of the 8 species. The resulting taper is compared with a reference.
