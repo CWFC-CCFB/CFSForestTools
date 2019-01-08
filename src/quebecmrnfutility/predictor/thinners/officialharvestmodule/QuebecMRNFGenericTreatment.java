@@ -25,6 +25,8 @@
 package quebecmrnfutility.predictor.thinners.officialharvestmodule;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestModel;
 import quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestModel.Treatment;
@@ -38,6 +40,14 @@ import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarves
 public class QuebecMRNFGenericTreatment implements Serializable {
 
 	private static final long serialVersionUID = 20110407;
+	
+	private static Map<String, String> CLASS_MAP = new HashMap<String, String>();
+	static {
+		CLASS_MAP.put("FormerOfficialHarvestModel","quebecmrnfutility.predictor.thinners.formerofficialharvestmodule.FormerOfficialHarvestModel$Treatment");
+		CLASS_MAP.put("BetaHarvestModel","quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestModel$Treatment");
+	}
+	
+	
 	
 	private TreatmentEnum treatmentType;
 	private int modifier;
@@ -89,6 +99,7 @@ public class QuebecMRNFGenericTreatment implements Serializable {
 				try {
 					int indexLastDot = treatmentName.lastIndexOf(".");
 					String className = treatmentName.substring(0, indexLastDot);
+					className = checkClassNameChange(className);
 					String variableName = treatmentName.substring(indexLastDot + 1).trim();
 					Object[] c = ClassLoader.getSystemClassLoader().loadClass(className).getEnumConstants();
 					if (c[0] instanceof TreatmentType && variableName.equals("CJ")) {
@@ -119,6 +130,16 @@ public class QuebecMRNFGenericTreatment implements Serializable {
 		
 	}
 	
+	private static String checkClassNameChange(String className) {
+		for (String key : CLASS_MAP.keySet()) {
+			if (className.contains(key)) {
+				return CLASS_MAP.get(key);
+			}
+		}
+		return className;
+	}
+
+
 	/**
 	 * This method returns the enum that matches the treatment.
 	 * @return an Enum instance
