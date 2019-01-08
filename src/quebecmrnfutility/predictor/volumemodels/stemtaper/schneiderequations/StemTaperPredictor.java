@@ -66,7 +66,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	
 	static {
 		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethod", 
-				"quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethodInDeterministicMode");
+				"quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethodInDeterministicMode");
 	}
 	
 	
