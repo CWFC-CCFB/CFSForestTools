@@ -30,9 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
-import repicea.predictor.QuebecGeneralSettings;
 
 /**
  * This package class contains the settings of the stem taper equations such as the dummy variables and the 

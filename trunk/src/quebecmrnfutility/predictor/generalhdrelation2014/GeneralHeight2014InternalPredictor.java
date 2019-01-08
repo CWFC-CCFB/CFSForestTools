@@ -6,11 +6,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.generalhdrelation2014.GeneralHeight2014Predictor.DisturbanceType;
 import quebecmrnfutility.predictor.generalhdrelation2014.GeneralHeight2014Predictor.Effect;
 import quebecmrnfutility.predictor.generalhdrelation2014.Heightable2014Tree.Hd2014Species;
 import repicea.math.Matrix;
-import repicea.predictor.QuebecGeneralSettings;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.hdrelationships.HDRelationshipModel;

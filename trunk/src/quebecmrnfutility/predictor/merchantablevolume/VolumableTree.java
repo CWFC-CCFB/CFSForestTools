@@ -27,8 +27,8 @@ package quebecmrnfutility.predictor.merchantablevolume;
 import java.util.HashSet;
 import java.util.Set;
 
+import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import repicea.math.Matrix;
-import repicea.predictor.QuebecGeneralSettings;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;

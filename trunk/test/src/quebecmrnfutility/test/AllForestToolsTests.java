@@ -16,6 +16,10 @@ import org.junit.runners.Suite.SuiteClasses;
 	quebecmrnfutility.predictor.generalhdrelation2014.GeneralHeight2014PredictorTests.class,
 	quebecmrnfutility.biosim.BioSimClientTest.class,
 	quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesPredictorTest.class,
-	quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolTreeLoggerTest.class})
+	quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolTreeLoggerTest.class,
+	quebecmrnfutility.predictor.artemis2009.Artemis2009PredictorTests.class,
+	quebecmrnfutility.predictor.matapedia.MatapediaMortalityPredictorTest.class,
+	quebecmrnfutility.predictor.thinners.melothinner.MeloThinnerTests.class,
+	quebecmrnfutility.predictor.volume.honertotalvolume.HonerTotalVolumeTest.class})
 public class AllForestToolsTests {}
 

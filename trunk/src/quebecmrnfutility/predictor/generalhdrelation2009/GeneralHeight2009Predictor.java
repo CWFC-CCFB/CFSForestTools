@@ -29,10 +29,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import quebecmrnfutility.predictor.QuebecGeneralSettings;
+import quebecmrnfutility.predictor.QuebecGeneralSettings.DrainageGroup;
 import quebecmrnfutility.predictor.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
 import repicea.math.Matrix;
-import repicea.predictor.QuebecGeneralSettings;
-import repicea.predictor.QuebecGeneralSettings.DrainageGroup;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;

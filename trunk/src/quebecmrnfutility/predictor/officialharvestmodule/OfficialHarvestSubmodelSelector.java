@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import repicea.gui.components.REpiceaMatchSelector;
-import repicea.predictor.QuebecGeneralSettings;
 import repicea.serial.MemorizerPackage;
 import repicea.serial.xml.XmlDeserializer;
 import repicea.serial.xml.XmlMarshallException;
