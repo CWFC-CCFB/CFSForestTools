@@ -1,4 +1,0 @@
-cl_perturb	pert
-INT	INT
-MOY	MOY
-NON	NON
