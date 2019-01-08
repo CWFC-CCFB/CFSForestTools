@@ -181,32 +181,18 @@ public class StemTaperPredictorTest {
 			
 		}
 
-//				UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
-//		  	try {
-//		  		FileOutputStream fos = new FileOutputStream(referenceFilename);
-//		  		ObjectOutputStream out = new ObjectOutputStream(fos);
-//		  		out.writeObject(outputMap);
-//		  		out.close();
-//		  	} catch(IOException ex) {
-//		  		ex.printStackTrace();
-//		  		throw ex;
-//		  	}
+		//		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
+//		XmlSerializer serializer = new XmlSerializer(referenceFilename);
+//		serializer.writeObject(outputMap);
 
 		System.out.println("Loading reference map...");
 		HashMap refMap;
-		try {
-			FileInputStream fis = new FileInputStream(referenceFilename);
-			ObjectInputStream in = new ObjectInputStream(fis);
-			refMap = (HashMap) in.readObject();
-			in.close();
-		} catch(IOException ex) {
-			ex.printStackTrace();
-			throw ex;
-		}
+		XmlDeserializer deserializer = new XmlDeserializer(referenceFilename);
+		refMap = (HashMap) deserializer.readObject();
 
 		System.out.println("Comparing results...");
 		for (StemTaperTreeSpecies species : StemTaperTreeSpecies.values()) {
-			double ref = (Double) refMap.get(convertToFormerSpecies(species));
+			double ref = (Double) refMap.get(species.name());
 			double currentValue = outputMap.get(species.name());
 			assertEquals("Testing species " + species.name(), ref, currentValue, 1E-8);
 		}
@@ -236,32 +222,18 @@ public class StemTaperPredictorTest {
 			
 		}
 
-//				UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
-//		  	try {
-//		  		FileOutputStream fos = new FileOutputStream(referenceFilename);
-//		  		ObjectOutputStream out = new ObjectOutputStream(fos);
-//		  		out.writeObject(outputMap);
-//		  		out.close();
-//		  	} catch(IOException ex) {
-//		  		ex.printStackTrace();
-//		  		throw ex;
-//		  	}
+		//		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
+//		XmlSerializer serializer = new XmlSerializer(referenceFilename);
+//		serializer.writeObject(outputMap);
 
 		System.out.println("Loading reference map...");
 		HashMap refMap;
-		try {
-			FileInputStream fis = new FileInputStream(referenceFilename);
-			ObjectInputStream in = new ObjectInputStream(fis);
-			refMap = (HashMap) in.readObject();
-			in.close();
-		} catch(IOException ex) {
-			ex.printStackTrace();
-			throw ex;
-		}
+		XmlDeserializer deserializer = new XmlDeserializer(referenceFilename);
+		refMap = (HashMap) deserializer.readObject();
 
 		System.out.println("Comparing results...");
 		for (StemTaperTreeSpecies species : StemTaperTreeSpecies.values()) {
-			double ref = (Double) refMap.get(convertToFormerSpecies(species));
+			double ref = (Double) refMap.get(species.name());
 			double currentValue = outputMap.get(species.name());
 			assertEquals("Testing species " + species.name(), ref, currentValue, 1E-8);
 		}
@@ -286,35 +258,17 @@ public class StemTaperPredictorTest {
 		}
 		
 		//		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
-//		try {
-//			FileOutputStream fos = new FileOutputStream(referenceFilename);
-//			ObjectOutputStream out = new ObjectOutputStream(fos);
-//			out.writeObject(outputMap);
-//			out.close();
-//		} catch(IOException ex) {
-//			ex.printStackTrace();
-//			throw ex;
-//		}
+//		XmlSerializer serializer = new XmlSerializer(referenceFilename);
+//		serializer.writeObject(outputMap);
 
 		System.out.println("Loading reference map...");
 		HashMap refMap;
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(referenceFilename);
-			ObjectInputStream in = new ObjectInputStream(fis);
-			refMap = deserializeMap(in);
-		} catch(IOException ex) {
-			ex.printStackTrace();
-			throw ex;
-		} finally {
-			if (fis != null) {
-				fis.close();
-			}
-		}
+		XmlDeserializer deserializer = new XmlDeserializer(referenceFilename);
+		refMap = (HashMap) deserializer.readObject();
 
 		System.out.println("Comparing results...");
 		for (StemTaperTreeSpecies species : StemTaperTreeSpecies.values()) {
-			Matrix ref = (Matrix) refMap.get(convertToFormerSpecies(species));
+			Matrix ref = (Matrix) refMap.get(species.name());
 			Matrix currentValue = outputMap.get(species.name());
 			for (int i = 0; i < ref.m_iRows; i++) {
 				assertEquals("Testing species " + species.name(), 
@@ -343,35 +297,17 @@ public class StemTaperPredictorTest {
 		}
 		
 		//		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
-//		try {
-//			FileOutputStream fos = new FileOutputStream(referenceFilename);
-//			ObjectOutputStream out = new ObjectOutputStream(fos);
-//			out.writeObject(outputMap);
-//			out.close();
-//		} catch(IOException ex) {
-//			ex.printStackTrace();
-//			throw ex;
-//		}
+//		XmlSerializer serializer = new XmlSerializer(referenceFilename);
+//		serializer.writeObject(outputMap);
 
 		System.out.println("Loading reference map...");
 		HashMap refMap;
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(referenceFilename);
-			ObjectInputStream in = new ObjectInputStream(fis);
-			refMap = deserializeMap(in);
-		} catch(IOException ex) {
-			ex.printStackTrace();
-			throw ex;
-		} finally {
-			if (fis != null) {
-				fis.close();
-			}
-		}
+		XmlDeserializer deserializer = new XmlDeserializer(referenceFilename);
+		refMap = (HashMap) deserializer.readObject();
 
 		System.out.println("Comparing results...");
 		for (StemTaperTreeSpecies species : StemTaperTreeSpecies.values()) {
-			Matrix ref = (Matrix) refMap.get(convertToFormerSpecies(species));
+			Matrix ref = (Matrix) refMap.get(species.name());
 			Matrix currentValue = outputMap.get(species.name());
 			for (int i = 0; i < ref.m_iRows; i++) {
 				assertEquals("Testing species " + species.name(), 
@@ -406,32 +342,18 @@ public class StemTaperPredictorTest {
 			
 		}
 
-//				UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
-//		  	try {
-//		  		FileOutputStream fos = new FileOutputStream(referenceFilename);
-//		  		ObjectOutputStream out = new ObjectOutputStream(fos);
-//		  		out.writeObject(outputMap);
-//		  		out.close();
-//		  	} catch(IOException ex) {
-//		  		ex.printStackTrace();
-//		  		throw ex;
-//		  	}
+		//		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
+//		XmlSerializer serializer = new XmlSerializer(referenceFilename);
+//		serializer.writeObject(outputMap);
 
 		System.out.println("Loading reference map...");
 		HashMap refMap;
-		try {
-			FileInputStream fis = new FileInputStream(referenceFilename);
-			ObjectInputStream in = new ObjectInputStream(fis);
-			refMap = (HashMap) in.readObject();
-			in.close();
-		} catch(IOException ex) {
-			ex.printStackTrace();
-			throw ex;
-		}
+		XmlDeserializer deserializer = new XmlDeserializer(referenceFilename);
+		refMap = (HashMap) deserializer.readObject();
 
 		System.out.println("Comparing results...");
 		for (StemTaperTreeSpecies species : StemTaperTreeSpecies.values()) {
-			double ref = (Double) refMap.get(convertToFormerSpecies(species));
+			double ref = (Double) refMap.get(species.name());
 			double currentValue = outputMap.get(species.name());
 			assertEquals("Testing species " + species.name(), ref, currentValue, 1E-8);
 		}
@@ -461,32 +383,18 @@ public class StemTaperPredictorTest {
 			
 		}
 
-//				UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
-//		  	try {
-//		  		FileOutputStream fos = new FileOutputStream(referenceFilename);
-//		  		ObjectOutputStream out = new ObjectOutputStream(fos);
-//		  		out.writeObject(outputMap);
-//		  		out.close();
-//		  	} catch(IOException ex) {
-//		  		ex.printStackTrace();
-//		  		throw ex;
-//		  	}
+		//		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
+//		XmlSerializer serializer = new XmlSerializer(referenceFilename);
+//		serializer.writeObject(outputMap);
 
 		System.out.println("Loading reference map...");
 		HashMap refMap;
-		try {
-			FileInputStream fis = new FileInputStream(referenceFilename);
-			ObjectInputStream in = new ObjectInputStream(fis);
-			refMap = (HashMap) in.readObject();
-			in.close();
-		} catch(IOException ex) {
-			ex.printStackTrace();
-			throw ex;
-		}
+		XmlDeserializer deserializer = new XmlDeserializer(referenceFilename);
+		refMap = (HashMap) deserializer.readObject();
 
 		System.out.println("Comparing results...");
 		for (StemTaperTreeSpecies species : StemTaperTreeSpecies.values()) {
-			double ref = (Double) refMap.get(species);
+			double ref = (Double) refMap.get(species.name());
 			double currentValue = outputMap.get(species.name());
 			assertEquals("Testing species " + species.name(), ref, currentValue, 1E-8);
 		}
