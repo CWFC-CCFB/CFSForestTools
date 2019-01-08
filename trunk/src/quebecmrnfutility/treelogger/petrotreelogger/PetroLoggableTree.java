@@ -24,7 +24,7 @@
  */
 package quebecmrnfutility.treelogger.petrotreelogger;
 
-import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree;
+import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree;
 import repicea.simulation.treelogger.LoggableTree;
 
 /**

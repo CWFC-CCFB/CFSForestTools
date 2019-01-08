@@ -10,7 +10,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
+import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeSpecies;
 import repicea.serial.xml.XmlDeserializer;
 import repicea.serial.xml.XmlMarshallException;
 import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;

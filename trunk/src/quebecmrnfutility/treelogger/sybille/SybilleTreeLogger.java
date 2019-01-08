@@ -27,7 +27,7 @@ package quebecmrnfutility.treelogger.sybille;
 import java.io.IOException;
 import java.util.List;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;

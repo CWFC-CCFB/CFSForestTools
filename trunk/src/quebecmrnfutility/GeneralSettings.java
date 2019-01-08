@@ -28,9 +28,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import quebecmrnfutility.predictor.formerofficialharvestmodule.FormerOfficialHarvestableTree.FormerOfficialHarvestableSpecies;
-import quebecmrnfutility.predictor.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
-import quebecmrnfutility.predictor.merchantablevolume.VolumableTree.VolSpecies;
+import quebecmrnfutility.predictor.thinners.formerofficialharvestmodule.FormerOfficialHarvestableTree.FormerOfficialHarvestableSpecies;
+import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
+import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree.VolSpecies;
 import repicea.io.tools.LevelProviderEnum;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;

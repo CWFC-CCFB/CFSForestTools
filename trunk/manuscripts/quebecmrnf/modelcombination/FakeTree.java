@@ -2,8 +2,8 @@ package quebecmrnf.modelcombination;
 
 import java.util.List;
 
-import quebecmrnfutility.predictor.merchantablevolume.VolumableTree;
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
+import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
 import quebecmrnfutility.treelogger.sybille.SybilleLoggableTree;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 

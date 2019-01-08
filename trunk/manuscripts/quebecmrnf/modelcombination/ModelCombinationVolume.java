@@ -1,6 +1,6 @@
 package quebecmrnf.modelcombination;
 
-import quebecmrnfutility.predictor.merchantablevolume.MerchantableVolumePredictor;
+import quebecmrnfutility.predictor.volumemodels.merchantablevolume.MerchantableVolumePredictor;
 import quebecmrnfutility.treelogger.sybille.SybilleTreeLogger;
 
 class ModelCombinationVolume {

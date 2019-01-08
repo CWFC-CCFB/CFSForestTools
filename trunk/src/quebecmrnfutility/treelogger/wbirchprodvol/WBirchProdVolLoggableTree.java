@@ -18,8 +18,8 @@
  */
 package quebecmrnfutility.treelogger.wbirchprodvol;
 
-import quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesStand;
-import quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesTree;
+import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesStand;
+import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesTree;
 import repicea.simulation.treelogger.LoggableTree;
 
 public interface WBirchProdVolLoggableTree extends WBirchLogGradesTree, LoggableTree {

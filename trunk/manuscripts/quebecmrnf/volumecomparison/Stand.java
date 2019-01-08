@@ -1,7 +1,7 @@
 package quebecmrnf.volumecomparison;
 
-import quebecmrnfutility.predictor.merchantablevolume.VolumableStand;
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
+import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableStand;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
 import repicea.simulation.HierarchicalLevel;
 
 public class Stand implements StemTaperStand, VolumableStand {

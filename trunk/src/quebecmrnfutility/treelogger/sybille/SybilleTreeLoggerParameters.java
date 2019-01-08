@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import quebecmrnfutility.treelogger.sybille.SybilleTreeLogCategory.LengthID;
 import repicea.simulation.treelogger.TreeLoggerParameters;
 import repicea.util.REpiceaTranslator;

@@ -1,6 +1,6 @@
 package quebecmrnfutility.treelogger.sybille;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
 
 public class StemTaperStandImplTest implements StemTaperStand {
 
