@@ -26,8 +26,8 @@ package quebecmrnfutility.treelogger.petrotreelogger;
 
 import java.util.Collection;
 
-import quebecmrnfutility.predictor.loggradespetro.PetroGradePredictor;
-import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
+import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradePredictor;
+import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeSpecies;
 import repicea.math.Matrix;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLogger;

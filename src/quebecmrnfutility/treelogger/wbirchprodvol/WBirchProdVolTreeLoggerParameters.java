@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import repicea.gui.permissions.DefaultREpiceaGUIPermission;
-import quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesTree.WBirchProdVolTreeSpecies;
+import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesTree.WBirchProdVolTreeSpecies;
 import repicea.simulation.treelogger.TreeLoggerParameters;
 import repicea.simulation.treelogger.TreeLoggerParametersDialog;
 import repicea.util.REpiceaTranslator;

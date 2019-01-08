@@ -24,7 +24,7 @@
  */
 package quebecmrnfutility.treelogger.sybille;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree;
 import repicea.simulation.treelogger.LoggableTree;
 
 /**

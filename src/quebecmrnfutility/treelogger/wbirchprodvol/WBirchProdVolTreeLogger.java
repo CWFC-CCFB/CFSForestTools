@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.util.List;
 
 import repicea.math.Matrix;
-import quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesPredictor;
-import quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesStand;
+import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesPredictor;
+import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesStand;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;

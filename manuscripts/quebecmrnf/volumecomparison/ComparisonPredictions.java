@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import quebecmrnfutility.predictor.merchantablevolume.MerchantableVolumePredictor;
-import quebecmrnfutility.predictor.merchantablevolume.VolumableTree.VolSpecies;
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
+import quebecmrnfutility.predictor.volumemodels.merchantablevolume.MerchantableVolumePredictor;
+import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree.VolSpecies;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import quebecmrnfutility.treelogger.sybille.SybilleTreeLogCategory;
 import quebecmrnfutility.treelogger.sybille.SybilleTreeLogCategory.LengthID;
 import quebecmrnfutility.treelogger.sybille.SybilleTreeLogger;

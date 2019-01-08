@@ -43,7 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
 import repicea.gui.OwnedWindow;
 import repicea.gui.REpiceaDialog;
 import repicea.gui.UIControlManager;

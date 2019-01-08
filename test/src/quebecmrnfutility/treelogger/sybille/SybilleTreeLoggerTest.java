@@ -13,9 +13,9 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.io.FormatReader;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.treelogger.LogCategory;

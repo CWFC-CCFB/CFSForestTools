@@ -29,8 +29,8 @@ import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 
-import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeSpecies;
-import quebecmrnfutility.predictor.loggradespetro.PetroGradeTree.PetroGradeType;
+import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeSpecies;
+import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.simulation.treelogger.TreeLoggerParameters;
 
 @SuppressWarnings("serial")

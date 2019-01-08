@@ -28,7 +28,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperTree;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree;
 import repicea.math.Matrix;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperSegment;

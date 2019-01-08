@@ -2,7 +2,7 @@ package quebecmrnfutility.treelogger.sybille;
 
 import java.util.Vector;
 
-import quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperStand;
+import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 
 public class LoggableTreeImplTest implements SybilleLoggableTree {

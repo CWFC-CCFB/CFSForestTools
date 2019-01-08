@@ -9,9 +9,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import repicea.math.Matrix;
-import quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesPredictor;
-import quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesPredictorTest;
-import quebecmrnfutility.predictor.wbirchloggrades.WBirchLogGradesStandImpl;
+import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesPredictor;
+import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesPredictorTest;
+import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesStandImpl;
 import repicea.simulation.treelogger.WoodPiece;
 import quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolTreeLoggerParameters.ProductID;
 
