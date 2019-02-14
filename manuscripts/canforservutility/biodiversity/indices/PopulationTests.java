@@ -175,7 +175,7 @@ class PopulationTests {
 		sampleSizes.add(25);
 		sampleSizes.add(50);
 
-		int nbRealizations = 1000;
+		int nbRealizations = 10000;
 		for (String key : populationMap.keySet()) {
 			Population pop = populationMap.get(key);
 			Map<IndexName, Double> newIndices = new MultipleSiteIndex().getAdaptedMultiplesiteDissimilarityIndices(pop);
