@@ -43,7 +43,7 @@ import repicea.stats.estimates.SimpleEstimate;
  */
 public class MultipleSiteIndex {
 	
-	static enum IndexName {Simpson, Sorensen}
+	public static enum IndexName {Simpson, Sorensen}
 	
 	private static class DissimilarityFeatures {
 		final int totalNbSpecies;
