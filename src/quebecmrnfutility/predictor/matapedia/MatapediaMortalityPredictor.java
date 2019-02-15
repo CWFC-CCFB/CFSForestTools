@@ -43,6 +43,12 @@ import repicea.util.ObjectUtility;
  *
  * @author Mathieu Fortin - September 2012
  * 
+ * @see <a href=http://pubs.cif-ifc.org/doi/10.5558/tfc2014-101> Fortin, M., S. Tremblay and R. Schneider.
+ * 2014. Evaluating a single tree-based growth model for even-aged stands against the maximum size–density 
+ * relationship: Some insights from balsam fir stands in Quebec, Canada. The Forestry Chronicle 90(4): 503-515 
+ * </a>
+ * 
+ * 
  * @see <a href=http://www.nrcresearchpress.com/doi/pdf/10.1139/cjfr-2012-0268> 
  * Fortin, M. 2013. Population-averaged predictions with generalized linear mixed-effects models
  * in forestry: an estimator based on Gauss-Hermite quadrature. Canadian Journal of Forest Research

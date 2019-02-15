@@ -29,15 +29,6 @@ import repicea.util.ObjectUtility;
  */
 public class GeneralHeight2014Predictor extends REpiceaPredictor {
 
-//	@SuppressWarnings("serial")
-//	private static class GaussianErrorTermForHeight extends GaussianErrorTerm {
-//
-//		public GaussianErrorTermForHeight(IndexableErrorTerm caller, double normalizedValue, double observedValue) {
-//			super(caller, normalizedValue);
-//			this.value = observedValue;
-//		}
-//		
-//	}
 
 	protected static class BetaHeightableStandMonteCarlo implements MonteCarloSimulationCompliantObject {
 		private final int monteCarloRealization;
