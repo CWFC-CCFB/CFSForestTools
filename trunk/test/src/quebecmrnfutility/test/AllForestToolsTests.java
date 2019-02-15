@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	quebecmrnfutility.predictor.artemis2009.Artemis2009PredictorTests.class,
 	quebecmrnfutility.predictor.matapedia.MatapediaMortalityPredictorTest.class,
 	quebecmrnfutility.predictor.thinners.melothinner.MeloThinnerTests.class,
-	quebecmrnfutility.predictor.volumemodels.honertotalvolume.HonerTotalVolumeTest.class})
+	quebecmrnfutility.predictor.volumemodels.honertotalvolume.HonerTotalVolumeTest.class,
+	canforservutility.biodiversity.indices.MultipleSiteIndexTests.class})
 public class AllForestToolsTests {}
 

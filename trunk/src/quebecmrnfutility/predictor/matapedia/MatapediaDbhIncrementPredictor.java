@@ -33,6 +33,11 @@ import repicea.util.ObjectUtility;
  * The MatapediaDbhIncrementPredictor class implements a dbh increment module that was fitted using the
  * data of the Matapedia permanent plot network. 
  * @author Mathieu Fortin - September 2012
+ * 
+ * @see <a href=http://pubs.cif-ifc.org/doi/10.5558/tfc2014-101> Fortin, M., S. Tremblay and R. Schneider.
+ * 2014. Evaluating a single tree-based growth model for even-aged stands against the maximum size–density 
+ * relationship: Some insights from balsam fir stands in Quebec, Canada. The Forestry Chronicle 90(4): 503-515 
+ * </a>
  */
 public class MatapediaDbhIncrementPredictor extends REpiceaPredictor implements GrowthModel<MatapediaStand, MatapediaTree>{
 

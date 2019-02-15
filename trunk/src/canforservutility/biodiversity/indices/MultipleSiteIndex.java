@@ -1,3 +1,23 @@
+/*
+ * This file is part of the mrnf-foresttools library
+ *
+ * Copyright (C) 2019 Mathieu Fortin - Canadian Wood Fibre Centre
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package canforservutility.biodiversity.indices;
 
 import java.util.ArrayList;
@@ -9,6 +29,18 @@ import repicea.math.Matrix;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.stats.estimates.SimpleEstimate;
 
+/**
+ * This class implements the multiple site versions of Simpson and Sorensen dissimilarity indices. 
+ * This multiple site versions are described in Baselga (2010). Adapted versions to make these indices
+ * population size independent are also provided. Estimators of the adapted versions are available.
+ * 
+ * @author Mathieu Fortin - February 2019
+ * 
+ * @see <a href=https://onlinelibrary.wiley.com/doi/full/10.1111/j.1466-8238.2009.00490.x> Baselga, A. 
+ * 2010. Partitioning the turnover and nestedness components of beta diversity. Global Ecology and 
+ * Biogeography 19(1): 134-143.
+ * </a>
+ */
 public class MultipleSiteIndex {
 	
 	static enum IndexName {Simpson, Sorensen}
@@ -189,7 +221,7 @@ public class MultipleSiteIndex {
 	}
 	
 	/**
-	 * THis methord returns the Chao2 estimate of species richness.
+	 * THis method returns the Chao2 estimate of species richness.
 	 * @param oMap a Map instance that stands for the sample
 	 * @return a SimpleEstimate instance
 	 */
@@ -232,6 +264,13 @@ public class MultipleSiteIndex {
 		return estimate;
 	}
 	
+	/**
+	 * This method implements estimators of the adapted dissmilarity indices.
+	 * @param oMap the sample
+	 * @param populationSize the size of the population
+	 * @param jackknife a boolean that enables the jackknife variance estimation 
+	 * @return a Map that contains the indices
+	 */
 	@SuppressWarnings("rawtypes")
 	public Map<IndexName, SimpleEstimate> getDissimilarityIndicesMultiplesiteEstimator(Map<String, List> oMap, int populationSize, boolean jackknife) {
 		ValidatedHashMap<String, List> vMap = validateMap(oMap);
@@ -244,10 +283,6 @@ public class MultipleSiteIndex {
 
 		Map<IndexName, SimpleEstimate> outputMap = new HashMap<IndexName, SimpleEstimate>();
 		double simpson = (populationSize-1) * meanMin_hat / (populationSize * meanS_hat - totalS_hat + (populationSize-1) * meanMin_hat);
-		if (simpson < 0 || simpson > 1) {
-			SimpleEstimate chao2Estimate2 = getChao2Estimator(vMap);
-			int u = 0;
-		}
 		outputMap.put(IndexName.Simpson, getSimpleEstimate(simpson));
 
 		double sorensen = (populationSize-1) * (meanMin_hat + meanMax_hat) / (populationSize * meanS_hat - totalS_hat + (populationSize-1) * (meanMin_hat + meanMax_hat));
@@ -271,24 +306,5 @@ public class MultipleSiteIndex {
 		return outputMap;
 	}
 
-
-	public static void main(String[] args) {
-		List<String> spList1 = new ArrayList<String>();
-		spList1.add("carotte");
-		spList1.add("carotte");
-		spList1.add("patate");
-
-		List<String> spList2 = new ArrayList<String>();
-		spList2.add("carotte");
-		spList2.add("navet");
-		Map<String, List> oMap = new HashMap<String, List>();
-		oMap.put("1", spList1);
-		oMap.put("2", spList2);
-		MultipleSiteIndex msi = new MultipleSiteIndex();
-		Map result = msi.getMultiplesiteDissimilarityIndices(oMap);
-		msi.getChao2Estimator(oMap);
-		int u = 0;
-	}
-	
 	
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the QuebecMRNFModule for Capsis 
+ * This file is part of the mrnf-foresttools library
  *
  * Copyright (C) 2016 Mathieu Fortin - LERFoB AgroParisTech/INRA
  *
