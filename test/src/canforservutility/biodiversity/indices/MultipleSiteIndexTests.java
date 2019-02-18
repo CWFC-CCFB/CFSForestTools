@@ -68,7 +68,7 @@ public class MultipleSiteIndexTests {
 			}
 			Map<String, Double> innerMap = observedMap.get(key);
 			Map population = getStrata().get(key);
-			Map<IndexName, SimpleEstimate> indices = msi.getDissimilarityIndicesMultiplesiteEstimator(population, 100000, false);
+			Map<IndexName, SimpleEstimate> indices = msi.getDissimilarityIndicesMultiplesiteEstimator(population, 100000);
 			for (IndexName name : indices.keySet()) {
 				innerMap.put(name.name(), indices.get(name).getMean().m_afData[0][0]);
 			}
