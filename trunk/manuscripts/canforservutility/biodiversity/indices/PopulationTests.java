@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import canforservutility.biodiversity.indices.MultipleSiteIndex.IndexName;
+import canforservutility.biodiversity.indices.MultipleSiteIndex.Mode;
 import repicea.io.FormatField;
 import repicea.io.javacsv.CSVField;
 import repicea.io.javacsv.CSVWriter;
@@ -88,7 +89,7 @@ class PopulationTests {
 		MultipleSiteIndex msi = new MultipleSiteIndex();
 		for (int real = 0; real < nbRealizations; real++) {
 			Map sample = SamplingUtility.getSample(pop, sampleSize);
-			Map<IndexName, SimpleEstimate> indices = msi.getDissimilarityIndicesMultiplesiteEstimator(sample, pop.size(), true);
+			Map<IndexName, SimpleEstimate> indices = msi.getDissimilarityIndicesMultiplesiteEstimator(sample, pop.size(), true, Mode.LeaveOneOut);
 			Object[] record = new Object[7];
 			record[0] = sampleSize;
 			record[1] = populationParameters.get(IndexName.Simpson);
@@ -175,7 +176,7 @@ class PopulationTests {
 		sampleSizes.add(25);
 		sampleSizes.add(50);
 
-		int nbRealizations = 10000;
+		int nbRealizations = 20000;
 		for (String key : populationMap.keySet()) {
 			Population pop = populationMap.get(key);
 			Map<IndexName, Double> newIndices = new MultipleSiteIndex().getAdaptedMultiplesiteDissimilarityIndices(pop);
