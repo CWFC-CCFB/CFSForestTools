@@ -150,24 +150,22 @@ class PopulationTests {
 //		}
 //		writer.close();
 		
-		
-		XmlDeserializer deserializer = new XmlDeserializer(rootPath + "pop1000_1_10");
-		Population pop01_10 = (Population) deserializer.readObject();
-
-		deserializer = new XmlDeserializer(rootPath + "pop1000_11_20");
-		Population pop11_20 = (Population) deserializer.readObject();
-
-		deserializer = new XmlDeserializer(rootPath + "pop1000_21_30");
-		Population pop21_30 = (Population) deserializer.readObject();
-
-		deserializer = new XmlDeserializer(rootPath + "pop1000_31_40");
-		Population pop31_40 = (Population) deserializer.readObject();
-
 		Map<String, Population> populationMap = new HashMap<String, Population>();
-		populationMap.put("01_10", pop01_10);
-		populationMap.put("11_20", pop11_20);
-		populationMap.put("21_30", pop21_30);
-		populationMap.put("31_40", pop31_40);
+		String prefix = "pop1000_";
+		for (int i = 0; i < 4; i++) {
+			int min = i * 10 + 1;
+			int max = (i + 1) * 10;
+			for (int j = 3; j >= 0; j--) {
+				int pool = j * 20 + 40;
+				String suffixe = min + "_" + max + "_" + pool;
+				String filename = prefix + suffixe;
+				XmlDeserializer deserializer = new XmlDeserializer(rootPath + filename);
+				System.out.println("Loading file : " + filename);
+				Population pop = (Population) deserializer.readObject();
+				populationMap.put(suffixe, pop);
+			}
+		}
+
 		
 		
 		List<Integer> sampleSizes = new ArrayList<Integer>();
@@ -176,7 +174,7 @@ class PopulationTests {
 		sampleSizes.add(25);
 		sampleSizes.add(50);
 
-		int nbRealizations = 20000;
+		int nbRealizations = 10000;
 		for (String key : populationMap.keySet()) {
 			Population pop = populationMap.get(key);
 			Map<IndexName, Double> newIndices = new MultipleSiteIndex().getAdaptedMultiplesiteDissimilarityIndices(pop);
