@@ -46,7 +46,9 @@ import repicea.util.ObjectUtility;
  */
 public class MultipleSiteIndex {
 	
-	public static enum IndexName {Simpson, Sorensen}
+	public static enum IndexName {Simpson, 
+		Sorensen}  
+//		DiserudOdegaard}
 	public static enum Mode {LeaveOneOut, DeleteTwo, EfronSteinCorrection}
 	
 	private static class DissimilarityFeatures {
@@ -186,10 +188,12 @@ public class MultipleSiteIndex {
 		DissimilarityFeatures f = getInnerDissimilarity(oMap);
 
 		double simpson = ((double) f.sumMin_ij) / (f.sumS_i - f.totalNbSpecies + f.sumMin_ij);
-		double sorensen = ((double) (f.sumMin_ij + f.sumMax_ij)) /(f.sumS_i - f.totalNbSpecies + f.sumMin_ij + f.sumMax_ij);
+		double sorensen = ((double) (f.sumMin_ij + f.sumMax_ij)) /(2 * (f.sumS_i - f.totalNbSpecies) + f.sumMin_ij + f.sumMax_ij);
+//		double diserudOdegaard = ((double) f.nbPlots) / (f.nbPlots - 1) * (1 - ((double) f.totalNbSpecies) / f.sumS_i);
 		Map<IndexName, Double> indexMap = new HashMap<IndexName, Double>();
 		indexMap.put(IndexName.Simpson, simpson);
 		indexMap.put(IndexName.Sorensen, sorensen);
+//		indexMap.put(IndexName.DiserudOdegaard, diserudOdegaard);
 		return indexMap;
 	}
 	
@@ -205,10 +209,12 @@ public class MultipleSiteIndex {
 		double sumMinCorr = (2d * f.sumMin_ij) / f.nbPlots;
 		double sumMaxCorr = (2d * f.sumMax_ij) / f.nbPlots;
 		double simpson = sumMinCorr / (f.sumS_i - f.totalNbSpecies + sumMinCorr);
-		double sorensen = (sumMinCorr + sumMaxCorr) /(f.sumS_i - f.totalNbSpecies + sumMinCorr + sumMaxCorr);
+		double sorensen = (sumMinCorr + sumMaxCorr) /(2 * (f.sumS_i - f.totalNbSpecies) + sumMinCorr + sumMaxCorr);
+//		double diserudOdegaard = ((double) f.nbPlots) / (f.nbPlots - 1) * (1 - ((double) f.totalNbSpecies) / f.sumS_i);
 		Map<IndexName, Double> outputMap = new HashMap<IndexName, Double>();
 		outputMap.put(IndexName.Simpson, simpson);
 		outputMap.put(IndexName.Sorensen, sorensen);
+//		outputMap.put(IndexName.DiserudOdegaard, diserudOdegaard);
 		return outputMap;
 	}
 	
@@ -304,7 +310,7 @@ public class MultipleSiteIndex {
 		double simpson = (populationSize-1) * meanMin_hat / (populationSize * meanS_hat - totalS_hat + (populationSize-1) * meanMin_hat);
 		outputMap.put(IndexName.Simpson, getSimpleEstimate(simpson));
 
-		double sorensen = (populationSize-1) * (meanMin_hat + meanMax_hat) / (populationSize * meanS_hat - totalS_hat + (populationSize-1) * (meanMin_hat + meanMax_hat));
+		double sorensen = (populationSize-1) * (meanMin_hat + meanMax_hat) / (2d * (populationSize * meanS_hat - totalS_hat) + (populationSize-1) * (meanMin_hat + meanMax_hat));
 		outputMap.put(IndexName.Sorensen, getSimpleEstimate(sorensen));
 
 
