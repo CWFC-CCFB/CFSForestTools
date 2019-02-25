@@ -46,7 +46,9 @@ import repicea.util.ObjectUtility;
  */
 public class MultipleSiteIndex {
 	
-	public static enum IndexName {Simpson, 
+	public static enum IndexName {Alpha,
+		Gamma,
+		Simpson, 
 		Sorensen}  
 //		DiserudOdegaard}
 	public static enum Mode {LeaveOneOut, DeleteTwo, EfronSteinCorrection}
@@ -313,6 +315,8 @@ public class MultipleSiteIndex {
 		double sorensen = (populationSize-1) * (meanMin_hat + meanMax_hat) / (2d * (populationSize * meanS_hat - totalS_hat) + (populationSize-1) * (meanMin_hat + meanMax_hat));
 		outputMap.put(IndexName.Sorensen, getSimpleEstimate(sorensen));
 
+		outputMap.put(IndexName.Alpha, getSimpleEstimate(meanS_hat));
+		outputMap.put(IndexName.Gamma, chao2Estimate);
 
 		if (jackknife) {
 			List<String> siteIds = new ArrayList<String>(vMap.keySet());
