@@ -105,9 +105,10 @@ class MeloThinnerAACProvider {
 	 * @param ownership  a LandOwnership enum
 	 * @param startingYear not included in the array
 	 * @param endingYear included in the array
+	 * @param modulationFactor a double that ranges from -1 to 1
 	 * @return an array of double
 	 */
-	double[] getAACValues(QuebecForestRegion region, LandOwnership ownership, int startingYear, int endingYear) {
+	double[] getAACValues(QuebecForestRegion region, LandOwnership ownership, int startingYear, int endingYear, double modulationFactor) {
 		if (endingYear <= startingYear) {
 			throw new InvalidParameterException("The ending year must be greater than the starting year!");
 		}
@@ -121,7 +122,7 @@ class MeloThinnerAACProvider {
 			if (yearDate > maximumYearDate) {
 				yearDate = maximumYearDate;
 			}
-			aacArray[yearIndex] = aacMap.get(region).get(ownership).get(yearDate);
+			aacArray[yearIndex] = aacMap.get(region).get(ownership).get(yearDate) * (1d + modulationFactor);
 		}
 		return aacArray;
 	}
