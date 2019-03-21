@@ -125,5 +125,27 @@ public class MeloThinnerTests {
 		System.out.println("Successfully tested plots : " + nbPlots);
 	}
 	
-	
+
+	@Test
+	public void testModelAgainstMarginalSASPredictionWithAACProviderWithReducedAAC() throws IOException {
+		ReadPlots();
+		MeloThinnerPredictor predictor = new MeloThinnerPredictor(false);
+		MeloThinnerPlotImpl plot = Plots.get(0);
+		double withoutReduction = predictor.predictEventProbability(plot, null, plot.getYear0(), plot.getYear1()); 
+		double withReduction = predictor.predictEventProbability(plot, null, plot.getYear0(), plot.getYear1(), -0.3);  // -0.3 : 30% reduction of AAC
+		double diff = withoutReduction - withReduction;
+		Assert.assertEquals("Comparing plot no " + plot.getSubjectId() + " with and without a 30% reduction of AAC", 0.12438656953854133, diff, 1E-6);
+	}
+
+	@Test
+	public void testModelAgainstMarginalSASPredictionWithAACProviderWithIncreasedAAC() throws IOException {
+		ReadPlots();
+		MeloThinnerPredictor predictor = new MeloThinnerPredictor(false);
+		MeloThinnerPlotImpl plot = Plots.get(0);
+		double withoutIncrease = predictor.predictEventProbability(plot, null, plot.getYear0(), plot.getYear1()); 
+		double withIncrease = predictor.predictEventProbability(plot, null, plot.getYear0(), plot.getYear1(), +0.3);  // +0.3 : 30% increase of AAC
+		double diff = withoutIncrease - withIncrease;
+		Assert.assertEquals("Comparing plot no " + plot.getSubjectId() + " with and without a 30% increase of AAC", -0.13954637384827573, diff, 1E-6);
+	}
+
 }

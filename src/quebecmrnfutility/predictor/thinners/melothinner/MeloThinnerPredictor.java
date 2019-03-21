@@ -104,17 +104,40 @@ public class MeloThinnerPredictor extends REpiceaLogisticPredictor<MeloThinnerPl
 
 	}
 
+	
+	
+	
+	
+	
+	/**
+	 *  {@inheritDoc}
+	 *  For this class, the tree parameter should be null.
+	 *  Moreover, the additional parameters in the parms parameter ar are first the 
+	 *  initial year, then the final year and 	 *  an optional modulation factor 
+	 *  for the AAC. The modulation factor must be something between -1 (exclusive)
+	 *  and +1 (inclusive) which are interpreted as -100% and +100% of the AAC. 
+	 *  Values beyond this range are not considered and no modulation factor is then used.
+	 */
 	@Override
 	public synchronized double predictEventProbability(MeloThinnerPlot stand, Object tree, Object... parms) {
 		oXVector.resetMatrix();
 		Matrix beta = getParametersForThisRealization(stand);
 		double proportionalPart = getProportionalPart(stand, beta);
 		double[] aac;
+		double modulationFactor = 0d;
 		if (parms[0] instanceof double[]) {
 			aac = (double[]) parms[0];
 		} else {
 			int year0 = (Integer) parms[0];
 			int year1 = (Integer) parms[1];
+
+			if (parms.length > 2) {
+				modulationFactor = (Double) parms[2];
+				if (modulationFactor <= -1d || modulationFactor > 1d) {
+					modulationFactor = 0;
+				}
+			}
+			
 			LandOwnership ownership;
 			if (stand instanceof LandOwnershipProvider) {
 				ownership = ((LandOwnershipProvider) stand).getLandOwnership();
@@ -124,7 +147,8 @@ public class MeloThinnerPredictor extends REpiceaLogisticPredictor<MeloThinnerPl
 			aac = MeloThinnerAACProvider.getInstance().getAACValues(stand.getQuebecForestRegion(),
 					ownership, 
 					year0,
-					year1);
+					year1,
+					modulationFactor);
 		}
 		double baseline = getBaseline(beta, aac);
 
@@ -155,6 +179,21 @@ public class MeloThinnerPredictor extends REpiceaLogisticPredictor<MeloThinnerPl
 		return harvestProb;
 	}
 
+	
+	/**
+	 *  {@inheritDoc}
+	 *  For this class, the tree parameter should be null.
+	 *  Moreover, the additional parameters in the parms parameter ar are first the 
+	 *  initial year, then the final year and 	 *  an optional modulation factor 
+	 *  for the AAC. The modulation factor must be something between -1 (exclusive)
+	 *  and +1 (inclusive) which are interpreted as -100% and +100% of the AAC. 
+	 *  Values beyond this range are not considered and no modulation factor is then used.
+	 */
+	@Override
+	public Object predictEvent(MeloThinnerPlot stand, Object tree, Object... parms) {
+		return super.predictEvent(stand, tree, parms);
+	}
+	
 	private double getBaseline(Matrix beta, double[] aac) {
 		
 		double gamma0 = beta.m_afData[9][0];
