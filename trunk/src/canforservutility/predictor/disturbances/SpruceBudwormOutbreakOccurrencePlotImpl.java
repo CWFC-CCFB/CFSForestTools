@@ -43,12 +43,12 @@ public class SpruceBudwormOutbreakOccurrencePlotImpl implements NaturalDisturban
 	}
 
 	@Override
-	public Integer getTimeSinceLastDisturbanceYrs() {
+	public Integer getTimeSinceLastDisturbanceYrs(int currentDateYrs) {
 		return timeSinceLastOutbreakYrs;
 	}
 
 	@Override
-	public int getTimeSinceFirstKnownDateYrs() {
+	public int getTimeSinceFirstKnownDateYrs(int currentDateYrs) {
 		return initialKnownDate;
 	}
 

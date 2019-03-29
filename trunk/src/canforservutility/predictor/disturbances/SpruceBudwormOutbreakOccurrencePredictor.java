@@ -20,6 +20,8 @@
  */
 package canforservutility.predictor.disturbances;
 
+import java.security.InvalidParameterException;
+
 import repicea.simulation.REpiceaLogisticPredictor;
 import repicea.simulation.covariateproviders.standlevel.NaturalDisturbanceInformationProvider;
 import repicea.stats.distributions.utility.GaussianUtility;
@@ -52,18 +54,23 @@ public class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaLogisticPre
 	
 	@Override
 	public double predictEventProbability(NaturalDisturbanceInformationProvider stand, Object tree, Object... parms) {
-		Integer timeSinceLastOutbreak = stand.getTimeSinceLastDisturbanceYrs();
-		if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
-			double marginalProb = 0d;
-			int max = 79;
-			double truncationFactor = 1d / (1 - getCumulativeProbability(stand.getTimeSinceFirstKnownDateYrs()));
-			for (int time = stand.getTimeSinceFirstKnownDateYrs() + 1; time <= max; time++) {	// marginalized over all the possible values under the assumption that all the years are equally possible
-				marginalProb += getConditionalAnnualProbability(time) * (getCumulativeProbability(time) -  getCumulativeProbability(time - 1)) * truncationFactor;
+		if (parms != null && parms.length > 0 && parms[0] instanceof Integer) {
+			int currentDateYrs = (Integer) parms[0];
+			Integer timeSinceLastOutbreak = stand.getTimeSinceLastDisturbanceYrs(currentDateYrs);
+			if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
+				double marginalProb = 0d;
+				int max = 79;
+				double truncationFactor = 1d / (1 - getCumulativeProbability(stand.getTimeSinceFirstKnownDateYrs(currentDateYrs)));
+				for (int time = stand.getTimeSinceFirstKnownDateYrs(currentDateYrs) + 1; time <= max; time++) {	// marginalized over all the possible values under the assumption that all the years are equally possible
+					marginalProb += getConditionalAnnualProbability(time) * (getCumulativeProbability(time) -  getCumulativeProbability(time - 1)) * truncationFactor;
+				}
+				return marginalProb;
 			}
-			return marginalProb;
+
+			return getConditionalAnnualProbability(timeSinceLastOutbreak);
+		} else {
+			throw new InvalidParameterException("The first parameter should be an integer which represents the current date (yrs)");
 		}
-		
-		return getConditionalAnnualProbability(timeSinceLastOutbreak);
 	}
 
 	private double getConditionalAnnualProbability(Integer timeSinceLastOutbreak) {
