@@ -20,11 +20,13 @@
  */
 package canforservutility.predictor.disturbances;
 
+import repicea.simulation.covariateproviders.standlevel.NaturalDisturbanceInformationProvider;
+
 /**
  * This class is a basic implementation of the SpruceBudwormOutbreakOccurrencePlot interface.
  * @author Mathieu Fortin - March 2019
  */
-public class SpruceBudwormOutbreakOccurrencePlotImpl implements SpruceBudwormOutbreakOccurrencePlot {
+public class SpruceBudwormOutbreakOccurrencePlotImpl implements NaturalDisturbanceInformationProvider {
 
 	
 	private final Integer timeSinceLastOutbreakYrs;
@@ -39,14 +41,14 @@ public class SpruceBudwormOutbreakOccurrencePlotImpl implements SpruceBudwormOut
 		this.timeSinceLastOutbreakYrs = timeSinceLastOutbreakYrs;
 		this.initialKnownDate = initialKnownDate;
 	}
-	
+
 	@Override
-	public Integer getTimeSinceLastOutbreakYrs() {
+	public Integer getTimeSinceLastDisturbanceYrs() {
 		return timeSinceLastOutbreakYrs;
 	}
 
 	@Override
-	public int getTimeSinceInitialKnownDateYrs() {
+	public int getTimeSinceFirstKnownDateYrs() {
 		return initialKnownDate;
 	}
 

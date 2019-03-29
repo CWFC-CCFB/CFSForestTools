@@ -21,6 +21,7 @@
 package canforservutility.predictor.disturbances;
 
 import repicea.simulation.REpiceaLogisticPredictor;
+import repicea.simulation.covariateproviders.standlevel.NaturalDisturbanceInformationProvider;
 import repicea.stats.distributions.utility.GaussianUtility;
 
 /**
@@ -34,7 +35,7 @@ import repicea.stats.distributions.utility.GaussianUtility;
  * </a>
  */
 @SuppressWarnings("serial")
-public class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaLogisticPredictor<SpruceBudwormOutbreakOccurrencePlot, Object> {
+public class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaLogisticPredictor<NaturalDisturbanceInformationProvider, Object> {
 
 	private final double mean = 39.5;
 	private final double sd = 8.6;
@@ -50,13 +51,13 @@ public class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaLogisticPre
 	}
 	
 	@Override
-	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot stand, Object tree, Object... parms) {
-		Integer timeSinceLastOutbreak = stand.getTimeSinceLastOutbreakYrs();
+	public double predictEventProbability(NaturalDisturbanceInformationProvider stand, Object tree, Object... parms) {
+		Integer timeSinceLastOutbreak = stand.getTimeSinceLastDisturbanceYrs();
 		if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
 			double marginalProb = 0d;
 			int max = 79;
-			double truncationFactor = 1d / (1 - getCumulativeProbability(stand.getTimeSinceInitialKnownDateYrs()));
-			for (int time = stand.getTimeSinceInitialKnownDateYrs() + 1; time <= max; time++) {	// marginalized over all the possible values under the assumption that all the years are equally possible
+			double truncationFactor = 1d / (1 - getCumulativeProbability(stand.getTimeSinceFirstKnownDateYrs()));
+			for (int time = stand.getTimeSinceFirstKnownDateYrs() + 1; time <= max; time++) {	// marginalized over all the possible values under the assumption that all the years are equally possible
 				marginalProb += getConditionalAnnualProbability(time) * (getCumulativeProbability(time) -  getCumulativeProbability(time - 1)) * truncationFactor;
 			}
 			return marginalProb;
