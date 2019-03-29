@@ -25,9 +25,13 @@ import repicea.stats.distributions.utility.GaussianUtility;
 
 /**
  * This class implements a simple occurrence model for spruce budworm outbreaks based on the recurrence as 
- * estimated by Belanger and Arsenault (2004). This class does not implement stochastic features for the 
+ * estimated by Boulanger and Arsenault (2004). According to their paper (p. 1041), the mean recurrence time 
+ * was estimated at 39.5 years with a standard deviation of 8.6. This class does not implement stochastic features for the 
  * parameters. However is does for the residual error.
  * @author Mathieu Fortin - March 2019
+ * @see <a href=https://doi.org/10.1139/X03-269> Boulanger, Y., and D. Arseneault. 2004. Spruce budworm
+ * outbreaks in eastern Quebec over the last 450 years. Canadian Journal of Forest Research 34: 1035-1043 
+ * </a>
  */
 @SuppressWarnings("serial")
 public class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaLogisticPredictor<SpruceBudwormOutbreakOccurrencePlot, Object> {
@@ -51,21 +55,17 @@ public class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaLogisticPre
 		if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
 			double marginalProb = 0d;
 			int max = 79;
-			if (max < 0) {
-				return 1d;		// means its been more than 80 years since the last outbreak
-			}
-			int nbTrials = 0;
+			double truncationFactor = 1d / (1 - getCumulativeProbability(stand.getTimeSinceInitialKnownDateYrs()));
 			for (int time = stand.getTimeSinceInitialKnownDateYrs() + 1; time <= max; time++) {	// marginalized over all the possible values under the assumption that all the years are equally possible
-				marginalProb += getAnnualProbability(time);
-				nbTrials++; 
+				marginalProb += getConditionalAnnualProbability(time) * (getCumulativeProbability(time) -  getCumulativeProbability(time - 1)) * truncationFactor;
 			}
-			return marginalProb / nbTrials;
+			return marginalProb;
 		}
 		
-		return getAnnualProbability(timeSinceLastOutbreak);
+		return getConditionalAnnualProbability(timeSinceLastOutbreak);
 	}
 
-	private double getAnnualProbability(Integer timeSinceLastOutbreak) {
+	private double getConditionalAnnualProbability(Integer timeSinceLastOutbreak) {
 		double cumProbz0 = getCumulativeProbability(timeSinceLastOutbreak - 1);
 		double survivalFactor = 1d / (1 - cumProbz0);
 		double cumProbz1 = getCumulativeProbability(timeSinceLastOutbreak);

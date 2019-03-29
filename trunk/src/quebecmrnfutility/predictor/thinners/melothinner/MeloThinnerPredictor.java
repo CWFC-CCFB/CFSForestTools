@@ -2,6 +2,7 @@
  * This file is part of the mrnf-foresttools library.
  *
  * Copyright (C) 2009-2017 Mathieu Fortin for Rouge-Epicea
+ * Copyright (C) 2019 Mathieu Fortin for Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,8 +39,17 @@ import repicea.stats.integral.GaussHermiteQuadrature;
 import repicea.stats.integral.GaussQuadrature.NumberOfPoints;
 import repicea.util.ObjectUtility;
 
+/**
+ * This class implements the thinning model designed and fitted by Lara Melo in her thesis. 
+ * 
+ * @author Mathieu Fortin - March 2019
+ * @see <a href=https://doi.org/10.1139/cjfr-2016-0498> Melo, L.C., R. Schneider, R. Manso, J.-P.
+ * Saucier and M. Fortin. 2017. Using survival analysis to predict the harvesting of forest stands in 
+ * Quebec, Canada. Canadian Journal of Forest Research 47: 1066-1074 
+ * </a>
+ */
 @SuppressWarnings("serial")
-public class MeloThinnerPredictor extends REpiceaLogisticPredictor<MeloThinnerPlot, Object> {
+public final class MeloThinnerPredictor extends REpiceaLogisticPredictor<MeloThinnerPlot, Object> {
 
 
 	class EmbeddedFunction extends AbstractMathematicalFunction {
