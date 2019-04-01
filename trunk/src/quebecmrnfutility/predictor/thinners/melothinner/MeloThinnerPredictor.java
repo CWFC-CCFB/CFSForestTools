@@ -29,7 +29,7 @@ import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
-import repicea.simulation.REpiceaLogisticPredictor;
+import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.standlevel.LandOwnershipProvider;
 import repicea.simulation.covariateproviders.standlevel.LandOwnershipProvider.LandOwnership;
@@ -49,7 +49,7 @@ import repicea.util.ObjectUtility;
  * </a>
  */
 @SuppressWarnings("serial")
-public final class MeloThinnerPredictor extends REpiceaLogisticPredictor<MeloThinnerPlot, Object> {
+public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<MeloThinnerPlot, Object> {
 
 
 	class EmbeddedFunction extends AbstractMathematicalFunction {
