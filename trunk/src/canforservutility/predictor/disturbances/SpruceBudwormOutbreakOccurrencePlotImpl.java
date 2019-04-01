@@ -20,13 +20,13 @@
  */
 package canforservutility.predictor.disturbances;
 
-import repicea.simulation.covariateproviders.standlevel.NaturalDisturbanceInformationProvider;
+import repicea.simulation.HierarchicalLevel;
 
 /**
  * This class is a basic implementation of the SpruceBudwormOutbreakOccurrencePlot interface.
  * @author Mathieu Fortin - March 2019
  */
-public class SpruceBudwormOutbreakOccurrencePlotImpl implements NaturalDisturbanceInformationProvider {
+public class SpruceBudwormOutbreakOccurrencePlotImpl implements SpruceBudwormOutbreakOccurrencePlot {
 
 	
 	private final Integer timeSinceLastOutbreakYrs;
@@ -51,5 +51,22 @@ public class SpruceBudwormOutbreakOccurrencePlotImpl implements NaturalDisturban
 	public int getTimeSinceFirstKnownDateYrs(int currentDateYrs) {
 		return initialKnownDate;
 	}
+
+	/*
+	 * Useless for this predictor (non-Javadoc)
+	 * @see repicea.simulation.MonteCarloSimulationCompliantObject#getSubjectId()
+	 */
+	@Override
+	public String getSubjectId() {return null;}
+
+	/*
+	 * Useless for this predictor (non-Javadoc)
+	 * @see repicea.simulation.MonteCarloSimulationCompliantObject#getSubjectId()
+	 */
+	@Override
+	public HierarchicalLevel getHierarchicalLevel() {return null;}
+
+	@Override
+	public int getMonteCarloRealizationId() {return 0;}
 
 }
