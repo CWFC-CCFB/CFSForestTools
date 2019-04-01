@@ -22,6 +22,7 @@ package canforservutility.predictor.disturbances;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import repicea.stats.distributions.GammaFunction;
@@ -64,16 +65,23 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends SimpleRecurr
 		recorderMapForUnknownLastOccurrence = new HashMap<Integer, Map<Integer, Map<Number, Boolean>>>();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Object... parms) {
 		if (parms != null && parms.length > 0 && parms[0] instanceof Integer) {
-			int currentDateYrs = (Integer) parms[0];
-			Integer timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYrs);
+			int currentDateYr = (Integer) parms[0];
+			Integer timeSinceLastOutbreak;
+			if (parms.length >= 3) {
+				List<Integer> occurrences = (List) parms[2];
+				timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
+			} else {
+				timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
+			}
 			if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
 				double marginalProb = 0d;
 				int max = 79;
-				double truncationFactor = 1d / getSurvivorFunctionResult(plotSample.getTimeSinceFirstKnownDateYrs(currentDateYrs));
-				for (int time = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYrs) + 1; time <= max; time++) {	// marginalized over all the possible values 
+				double truncationFactor = 1d / getSurvivorFunctionResult(plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr));
+				for (int time = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr) + 1; time <= max; time++) {	// marginalized over all the possible values 
 					double marginalProbability = getSurvivorFunctionResult(time - 1) -  getSurvivorFunctionResult(time);
 					marginalProb += getConditionalAnnualProbabilityofOccurrence(time) * marginalProbability * truncationFactor;
 				}
@@ -98,32 +106,71 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends SimpleRecurr
 		return r;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Object predictEvent(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Object... parms) {
 		double eventProbability = predictEventProbability(plotSample, tree, parms);
 		if (eventProbability < 0 || eventProbability > 1) {
 			return null;
 		} else if (isResidualVariabilityEnabled) {
-			int currentDateYrs = (Integer) parms[0];
-			Integer timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYrs);
+			int currentDateYr = (Integer) parms[0];
+			List<Integer> occurrences = null;
+			Integer timeSinceLastOutbreak;
+			if (parms.length >= 3) {
+				occurrences = (List) parms[2];
+				timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
+			} else {
+				timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
+			}
+
+
+			boolean occurred;
 			if (timeSinceLastOutbreak == null) {
-				int timeSinceFirstKnownDate = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYrs);
-				return getResidualError(recorderMapForUnknownLastOccurrence,
+				int timeSinceFirstKnownDate = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr);
+				occurred = getResidualError(recorderMapForUnknownLastOccurrence,
 						plotSample.getMonteCarloRealizationId(), 
-						currentDateYrs, 
+						currentDateYr, 
 						timeSinceFirstKnownDate, 
 						eventProbability);
 			} else {
-				return getResidualError(recorderMap,		// default recorder map member in the super class
+				occurred = getResidualError(recorderMap,		// default recorder map member in the super class
 						plotSample.getMonteCarloRealizationId(), 
-						currentDateYrs, 
+						currentDateYr, 
 						timeSinceLastOutbreak, 
 						eventProbability);
 			}
+			if (occurred && occurrences != null) {
+				occurrences.add(currentDateYr);
+			}
+			return occurred;
 		} else {
 			return eventProbability;
 		}
 	}
+	
+	private Integer getTimeSinceLastOutbreak(SpruceBudwormOutbreakOccurrencePlot plotSample, int currentDateYr, List<Integer> occurrences) {
+		int latestOccurrence = -1;
+		for (Integer o : occurrences) {
+			if (o < currentDateYr) {
+				if (latestOccurrence == -1 || currentDateYr - o < latestOccurrence) {
+					latestOccurrence = currentDateYr - o;
+				}
+			}
+		}
+		
+		Integer timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
+		
+		if (latestOccurrence == -1 && timeSinceLastOutbreak == null) {
+			return null;
+		} else if (latestOccurrence == - 1) {
+			return timeSinceLastOutbreak;
+		} else if (timeSinceLastOutbreak == null) {
+			return latestOccurrence;
+		} else {
+			return Math.min(latestOccurrence, timeSinceLastOutbreak);
+		}
+	}
+	
 
 	/*
 	 * Useless for this class (non-Javadoc)
