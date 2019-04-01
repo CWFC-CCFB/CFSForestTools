@@ -13,13 +13,13 @@ import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.Heighta
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
-import repicea.simulation.hdrelationships.HDRelationshipModel;
+import repicea.simulation.hdrelationships.HDRelationshipPredictor;
 import repicea.stats.distributions.StandardGaussianDistribution;
 import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 
 @SuppressWarnings("serial")
-class GeneralHeight2014InternalPredictor extends HDRelationshipModel<Heightable2014Stand, Heightable2014Tree> {
+class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heightable2014Stand, Heightable2014Tree> {
 
 	private final Hd2014Species species;
 	private Map<String, Matrix> subDomainDummyMap;

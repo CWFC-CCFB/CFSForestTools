@@ -38,7 +38,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
-import repicea.simulation.hdrelationships.HDRelationshipModel;
+import repicea.simulation.hdrelationships.HDRelationshipPredictor;
 import repicea.stats.StatisticalUtility.TypeMatrixR;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.stats.estimates.GaussianEstimate;
@@ -53,7 +53,7 @@ import repicea.util.ObjectUtility;
  * Gouvernement du Quebec, Ministere des Ressources naturelles et de la Faune, Direction de 
  * la recherche forestiere. Memoire de recherche forestiere no 153. 22 p.
  */
-public final class GeneralHeight2009Predictor extends HDRelationshipModel<Heightable2009Stand, Heightable2009Tree> {
+public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<Heightable2009Stand, Heightable2009Tree> {
 	
 	private static final long serialVersionUID = 20100804L;
 
