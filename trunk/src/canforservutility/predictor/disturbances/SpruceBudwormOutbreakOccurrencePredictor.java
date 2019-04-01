@@ -24,7 +24,6 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
-import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.stats.distributions.GammaFunction;
 
 /**
@@ -39,15 +38,15 @@ import repicea.stats.distributions.GammaFunction;
  * </a>
  */
 @SuppressWarnings("serial")
-public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinaryEventPredictor<SpruceBudwormOutbreakOccurrencePlot, Object> {
+public final class SpruceBudwormOutbreakOccurrencePredictor extends SimpleRecurrenceBasedDisturbancePredictor<SpruceBudwormOutbreakOccurrencePlot> {
 
 	private final double mean = 39.5;
 //	private final double sd = 8.6;
 	private final double beta = 5.285;	// found iteratively based on a Weibull distributed time of occurrence
 	private final double lambda = 1d / mean * GammaFunction.gamma(1 + 1d/beta);	
 
-	private final Map<Integer, Map<Integer, Map<Integer, Boolean>>>  recorderMapForKnownLastOccurrence; // Monte Carlo id / current date / time since last occurrence
-	private final Map<Integer, Map<Integer, Map<Integer, Boolean>>>  recorderMapForUnknownLastOccurrence; 
+//	private final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMapForKnownLastOccurrence; // Monte Carlo id / current date / time since last occurrence
+	private final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMapForUnknownLastOccurrence; 
 	
 	/**
 	 * Deterministic constructor. 
@@ -59,10 +58,10 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	/**
 	 * Stochastic constructor. 
 	 */
-	protected SpruceBudwormOutbreakOccurrencePredictor(boolean isResidualVariabilityEnabled) {
-		super(false, false, isResidualVariabilityEnabled); // false : no random effect in this model	// TODO implement the stochastic features for the parameter estimates
-		recorderMapForKnownLastOccurrence = new HashMap<Integer, Map<Integer, Map<Integer, Boolean>>>();
-		recorderMapForUnknownLastOccurrence = new HashMap<Integer, Map<Integer, Map<Integer, Boolean>>>();
+	public SpruceBudwormOutbreakOccurrencePredictor(boolean isResidualVariabilityEnabled) {
+		super(isResidualVariabilityEnabled); // false : no random effect in this model	// TODO implement the stochastic features for the parameter estimates
+//		recorderMapForKnownLastOccurrence = new HashMap<Integer, Map<Integer, Map<Number, Boolean>>>();
+		recorderMapForUnknownLastOccurrence = new HashMap<Integer, Map<Integer, Map<Number, Boolean>>>();
 	}
 
 	@Override
@@ -99,7 +98,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 		return r;
 	}
 	
-	
+	@Override
 	public Object predictEvent(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Object... parms) {
 		double eventProbability = predictEventProbability(plotSample, tree, parms);
 		if (eventProbability < 0 || eventProbability > 1) {
@@ -115,7 +114,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 						timeSinceFirstKnownDate, 
 						eventProbability);
 			} else {
-				return getResidualError(recorderMapForKnownLastOccurrence,
+				return getResidualError(recorderMap,		// default recorder map member in the super class
 						plotSample.getMonteCarloRealizationId(), 
 						currentDateYrs, 
 						timeSinceLastOutbreak, 
@@ -124,28 +123,6 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 		} else {
 			return eventProbability;
 		}
-	}
-
-	
-	
-	private synchronized boolean getResidualError(Map<Integer, Map<Integer, Map<Integer, Boolean>>> oMap,
-			int monteCarloRealization, 
-			int currentDate, 
-			int timeSince, 
-			double probability) {
-		if (!oMap.containsKey(monteCarloRealization)) {
-			oMap.put(monteCarloRealization, new HashMap<Integer, Map<Integer, Boolean>>());
-		}
-		Map<Integer, Map<Integer, Boolean>> innerMap = oMap.get(monteCarloRealization);
-		if (!innerMap.containsKey(currentDate)) {
-			innerMap.put(currentDate, new HashMap<Integer, Boolean>());
-		}
-		Map<Integer, Boolean> innerInnerMap = innerMap.get(currentDate);
-		if (!innerInnerMap.containsKey(timeSince)) {
-			double residualError = random.nextDouble();
-			innerInnerMap.put(timeSince, residualError < probability);
-		}
-		return innerInnerMap.get(timeSince);
 	}
 
 	/*
