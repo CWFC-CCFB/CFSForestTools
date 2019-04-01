@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import repicea.math.Matrix;
-import repicea.simulation.REpiceaLogisticPredictor;
+import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.util.Index;
 
 /**
@@ -30,7 +30,7 @@ import repicea.util.Index;
  * @author Mathieu Fortin - July 2014
  */
 @SuppressWarnings("serial")
-public final class Artemis2009MortalityPredictor extends REpiceaLogisticPredictor<Artemis2009CompatibleStand, Artemis2009CompatibleTree> {
+public final class Artemis2009MortalityPredictor extends REpiceaBinaryEventPredictor<Artemis2009CompatibleStand, Artemis2009CompatibleTree> {
 
 	protected static final String ModuleName = "mortalite"; 
 

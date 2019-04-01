@@ -23,11 +23,11 @@ import java.util.List;
 
 import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
-import repicea.simulation.REpiceaLogisticPredictor;
+import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
 
 @SuppressWarnings("serial")
-class Artemis2009RecruitmentOccurrenceInternalPredictor extends REpiceaLogisticPredictor<Artemis2009CompatibleStand, Artemis2009CompatibleTree> {
+class Artemis2009RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<Artemis2009CompatibleStand, Artemis2009CompatibleTree> {
 
 	private List<Integer> effectList;
 	

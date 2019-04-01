@@ -22,7 +22,7 @@ package canforservutility.predictor.disturbances;
 
 import java.security.InvalidParameterException;
 
-import repicea.simulation.REpiceaLogisticPredictor;
+import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.covariateproviders.standlevel.NaturalDisturbanceInformationProvider;
 import repicea.stats.distributions.utility.GaussianUtility;
 
@@ -37,7 +37,7 @@ import repicea.stats.distributions.utility.GaussianUtility;
  * </a>
  */
 @SuppressWarnings("serial")
-public class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaLogisticPredictor<NaturalDisturbanceInformationProvider, Object> {
+public class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinaryEventPredictor<NaturalDisturbanceInformationProvider, Object> {
 
 	private final double mean = 39.5;
 	private final double sd = 8.6;

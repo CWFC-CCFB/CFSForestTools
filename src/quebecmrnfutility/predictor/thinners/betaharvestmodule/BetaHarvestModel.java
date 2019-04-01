@@ -32,7 +32,7 @@ import quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestableTre
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
 import repicea.simulation.ParameterLoader;
-import repicea.simulation.REpiceaLogisticPredictor;
+import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
 import repicea.util.ObjectUtility;
@@ -43,7 +43,7 @@ import repicea.util.REpiceaTranslator;
  * @author Mathieu Fortin - October 2009
  */
 @Deprecated
-public final class BetaHarvestModel extends REpiceaLogisticPredictor<BetaHarvestableStand, BetaHarvestableTree>{
+public final class BetaHarvestModel extends REpiceaBinaryEventPredictor<BetaHarvestableStand, BetaHarvestableTree>{
 	
 	private static final long serialVersionUID = 20100905L;
 
