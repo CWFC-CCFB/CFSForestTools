@@ -197,9 +197,9 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 						timeSinceLastOutbreak, 
 						eventProbability);
 			}
-			if (occurred && occurrences != null) {
-				occurrences.add(currentDateYr);
-			}
+//			if (occurred && occurrences != null) {
+//				occurrences.add(currentDateYr);
+//			}
 			return occurred;
 		} else {
 			return eventProbability;
