@@ -69,13 +69,18 @@ public class SimpleRecurrenceBasedDisturbancePredictor extends REpiceaBinaryEven
 
 	/**
 	 * Constructor.
-	 * @param isResidualVariabilityEnabled true to run the model in stochastic mode or false to run in deterministic mode
+	 * @param isVariabilityEnabled true to run the model in stochastic mode or false to run in deterministic mode
 	 */
-	public SimpleRecurrenceBasedDisturbancePredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	public SimpleRecurrenceBasedDisturbancePredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled);
+	}
+
+	
+	protected SimpleRecurrenceBasedDisturbancePredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled); // no random effects here
 		internalPredictorMap = new HashMap<SimpleRecurrenceBasedDisturbanceParameters, SimpleRecurrenceBasedDisturbanceInternalPredictor>();
 	}
-
+	
 	private synchronized SimpleRecurrenceBasedDisturbanceInternalPredictor getInternalPredictor(SimpleRecurrenceBasedDisturbanceParameters selectedParms) {
 		if (!internalPredictorMap.containsKey(selectedParms)) {
 			internalPredictorMap.put(selectedParms, new SimpleRecurrenceBasedDisturbanceInternalPredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled, selectedParms));
