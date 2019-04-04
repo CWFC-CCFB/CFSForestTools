@@ -20,6 +20,8 @@
  */
 package canforservutility.predictor.disturbances;
 
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,66 +35,75 @@ import repicea.simulation.REpiceaBinaryEventPredictor;
  * @author Mathieu Fortin - April 2019
  */
 @SuppressWarnings("serial")
-public class SimpleRecurrenceBasedDisturbancePredictor<P extends MonteCarloSimulationCompliantObject> extends REpiceaBinaryEventPredictor<P, Object>{
+public class SimpleRecurrenceBasedDisturbancePredictor extends REpiceaBinaryEventPredictor<MonteCarloSimulationCompliantObject, Object>{
 
-	protected final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMap; // Monte Carlo id / current date / parameter
+	/**
+	 * This inner class contains the parameters for the predictor to work, namely an estimated recurrence and its variance (which can be equal to 0).
+	 * Instances of this class must be passed to the predictor in order to choose the proper internal predictor. There exists one internal predictor for
+	 * each different combination of estimated recurrence and variance.
+	 * @author Mathieu Fortin - April 2019
+	 */
+	public static class SimpleRecurrenceBasedDisturbanceParameters extends ArrayList<Double> {
+
+		/**
+		 * Constructor.
+		 * @param estimatedRecurrence a strictly positive double
+		 * @param variance a positive double (can be equal to 0)
+		 */
+		public SimpleRecurrenceBasedDisturbanceParameters(double estimatedRecurrence, double variance) {
+			if (estimatedRecurrence <= 0 || variance < 0) {
+				throw new InvalidParameterException("The estimated recurrence and the variance must be positive!");
+			}
+			if (estimatedRecurrence - 2 * Math.sqrt(variance) <= 0) {
+				throw new InvalidParameterException("The variance is too large so that negative recurrence could be generated in stochastic mode!");
+			}
+			add(estimatedRecurrence);
+			add(variance);
+		}
+
+		double getEstimatedRecurrence() {return get(0);}
+		double getVariance() {return get(1);}
+	}
+	
+	protected final Map<SimpleRecurrenceBasedDisturbanceParameters, SimpleRecurrenceBasedDisturbanceInternalPredictor> internalPredictorMap;
 
 	/**
 	 * Constructor.
 	 * @param isResidualVariabilityEnabled true to run the model in stochastic mode or false to run in deterministic mode
 	 */
-	public SimpleRecurrenceBasedDisturbancePredictor(boolean isResidualVariabilityEnabled) {
-		super(false, false, isResidualVariabilityEnabled);
-		recorderMap = new HashMap<Integer, Map<Integer, Map<Number, Boolean>>>();
+	public SimpleRecurrenceBasedDisturbancePredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled); // no random effects here
+		internalPredictorMap = new HashMap<SimpleRecurrenceBasedDisturbanceParameters, SimpleRecurrenceBasedDisturbanceInternalPredictor>();
 	}
 
+	private synchronized SimpleRecurrenceBasedDisturbanceInternalPredictor getInternalPredictor(SimpleRecurrenceBasedDisturbanceParameters selectedParms) {
+		if (!internalPredictorMap.containsKey(selectedParms)) {
+			internalPredictorMap.put(selectedParms, new SimpleRecurrenceBasedDisturbanceInternalPredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled, selectedParms));
+		}
+		return internalPredictorMap.get(selectedParms);
+	}
+	
 	@Override
-	public double predictEventProbability(P stand, Object tree, Object... parms) {
-		double recurrence = (Double) parms[1];
-		return 1 - Math.exp(-1d/recurrence);
+	public double predictEventProbability(MonteCarloSimulationCompliantObject stand, Object tree, Object... parms) {
+		SimpleRecurrenceBasedDisturbanceParameters selectedParms = (SimpleRecurrenceBasedDisturbanceParameters) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(SimpleRecurrenceBasedDisturbanceParameters.class, parms);
+		if (selectedParms == null) {
+			throw new InvalidParameterException("The SimpleRecurrenceBasedDisturbancePredictor.predictEventProbability() requires a SimpleRecurrenceBasedDisturbanceParameters instance in the parms argument!");
+		} else {
+			return getInternalPredictor(selectedParms).predictEventProbability(stand, tree, parms);
+		}
 	}
 
 	@Override
 	protected void init() {}
 	
-	protected synchronized boolean getResidualError(Map<Integer, Map<Integer, Map<Number, Boolean>>> oMap,
-			int monteCarloRealization, 
-			int currentDate, 
-			double parameter, 
-			double probability) {
-		if (!oMap.containsKey(monteCarloRealization)) {
-			oMap.put(monteCarloRealization, new HashMap<Integer, Map<Number, Boolean>>());
-		}
-		Map<Integer, Map<Number, Boolean>> innerMap = oMap.get(monteCarloRealization);
-		if (!innerMap.containsKey(currentDate)) {
-			innerMap.put(currentDate, new HashMap<Number, Boolean>());
-		}
-		Map<Number, Boolean> innerInnerMap = innerMap.get(currentDate);
-		if (!innerInnerMap.containsKey(parameter)) {
-			double residualError = random.nextDouble();
-			innerInnerMap.put(parameter, residualError < probability);
-		}
-		return innerInnerMap.get(parameter);
-	}
-
-
 	@Override
-	public Object predictEvent(P plotSample, Object tree, Object... parms) {
-		double eventProbability = predictEventProbability(plotSample, tree, parms);
-		if (eventProbability < 0 || eventProbability > 1) {
-			return null;
-		} else if (isResidualVariabilityEnabled) {
-			int currentDateYrs = (Integer) parms[0];
-			double recurrence = (Double) parms[1];
-			return getResidualError(recorderMap,
-					plotSample.getMonteCarloRealizationId(), 
-					currentDateYrs, 
-					recurrence, 
-					eventProbability);
+	public Object predictEvent(MonteCarloSimulationCompliantObject stand, Object tree, Object... parms) {
+		SimpleRecurrenceBasedDisturbanceParameters selectedParms = (SimpleRecurrenceBasedDisturbanceParameters) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(SimpleRecurrenceBasedDisturbanceParameters.class, parms);
+		if (selectedParms == null) {
+			throw new InvalidParameterException("The SimpleRecurrenceBasedDisturbancePredictor.predictEventProbability() requires a SimpleRecurrenceBasedDisturbanceParameters instance in the parms argument!");
 		} else {
-			return eventProbability;
+			return getInternalPredictor(selectedParms).predictEvent(stand, tree, parms);
 		}
 	}
-
-
+	
 }

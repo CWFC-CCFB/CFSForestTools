@@ -21,11 +21,15 @@
 package canforservutility.predictor.disturbances;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import repicea.stats.distributions.GammaFunction;
+import repicea.math.GammaFunction;
+import repicea.math.Matrix;
+import repicea.simulation.ModelParameterEstimates;
+import repicea.simulation.REpiceaBinaryEventPredictor;
 
 /**
  * This class implements an occurrence model based on a lifetime analyse for spruce budworm outbreaks based 
@@ -39,91 +43,142 @@ import repicea.stats.distributions.GammaFunction;
  * </a>
  */
 @SuppressWarnings("serial")
-public final class SpruceBudwormOutbreakOccurrencePredictor extends SimpleRecurrenceBasedDisturbancePredictor<SpruceBudwormOutbreakOccurrencePlot> {
+public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinaryEventPredictor<SpruceBudwormOutbreakOccurrencePlot, Object> {
 
-	private final double mean = 39.5;
-//	private final double sd = 8.6;
-	private final double beta = 5.285;	// found iteratively based on a Weibull distributed time of occurrence
-	private final double lambda = 1d / mean * GammaFunction.gamma(1 + 1d/beta);	
+	public static class Occurrences extends ArrayList<Integer> {}
+	
+	private final double estimatedRecurrence = 39.5; // based on Boulanger and Arsenault (2004)
+	private final double variancePop = 70.05555556;	// based on Boulanger and Arsenault (2004)
 
-//	private final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMapForKnownLastOccurrence; // Monte Carlo id / current date / time since last occurrence
+	private final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMap; // Monte Carlo id / current date / parameter
 	private final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMapForUnknownLastOccurrence; 
 	
-	/**
-	 * Deterministic constructor. 
-	 */
-	public SpruceBudwormOutbreakOccurrencePredictor() {
-		this(false);
-	}
 
 	/**
-	 * Stochastic constructor. 
+	 * Constructor.
+	 * @param isParameterVariabilityEnabled true to enable the variability around the recurrence
+	 * @param isResidualVariabilityEnabled true to enable a boolean outcome
 	 */
-	public SpruceBudwormOutbreakOccurrencePredictor(boolean isResidualVariabilityEnabled) {
-		super(isResidualVariabilityEnabled); // false : no random effect in this model	// TODO implement the stochastic features for the parameter estimates
-//		recorderMapForKnownLastOccurrence = new HashMap<Integer, Map<Integer, Map<Number, Boolean>>>();
+	public SpruceBudwormOutbreakOccurrencePredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled); // false : no random effect in this model
+		Matrix mean = new Matrix(1,1);
+		mean.m_afData[0][0] = estimatedRecurrence;		
+		Matrix variance = new Matrix(1,1);
+		variance.m_afData[0][0] = variancePop * .1;	// .1 is needed because they had 10 intervals 
+		setParameterEstimates(new ModelParameterEstimates(mean, variance));
+		
+		recorderMap = new HashMap<Integer, Map<Integer, Map<Number, Boolean>>>();
 		recorderMapForUnknownLastOccurrence = new HashMap<Integer, Map<Integer, Map<Number, Boolean>>>();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
+	/*
+	 * Useless for this class (non-Javadoc)
+	 * @see repicea.simulation.REpiceaPredictor#init()
+	 */
+	@Override
+	protected void init() {}
+
+	
+	protected List<Double> getParameters(SpruceBudwormOutbreakOccurrencePlot plotSample) {
+		Matrix recurrence = getParametersForThisRealization(plotSample);
+		double betaParm = calculateBeta(recurrence.m_afData[0][0], 1, 10);
+		double lambdaParm = calculateLambda(betaParm, recurrence.m_afData[0][0]);
+		List<Double> parameters = new ArrayList<Double>();
+		parameters.add(lambdaParm);
+		parameters.add(betaParm);
+		return parameters;
+	}
+	
+
 	@Override
 	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Object... parms) {
-		if (parms != null && parms.length > 0 && parms[0] instanceof Integer) {
-			int currentDateYr = (Integer) parms[0];
-			Integer timeSinceLastOutbreak;
-			if (parms.length >= 3) {
-				List<Integer> occurrences = (List) parms[2];
-				timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
-			} else {
-				timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
-			}
-			if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
-				double marginalProb = 0d;
-				int max = 79;
-				double truncationFactor = 1d / getSurvivorFunctionResult(plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr));
-				for (int time = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr) + 1; time <= max; time++) {	// marginalized over all the possible values 
-					double marginalProbability = getSurvivorFunctionResult(time - 1) -  getSurvivorFunctionResult(time);
-					marginalProb += getConditionalAnnualProbabilityofOccurrence(time) * marginalProbability * truncationFactor;
-				}
-				return marginalProb;
-			}
-			return getConditionalAnnualProbabilityofOccurrence(timeSinceLastOutbreak);
-		} else {
-			throw new InvalidParameterException("The first parameter should be an integer which represents the current date (yrs)");
+		Matrix recurrence = getParametersForThisRealization(plotSample);
+		double betaParm = calculateBeta(recurrence.m_afData[0][0], 1, 10);
+		double lambdaParm = calculateLambda(betaParm, recurrence.m_afData[0][0]);
+//		double tmp = GammaFunction.gamma(1 + 1d/betaParm);
+//		double estimatedPopVariance = 1d / (lambdaParm * lambdaParm) * (GammaFunction.gamma(1 + 2d/betaParm) - tmp * tmp);
+		Integer currentDateYr = (Integer) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Integer.class, parms);
+		if (currentDateYr == null) {
+			throw new InvalidParameterException("The parms argument must provide at least an instance of integer which represents the current date (yrs)");
 		}
+		Occurrences occurrences = (Occurrences) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Occurrences.class, parms);
+		Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
+		if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
+			double marginalProb = 0d;
+			int max = 79;
+			double truncationFactor = 1d / getSurvivorFunctionResult(plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr), lambdaParm, betaParm);
+			for (int time = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr) + 1; time <= max; time++) {	// marginalized over all the possible values 
+				double marginalProbability = getSurvivorFunctionResult(time - 1, lambdaParm, betaParm) -  getSurvivorFunctionResult(time, lambdaParm, betaParm);
+				marginalProb += getConditionalAnnualProbabilityofOccurrence(time, lambdaParm, betaParm) * marginalProbability * truncationFactor;
+			}
+			return marginalProb;
+		}
+		return getConditionalAnnualProbabilityofOccurrence(timeSinceLastOutbreak, lambdaParm, betaParm);
 	}
 
 	
-	private double getConditionalAnnualProbabilityofOccurrence(int timeSinceLastOutbreak) {
-		double s0 = getSurvivorFunctionResult(timeSinceLastOutbreak - 1);
-		double s1 = getSurvivorFunctionResult(timeSinceLastOutbreak);
+	private double calculateBeta(double recurrence, double minRange, double maxRange) {
+		double objective = variancePop / (recurrence * recurrence); 
+		double value = minRange;
+		double step = (maxRange - minRange) * .1;
+		double criteria = 1000000;
+		double bestCriteria = criteria;
+		while (criteria > 1E-4) {
+			criteria = Math.abs(getResult(value) - objective);
+	//		System.out.println("Value = " + value + "; Criteria = " + criteria);
+			if (criteria < bestCriteria) {
+				bestCriteria = criteria;
+			} else {
+				break;
+			}
+			value += step;
+		}
+		if (criteria < 1E-4) {
+			value -= step;
+//			System.out.println("Calculated beta = " + value);
+			return value;
+		} else {
+	 		return calculateBeta(recurrence, value - 2 * step, value);
+		}
+	}
+
+	private double getResult(double value) {
+		double tmp = GammaFunction.gamma(1d + 1d / value);
+		double result = GammaFunction.gamma(1d + 2d / value) / (tmp * tmp) - 1; 
+		return result;
+	}
+	
+
+	private double calculateLambda(double betaParm, double recurrence) {
+		double lambda = 1d / recurrence * GammaFunction.gamma(1 + 1d / betaParm);
+		return lambda;
+	}
+
+
+	private double getConditionalAnnualProbabilityofOccurrence(int timeSinceLastOutbreak, double lambda, double beta) {
+		double s0 = getSurvivorFunctionResult(timeSinceLastOutbreak - 1, lambda, beta);
+		double s1 = getSurvivorFunctionResult(timeSinceLastOutbreak, lambda, beta);
 		double probability = 1 - s1/s0;
 		return probability;
 	}
 	
-	protected double getSurvivorFunctionResult(int time) {
+	
+	protected double getSurvivorFunctionResult(int time, double lambda, double beta) {
 		double r = Math.exp(-Math.pow(lambda * time, beta));
 		return r;
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
 	@Override
 	public Object predictEvent(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Object... parms) {
 		double eventProbability = predictEventProbability(plotSample, tree, parms);
 		if (eventProbability < 0 || eventProbability > 1) {
 			return null;
 		} else if (isResidualVariabilityEnabled) {
-			int currentDateYr = (Integer) parms[0];
-			List<Integer> occurrences = null;
-			Integer timeSinceLastOutbreak;
-			if (parms.length >= 3) {
-				occurrences = (List) parms[2];
-				timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
-			} else {
-				timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
-			}
-
-
+			int currentDateYr = (Integer) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Integer.class, parms);
+			Occurrences occurrences = (Occurrences) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Occurrences.class, parms);
+			Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
 			boolean occurred;
 			if (timeSinceLastOutbreak == null) {
 				int timeSinceFirstKnownDate = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr);
@@ -147,37 +202,56 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends SimpleRecurr
 			return eventProbability;
 		}
 	}
+
 	
-	private Integer getTimeSinceLastOutbreak(SpruceBudwormOutbreakOccurrencePlot plotSample, int currentDateYr, List<Integer> occurrences) {
-		int latestOccurrence = -1;
-		for (Integer o : occurrences) {
-			if (o < currentDateYr) {
-				if (latestOccurrence == -1 || currentDateYr - o < latestOccurrence) {
-					latestOccurrence = currentDateYr - o;
+	protected synchronized boolean getResidualError(Map<Integer, Map<Integer, Map<Number, Boolean>>> oMap,
+			int monteCarloRealization, 
+			int currentDate, 
+			double parameter, 
+			double probability) {
+		if (!oMap.containsKey(monteCarloRealization)) {
+			oMap.put(monteCarloRealization, new HashMap<Integer, Map<Number, Boolean>>());
+		}
+		Map<Integer, Map<Number, Boolean>> innerMap = oMap.get(monteCarloRealization);
+		if (!innerMap.containsKey(currentDate)) {
+			innerMap.put(currentDate, new HashMap<Number, Boolean>());
+		}
+		Map<Number, Boolean> innerInnerMap = innerMap.get(currentDate);
+		if (!innerInnerMap.containsKey(parameter)) {
+			double residualError = random.nextDouble();
+			innerInnerMap.put(parameter, residualError < probability);
+		}
+		return innerInnerMap.get(parameter);
+	}
+
+	
+	private Integer getTimeSinceLastOutbreak(SpruceBudwormOutbreakOccurrencePlot plotSample, int currentDateYr, Occurrences occurrences) {
+		if (occurrences != null) {
+			int latestOccurrence = -1;
+			for (Integer o : occurrences) {
+				if (o < currentDateYr) {
+					if (latestOccurrence == -1 || currentDateYr - o < latestOccurrence) {
+						latestOccurrence = currentDateYr - o;
+					}
 				}
 			}
-		}
-		
-		Integer timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
-		
-		if (latestOccurrence == -1 && timeSinceLastOutbreak == null) {
-			return null;
-		} else if (latestOccurrence == - 1) {
-			return timeSinceLastOutbreak;
-		} else if (timeSinceLastOutbreak == null) {
-			return latestOccurrence;
+			
+			Integer timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
+			
+			if (latestOccurrence == -1 && timeSinceLastOutbreak == null) {
+				return null;
+			} else if (latestOccurrence == - 1) {
+				return timeSinceLastOutbreak;
+			} else if (timeSinceLastOutbreak == null) {
+				return latestOccurrence;
+			} else {
+				return Math.min(latestOccurrence, timeSinceLastOutbreak);
+			}
 		} else {
-			return Math.min(latestOccurrence, timeSinceLastOutbreak);
+			return plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
 		}
 	}
 	
 
-	/*
-	 * Useless for this class (non-Javadoc)
-	 * @see repicea.simulation.REpiceaPredictor#init()
-	 */
-	@Override
-	protected void init() {}
 
-	
 }
