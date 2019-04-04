@@ -34,9 +34,8 @@ import repicea.simulation.REpiceaBinaryEventPredictor;
 /**
  * This class implements an occurrence model based on a lifetime analyse for spruce budworm outbreaks based 
  * on the recurrence as estimated by Boulanger and Arsenault (2004). According to their paper (p. 1041), 
- * the mean recurrence time was estimated at 39.5 years with a standard deviation of 8.6. The actual model relies
+ * the mean recurrence time was estimated at 39.5 years with a standard deviation of 8.36. The actual model relies
  * on a Weibull-distributed time of occurrence. 
- * This class does not implement stochastic features for the parameters. However is does for the residual error.
  * @author Mathieu Fortin - March 2019
  * @see <a href=https://doi.org/10.1139/X03-269> Boulanger, Y., and D. Arseneault. 2004. Spruce budworm
  * outbreaks in eastern Quebec over the last 450 years. Canadian Journal of Forest Research 34: 1035-1043 
@@ -56,10 +55,14 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 
 	/**
 	 * Constructor.
-	 * @param isParameterVariabilityEnabled true to enable the variability around the recurrence
-	 * @param isResidualVariabilityEnabled true to enable a boolean outcome
+	 * @param isVariabilityEnabled true to enable the stochastic mode
 	 */
-	public SpruceBudwormOutbreakOccurrencePredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	public SpruceBudwormOutbreakOccurrencePredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled); // false : no random effect in this model
+	}
+
+	
+	protected SpruceBudwormOutbreakOccurrencePredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled); // false : no random effect in this model
 		Matrix mean = new Matrix(1,1);
 		mean.m_afData[0][0] = estimatedRecurrence;		
