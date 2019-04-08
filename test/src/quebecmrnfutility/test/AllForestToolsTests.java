@@ -23,6 +23,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	quebecmrnfutility.predictor.volumemodels.honertotalvolume.HonerTotalVolumeTest.class,
 	canforservutility.biodiversity.indices.MultipleSiteIndexTests.class,
 	canforservutility.predictor.disturbances.SimpleRecurrenceBasedDisturbancePredictorTests.class,
-	canforservutility.predictor.disturbances.SpruceBudwormOutbreakOccurrencePredictorTests.class})
+	canforservutility.predictor.disturbances.belangerarsenault2004.SpruceBudwormOutbreakOccurrencePredictorTests.class})
 public class AllForestToolsTests {}
 
