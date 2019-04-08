@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package canforservutility.predictor.disturbances;
+package canforservutility.predictor.disturbances.belangerarsenault2004;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -26,10 +26,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import repicea.math.GammaFunction;
 import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
+import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.util.ObjectUtility;
 
 /**
  * This class implements an occurrence model based on a lifetime analyse for spruce budworm outbreaks based 
@@ -46,8 +47,8 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 
 	public static class Occurrences extends ArrayList<Integer> {}
 	
-	private final double estimatedRecurrence = 39.5; // based on Boulanger and Arsenault (2004)
-	private final double variancePop = 70.05555556;	// based on Boulanger and Arsenault (2004)
+//	private final double estimatedRecurrence = 39.5; // based on Boulanger and Arsenault (2004)
+//	private final double variancePop = 70.05555556;	// based on Boulanger and Arsenault (2004)
 
 	private final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMap; // Monte Carlo id / current date / parameter
 	private final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMapForUnknownLastOccurrence; 
@@ -64,14 +65,9 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	
 	protected SpruceBudwormOutbreakOccurrencePredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled); // false : no random effect in this model
-		Matrix mean = new Matrix(1,1);
-		mean.m_afData[0][0] = estimatedRecurrence;		
-		Matrix variance = new Matrix(1,1);
-		variance.m_afData[0][0] = variancePop * .1;	// .1 is needed because they had 10 intervals 
-		setParameterEstimates(new ModelParameterEstimates(mean, variance));
-		
 		recorderMap = new HashMap<Integer, Map<Integer, Map<Number, Boolean>>>();
 		recorderMapForUnknownLastOccurrence = new HashMap<Integer, Map<Integer, Map<Number, Boolean>>>();
+		init();
 	}
 
 	
@@ -80,16 +76,30 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	 * @see repicea.simulation.REpiceaPredictor#init()
 	 */
 	@Override
-	protected void init() {}
+	protected void init() {
+		try {
+			String path = ObjectUtility.getRelativePackagePath(getClass());
+			String betaFilename = path + "0_beta_wei.csv";
+			String omegaFilename = path + "0_omega_wei.csv";
+			
+			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
+			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
+
+			setParameterEstimates(new ModelParameterEstimates(defaultBetaMean, defaultBetaVariance));
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Unable to load the parameters of the SpruceBudwormOutbreakOccurrencePredictor class!");
+		}
+	}
 
 	
 	protected List<Double> getParameters(SpruceBudwormOutbreakOccurrencePlot plotSample) {
 		Matrix recurrence = getParametersForThisRealization(plotSample);
-		double betaParm = calculateBeta(recurrence.m_afData[0][0], 1, 10);
-		double lambdaParm = calculateLambda(betaParm, recurrence.m_afData[0][0]);
+//		double betaParm = calculateBeta(recurrence.m_afData[0][0], 1, 10);
+//		double lambdaParm = calculateLambda(betaParm, recurrence.m_afData[0][0]);
 		List<Double> parameters = new ArrayList<Double>();
-		parameters.add(lambdaParm);
-		parameters.add(betaParm);
+		parameters.add(recurrence.m_afData[0][0]);
+		parameters.add(recurrence.m_afData[1][0]);
 		return parameters;
 	}
 	
@@ -97,8 +107,8 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	@Override
 	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Object... parms) {
 		Matrix recurrence = getParametersForThisRealization(plotSample);
-		double betaParm = calculateBeta(recurrence.m_afData[0][0], 1, 10);
-		double lambdaParm = calculateLambda(betaParm, recurrence.m_afData[0][0]);
+		double betaParm = recurrence.m_afData[1][0];
+		double lambdaParm = 1d / recurrence.m_afData[0][0];
 //		double tmp = GammaFunction.gamma(1 + 1d/betaParm);
 //		double estimatedPopVariance = 1d / (lambdaParm * lambdaParm) * (GammaFunction.gamma(1 + 2d/betaParm) - tmp * tmp);
 		Integer currentDateYr = (Integer) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Integer.class, parms);
@@ -109,10 +119,10 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 		Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
 		if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
 			double marginalProb = 0d;
-			int max = 79;
-			double truncationFactor = 1d / getSurvivorFunctionResult(plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr), lambdaParm, betaParm);
+			int max = 90;
+			double truncationFactor = 1d / getSurvivorFunctionResult(plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr) + .5, lambdaParm, betaParm);
 			for (int time = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr) + 1; time <= max; time++) {	// marginalized over all the possible values 
-				double marginalProbability = getSurvivorFunctionResult(time - 1, lambdaParm, betaParm) -  getSurvivorFunctionResult(time, lambdaParm, betaParm);
+				double marginalProbability = getSurvivorFunctionResult(time - .5, lambdaParm, betaParm) -  getSurvivorFunctionResult(time +.5, lambdaParm, betaParm);
 				marginalProb += getConditionalAnnualProbabilityofOccurrence(time, lambdaParm, betaParm) * marginalProbability * truncationFactor;
 			}
 			return marginalProb;
@@ -121,53 +131,56 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	}
 
 	
-	private double calculateBeta(double recurrence, double minRange, double maxRange) {
-		double objective = variancePop / (recurrence * recurrence); 
-		double value = minRange;
-		double step = (maxRange - minRange) * .1;
-		double criteria = 1000000;
-		double bestCriteria = criteria;
-		while (criteria > 1E-4) {
-			criteria = Math.abs(getResult(value) - objective);
-	//		System.out.println("Value = " + value + "; Criteria = " + criteria);
-			if (criteria < bestCriteria) {
-				bestCriteria = criteria;
-			} else {
-				break;
-			}
-			value += step;
-		}
-		if (criteria < 1E-4) {
-			value -= step;
-//			System.out.println("Calculated beta = " + value);
-			return value;
-		} else {
-	 		return calculateBeta(recurrence, value - 2 * step, value);
-		}
-	}
+//	private double calculateBeta(double recurrence, double minRange, double maxRange) {
+//		double objective = variancePop / (recurrence * recurrence); 
+//		double value = minRange;
+//		double step = (maxRange - minRange) * .1;
+//		double criteria = 1000000;
+//		double bestCriteria = criteria;
+//		while (criteria > 1E-4) {
+//			criteria = Math.abs(getResult(value) - objective);
+//	//		System.out.println("Value = " + value + "; Criteria = " + criteria);
+//			if (criteria < bestCriteria) {
+//				bestCriteria = criteria;
+//			} else {
+//				break;
+//			}
+//			value += step;
+//		}
+//		if (criteria < 1E-4) {
+//			value -= step;
+////			System.out.println("Calculated beta = " + value);
+//			return value;
+//		} else {
+//	 		return calculateBeta(recurrence, value - 2 * step, value);
+//		}
+//	}
 
-	private double getResult(double value) {
-		double tmp = GammaFunction.gamma(1d + 1d / value);
-		double result = GammaFunction.gamma(1d + 2d / value) / (tmp * tmp) - 1; 
-		return result;
-	}
+//	private double getResult(double value) {
+//		double tmp = GammaFunction.gamma(1d + 1d / value);
+//		double result = GammaFunction.gamma(1d + 2d / value) / (tmp * tmp) - 1; 
+//		return result;
+//	}
 	
 
-	private double calculateLambda(double betaParm, double recurrence) {
-		double lambda = 1d / recurrence * GammaFunction.gamma(1 + 1d / betaParm);
-		return lambda;
-	}
+//	private double calculateLambda(double betaParm, double recurrence) {
+//		double lambda = 1d / recurrence * GammaFunction.gamma(1 + 1d / betaParm);
+//		return lambda;
+//	}
 
 
 	private double getConditionalAnnualProbabilityofOccurrence(int timeSinceLastOutbreak, double lambda, double beta) {
-		double s0 = getSurvivorFunctionResult(timeSinceLastOutbreak - 1, lambda, beta);
-		double s1 = getSurvivorFunctionResult(timeSinceLastOutbreak, lambda, beta);
+		double s0 = getSurvivorFunctionResult(timeSinceLastOutbreak - .5, lambda, beta);
+		double s1 = getSurvivorFunctionResult(timeSinceLastOutbreak + .5, lambda, beta);
 		double probability = 1 - s1/s0;
 		return probability;
 	}
 	
 	
-	protected double getSurvivorFunctionResult(int time, double lambda, double beta) {
+	protected double getSurvivorFunctionResult(double time, double lambda, double beta) {
+		if (time < 0) {
+			time = 0;
+		}
 		double r = Math.exp(-Math.pow(lambda * time, beta));
 		return r;
 	}
