@@ -10,10 +10,10 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import canforservutility.biodiversity.indices.MultipleSiteIndex.IndexName;
+import canforservutility.biodiversity.indices.MultipleSiteIndex.DiversityIndex;
 import repicea.io.javacsv.CSVReader;
+import repicea.math.Matrix;
 import repicea.serial.xml.XmlDeserializer;
-import repicea.serial.xml.XmlSerializer;
 import repicea.stats.estimates.SimpleEstimate;
 import repicea.util.ObjectUtility;
 
@@ -62,16 +62,16 @@ public class MultipleSiteIndexTests {
 	@Test
 	public void testDissimilarityIndices() throws IOException {
 		MultipleSiteIndex msi = new MultipleSiteIndex();
-		Map<String, Map<String, Double>> observedMap = new HashMap<String, Map<String, Double>>();
+		Map<String, Map<String, Matrix>> observedMap = new HashMap<String, Map<String, Matrix>>();
 		for (String key : getStrata().keySet()) {
 			if (!observedMap.containsKey(key)) {
-				observedMap.put(key, new HashMap<String, Double>());
+				observedMap.put(key, new HashMap<String, Matrix>());
 			}
-			Map<String, Double> innerMap = observedMap.get(key);
+			Map<String, Matrix> innerMap = observedMap.get(key);
 			Map population = getStrata().get(key);
-			Map<IndexName, SimpleEstimate> indices = msi.getDissimilarityIndicesMultiplesiteEstimator(population, 100000);
-			for (IndexName name : indices.keySet()) {
-				innerMap.put(name.name(), indices.get(name).getMean().m_afData[0][0]);
+			Map<DiversityIndex, SimpleEstimate> indices = msi.getDissimilarityIndicesMultiplesiteEstimator(population, 100000);
+			for (DiversityIndex name : indices.keySet()) {
+				innerMap.put(name.name(), indices.get(name).getMean());
 			}
 		}
 
@@ -85,13 +85,12 @@ public class MultipleSiteIndexTests {
 		Assert.assertEquals("Testing nb strata", refMap.size(), observedMap.size());
 		
 		for (Object stratum : refMap.keySet()) {
-			Map<String, Double> refInnerMap = (Map) refMap.get(stratum);
-			Map<String, Double> obsInnerMap = observedMap.get(stratum);
-//			Assert.assertEquals("Testing nb indices", refInnerMap.size(), obsInnerMap.size());
+			Map<String, Matrix> refInnerMap = (Map) refMap.get(stratum);
+			Map<String, Matrix> obsInnerMap = observedMap.get(stratum);
 			for (String indexName : refInnerMap.keySet()) {
-				double expected = refInnerMap.get(indexName);
-				double actual = obsInnerMap.get(indexName);
-				Assert.assertEquals("Comparing index " + indexName, expected, actual, 1E-8);
+				Matrix expected = refInnerMap.get(indexName);
+				Matrix actual = obsInnerMap.get(indexName);
+				Assert.assertTrue("Comparing index " + indexName, expected.equals(actual));
 			}
 		}
 	}
