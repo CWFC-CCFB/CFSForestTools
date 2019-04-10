@@ -28,7 +28,6 @@ import java.util.Map;
 
 import repicea.math.Matrix;
 import repicea.stats.estimates.JackknifeEstimate;
-import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.stats.estimates.SimpleEstimate;
 import repicea.util.ObjectUtility;
 
@@ -46,12 +45,16 @@ import repicea.util.ObjectUtility;
  */
 public class MultipleSiteIndex {
 	
-	public static enum IndexName {Alpha,
+	public static enum DiversityIndex {Alpha,
 		Gamma,
+		Beta}
+	
+	public static enum BetaIndex {
 		Simpson, 
-		Sorensen}  
-//		DiserudOdegaard}
-	public static enum Mode {LeaveOneOut, DeleteTwo, EfronSteinCorrection}
+		Sorensen,
+		Nestedness}  
+	
+	public static enum Mode {LeaveOneOut, DeleteTwo}
 	
 	private static class DissimilarityFeatures {
 		final int totalNbSpecies;
@@ -97,6 +100,7 @@ public class MultipleSiteIndex {
 			return newMap;
 		}
 		
+		@SuppressWarnings("unused")
 		ValidatedHashMap<K,V> getMapWithoutTheseKeys(List<K> keys) {
 			ValidatedHashMap<K,V> newMap = new ValidatedHashMap<K,V>();
 			for (K k : keySet()) {
@@ -186,16 +190,16 @@ public class MultipleSiteIndex {
 	 * @return a Map with the index names as key and the values of this indices
 	 */
 	@SuppressWarnings("rawtypes")
-	public Map<IndexName, Double> getMultiplesiteDissimilarityIndices(Map<String, List> oMap) {
+	public Map<BetaIndex, Double> getMultiplesiteDissimilarityIndices(Map<String, List> oMap) {
 		DissimilarityFeatures f = getInnerDissimilarity(oMap);
 
 		double simpson = ((double) f.sumMin_ij) / (f.sumS_i - f.totalNbSpecies + f.sumMin_ij);
 		double sorensen = ((double) (f.sumMin_ij + f.sumMax_ij)) /(2 * (f.sumS_i - f.totalNbSpecies) + f.sumMin_ij + f.sumMax_ij);
-//		double diserudOdegaard = ((double) f.nbPlots) / (f.nbPlots - 1) * (1 - ((double) f.totalNbSpecies) / f.sumS_i);
-		Map<IndexName, Double> indexMap = new HashMap<IndexName, Double>();
-		indexMap.put(IndexName.Simpson, simpson);
-		indexMap.put(IndexName.Sorensen, sorensen);
-//		indexMap.put(IndexName.DiserudOdegaard, diserudOdegaard);
+		double nestedness = sorensen - simpson;
+		Map<BetaIndex, Double> indexMap = new HashMap<BetaIndex, Double>();
+		indexMap.put(BetaIndex.Simpson, simpson);
+		indexMap.put(BetaIndex.Sorensen, sorensen);
+		indexMap.put(BetaIndex.Nestedness, nestedness);
 		return indexMap;
 	}
 	
@@ -206,17 +210,17 @@ public class MultipleSiteIndex {
 	 * @return a Map with the index names as key and the values of this indices
 	 */
 	@SuppressWarnings("rawtypes")
-	public Map<IndexName, Double> getAdaptedMultiplesiteDissimilarityIndices(Map<String, List> oMap) {
+	public Map<BetaIndex, Double> getAdaptedMultiplesiteDissimilarityIndices(Map<String, List> oMap) {
 		DissimilarityFeatures f = getInnerDissimilarity(oMap);
 		double sumMinCorr = (2d * f.sumMin_ij) / f.nbPlots;
 		double sumMaxCorr = (2d * f.sumMax_ij) / f.nbPlots;
 		double simpson = sumMinCorr / (f.sumS_i - f.totalNbSpecies + sumMinCorr);
 		double sorensen = (sumMinCorr + sumMaxCorr) /(2 * (f.sumS_i - f.totalNbSpecies) + sumMinCorr + sumMaxCorr);
-//		double diserudOdegaard = ((double) f.nbPlots) / (f.nbPlots - 1) * (1 - ((double) f.totalNbSpecies) / f.sumS_i);
-		Map<IndexName, Double> outputMap = new HashMap<IndexName, Double>();
-		outputMap.put(IndexName.Simpson, simpson);
-		outputMap.put(IndexName.Sorensen, sorensen);
-//		outputMap.put(IndexName.DiserudOdegaard, diserudOdegaard);
+		double nestedness = sorensen - simpson;
+		Map<BetaIndex, Double> outputMap = new HashMap<BetaIndex, Double>();
+		outputMap.put(BetaIndex.Simpson, simpson);
+		outputMap.put(BetaIndex.Sorensen, sorensen);
+		outputMap.put(BetaIndex.Nestedness, nestedness);
 		return outputMap;
 	}
 	
@@ -295,7 +299,7 @@ public class MultipleSiteIndex {
 	 * @return a Map that contains the indices
 	 */
 	@SuppressWarnings("rawtypes")
-	public Map<IndexName, SimpleEstimate> getDissimilarityIndicesMultiplesiteEstimator(Map<String, List> oMap, int populationSize, boolean jackknife, Mode mode) {
+	public Map<DiversityIndex, SimpleEstimate> getDissimilarityIndicesMultiplesiteEstimator(Map<String, List> oMap, int populationSize, boolean jackknife, Mode mode) {
 		ValidatedHashMap<String, List> vMap = validateMap(oMap);
 		if (jackknife && vMap.size() <= 2 && mode != Mode.LeaveOneOut) {
 			throw new InvalidParameterException("There must be at least three observations in the sample to use the Delete-2 or Efron and Stein's (1981) correction!");
@@ -308,95 +312,94 @@ public class MultipleSiteIndex {
 		double meanS_hat = ((double) f.sumS_i) / f.nbPlots;
 		double totalS_hat = chao2Estimate.getMean().m_afData[0][0];
 
-		Map<IndexName, SimpleEstimate> outputMap = new HashMap<IndexName, SimpleEstimate>();
+		Map<DiversityIndex, SimpleEstimate> outputMap = new HashMap<DiversityIndex, SimpleEstimate>();
 		double simpson = (populationSize-1) * meanMin_hat / (populationSize * meanS_hat - totalS_hat + (populationSize-1) * meanMin_hat);
-		outputMap.put(IndexName.Simpson, getSimpleEstimate(simpson));
-
 		double sorensen = (populationSize-1) * (meanMin_hat + meanMax_hat) / (2d * (populationSize * meanS_hat - totalS_hat) + (populationSize-1) * (meanMin_hat + meanMax_hat));
-		outputMap.put(IndexName.Sorensen, getSimpleEstimate(sorensen));
+		double nestedness = sorensen - simpson;
 
-		outputMap.put(IndexName.Alpha, getSimpleEstimate(meanS_hat));
-		outputMap.put(IndexName.Gamma, chao2Estimate);
+		Matrix beta = new Matrix(3,1);
+		beta.m_afData[0][0] = simpson;
+		beta.m_afData[1][0] = sorensen;
+		beta.m_afData[2][0] = nestedness;
+		SimpleEstimate betaEstimate = new SimpleEstimate();
+		betaEstimate.setMean(beta);
+		
+		outputMap.put(DiversityIndex.Beta, betaEstimate);
+		outputMap.put(DiversityIndex.Alpha, getSimpleEstimate(meanS_hat));
+		outputMap.put(DiversityIndex.Gamma, chao2Estimate);
 
 		if (jackknife) {
 			List<String> siteIds = new ArrayList<String>(vMap.keySet());
-			Map<IndexName, JackknifeEstimate> varianceEstimates = new HashMap<IndexName, JackknifeEstimate>();
 			int nbPlots = vMap.size();
+			JackknifeEstimate varianceEstimate;
 			switch(mode) {
 			case LeaveOneOut:
-				varianceEstimates.put(IndexName.Simpson, new JackknifeEstimate(nbPlots, 1));
-				varianceEstimates.put(IndexName.Sorensen, new JackknifeEstimate(nbPlots, 1));
+				varianceEstimate = new JackknifeEstimate(nbPlots, 1);
 				for (int i = 0; i < siteIds.size(); i++) {
 					ValidatedHashMap<String, List> newMap = vMap.getMapWithoutThisKey(siteIds.get(i));
-					Map<IndexName, SimpleEstimate> estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMap, populationSize);
-					varianceEstimates.get(IndexName.Simpson).addRealization(estimateMap.get(IndexName.Simpson).getMean());
-					varianceEstimates.get(IndexName.Sorensen).addRealization(estimateMap.get(IndexName.Sorensen).getMean());
+					Map<DiversityIndex, SimpleEstimate> estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMap, populationSize);
+					varianceEstimate.addRealization(estimateMap.get(DiversityIndex.Beta).getMean());
 				}
-				outputMap.get(IndexName.Simpson).setVariance(varianceEstimates.get(IndexName.Simpson).getVariance());
-				outputMap.get(IndexName.Sorensen).setVariance(varianceEstimates.get(IndexName.Sorensen).getVariance());
+				outputMap.get(DiversityIndex.Beta).setVariance(varianceEstimate.getVariance());
 				break;
 			case DeleteTwo:
-				varianceEstimates.put(IndexName.Simpson, new JackknifeEstimate(nbPlots, 2));
-				varianceEstimates.put(IndexName.Sorensen, new JackknifeEstimate(nbPlots, 2));
+				varianceEstimate = new JackknifeEstimate(nbPlots, 2);
 				for (int i = 0; i < siteIds.size() - 1; i++) {
 					ValidatedHashMap<String, List> newMap = vMap.getMapWithoutThisKey(siteIds.get(i));
 					for (int j = i + 1; j < siteIds.size(); j++) {
 						ValidatedHashMap<String, List> newMap2 = newMap.getMapWithoutThisKey(siteIds.get(j));
-						Map<IndexName, SimpleEstimate> estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMap2, populationSize);
-						varianceEstimates.get(IndexName.Simpson).addRealization(estimateMap.get(IndexName.Simpson).getMean());
-						varianceEstimates.get(IndexName.Sorensen).addRealization(estimateMap.get(IndexName.Sorensen).getMean());
+						Map<DiversityIndex, SimpleEstimate> estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMap2, populationSize);
+						varianceEstimate.addRealization(estimateMap.get(DiversityIndex.Beta).getMean());
 					}
 				}
-				outputMap.get(IndexName.Simpson).setVariance(varianceEstimates.get(IndexName.Simpson).getVariance());
-				outputMap.get(IndexName.Sorensen).setVariance(varianceEstimates.get(IndexName.Sorensen).getVariance());
+				outputMap.get(DiversityIndex.Beta).setVariance(varianceEstimate.getVariance());
 				break;
-			case EfronSteinCorrection:
-				List<String> toBeRemoved = new ArrayList<String>();
-				varianceEstimates.put(IndexName.Simpson, new JackknifeEstimate(nbPlots, 1));
-				varianceEstimates.put(IndexName.Sorensen, new JackknifeEstimate(nbPlots, 1));
-				Map<IndexName, MonteCarloEstimate> qTerms = new HashMap<IndexName, MonteCarloEstimate>();
-				for (IndexName iName: IndexName.values()) {
-					qTerms.put(iName, new MonteCarloEstimate());
-				}
-				
-				Map<Integer, Map<IndexName, SimpleEstimate>> referenceLeaveOneOutMap = new HashMap<Integer, Map<IndexName, SimpleEstimate>>();
-				for (int i = 0; i < siteIds.size(); i++) {
-					Map<IndexName, SimpleEstimate> estimateMapI = getSimpleEstimate(varianceEstimates,
-							referenceLeaveOneOutMap, 
-							vMap, 
-							i,
-							siteIds, 
-							populationSize);
-					if (i < siteIds.size() - 1) {
-						for (int j = i + 1; j < siteIds.size(); j++) {
-							Map<IndexName, SimpleEstimate> estimateMapJ = getSimpleEstimate(varianceEstimates,
-									referenceLeaveOneOutMap, 
-									vMap, 
-									j,
-									siteIds, 
-									populationSize);
-							toBeRemoved.clear();
-							toBeRemoved.add(siteIds.get(i));
-							toBeRemoved.add(siteIds.get(j));
-							ValidatedHashMap<String, List> newMap = vMap.getMapWithoutTheseKeys(toBeRemoved);
-							Map<IndexName, SimpleEstimate> estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMap, populationSize);
-							for (IndexName iName : IndexName.values()) {
-								Matrix s_ii_Term = estimateMap.get(iName).getMean().scalarMultiply(nbPlots - 2);
-								Matrix s_i_Term = estimateMapI.get(iName).getMean().add(estimateMapJ.get(iName).getMean()).scalarMultiply(nbPlots - 1);
-								Matrix s_Term = outputMap.get(iName).getMean().scalarMultiply(nbPlots);
-								Matrix realizationQ = s_Term.subtract(s_i_Term).add(s_ii_Term);
-								qTerms.get(iName).addRealization(realizationQ);
-							}
-						}
-					}
-				}
-				
-				for (IndexName iName : IndexName.values()) {
-					Matrix correction = qTerms.get(iName).getVariance().scalarMultiply((0.5 * nbPlots * (nbPlots - 1) - 1) / (nbPlots * (nbPlots + 1)));
-					Matrix variance = varianceEstimates.get(iName).getVariance().subtract(correction);
-					outputMap.get(iName).setVariance(variance);
-				}
-				break;
+//			case EfronSteinCorrection:
+//				List<String> toBeRemoved = new ArrayList<String>();
+//				varianceEstimate = new JackknifeEstimate(nbPlots, 1);
+//				Map<IndexName, MonteCarloEstimate> qTerms = new HashMap<IndexName, MonteCarloEstimate>();
+//				for (IndexName iName: IndexName.values()) {
+//					qTerms.put(iName, new MonteCarloEstimate());
+//				}
+//				
+//				Map<Integer, Map<IndexName, SimpleEstimate>> referenceLeaveOneOutMap = new HashMap<Integer, Map<IndexName, SimpleEstimate>>();
+//				for (int i = 0; i < siteIds.size(); i++) {
+//					SimpleEstimate estimateMapI = getSimpleEstimate(varianceEstimates,
+//							referenceLeaveOneOutMap, 
+//							vMap, 
+//							i,
+//							siteIds, 
+//							populationSize);
+//					if (i < siteIds.size() - 1) {
+//						for (int j = i + 1; j < siteIds.size(); j++) {
+//							SimpleEstimate estimateMapJ = getSimpleEstimate(varianceEstimates,
+//									referenceLeaveOneOutMap, 
+//									vMap, 
+//									j,
+//									siteIds, 
+//									populationSize);
+//							toBeRemoved.clear();
+//							toBeRemoved.add(siteIds.get(i));
+//							toBeRemoved.add(siteIds.get(j));
+//							ValidatedHashMap<String, List> newMap = vMap.getMapWithoutTheseKeys(toBeRemoved);
+//							Map<DiversityIndex, SimpleEstimate> estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMap, populationSize);
+//							for (IndexName iName : IndexName.values()) {
+//								Matrix s_ii_Term = estimateMap.get(iName).getMean().scalarMultiply(nbPlots - 2);
+//								Matrix s_i_Term = estimateMapI.get(iName).getMean().add(estimateMapJ.get(iName).getMean()).scalarMultiply(nbPlots - 1);
+//								Matrix s_Term = outputMap.get(iName).getMean().scalarMultiply(nbPlots);
+//								Matrix realizationQ = s_Term.subtract(s_i_Term).add(s_ii_Term);
+//								qTerms.get(iName).addRealization(realizationQ);
+//							}
+//						}
+//					}
+//				}
+//				
+//				for (IndexName iName : IndexName.values()) {
+//					Matrix correction = qTerms.get(iName).getVariance().scalarMultiply((0.5 * nbPlots * (nbPlots - 1) - 1) / (nbPlots * (nbPlots + 1)));
+//					Matrix variance = varianceEstimates.get(iName).getVariance().subtract(correction);
+//					outputMap.get(iName).setVariance(variance);
+//				}
+//				break;
 			}
 		} 
 		return outputMap;
@@ -404,26 +407,26 @@ public class MultipleSiteIndex {
 
 	
 	
-	@SuppressWarnings("rawtypes")
-	private Map<IndexName, SimpleEstimate> getSimpleEstimate(Map<IndexName, JackknifeEstimate> varianceEstimates,
-			Map<Integer, Map<IndexName, SimpleEstimate>> referenceLeaveOneOutMap, 
-			ValidatedHashMap<String, List> referenceValidatedMap, 
-			int index,
-			List<String> referenceIds,
-			int populationSize) {
-		if (!referenceLeaveOneOutMap.containsKey(index)) {
-			ValidatedHashMap<String, List> newMapI = referenceValidatedMap.getMapWithoutThisKey(referenceIds.get(index));
-			Map<IndexName, SimpleEstimate> estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMapI, populationSize);
-			referenceLeaveOneOutMap.put(index, estimateMap);
-			for (IndexName iName : IndexName.values()) {
-				varianceEstimates.get(iName).addRealization(estimateMap.get(iName).getMean());
-			}
-		}
-		return referenceLeaveOneOutMap.get(index);
-	}
+//	@SuppressWarnings("rawtypes")
+//	private Map<IndexName, SimpleEstimate> getSimpleEstimate(Map<IndexName, JackknifeEstimate> varianceEstimates,
+//			Map<Integer, Map<IndexName, SimpleEstimate>> referenceLeaveOneOutMap, 
+//			ValidatedHashMap<String, List> referenceValidatedMap, 
+//			int index,
+//			List<String> referenceIds,
+//			int populationSize) {
+//		if (!referenceLeaveOneOutMap.containsKey(index)) {
+//			ValidatedHashMap<String, List> newMapI = referenceValidatedMap.getMapWithoutThisKey(referenceIds.get(index));
+//			Map<IndexName, SimpleEstimate> estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMapI, populationSize);
+//			referenceLeaveOneOutMap.put(index, estimateMap);
+//			for (IndexName iName : IndexName.values()) {
+//				varianceEstimates.get(iName).addRealization(estimateMap.get(iName).getMean());
+//			}
+//		}
+//		return referenceLeaveOneOutMap.get(index);
+//	}
 	
 	@SuppressWarnings("rawtypes")
-	public Map<IndexName, SimpleEstimate> getDissimilarityIndicesMultiplesiteEstimator(Map<String, List> oMap, int populationSize) {
+	public Map<DiversityIndex, SimpleEstimate> getDissimilarityIndicesMultiplesiteEstimator(Map<String, List> oMap, int populationSize) {
 		return getDissimilarityIndicesMultiplesiteEstimator(oMap, populationSize, false, Mode.LeaveOneOut);
 	}	
 }
