@@ -74,16 +74,17 @@ class PopulationTests {
 		MultipleSiteIndex msi = new MultipleSiteIndex();
 		Map<BetaIndex, Double> currentIndices = msi.getMultiplesiteDissimilarityIndices(pop);
 		Map<BetaIndex, Double> newIndices = msi.getAdaptedMultiplesiteDissimilarityIndices(pop);
-		Object[] record = new Object[9];
+		Object[] record = new Object[10];
 		record[0] = populationSize;
-		record[1] = minSp;
-		record[2] = maxSp;
-		record[3] = currentIndices.get(BetaIndex.Simpson);
-		record[4] = currentIndices.get(BetaIndex.Sorensen);
-		record[5] = currentIndices.get(BetaIndex.Nestedness);
-		record[6] = newIndices.get(BetaIndex.Simpson);
-		record[7] = newIndices.get(BetaIndex.Sorensen);
-		record[8] = newIndices.get(BetaIndex.Nestedness);
+		record[1] = nbTaxa;
+		record[2] = minSp;
+		record[3] = maxSp;
+		record[4] = currentIndices.get(BetaIndex.Simpson);
+		record[5] = currentIndices.get(BetaIndex.Sorensen);
+		record[6] = currentIndices.get(BetaIndex.Nestedness);
+		record[7] = newIndices.get(BetaIndex.Simpson);
+		record[8] = newIndices.get(BetaIndex.Sorensen);
+		record[9] = newIndices.get(BetaIndex.Nestedness);
 		return record;
 	}
 	
@@ -116,53 +117,51 @@ class PopulationTests {
 		List<FormatField> fields;
 		
 		
-		filename =  rootPath + "populationTests.csv";
-		writer = new CSVWriter(new File(filename), false);
-		fields = new ArrayList<FormatField>();
-		fields.add(new CSVField("PopSize"));
-		fields.add(new CSVField("minSp"));
-		fields.add(new CSVField("maxSp"));
-		fields.add(new CSVField("Simpson"));
-		fields.add(new CSVField("Sorensen"));
-		fields.add(new CSVField("Nestedness"));
-		fields.add(new CSVField("SimpsonCorr"));
-		fields.add(new CSVField("SorensenCorr"));
-		fields.add(new CSVField("NestednessCorr"));
-		writer.setFields(fields);
-		
-		List<Integer> populationSizes = new ArrayList<Integer>();
-		populationSizes.add(5);
-		populationSizes.add(10);
-		populationSizes.add(20);
-		populationSizes.add(30);
-		populationSizes.add(40);
-		populationSizes.add(50);
-		populationSizes.add(60);
-		populationSizes.add(70);
-		populationSizes.add(80);
-		populationSizes.add(90);
-		populationSizes.add(100);
-		populationSizes.add(200);
-		populationSizes.add(300);
-		populationSizes.add(400);
-		populationSizes.add(500);
-		populationSizes.add(600);
-		populationSizes.add(700);
-		populationSizes.add(800);
-		populationSizes.add(900);
-		populationSizes.add(1000);
-		
-		for (int i = 0; i < 4; i++) {
-			int minSp = i * 10 + 1;
-			int maxSp = (i + 1) * 10;
-			for (Integer populationSize : populationSizes) {
-				int nbTaxa = 100 - i * 20;
-				System.out.println("Simulation population size " + populationSize + " with minSp = " + minSp + " and maxSp = " + maxSp + " and nbTaxa = " + nbTaxa);
-				Object[] record = PopulationTests.testThisPopulation(populationSize, minSp, maxSp, nbTaxa);
-				writer.addRecord(record);
-			}
-		}
-		writer.close();
+//		filename =  rootPath + "populationTests.csv";
+//		writer = new CSVWriter(new File(filename), false);
+//		fields = new ArrayList<FormatField>();
+//		fields.add(new CSVField("PopSize"));
+//		fields.add(new CSVField("nbTaxa"));
+//		fields.add(new CSVField("minSp"));
+//		fields.add(new CSVField("maxSp"));
+//		fields.add(new CSVField("Simpson"));
+//		fields.add(new CSVField("Sorensen"));
+//		fields.add(new CSVField("Nestedness"));
+//		fields.add(new CSVField("SimpsonCorr"));
+//		fields.add(new CSVField("SorensenCorr"));
+//		fields.add(new CSVField("NestednessCorr"));
+//		writer.setFields(fields);
+//		
+//		List<Integer> populationSizes = new ArrayList<Integer>();
+//		populationSizes.add(50);
+//		populationSizes.add(60);
+//		populationSizes.add(70);
+//		populationSizes.add(80);
+//		populationSizes.add(90);
+//		populationSizes.add(100);
+//		populationSizes.add(200);
+//		populationSizes.add(300);
+//		populationSizes.add(400);
+//		populationSizes.add(500);
+//		populationSizes.add(600);
+//		populationSizes.add(700);
+//		populationSizes.add(800);
+//		populationSizes.add(900);
+//		populationSizes.add(1000);
+//		
+//		for (int i = 0; i < 4; i++) {
+//			int minSp = i * 10 + 1;
+//			int maxSp = (i + 1) * 10;
+//			for (Integer populationSize : populationSizes) {
+//				for (int j = 0; j < 4; j++) {
+//					int nbTaxa = 100 - j * 20;
+//					System.out.println("Simulation population size " + populationSize + " with minSp = " + minSp + " and maxSp = " + maxSp + " and nbTaxa = " + nbTaxa);
+//					Object[] record = PopulationTests.testThisPopulation(populationSize, minSp, maxSp, nbTaxa);
+//					writer.addRecord(record);
+//				}
+//			}
+//		}
+//		writer.close();
 		
 		Map<String, Population> populationMap = new HashMap<String, Population>();
 		String prefix = "pop1000_";

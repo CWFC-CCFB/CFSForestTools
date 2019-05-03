@@ -2,6 +2,7 @@ package quebecmrnfutility.biosim;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,6 +49,37 @@ public class BioSimClientTest {
 		Assert.assertTrue(variables.get(0).getPlotId().equals("Plot 1"));
 		Assert.assertTrue(variables.get(1).getPlotId().equals("Plot 2"));
 		client.close();
+	}
+
+	
+	@Test
+	public void repeatedConnectionTestSameCoordinates() throws BasicClientException {
+		for (int i = 0; i < 100; i++) {
+			BioSimClient client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+			List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
+			plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
+			plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300, 48, -70)));
+			List<ClimateVariables> variables = client.getClimateVariables(plotLocations);
+			Assert.assertTrue(variables.get(0).getPlotId().equals("Plot 1"));
+			Assert.assertTrue(variables.get(1).getPlotId().equals("Plot 2"));
+			client.close();
+		}
+	}
+
+	@Test
+	public void repeatedConnectionTestDifferentCoordinates() throws BasicClientException {
+		Random randomGen = new Random();
+		
+		for (int i = 0; i < 100; i++) {
+			BioSimClient client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+			List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
+			plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300 + randomGen.nextDouble(), 46 + randomGen.nextDouble(), -74 + randomGen.nextDouble())));
+			plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300 + randomGen.nextDouble(), 48 + randomGen.nextDouble(), -70 + randomGen.nextDouble())));
+			List<ClimateVariables> variables = client.getClimateVariables(plotLocations);
+			Assert.assertTrue(variables.get(0).getPlotId().equals("Plot 1"));
+			Assert.assertTrue(variables.get(1).getPlotId().equals("Plot 2"));
+			client.close();
+		}
 	}
 
 	@Test

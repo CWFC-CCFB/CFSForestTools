@@ -100,7 +100,7 @@ public class BioSimClient extends BasicClient {
 		}
 		
 		List<ClimateVariables> climVarReceived;
-		if (byPassConnectionForTesting) {
+		if (byPassConnectionForTesting || plotLocationsToBeSent.isEmpty()) {
 			climVarReceived = new ArrayList<ClimateVariables>();
 		} else {
 			climVarReceived = (List) super.processRequest(new Request(version, plotLocationsToBeSent));
