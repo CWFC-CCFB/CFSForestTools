@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import repicea.math.Matrix;
-import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.stats.estimates.SimpleEstimate;
 
 /**
@@ -35,7 +35,7 @@ import repicea.stats.estimates.SimpleEstimate;
  * </a>
   */
 @SuppressWarnings("serial")
-public class DefoliationPredictor extends REpiceaPredictor {
+public class DefoliationPredictor extends REpiceaBinaryEventPredictor<DefoliationPlot, Object> {
 
 	private Matrix meanExplanatoryVariables;
 	private Matrix stdExplanatoryVariables;
@@ -44,12 +44,14 @@ public class DefoliationPredictor extends REpiceaPredictor {
 	private Matrix scoreDuration;
 	private Matrix scoreSeverity;
 	
+	private final double nbYearsWithModerateToSevereDefoliation;
 	
 	/**
 	 * Constructor. Only works in deterministic mode at the moment.
 	 */
-	public DefoliationPredictor() {
-		super(false, false, false);
+	public DefoliationPredictor(double nbYearsWithModerateToSevereDefoliation) {
+		super(false, false, true);	// residual variability must be set to true to ensure that predictEvent returns a boolean
+		this.nbYearsWithModerateToSevereDefoliation = nbYearsWithModerateToSevereDefoliation;
 		init();
 		oXVector = new Matrix(1,8);
 	}
@@ -106,7 +108,7 @@ public class DefoliationPredictor extends REpiceaPredictor {
 	}
 
 	
-	public synchronized SimpleEstimate predictDefoliation(DefoliationPlot plot) {
+	protected SimpleEstimate getDurationAndSeverityEstimate(DefoliationPlot plot) {
 		oXVector.resetMatrix();
 		int i = 0;
 		oXVector.m_afData[0][i] = plot.getLatitudeDeg();
@@ -134,6 +136,7 @@ public class DefoliationPredictor extends REpiceaPredictor {
 		double severityResult = score.multiply(scoreSeverity).m_afData[0][0] * 20.4069 + 25.6180;
 		double sinSeverity = Math.sin(severityResult); 
 		severityResult = sinSeverity * sinSeverity * 100d;
+		
 		SimpleEstimate estimate = new SimpleEstimate();
 		List<String> indices = new ArrayList<String>();
 		indices.add("Duration");
@@ -146,6 +149,21 @@ public class DefoliationPredictor extends REpiceaPredictor {
 		Matrix variance = new Matrix(2,2);
 		estimate.setVariance(variance);		// TODO implement the variance here
 		return estimate;
+	}
+	
+	
+	@Override
+	public synchronized double predictEventProbability(DefoliationPlot plot, Object tree, Object... parms) {
+		SimpleEstimate estimate = getDurationAndSeverityEstimate(plot);
+		double durationResult = estimate.getMean().m_afData[0][0];
+		double severityResult = estimate.getMean().m_afData[1][0];
+		if (durationResult >= nbYearsWithModerateToSevereDefoliation) {
+			double minSeverity = nbYearsWithModerateToSevereDefoliation * .65 + (durationResult - nbYearsWithModerateToSevereDefoliation) * .20;
+			if (severityResult > minSeverity) {
+				return 1d;
+			} 
+		} 
+		return 0d;
 	}
 	
 }
