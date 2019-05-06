@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package canforservutility.predictor.disturbances.sprucebudworm.occurrence.belangerarsenault2004;
+package canforservutility.predictor.disturbances.sprucebudworm.occurrence.boulangerarsenault2004;
 
 import repicea.simulation.HierarchicalLevel;
 
