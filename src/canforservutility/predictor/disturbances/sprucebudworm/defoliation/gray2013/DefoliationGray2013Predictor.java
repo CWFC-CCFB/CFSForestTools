@@ -18,15 +18,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package canforservutility.predictor.disturbances.belangerarsenault2004;
+package canforservutility.predictor.disturbances.sprucebudworm.defoliation.gray2013;
 
-import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.NaturalDisturbanceInformationProvider;
+import repicea.simulation.REpiceaPredictor;
 
-/**
- * This interface ensures that the plot sample can return information about the last spruce budworm outbreak.
- * @author Mathieu Fortin - April 2019
- */
-public interface SpruceBudwormOutbreakOccurrencePlot extends NaturalDisturbanceInformationProvider, MonteCarloSimulationCompliantObject {
+@SuppressWarnings("serial")
+public class DefoliationGray2013Predictor extends REpiceaPredictor {
+
+	protected DefoliationGray2013Predictor(boolean isParametersVariabilityEnabled,
+			boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	protected void init() {
+		// TODO Auto-generated method stub
+
+	}
 
 }
