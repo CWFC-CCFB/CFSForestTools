@@ -31,6 +31,7 @@ public class SpruceBudwormOutbreakOccurrencePlotImpl implements SpruceBudwormOut
 	
 	private final Integer timeSinceLastOutbreakYrs;
 	private int initialKnownDate;
+	private int monteCarloId;
 
 	/**
 	 * Constructor.
@@ -67,6 +68,9 @@ public class SpruceBudwormOutbreakOccurrencePlotImpl implements SpruceBudwormOut
 	public HierarchicalLevel getHierarchicalLevel() {return null;}
 
 	@Override
-	public int getMonteCarloRealizationId() {return 0;}
+	public int getMonteCarloRealizationId() {return monteCarloId;}
 
+	protected void setMonteCarloId(int monteCarloId) {
+		this.monteCarloId = monteCarloId;
+	}
 }
