@@ -26,6 +26,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import canforservutility.predictor.disturbances.sprucebudworm.occurrence.boulangerarsenault2004.SpruceBudwormOutbreakOccurrencePredictor.Occurrences;
+
 
 public class SpruceBudwormOutbreakOccurrencePredictorTests {
 
@@ -106,5 +108,34 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.26971204226355155, prob, 1E-4);
 	}
 	
-	
+	@Test
+	public void simpleStochasticTest() {
+		int nbRealizations = 1000000;
+		SpruceBudwormOutbreakOccurrencePlotImpl plot = new SpruceBudwormOutbreakOccurrencePlotImpl(10, 0);
+		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(true, true);
+		double prob = 0;
+		for (int i = 0; i < nbRealizations; i++) {
+			Occurrences occ = new Occurrences();
+			plot.setMonteCarloId(i);
+			prob += predictor.predictEventProbability(plot, null, 2000, occ);
+		}
+		double actual = prob / nbRealizations;
+		Assert.assertEquals("Testing stochastic probability", 0.0029029724231995706, actual, 1E-4);
+	}
+
+	@Test
+	public void simpleStochasticTest2() {
+		int nbRealizations = 1000000;
+		SpruceBudwormOutbreakOccurrencePlotImpl plot = new SpruceBudwormOutbreakOccurrencePlotImpl(20, 0);
+		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(true, true);
+		double prob = 0;
+		for (int i = 0; i < nbRealizations; i++) {
+			Occurrences occ = new Occurrences();
+			plot.setMonteCarloId(i);
+			prob += predictor.predictEventProbability(plot, null, 2000, occ);
+		}
+		double actual = prob / nbRealizations;
+		Assert.assertEquals("Testing stochastic probability", 0.011762498887145593, actual, 2E-5);
+	}
+
 }

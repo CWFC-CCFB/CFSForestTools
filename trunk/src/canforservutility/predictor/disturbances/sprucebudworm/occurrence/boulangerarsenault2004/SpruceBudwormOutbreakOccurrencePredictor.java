@@ -45,6 +45,21 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("serial")
 public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinaryEventPredictor<SpruceBudwormOutbreakOccurrencePlot, Object> {
 
+	
+	static class InternalParameterEstimates extends ModelParameterEstimates {
+
+		InternalParameterEstimates(Matrix mean, Matrix variance) {
+			super(mean, variance);
+		}
+
+		@Override
+		public Matrix getRandomDeviate() {
+			Matrix mat;
+			while ((mat = super.getRandomDeviate()).anyElementSmallerOrEqualTo(0d)) {};	// to ensure that none of the parameter estimates is smaller than or equal to 0
+			return mat;
+		}
+	}
+	
 	public static class Occurrences extends ArrayList<Integer> {}
 	
 //	private final double estimatedRecurrence = 39.5; // based on Boulanger and Arsenault (2004)
@@ -85,7 +100,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
 			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
 
-			setParameterEstimates(new ModelParameterEstimates(defaultBetaMean, defaultBetaVariance));
+			setParameterEstimates(new InternalParameterEstimates(defaultBetaMean, defaultBetaVariance));
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Unable to load the parameters of the SpruceBudwormOutbreakOccurrencePredictor class!");
@@ -127,7 +142,8 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 			}
 			return marginalProb;
 		}
-		return getConditionalAnnualProbabilityofOccurrence(timeSinceLastOutbreak, lambdaParm, betaParm);
+		double prob = getConditionalAnnualProbabilityofOccurrence(timeSinceLastOutbreak, lambdaParm, betaParm);
+		return prob;
 	}
 
 	
