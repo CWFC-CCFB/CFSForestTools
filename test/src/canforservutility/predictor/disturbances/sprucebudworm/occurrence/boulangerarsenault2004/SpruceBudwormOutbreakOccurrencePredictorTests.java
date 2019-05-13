@@ -59,7 +59,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.07074982054535149, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.07326448875128741, prob, 1E-4);
 	}
 
 	
@@ -69,7 +69,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.07114106543167505, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.07362230035437763, prob, 1E-4);
 	}
 
 	@Test
@@ -78,7 +78,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.1111014556880801, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.11594906884437328, prob, 1E-4);
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.14974957007332415, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.1585175051027792, prob, 1E-4);
 	}
 
 	@Test
@@ -96,7 +96,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.2031131201163095, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.21806173583507135, prob, 1E-4);
 	}
 	
 	@Test
@@ -105,7 +105,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.26971204226355155, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.2928574702983688, prob, 1E-4);
 	}
 	
 	@Test
@@ -120,7 +120,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 			prob += predictor.predictEventProbability(plot, null, 2000, occ);
 		}
 		double actual = prob / nbRealizations;
-		Assert.assertEquals("Testing stochastic probability", 0.0029029724231995706, actual, 1E-4);
+		Assert.assertEquals("Testing stochastic probability", 0.00256476199729598, actual, 1E-4);
 	}
 
 	@Test
@@ -135,7 +135,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 			prob += predictor.predictEventProbability(plot, null, 2000, occ);
 		}
 		double actual = prob / nbRealizations;
-		Assert.assertEquals("Testing stochastic probability", 0.011762498887145593, actual, 2E-5);
+		Assert.assertEquals("Testing stochastic probability", 0.011359786416281268, actual, 2E-5);
 	}
 
 }
