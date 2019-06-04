@@ -113,13 +113,13 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 		int i = 0;
 		oXVector.m_afData[0][i] = plot.getLatitudeDeg();
 		i++;
-		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM here
+		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM for sum of average extreme temperature of April and May (sp_emax) here
 		i++;
-		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM here
+		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM for sum of the average accumulation of degree-days (above 5C) of April and May (sp_dd) here 
 		i++;	
-		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM here
+		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM for sum of the average monthly extreme minimum temperatures from June to August (sm_emin) here
 		i++;
-		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM here
+		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM for sum of the average monthly extreme maximum temperatures from June to August (sm_emax) here
 		i++;
 		oXVector.m_afData[0][i] = plot.getVolumeM3HaOfBlackSpruce();
 		i++;
