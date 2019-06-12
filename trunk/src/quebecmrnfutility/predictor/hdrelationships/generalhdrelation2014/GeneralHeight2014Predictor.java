@@ -11,6 +11,7 @@ import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
+import repicea.simulation.hdrelationships.HeightPredictor;
 import repicea.stats.StatisticalUtility.TypeMatrixR;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.stats.estimates.GaussianEstimate;
@@ -27,7 +28,7 @@ import repicea.util.ObjectUtility;
  *      Québec, Ministère des Ressources naturelles et de la Faune, Direction de
  *      la recherche forestière. Mémoire de recherche forestière no 153. 22 p.
  */
-public class GeneralHeight2014Predictor extends REpiceaPredictor {
+public class GeneralHeight2014Predictor extends REpiceaPredictor implements HeightPredictor<Heightable2014Stand, Heightable2014Tree> {
 
 
 	protected static class BetaHeightableStandMonteCarlo implements MonteCarloSimulationCompliantObject {
@@ -245,36 +246,16 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor {
 		}
 	}
 
-	/**
-	 * This method calculates the height for individual trees and also
-	 * implements the
-	 * Monte Carlo simulation automatically. In case of exception, it also
-	 * returns -1.
-	 * If the predicted height is lower than 3, this method returns 3.
-	 * 
-	 * @param stand a HeightableStand object
-	 * @param tree a HeightableTree object
-	 * @return the predicted height (m)
-	 */
-	public synchronized double predictHeight(Heightable2014Stand stand, Heightable2014Tree tree) {
+	@Override
+	public synchronized double predictHeightM(Heightable2014Stand stand, Heightable2014Tree tree) {
 		Hd2014Species species = tree.getHeightable2014TreeSpecies();
-		double height = internalPredictors.get(species).predictHeight(stand, tree);
+		double height = internalPredictors.get(species).predictHeightM(stand, tree);
 		if(height < 3.0d)
 			height = 3.0d;
 		
 		return height;
 	}
 
-
-//	@Override
-//	public void clearDeviates() {
-//		for (GeneralHeight2014InternalPredictor p : internalPredictors.values()) {
-//			p.clearDeviates();
-//		}
-//	}
-
-
-	
 	
 //	/**
 //	 * For testing purpose.

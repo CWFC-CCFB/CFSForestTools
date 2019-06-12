@@ -99,7 +99,7 @@ public class GeneralHeight2009PredictorTests {
 			Heightable2009Stand s = standMap.get(selectedPlotId);
 			for (Object t : s.getTrees(StatusClass.alive)) {
 				Heightable2009Tree tree = (Heightable2009Tree) t;
-				double predictedHeightM = predictor.predictHeight(s, tree);
+				double predictedHeightM = predictor.predictHeightM(s, tree);
 				if (!predictedHeights.containsKey(s.getSubjectId())) {
 					predictedHeights.put(s.getSubjectId(), new HashMap<String, Double>());
 				}
@@ -186,13 +186,13 @@ public class GeneralHeight2009PredictorTests {
 		String selectedPlotId = plotIds.get(0);
 		Heightable2009Stand s = standMap.get(selectedPlotId);
 		Heightable2009Tree tree = (Heightable2009Tree) ((ArrayList) s.getTrees(StatusClass.alive)).get(0);
-		double detPred = detPredictor.predictHeight(s, tree);
+		double detPred = detPredictor.predictHeightM(s, tree);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		Matrix realization;
 		for (int i = 0; i < 100000; i++) {
 			((Heightable2009StandImpl) s).monteCarloRealizationID = i;
 			realization = new Matrix(1,1);
-			realization.m_afData[0][0] = stoPredictor.predictHeight(s, tree);
+			realization.m_afData[0][0] = stoPredictor.predictHeightM(s, tree);
 			estimate.addRealization(realization);
 		}
 		
