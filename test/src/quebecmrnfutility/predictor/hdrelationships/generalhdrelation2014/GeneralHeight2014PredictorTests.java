@@ -81,7 +81,7 @@ public class GeneralHeight2014PredictorTests {
 		for (Heightable2014Stand stand : standMap.values()) {
 			Collection<Heightable2014Tree> trees = stand.getTrees();
 			for (Heightable2014Tree t : trees) {
-				double actual = predictor.predictHeight(stand, t);
+				double actual = predictor.predictHeightM(stand, t);
 				double expected = ((Heightable2014TreeImpl) t).getPredictedHeight();
 				if (Math.abs(expected-actual) < 1E-8) {
 					goodMatches++;
