@@ -44,6 +44,7 @@ public class BioSimClient extends BasicClient {
 
 	boolean byPassConnectionForTesting = false;
 	
+	public static InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 18000);
 	
 	public static enum BioSimVersion {
 		VERSION_1971_2000, 
@@ -67,12 +68,22 @@ public class BioSimClient extends BasicClient {
 	private final BioSimVersion version;
 
 	/**
-	 * Constructor.
+	 * Default constructor.
 	 * @param version a BioSimVersion enum
 	 * @throws BasicClientException
 	 */
 	public BioSimClient(BioSimVersion version) throws BasicClientException {
-		super(new InetSocketAddress("rouge-epicea.dyndns.org", 18000), 20); // 20 sec before timeout.
+		this(new InetSocketAddress("rouge-epicea.dyndns.org", 18000), version); // 20 sec before timeout.
+	}
+
+	/**
+	 * Complex constructor.
+	 * @param address an InetSocketAddress instance
+	 * @param version a BioSimVersion enum
+	 * @throws BasicClientException
+	 */
+	public BioSimClient(InetSocketAddress address, BioSimVersion version) throws BasicClientException {
+		super(address, 5); // 5 sec before timeout.
 		if (version == null) {
 			this.version = BioSimVersion.VERSION_1971_2000;
 		} else {
