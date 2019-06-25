@@ -41,7 +41,12 @@ public class BioSimClientTest {
 	
 	@Test
 	public void simpleConnectionTest() throws BasicClientException {
-		BioSimClient client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+		BioSimClient client;
+		try {
+			client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+		} catch (BasicClientException e) {
+			client = new BioSimClient(BioSimClient.LANAddress, BioSimVersion.VERSION_1971_2000);
+		}
 		List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
 		plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
 		plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300, 48, -70)));
@@ -55,7 +60,13 @@ public class BioSimClientTest {
 	@Test
 	public void repeatedConnectionTestSameCoordinates() throws BasicClientException {
 		for (int i = 0; i < 100; i++) {
-			BioSimClient client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+			BioSimClient client;
+			try {
+				client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+			} catch (BasicClientException e) {
+				client = new BioSimClient(BioSimClient.LANAddress, BioSimVersion.VERSION_1971_2000);
+			}
+		
 			List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
 			plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
 			plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300, 48, -70)));
@@ -71,7 +82,13 @@ public class BioSimClientTest {
 		Random randomGen = new Random();
 		
 		for (int i = 0; i < 100; i++) {
-			BioSimClient client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+			BioSimClient client;
+			try {
+				client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+			} catch (BasicClientException e) {
+				client = new BioSimClient(BioSimClient.LANAddress, BioSimVersion.VERSION_1971_2000);
+			}
+
 			List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
 			plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300 + randomGen.nextDouble(), 46 + randomGen.nextDouble(), -74 + randomGen.nextDouble())));
 			plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300 + randomGen.nextDouble(), 48 + randomGen.nextDouble(), -70 + randomGen.nextDouble())));
@@ -84,14 +101,24 @@ public class BioSimClientTest {
 
 	@Test
 	public void climateRecordingTestWithConnectionDisabled() throws Exception {
-		BioSimClient client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+		BioSimClient client;
+		try {
+			client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+		} catch (BasicClientException e) {
+			client = new BioSimClient(BioSimClient.LANAddress, BioSimVersion.VERSION_1971_2000);
+		}
 		List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
 		plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
 		plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300, 48, -70)));
 		List<ClimateVariables> refVariables	= client.getClimateVariables(plotLocations);
 		client.close();
 		
-		BioSimClient client2 = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+		BioSimClient client2;
+		try {
+			client2 = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+		} catch (BasicClientException e) {
+			client2 = new BioSimClient(BioSimClient.LANAddress, BioSimVersion.VERSION_1971_2000);
+		}
 		client2.byPassConnectionForTesting = true;
 		plotLocations = new ArrayList<PlotLocation>();
 		plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
