@@ -44,8 +44,10 @@ public class BioSimClient extends BasicClient {
 
 	boolean byPassConnectionForTesting = false;
 	
-	public static InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 18000);
+	private static InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 18000);
 	
+	private static boolean isLAN = false;
+
 	public static enum BioSimVersion {
 		VERSION_1971_2000, 
 		VERSION_1981_2010;
@@ -72,7 +74,7 @@ public class BioSimClient extends BasicClient {
 	 * @param version a BioSimVersion enum
 	 * @throws BasicClientException
 	 */
-	public BioSimClient(BioSimVersion version) throws BasicClientException {
+	private BioSimClient(BioSimVersion version) throws BasicClientException {
 		this(new InetSocketAddress("repicea.dyndns.org", 18000), version); // 20 sec before timeout.
 	}
 
@@ -82,7 +84,7 @@ public class BioSimClient extends BasicClient {
 	 * @param version a BioSimVersion enum
 	 * @throws BasicClientException
 	 */
-	public BioSimClient(InetSocketAddress address, BioSimVersion version) throws BasicClientException {
+	private BioSimClient(InetSocketAddress address, BioSimVersion version) throws BasicClientException {
 		super(address, 5); // 5 sec before timeout.
 		if (version == null) {
 			this.version = BioSimVersion.VERSION_1971_2000;
@@ -91,6 +93,30 @@ public class BioSimClient extends BasicClient {
 		}
 	}
 
+	/**
+	 * Returns an instance of BioSimClient. It first tries to connect to repicea.dyndns.org. If 
+	 * it fails, it tries to connect locally. If it fails again, a BasicClientException is thrown.
+	 * @param version a BioSimVersion enum
+	 * @return a BioSimClient instance
+	 * @throws BasicClientException if the remote and the local connections both fail
+	 */
+	public static BioSimClient getBioSimClient(BioSimVersion version) throws BasicClientException {
+		BioSimClient client = null;
+		if (isLAN) {
+			client = new BioSimClient(BioSimClient.LANAddress, version);
+		} else {
+			try {
+				client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
+				isLAN = false;
+			} catch (BasicClientException e) {
+				client = new BioSimClient(BioSimClient.LANAddress, version);
+				isLAN = true;
+			}
+		} 
+		return client;
+	}
+	
+	
 	/**
 	 * This method sends a list of plot locations (latitude, longitude and elevation) to the server which returns
 	 * a list of Double[2] (mean annual temperature, mean annual precipitation)
@@ -131,14 +157,14 @@ public class BioSimClient extends BasicClient {
 		return climVar;
 	}
 
-	/*
-	 * For extended visibility (non-Javadoc)
-	 * @see repicea.net.server.BasicClient#setBypassTimeout(boolean)
-	 */
-	@Override
-	public void setBypassTimeout(boolean bypass) {
-		super.setBypassTimeout(bypass);
-	}
+//	/*
+//	 * For extended visibility (non-Javadoc)
+//	 * @see repicea.net.server.BasicClient#setBypassTimeout(boolean)
+//	 */
+//	@Override
+//	public void setBypassTimeout(boolean bypass) {
+//		super.setBypassTimeout(bypass);
+//	}
 
 	
 	

@@ -14,8 +14,6 @@ import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesP
 
 public class BioSimClientTest {
 
-	static boolean isLAN = false;
-	
 	static class FakeLocation implements GeographicalCoordinatesProvider {
 
 		final double elevationM;
@@ -40,25 +38,10 @@ public class BioSimClientTest {
 
 	}
 
-	private BioSimClient getBioSimClient() throws BasicClientException {
-		BioSimClient client = null;
-		if (isLAN) {
-			client = new BioSimClient(BioSimClient.LANAddress, BioSimVersion.VERSION_1971_2000);
-		} else {
-			try {
-				client = new BioSimClient(BioSimVersion.VERSION_1971_2000);
-				isLAN = false;
-			} catch (BasicClientException e) {
-				client = new BioSimClient(BioSimClient.LANAddress, BioSimVersion.VERSION_1971_2000);
-				isLAN = true;
-			}
-		} 
-		return client;
-	}
 	
 	@Test
 	public void simpleConnectionTest() throws BasicClientException {
-		BioSimClient client = getBioSimClient();
+		BioSimClient client = BioSimClient.getBioSimClient(BioSimVersion.VERSION_1971_2000);
 		List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
 		plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
 		plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300, 48, -70)));
@@ -72,7 +55,7 @@ public class BioSimClientTest {
 	@Test
 	public void repeatedConnectionTestSameCoordinates() throws BasicClientException {
 		for (int i = 0; i < 10; i++) {
-			BioSimClient client = getBioSimClient();
+			BioSimClient client = BioSimClient.getBioSimClient(BioSimVersion.VERSION_1971_2000);
 		
 			List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
 			plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
@@ -89,7 +72,7 @@ public class BioSimClientTest {
 		Random randomGen = new Random();
 		
 		for (int i = 0; i < 10; i++) {
-			BioSimClient client = getBioSimClient();
+			BioSimClient client = BioSimClient.getBioSimClient(BioSimVersion.VERSION_1971_2000);
 
 			List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
 			plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300 + randomGen.nextDouble(), 46 + randomGen.nextDouble(), -74 + randomGen.nextDouble())));
@@ -103,14 +86,14 @@ public class BioSimClientTest {
 
 	@Test
 	public void climateRecordingTestWithConnectionDisabled() throws Exception {
-		BioSimClient client = getBioSimClient();
+		BioSimClient client = BioSimClient.getBioSimClient(BioSimVersion.VERSION_1971_2000);
 		List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
 		plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
 		plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300, 48, -70)));
 		List<ClimateVariables> refVariables	= client.getClimateVariables(plotLocations);
 		client.close();
 		
-		BioSimClient client2 = getBioSimClient();
+		BioSimClient client2 = BioSimClient.getBioSimClient(BioSimVersion.VERSION_1971_2000);
 		client2.byPassConnectionForTesting = true;
 		plotLocations = new ArrayList<PlotLocation>();
 		plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
