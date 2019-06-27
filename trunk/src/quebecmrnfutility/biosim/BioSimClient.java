@@ -85,7 +85,7 @@ public class BioSimClient extends BasicClient {
 	 * @throws BasicClientException
 	 */
 	protected BioSimClient(InetSocketAddress address, BioSimVersion version) throws BasicClientException {
-		super(address, 5); // 5 sec before timeout.
+		super(address, 20); // 20 sec before timeout.
 		if (version == null) {
 			this.version = BioSimVersion.VERSION_1971_2000;
 		} else {
