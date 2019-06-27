@@ -55,7 +55,8 @@ class Artemis2009RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 	
 	protected synchronized double predictNumberOfRecruits(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree) {
 		Matrix beta = getParametersForThisRealization(stand).getDeepClone();
-		double dispersion = beta.m_afData[beta.m_iRows - 1][0];
+//		double dispersion = beta.m_afData[beta.m_iRows - 1][0];		// MF20190627 This line could cause a bug. In stochastic mode the dispersion could be negative 
+		double dispersion = getParameterEstimates().getMean().m_afData[beta.m_iRows - 1][0];		// MF20190627 This line could cause a bug. In stochastic mode the dispersion could be negative 
 		beta.m_afData[beta.m_iRows-1][0] = 1.0;    // last element is replaced by 1 to account for the offset variable	
 	
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009RecruitmentNumberPredictor.ModuleName, effectList);
