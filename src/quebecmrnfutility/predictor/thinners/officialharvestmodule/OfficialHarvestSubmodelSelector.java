@@ -35,11 +35,24 @@ import repicea.gui.components.REpiceaMatchSelector;
 import repicea.serial.MemorizerPackage;
 import repicea.serial.xml.XmlDeserializer;
 import repicea.serial.xml.XmlMarshallException;
+import repicea.serial.xml.XmlSerializerChangeMonitor;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
 public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<OfficialHarvestModel.TreatmentType> {
 		
+	static {
+		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector",
+				"quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestSubmodelSelector");
+		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector$Mode",
+				"quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestSubmodelSelector$Mode");
+		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestModel$TreatmentType",
+				"quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel$TreatmentType");
+		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector$ColumnID",
+				"quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestSubmodelSelector$ColumnID");
+	}
+	
+	
 	protected static enum Mode implements TextableEnum {
 		SingleTreatment("Single treatment", "Traitement unique"),
 		TreatmentByPotentialVegetation("Treatement by potential vegetation", "Traitement par v\u00E9g\u00E9tation potentielle");
