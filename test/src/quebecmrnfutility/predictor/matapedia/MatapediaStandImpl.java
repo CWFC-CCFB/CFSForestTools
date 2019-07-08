@@ -54,7 +54,7 @@ public class MatapediaStandImpl implements MatapediaStand {
 	}
 
 	@Override
-	public boolean isGoingToBeSprayed() {
+	public boolean isSprayed() {
 		return false;
 	}
 

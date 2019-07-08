@@ -160,7 +160,7 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 		oXVector.m_afData[0][pointer] = tree.getSquaredDbhCm();
 		pointer++;
 		
-		if (stand.isSBWDefoliated() && !stand.isGoingToBeSprayed()) {
+		if (stand.isSBWDefoliated() && !stand.isSprayed()) {
 			oXVector.setSubMatrix(dummySpeciesDbh0, 0, pointer);
 		} 
 		pointer += species.getDummy().m_iCols;

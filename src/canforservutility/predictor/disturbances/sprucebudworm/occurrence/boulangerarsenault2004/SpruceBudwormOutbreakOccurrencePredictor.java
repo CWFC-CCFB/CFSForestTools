@@ -30,6 +30,7 @@ import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.disturbances.DisturbanceOccurrences;
 import repicea.util.ObjectUtility;
 
 /**
@@ -59,11 +60,6 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 			return mat;
 		}
 	}
-	
-	public static class Occurrences extends ArrayList<Integer> {}
-	
-//	private final double estimatedRecurrence = 39.5; // based on Boulanger and Arsenault (2004)
-//	private final double variancePop = 70.05555556;	// based on Boulanger and Arsenault (2004)
 
 	private final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMap; // Monte Carlo id / current date / parameter
 	private final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMapForUnknownLastOccurrence; 
@@ -130,7 +126,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 		if (currentDateYr == null) {
 			throw new InvalidParameterException("The parms argument must provide at least an instance of integer which represents the current date (yrs)");
 		}
-		Occurrences occurrences = (Occurrences) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Occurrences.class, parms);
+		DisturbanceOccurrences occurrences = (DisturbanceOccurrences) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(DisturbanceOccurrences.class, parms);
 		Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
 		if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
 			double marginalProb = 0d;
@@ -209,7 +205,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 			return null;
 		} else if (isResidualVariabilityEnabled) {
 			int currentDateYr = (Integer) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Integer.class, parms);
-			Occurrences occurrences = (Occurrences) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Occurrences.class, parms);
+			DisturbanceOccurrences occurrences = (DisturbanceOccurrences) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(DisturbanceOccurrences.class, parms);
 			Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
 			boolean occurred;
 			if (timeSinceLastOutbreak == null) {
@@ -257,16 +253,9 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	}
 
 	
-	private Integer getTimeSinceLastOutbreak(SpruceBudwormOutbreakOccurrencePlot plotSample, int currentDateYr, Occurrences occurrences) {
+	private Integer getTimeSinceLastOutbreak(SpruceBudwormOutbreakOccurrencePlot plotSample, int currentDateYr, DisturbanceOccurrences occurrences) {
 		if (occurrences != null) {
-			int latestOccurrence = -1;
-			for (Integer o : occurrences) {
-				if (o < currentDateYr) {
-					if (latestOccurrence == -1 || currentDateYr - o < latestOccurrence) {
-						latestOccurrence = currentDateYr - o;
-					}
-				}
-			}
+			int latestOccurrence = occurrences.getLastOccurrenceDateYrToDate(currentDateYr);
 			
 			Integer timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
 			
@@ -275,9 +264,9 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 			} else if (latestOccurrence == - 1) {
 				return timeSinceLastOutbreak;
 			} else if (timeSinceLastOutbreak == null) {
-				return latestOccurrence;
+				return currentDateYr - latestOccurrence;
 			} else {
-				return Math.min(latestOccurrence, timeSinceLastOutbreak);
+				return Math.min(currentDateYr - latestOccurrence, timeSinceLastOutbreak);
 			}
 		} else {
 			return plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
