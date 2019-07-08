@@ -25,6 +25,7 @@ import java.util.List;
 
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.covariateproviders.standlevel.SprayedAgainstDefoliatorProvider;
 import repicea.stats.estimates.SimpleEstimate;
 
 /**
@@ -154,6 +155,11 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 	
 	@Override
 	public synchronized double predictEventProbability(DefoliationPlot plot, Object tree, Object... parms) {
+		if (plot instanceof SprayedAgainstDefoliatorProvider) {
+			if (((SprayedAgainstDefoliatorProvider) plot).isSprayed()) {
+				return 0d;
+			}
+		} 
 		SimpleEstimate estimate = getDurationAndSeverityEstimate(plot);
 		double durationResult = estimate.getMean().m_afData[0][0];
 		double severityResult = estimate.getMean().m_afData[1][0];

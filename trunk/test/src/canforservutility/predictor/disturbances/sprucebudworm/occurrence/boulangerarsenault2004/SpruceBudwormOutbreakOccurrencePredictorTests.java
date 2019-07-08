@@ -26,7 +26,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import canforservutility.predictor.disturbances.sprucebudworm.occurrence.boulangerarsenault2004.SpruceBudwormOutbreakOccurrencePredictor.Occurrences;
+import repicea.simulation.disturbances.DisturbanceOccurrences;
+
 
 
 public class SpruceBudwormOutbreakOccurrencePredictorTests {
@@ -115,7 +116,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(true, true);
 		double prob = 0;
 		for (int i = 0; i < nbRealizations; i++) {
-			Occurrences occ = new Occurrences();
+			DisturbanceOccurrences occ = new DisturbanceOccurrences(null);
 			plot.setMonteCarloId(i);
 			prob += predictor.predictEventProbability(plot, null, 2000, occ);
 		}
@@ -130,12 +131,43 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(true, true);
 		double prob = 0;
 		for (int i = 0; i < nbRealizations; i++) {
-			Occurrences occ = new Occurrences();
+			DisturbanceOccurrences occ = new DisturbanceOccurrences(null);
 			plot.setMonteCarloId(i);
 			prob += predictor.predictEventProbability(plot, null, 2000, occ);
 		}
 		double actual = prob / nbRealizations;
 		Assert.assertEquals("Testing stochastic probability", 0.011359786416281268, actual, 2E-5);
+	}
+
+	
+	@Test
+	public void simpleStochasticTest3() {
+		int nbRealizations = 1000000;
+		SpruceBudwormOutbreakOccurrencePlotImpl plot = new SpruceBudwormOutbreakOccurrencePlotImpl(10, 0);
+		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(true, true);
+		double prob = 0;
+		for (int i = 0; i < nbRealizations; i++) {
+			DisturbanceOccurrences occ = new DisturbanceOccurrences(null, 1995);
+			plot.setMonteCarloId(i);
+			prob += predictor.predictEventProbability(plot, null, 2000, occ);
+		}
+		double actual = prob / nbRealizations;
+		Assert.assertEquals("Testing stochastic probability", 7.6257390949E-4, actual, 1E-5);
+	}
+
+	@Test
+	public void simpleStochasticTest4() {
+		int nbRealizations = 1000000;
+		SpruceBudwormOutbreakOccurrencePlotImpl plot = new SpruceBudwormOutbreakOccurrencePlotImpl(10, 0);
+		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(true, true);
+		double prob = 0;
+		for (int i = 0; i < nbRealizations; i++) {
+			DisturbanceOccurrences occ = new DisturbanceOccurrences(null, 2000);
+			plot.setMonteCarloId(i);
+			prob += predictor.predictEventProbability(plot, null, 2000, occ);
+		}
+		double actual = prob / nbRealizations;
+		Assert.assertEquals("Testing stochastic probability", 3.7217079246087332E-5, actual, 4E-6);
 	}
 
 }

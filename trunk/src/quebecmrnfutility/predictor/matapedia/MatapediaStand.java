@@ -23,6 +23,7 @@ import java.util.Collection;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.standlevel.DateYrProvider;
+import repicea.simulation.covariateproviders.standlevel.SprayedAgainstDefoliatorProvider;
 import repicea.simulation.covariateproviders.standlevel.SpruceBudwormDefoliatedProvider;
 
 /**
@@ -32,6 +33,7 @@ import repicea.simulation.covariateproviders.standlevel.SpruceBudwormDefoliatedP
  */
 public interface MatapediaStand extends MonteCarloSimulationCompliantObject,
 										SpruceBudwormDefoliatedProvider,
+										SprayedAgainstDefoliatorProvider, 
 										DateYrProvider {
 	
 	
@@ -61,6 +63,7 @@ public interface MatapediaStand extends MonteCarloSimulationCompliantObject,
 	 * the upcoming interval.
 	 * @return a boolean
 	 */
-	public boolean isGoingToBeSprayed();
+	@Override
+	public boolean isSprayed();
 	
 }
