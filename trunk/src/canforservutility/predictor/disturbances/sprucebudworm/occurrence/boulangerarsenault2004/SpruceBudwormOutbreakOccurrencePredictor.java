@@ -31,6 +31,7 @@ import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.disturbances.DisturbanceOccurrences;
+import repicea.simulation.disturbances.DisturbanceTypeProvider.DisturbanceType;
 import repicea.util.ObjectUtility;
 
 /**
@@ -131,8 +132,8 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 		if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
 			double marginalProb = 0d;
 			int max = 90;
-			double truncationFactor = 1d / getSurvivorFunctionResult(plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr) + .5, lambdaParm, betaParm);
-			for (int time = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr) + 1; time <= max; time++) {	// marginalized over all the possible values 
+			double truncationFactor = 1d / getSurvivorFunctionResult(plotSample.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, currentDateYr) + .5, lambdaParm, betaParm);
+			for (int time = plotSample.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, currentDateYr) + 1; time <= max; time++) {	// marginalized over all the possible values 
 				double marginalProbability = getSurvivorFunctionResult(time - .5, lambdaParm, betaParm) -  getSurvivorFunctionResult(time +.5, lambdaParm, betaParm);
 				marginalProb += getConditionalAnnualProbabilityofOccurrence(time, lambdaParm, betaParm) * marginalProbability * truncationFactor;
 			}
@@ -209,7 +210,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 			Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
 			boolean occurred;
 			if (timeSinceLastOutbreak == null) {
-				int timeSinceFirstKnownDate = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr);
+				int timeSinceFirstKnownDate = plotSample.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, currentDateYr);
 				occurred = getResidualError(recorderMapForUnknownLastOccurrence,
 						plotSample.getMonteCarloRealizationId(), 
 						currentDateYr, 
@@ -257,7 +258,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 		if (occurrences != null) {
 			int latestOccurrence = occurrences.getLastOccurrenceDateYrToDate(currentDateYr);
 			
-			Integer timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
+			Integer timeSinceLastOutbreak = plotSample.getTimeSinceLastDisturbanceYrs(DisturbanceType.SpruceBudwormOutbreak, currentDateYr);
 			
 			if (latestOccurrence == -1 && timeSinceLastOutbreak == null) {
 				return null;
@@ -269,7 +270,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 				return Math.min(currentDateYr - latestOccurrence, timeSinceLastOutbreak);
 			}
 		} else {
-			return plotSample.getTimeSinceLastDisturbanceYrs(currentDateYr);
+			return plotSample.getTimeSinceLastDisturbanceYrs(DisturbanceType.SpruceBudwormOutbreak, currentDateYr);
 		}
 	}
 	

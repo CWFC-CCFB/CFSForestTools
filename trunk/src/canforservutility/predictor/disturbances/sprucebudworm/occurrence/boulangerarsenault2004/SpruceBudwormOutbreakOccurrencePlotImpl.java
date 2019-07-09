@@ -21,6 +21,7 @@
 package canforservutility.predictor.disturbances.sprucebudworm.occurrence.boulangerarsenault2004;
 
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.disturbances.DisturbanceTypeProvider.DisturbanceType;
 
 /**
  * This class is a basic implementation of the SpruceBudwormOutbreakOccurrencePlot interface.
@@ -44,12 +45,12 @@ public class SpruceBudwormOutbreakOccurrencePlotImpl implements SpruceBudwormOut
 	}
 
 	@Override
-	public Integer getTimeSinceLastDisturbanceYrs(int currentDateYrs) {
+	public Integer getTimeSinceLastDisturbanceYrs(DisturbanceType type, int currentDateYrs) {
 		return timeSinceLastOutbreakYrs;
 	}
 
 	@Override
-	public int getTimeSinceFirstKnownDateYrs(int currentDateYrs) {
+	public int getTimeSinceFirstKnownDateYrs(DisturbanceType type, int currentDateYrs) {
 		return initialKnownDate;
 	}
 
