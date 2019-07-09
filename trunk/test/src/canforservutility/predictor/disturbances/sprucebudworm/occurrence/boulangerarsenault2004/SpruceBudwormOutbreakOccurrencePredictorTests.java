@@ -61,7 +61,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, 0), 0.07326448875128741, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.07326448875128741, prob, 1E-4);
 	}
 
 	
@@ -71,7 +71,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, 0), 0.07362230035437763, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.07362230035437763, prob, 1E-4);
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, 0), 0.11594906884437328, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.11594906884437328, prob, 1E-4);
 	}
 
 	@Test
@@ -89,7 +89,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, 0), 0.1585175051027792, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.1585175051027792, prob, 1E-4);
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, 0), 0.21806173583507135, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.21806173583507135, prob, 1E-4);
 	}
 	
 	@Test
@@ -107,7 +107,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTests {
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
 		double prob = predictor.predictEventProbability(plot, null, 0);
 		System.out.println("Prob = " + prob);
-		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, 0), 0.2928574702983688, prob, 1E-4);
+		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.2928574702983688, prob, 1E-4);
 	}
 	
 	@Test
