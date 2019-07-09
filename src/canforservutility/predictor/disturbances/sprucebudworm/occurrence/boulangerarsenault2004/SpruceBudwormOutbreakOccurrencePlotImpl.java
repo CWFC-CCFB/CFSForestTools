@@ -31,17 +31,17 @@ public class SpruceBudwormOutbreakOccurrencePlotImpl implements SpruceBudwormOut
 
 	
 	private final Integer timeSinceLastOutbreakYrs;
-	private int initialKnownDate;
+	private int timeSinceInitialKnownDate;
 	private int monteCarloId;
 
 	/**
 	 * Constructor.
 	 * @param timeSinceLastOutbreakYrs an Integer instance (can be null)
-	 * @param initialKnownDate an integer
+	 * @param timeSinceInitialKnownDate an integer
 	 */
-	public SpruceBudwormOutbreakOccurrencePlotImpl(Integer timeSinceLastOutbreakYrs, int initialKnownDate) {
+	public SpruceBudwormOutbreakOccurrencePlotImpl(Integer timeSinceLastOutbreakYrs, int timeSinceInitialKnownDate) {
 		this.timeSinceLastOutbreakYrs = timeSinceLastOutbreakYrs;
-		this.initialKnownDate = initialKnownDate;
+		this.timeSinceInitialKnownDate = timeSinceInitialKnownDate;
 	}
 
 	@Override
@@ -50,8 +50,8 @@ public class SpruceBudwormOutbreakOccurrencePlotImpl implements SpruceBudwormOut
 	}
 
 	@Override
-	public int getTimeSinceFirstKnownDateYrs(DisturbanceType type, int currentDateYrs) {
-		return initialKnownDate;
+	public int getTimeSinceFirstKnownDateYrs(int currentDateYrs) {
+		return timeSinceInitialKnownDate;
 	}
 
 	/*

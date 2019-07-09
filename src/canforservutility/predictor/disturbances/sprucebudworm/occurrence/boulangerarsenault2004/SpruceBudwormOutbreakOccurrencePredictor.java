@@ -132,8 +132,8 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 		if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
 			double marginalProb = 0d;
 			int max = 90;
-			double truncationFactor = 1d / getSurvivorFunctionResult(plotSample.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, currentDateYr) + .5, lambdaParm, betaParm);
-			for (int time = plotSample.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, currentDateYr) + 1; time <= max; time++) {	// marginalized over all the possible values 
+			double truncationFactor = 1d / getSurvivorFunctionResult(plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr) + .5, lambdaParm, betaParm);
+			for (int time = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr) + 1; time <= max; time++) {	// marginalized over all the possible values 
 				double marginalProbability = getSurvivorFunctionResult(time - .5, lambdaParm, betaParm) -  getSurvivorFunctionResult(time +.5, lambdaParm, betaParm);
 				marginalProb += getConditionalAnnualProbabilityofOccurrence(time, lambdaParm, betaParm) * marginalProbability * truncationFactor;
 			}
@@ -210,7 +210,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 			Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
 			boolean occurred;
 			if (timeSinceLastOutbreak == null) {
-				int timeSinceFirstKnownDate = plotSample.getTimeSinceFirstKnownDateYrs(DisturbanceType.SpruceBudwormOutbreak, currentDateYr);
+				int timeSinceFirstKnownDate = plotSample.getTimeSinceFirstKnownDateYrs(currentDateYr);
 				occurred = getResidualError(recorderMapForUnknownLastOccurrence,
 						plotSample.getMonteCarloRealizationId(), 
 						currentDateYr, 
