@@ -126,6 +126,20 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 		this(false);
 	}
 
+	
+	private Matrix setMatrixAndValue(List<?> oList, Object obj) {
+		if (oList != null && !oList.isEmpty()) {
+			Matrix oMat = new Matrix(1, oList.size());
+			if(oList.indexOf(obj) != -1){
+				oMat.m_afData[0][oList.indexOf(obj)] = 1d;
+			}
+			return oMat;
+		} else {
+			return null;
+		}
+	}
+	
+	
 	@Override
 	protected final void init() {
 		try {
@@ -161,7 +175,6 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 				Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);
 				internalPredictor.setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
 				
-//				Matrix years = new Matrix(measurementDates);
 				Matrix sigma2 = randomEffects.getSubMatrix(2, 2, 0, 0);
 				double phi = randomEffects.m_afData[1][0];//tree
 				GaussianErrorTermEstimate estimate = new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.POWER);
@@ -176,11 +189,10 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 				for (int i = 0; i < sdomBio.size(); i++) {
 					String sdomBioKey = sdomBio.get(i);
 					String sdomValue = sdom.get(i);
-					oMat = new Matrix(1, sdomM.size());
-					if(sdomM.indexOf(sdomValue) != -1){
-						oMat.m_afData[0][sdomM.indexOf(sdomValue)] = 1d;
+					oMat = setMatrixAndValue(sdomM, sdomValue);
+					if (oMat != null) {
+						oMap.put(sdomBioKey, oMat);
 					}
-					oMap.put(sdomBioKey, oMat);
 				}
 				internalPredictor.setSubDomainDummyMap(oMap);
 
@@ -191,11 +203,10 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 				for (int i = 0; i < vegPotKeys.size(); i++) {
 					String vegPotKey = vegPotKeys.get(i);
 					String vpValue = vp.get(i);
-					oMat = new Matrix(1, vegPotM.size());
-					if(vegPotM.indexOf(vpValue) != -1){
-						oMat.m_afData[0][vegPotM.indexOf(vpValue)] = 1d;
+					oMat = setMatrixAndValue(vegPotM, vpValue);
+					if (oMat != null) {
+						oMap.put(vegPotKey, oMat);
 					}
-					oMap.put(vegPotKey, oMat);
 				}
 				internalPredictor.setVegPotDummyMap(oMap);
 
@@ -206,31 +217,27 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 				for (int i = 0; i < ecoTypeKeys.size(); i++) {
 					String ecoTypeKey = ecoTypeKeys.get(i);
 					String milieuValue = milieu.get(i);
-					oMat = new Matrix(1, ecoTypeM.size());
-					if(ecoTypeM.indexOf(milieuValue) != -1){
-						oMat.m_afData[0][ecoTypeM.indexOf(milieuValue)] = 1d;
+					oMat = setMatrixAndValue(ecoTypeM, milieuValue);
+					if (oMat != null) {
+						oMap.put(ecoTypeKey, oMat);
 					}
-					oMap.put(ecoTypeKey, oMat);
 				}
 				internalPredictor.setEcoTypeDummyMap(oMap);
-//				ecoTypeDummyReferenceMap.put(species, oMap);
 				
 				
 				List<String> disturbM = ParameterLoaderExt.loadColumnVectorFromFile(parameterFilename, 2, String.class);
-				List<String> distrubKeys = ParameterLoaderExt.loadColumnVectorFromFile(listDisturbFileName, 0, String.class);
-				List<String> distrub = ParameterLoaderExt.loadColumnVectorFromFile(listDisturbFileName, 1, String.class);
+				List<String> disturbKeys = ParameterLoaderExt.loadColumnVectorFromFile(listDisturbFileName, 0, String.class);
+				List<String> disturb = ParameterLoaderExt.loadColumnVectorFromFile(listDisturbFileName, 1, String.class);
 				oMap = new HashMap<String, Matrix>();
-				for (int i = 0; i < distrubKeys.size(); i++) {
-					String ecoTypeKey = distrubKeys.get(i);
-					String distrubValue = distrub.get(i);
-					oMat = new Matrix(1, disturbM.size());
-					if(disturbM.indexOf(distrubValue) != -1){
-						oMat.m_afData[0][disturbM.indexOf(distrubValue)] = 1d;
+				for (int i = 0; i < disturbKeys.size(); i++) {
+					String ecoTypeKey = disturbKeys.get(i);
+					String disturbValue = disturb.get(i);
+					oMat = setMatrixAndValue(disturbM, disturbValue);
+					if (oMat != null) {
+						oMap.put(ecoTypeKey, oMat);
 					}
-					oMap.put(ecoTypeKey, oMat);
 				}
 				internalPredictor.setDisturbanceDummyMap(oMap);
-//				disturbDummyReferenceMap.put(species, oMap);
 
 				List<String> effects = ParameterLoaderExt.loadColumnVectorFromFile(listEffectFilename, 0, String.class);
 				List<Effect> listEffect = new ArrayList<Effect>();
@@ -238,10 +245,10 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 					listEffect.add(Effect.fromString(effect));
 				}
 				internalPredictor.setEffectList(listEffect);
-//				listEffectReferenceMap.put(species, listEffect);
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("BetaHeightPredictor Class : Unable to initialize the beta height-diameter relationship");
 		}
 	}
@@ -249,10 +256,11 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 	@Override
 	public synchronized double predictHeightM(Heightable2014Stand stand, Heightable2014Tree tree) {
 		Hd2014Species species = tree.getHeightable2014TreeSpecies();
-		double height = internalPredictors.get(species).predictHeightM(stand, tree);
-		if(height < 3.0d)
+		GeneralHeight2014InternalPredictor internalPredictor = internalPredictors.get(species); 
+		double height = internalPredictor.predictHeightM(stand, tree);
+		if(height < 3.0d) {
 			height = 3.0d;
-		
+		}
 		return height;
 	}
 
