@@ -79,26 +79,4 @@ public class Artemis2009DiameterIncrementPredictor extends REpiceaPredictor {
 		return predictedGrowth;
 	}
 
-	/**
-	 * This method returns the cumulative variance of the diameter prediction which can be used as a correction 
-	 * factor.
-	 * @param stand a Artemis2009CompatibleStand instance 
-	 * @param tree a Artemis2009CompatibleTree tree
-	 * @return a double
-	 */
-	public double getPredictionVariance(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree) {
-		String potentialVegetationCode = stand.getPotentialVegetation();
-		if (potentialVegetationCode != null && internalPredictors.containsKey(potentialVegetationCode)) {
-			return internalPredictors.get(potentialVegetationCode).getPredictionVariance(stand, tree);
-		} else {
-			return -1d;
-		}
-	}
-	
-//	@Override
-//	public void clearDeviates() {
-//		for (Artemis2009DiameterIncrementInternalPredictor p : internalPredictors.values()) {
-//			p.clearDeviates();
-//		}
-//	}
 }
