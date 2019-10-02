@@ -19,9 +19,7 @@
 package quebecmrnfutility.predictor.artemis2009;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
@@ -36,12 +34,10 @@ import repicea.stats.estimates.GaussianEstimate;
 class Artemis2009DiameterIncrementInternalPredictor extends REpiceaPredictor { 
 
 	private final List<Integer> effectList;
-	private final Map<Integer, Double> variancesMap;
 	
 	protected Artemis2009DiameterIncrementInternalPredictor(boolean isParametersVariabilityEnabled,	boolean isOtherRandomEffectsVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, isOtherRandomEffectsVariabilityEnabled, isOtherRandomEffectsVariabilityEnabled);
 		effectList = new ArrayList<Integer>();
-		variancesMap = new HashMap<Integer, Double>();
 	}
 
 	protected void setBeta(Matrix beta, Matrix omega) {
@@ -94,11 +90,6 @@ class Artemis2009DiameterIncrementInternalPredictor extends REpiceaPredictor {
 		Matrix variance = new Matrix(1,1);
 		variance.m_afData[0][0] = s2_tree;
 		setDefaultResidualError(ErrorTermGroup.Default, new GaussianErrorTermEstimate(variance, correlationParameter, StatisticalUtility.TypeMatrixR.LINEAR_LOG));
-	}
-
-	
-	protected double getPredictionVariance(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree) {
-		return variancesMap.get(tree.getSubjectId());
 	}
 
 	/*
