@@ -25,13 +25,11 @@ import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
-import repicea.stats.REpiceaRandom;
+import repicea.stats.StatisticalUtility;
 
-@SuppressWarnings("serial")
 class Artemis2009RecruitDiameterInternalPredictor extends REpiceaPredictor {
 
 	private List<Integer> effectList;
-	private REpiceaRandom randomGenerator;
 
 	protected Artemis2009RecruitDiameterInternalPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this model
@@ -40,7 +38,6 @@ class Artemis2009RecruitDiameterInternalPredictor extends REpiceaPredictor {
 
 	protected void init() {
 		effectList = new ArrayList<Integer>();
-		randomGenerator = new REpiceaRandom();
 	}
 
 	
@@ -80,7 +77,7 @@ class Artemis2009RecruitDiameterInternalPredictor extends REpiceaPredictor {
 		if (isResidualVariabilityEnabled) {
 			double randomDeviate = 0d;
 			try {
-				randomDeviate = randomGenerator.nextGamma(shape, scale);
+				randomDeviate = StatisticalUtility.getRandom().nextGamma(shape, scale);
 			} catch (Exception e) {}	// happens usually when the shape is close to 0 which means that the random deviate is likely 0.
 			fDiameter = 9.1 + randomDeviate * 0.1;	
 			if (fDiameter > 21) {

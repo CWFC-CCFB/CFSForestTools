@@ -32,6 +32,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.disturbances.DisturbanceOccurrences;
 import repicea.simulation.disturbances.DisturbanceTypeProvider.DisturbanceType;
+import repicea.stats.StatisticalUtility;
 import repicea.util.ObjectUtility;
 
 /**
@@ -44,7 +45,6 @@ import repicea.util.ObjectUtility;
  * outbreaks in eastern Quebec over the last 450 years. Canadian Journal of Forest Research 34: 1035-1043 
  * </a>
  */
-@SuppressWarnings("serial")
 public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinaryEventPredictor<SpruceBudwormOutbreakOccurrencePlot, Object> {
 
 	
@@ -247,7 +247,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 		}
 		Map<Number, Boolean> innerInnerMap = innerMap.get(currentDate);
 		if (!innerInnerMap.containsKey(parameter)) {
-			double residualError = random.nextDouble();
+			double residualError = StatisticalUtility.getRandom().nextDouble();
 			innerInnerMap.put(parameter, residualError < probability);
 		}
 		return innerInnerMap.get(parameter);

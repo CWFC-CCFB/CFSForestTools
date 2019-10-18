@@ -31,6 +31,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
+import repicea.stats.StatisticalUtility;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
 
@@ -196,7 +197,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			Matrix dummy = species.getDummy();
 			double dbh2 = t.getSquaredDbhCm();
 
-			return Math.sqrt(dummy.multiply(sigma2).m_afData[0][0]) * dbh2 * this.random.nextGaussian();
+			return Math.sqrt(dummy.multiply(sigma2).m_afData[0][0]) * dbh2 * StatisticalUtility.getRandom().nextGaussian();
 		} else {
 			return 0d;
 		}

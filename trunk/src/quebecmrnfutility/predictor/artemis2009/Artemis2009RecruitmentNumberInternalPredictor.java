@@ -25,6 +25,7 @@ import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
+import repicea.stats.StatisticalUtility;
 //import org.apache.commons.math.special.Gamma;
 
 @SuppressWarnings("serial")
@@ -64,7 +65,7 @@ class Artemis2009RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		double predictedValue = Math.exp(xBeta);
 		
 		if (isResidualVariabilityEnabled) {
-			int nbRecruits = random.nextNegativeBinomial(predictedValue, dispersion) + 1; // 1 is required since the modelled value was y - 1 
+			int nbRecruits = StatisticalUtility.getRandom().nextNegativeBinomial(predictedValue, dispersion) + 1; // 1 is required since the modelled value was y - 1 
 			if (nbRecruits > 80 && !Artemis2009RecruitmentNumberPredictor.Override80Limit) { // maximum number of recruits is set to 80
 				nbRecruits = 80;
 			}
