@@ -139,7 +139,7 @@ class PopulationTests {
 		PopulationTests popTest = new PopulationTests();
 		Population pop = popTest.createBetaPopulation(populationSize, speciesRichness, type.getScale1(), type.getScale2());
 		if (populationSize == 1000) {
-			XmlSerializer serializer = new XmlSerializer(ObjectUtility.getPackagePath(PopulationTests.class).replace("bin", "manuscripts") + "pop" + populationSize + "_" + type.name());
+			XmlSerializer serializer = new XmlSerializer(ObjectUtility.getPackagePath(PopulationTests.class).replace("bin", "manuscripts") + "pop" + populationSize + "_" + speciesRichness + "_" + type.name());
 			serializer.writeObject(pop);
 		}
 		MultipleSiteIndex msi = new MultipleSiteIndex();
