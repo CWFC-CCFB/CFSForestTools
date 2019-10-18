@@ -26,7 +26,6 @@ import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.ChiSquaredDistribution;
 
-@SuppressWarnings("serial")
 class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule {
 
 	PetroGradePredictorPresenceSubModule(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled, PetroGradePredictorVersion version) {
@@ -80,7 +79,7 @@ class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule 
 
 		if (isResidualVariabilityEnabled) {
 			for (int i = 0; i < oMat.m_iRows; i++) {
-				double deviate = random.nextDouble();
+				double deviate = StatisticalUtility.getRandom().nextDouble();
 				if (deviate < oMat.m_afData[i][0]) {
 					oMat.m_afData[i][0] = 1d;
 				} else {

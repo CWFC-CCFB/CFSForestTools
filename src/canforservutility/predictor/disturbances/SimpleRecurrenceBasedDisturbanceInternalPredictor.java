@@ -29,6 +29,7 @@ import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.stats.StatisticalUtility;
 
 /**
  * The SimpleRecurrenceBasedDisturbancePredictor class implements a lifetime model based on a simple exponential distribution. 
@@ -36,7 +37,6 @@ import repicea.simulation.REpiceaBinaryEventPredictor;
  * in the same conditions for consistency.
  * @author Mathieu Fortin - April 2019
  */
-@SuppressWarnings("serial")
 class SimpleRecurrenceBasedDisturbanceInternalPredictor extends REpiceaBinaryEventPredictor<MonteCarloSimulationCompliantObject, Object>{
 
 	protected final Map<Integer, Map<Integer, Map<Number, Boolean>>>  recorderMap; // Monte Carlo id / current date / parameter
@@ -90,7 +90,7 @@ class SimpleRecurrenceBasedDisturbanceInternalPredictor extends REpiceaBinaryEve
 		}
 		Map<Number, Boolean> innerInnerMap = innerMap.get(currentDate);
 		if (!innerInnerMap.containsKey(parameter)) {
-			double residualError = random.nextDouble();
+			double residualError = StatisticalUtility.getRandom().nextDouble();
 			innerInnerMap.put(parameter, residualError < probability);
 		}
 		return innerInnerMap.get(parameter);
