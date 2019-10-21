@@ -145,7 +145,7 @@ class PopulationTests {
 		MultipleSiteIndex msi = new MultipleSiteIndex();
 		DiversityIndices currentIndices = msi.getMultiplesiteDissimilarityIndices(pop);
 		DiversityIndices newIndices = msi.getAdaptedMultiplesiteDissimilarityIndices(pop);
-		Object[] record = new Object[10];
+		Object[] record = new Object[11];
 		record[0] = populationSize;
 		record[1] = newIndices.getGammaDiversity();
 		record[2] = newIndices.getAlphaDiversity();
