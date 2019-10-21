@@ -10,11 +10,10 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import canforservutility.biodiversity.indices.MultipleSiteIndex.DiversityIndex;
+import canforservutility.biodiversity.indices.DiversityIndices.DiversityIndex;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.serial.xml.XmlDeserializer;
-import repicea.stats.estimates.SimpleEstimate;
 import repicea.util.ObjectUtility;
 
 public class MultipleSiteIndexTests {
@@ -69,9 +68,9 @@ public class MultipleSiteIndexTests {
 			}
 			Map<String, Matrix> innerMap = observedMap.get(key);
 			Map population = getStrata().get(key);
-			Map<DiversityIndex, SimpleEstimate> indices = msi.getDissimilarityIndicesMultiplesiteEstimator(population, 100000);
-			for (DiversityIndex name : indices.keySet()) {
-				innerMap.put(name.name(), indices.get(name).getMean());
+			DiversityIndicesEstimates indices = msi.getDissimilarityIndicesMultiplesiteEstimator(population, 100000);
+			for (DiversityIndex name : DiversityIndex.values()) {
+				innerMap.put(name.name(), indices.getEstimate(name).getMean());
 			}
 		}
 
