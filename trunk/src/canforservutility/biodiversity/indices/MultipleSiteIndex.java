@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import canforservutility.biodiversity.indices.DiversityIndices.BetaIndex;
 import repicea.math.Matrix;
 import repicea.stats.estimates.JackknifeEstimate;
 import repicea.stats.estimates.SimpleEstimate;
@@ -45,14 +46,6 @@ import repicea.util.ObjectUtility;
  */
 public class MultipleSiteIndex {
 	
-	public static enum DiversityIndex {Alpha,
-		Gamma,
-		Beta}
-	
-	public static enum BetaIndex {
-		Simpson, 
-		Sorensen,
-		Nestedness}  
 	
 	public static enum Mode {LeaveOneOut, DeleteTwo}
 	
@@ -187,20 +180,24 @@ public class MultipleSiteIndex {
 	 * This method returns the multiple-site versions of Simpson's and Sorensen's dissimilarity indices
 	 * for a population. 
 	 * @param oMap a Map instance that stands for the population of sites
-	 * @return a Map with the index names as key and the values of this indices
+	 * @return a DiversityIndices instance
 	 */
 	@SuppressWarnings("rawtypes")
-	public Map<BetaIndex, Double> getMultiplesiteDissimilarityIndices(Map<String, List> oMap) {
+	public DiversityIndices getMultiplesiteDissimilarityIndices(Map<String, List> oMap) {
 		DissimilarityFeatures f = getInnerDissimilarity(oMap);
 
 		double simpson = ((double) f.sumMin_ij) / (f.sumS_i - f.totalNbSpecies + f.sumMin_ij);
 		double sorensen = ((double) (f.sumMin_ij + f.sumMax_ij)) /(2 * (f.sumS_i - f.totalNbSpecies) + f.sumMin_ij + f.sumMax_ij);
 		double nestedness = sorensen - simpson;
-		Map<BetaIndex, Double> indexMap = new HashMap<BetaIndex, Double>();
-		indexMap.put(BetaIndex.Simpson, simpson);
-		indexMap.put(BetaIndex.Sorensen, sorensen);
-		indexMap.put(BetaIndex.Nestedness, nestedness);
-		return indexMap;
+		
+		DiversityIndices di = new DiversityIndices();
+		di.setAlphaDiversity(f.sumS_i / f.nbPlots);
+		di.setGammaDiversity(f.totalNbSpecies);
+		di.setBetaDiversity(BetaIndex.Simpson, simpson);
+		di.setBetaDiversity(BetaIndex.Sorensen, sorensen);
+		di.setBetaDiversity(BetaIndex.Nestedness, nestedness);
+
+		return di;
 	}
 	
 	/**
@@ -210,18 +207,22 @@ public class MultipleSiteIndex {
 	 * @return a Map with the index names as key and the values of this indices
 	 */
 	@SuppressWarnings("rawtypes")
-	public Map<BetaIndex, Double> getAdaptedMultiplesiteDissimilarityIndices(Map<String, List> oMap) {
+	public DiversityIndices getAdaptedMultiplesiteDissimilarityIndices(Map<String, List> oMap) {
 		DissimilarityFeatures f = getInnerDissimilarity(oMap);
 		double sumMinCorr = (2d * f.sumMin_ij) / f.nbPlots;
 		double sumMaxCorr = (2d * f.sumMax_ij) / f.nbPlots;
 		double simpson = sumMinCorr / (f.sumS_i - f.totalNbSpecies + sumMinCorr);
 		double sorensen = (sumMinCorr + sumMaxCorr) /(2 * (f.sumS_i - f.totalNbSpecies) + sumMinCorr + sumMaxCorr);
 		double nestedness = sorensen - simpson;
-		Map<BetaIndex, Double> outputMap = new HashMap<BetaIndex, Double>();
-		outputMap.put(BetaIndex.Simpson, simpson);
-		outputMap.put(BetaIndex.Sorensen, sorensen);
-		outputMap.put(BetaIndex.Nestedness, nestedness);
-		return outputMap;
+
+		DiversityIndices di = new DiversityIndices();
+		di.setAlphaDiversity(f.sumS_i / f.nbPlots);
+		di.setGammaDiversity(f.totalNbSpecies);
+		di.setBetaDiversity(BetaIndex.Simpson, simpson);
+		di.setBetaDiversity(BetaIndex.Sorensen, sorensen);
+		di.setBetaDiversity(BetaIndex.Nestedness, nestedness);
+		
+		return di;
 	}
 	
 //	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -299,7 +300,7 @@ public class MultipleSiteIndex {
 	 * @return a Map that contains the indices
 	 */
 	@SuppressWarnings("rawtypes")
-	public Map<DiversityIndex, SimpleEstimate> getDissimilarityIndicesMultiplesiteEstimator(Map<String, List> oMap, int populationSize, boolean jackknife, Mode mode) {
+	public DiversityIndicesEstimates getDissimilarityIndicesMultiplesiteEstimator(Map<String, List> oMap, int populationSize, boolean jackknife, Mode mode) {
 		ValidatedHashMap<String, List> vMap = validateMap(oMap);
 		if (jackknife && vMap.size() <= 2 && mode != Mode.LeaveOneOut) {
 			throw new InvalidParameterException("There must be at least three observations in the sample to use the Delete-2 or Efron and Stein's (1981) correction!");
@@ -312,7 +313,8 @@ public class MultipleSiteIndex {
 		double meanS_hat = ((double) f.sumS_i) / f.nbPlots;
 		double totalS_hat = chao2Estimate.getMean().m_afData[0][0];
 
-		Map<DiversityIndex, SimpleEstimate> outputMap = new HashMap<DiversityIndex, SimpleEstimate>();
+		DiversityIndicesEstimates di = new DiversityIndicesEstimates();
+		
 		double simpson = (populationSize-1) * meanMin_hat / (populationSize * meanS_hat - totalS_hat + (populationSize-1) * meanMin_hat);
 		double sorensen = (populationSize-1) * (meanMin_hat + meanMax_hat) / (2d * (populationSize * meanS_hat - totalS_hat) + (populationSize-1) * (meanMin_hat + meanMax_hat));
 		double nestedness = sorensen - simpson;
@@ -324,10 +326,10 @@ public class MultipleSiteIndex {
 		SimpleEstimate betaEstimate = new SimpleEstimate();
 		betaEstimate.setMean(beta);
 		
-		outputMap.put(DiversityIndex.Beta, betaEstimate);
-		outputMap.put(DiversityIndex.Alpha, getSimpleEstimate(meanS_hat));
-		outputMap.put(DiversityIndex.Gamma, chao2Estimate);
-
+		di.setAlphaDiversity(getSimpleEstimate(meanS_hat));
+		di.setBetaDiversity(betaEstimate);
+		di.setGammaDiversity(chao2Estimate);
+		
 		if (jackknife) {
 			List<String> siteIds = new ArrayList<String>(vMap.keySet());
 			int nbPlots = vMap.size();
@@ -337,10 +339,10 @@ public class MultipleSiteIndex {
 				varianceEstimate = new JackknifeEstimate(nbPlots, 1);
 				for (int i = 0; i < siteIds.size(); i++) {
 					ValidatedHashMap<String, List> newMap = vMap.getMapWithoutThisKey(siteIds.get(i));
-					Map<DiversityIndex, SimpleEstimate> estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMap, populationSize);
-					varianceEstimate.addRealization(estimateMap.get(DiversityIndex.Beta).getMean());
+					DiversityIndicesEstimates estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMap, populationSize);
+					varianceEstimate.addRealization(estimateMap.getBetaDiversity().getMean());
 				}
-				outputMap.get(DiversityIndex.Beta).setVariance(varianceEstimate.getVariance());
+				((SimpleEstimate) di.getBetaDiversity()).setVariance(varianceEstimate.getVariance());
 				break;
 			case DeleteTwo:
 				varianceEstimate = new JackknifeEstimate(nbPlots, 2);
@@ -348,11 +350,11 @@ public class MultipleSiteIndex {
 					ValidatedHashMap<String, List> newMap = vMap.getMapWithoutThisKey(siteIds.get(i));
 					for (int j = i + 1; j < siteIds.size(); j++) {
 						ValidatedHashMap<String, List> newMap2 = newMap.getMapWithoutThisKey(siteIds.get(j));
-						Map<DiversityIndex, SimpleEstimate> estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMap2, populationSize);
-						varianceEstimate.addRealization(estimateMap.get(DiversityIndex.Beta).getMean());
+						DiversityIndicesEstimates estimateMap = getDissimilarityIndicesMultiplesiteEstimator(newMap2, populationSize);
+						varianceEstimate.addRealization(estimateMap.getBetaDiversity().getMean());
 					}
 				}
-				outputMap.get(DiversityIndex.Beta).setVariance(varianceEstimate.getVariance());
+				((SimpleEstimate) di.getBetaDiversity()).setVariance(varianceEstimate.getVariance());
 				break;
 //			case EfronSteinCorrection:
 //				List<String> toBeRemoved = new ArrayList<String>();
@@ -402,7 +404,7 @@ public class MultipleSiteIndex {
 //				break;
 			}
 		} 
-		return outputMap;
+		return di;
 	}
 
 	
@@ -426,7 +428,7 @@ public class MultipleSiteIndex {
 //	}
 	
 	@SuppressWarnings("rawtypes")
-	public Map<DiversityIndex, SimpleEstimate> getDissimilarityIndicesMultiplesiteEstimator(Map<String, List> oMap, int populationSize) {
+	public DiversityIndicesEstimates getDissimilarityIndicesMultiplesiteEstimator(Map<String, List> oMap, int populationSize) {
 		return getDissimilarityIndicesMultiplesiteEstimator(oMap, populationSize, false, Mode.LeaveOneOut);
 	}	
 }

@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import canforservutility.biodiversity.indices.MultipleSiteIndex.BetaIndex;
-import canforservutility.biodiversity.indices.MultipleSiteIndex.DiversityIndex;
+import canforservutility.biodiversity.indices.DiversityIndices.BetaIndex;
+import canforservutility.biodiversity.indices.DiversityIndices.DiversityIndex;
 import canforservutility.biodiversity.indices.MultipleSiteIndex.Mode;
 import repicea.io.FormatField;
 import repicea.io.javacsv.CSVField;
@@ -85,34 +85,34 @@ class PopulationTests {
 	}
 
 	
-	private static Object[] testThisPopulation(int populationSize, int minSp, int maxSp, int nbTaxa) throws Exception {
-		List<Integer> originalList = new ArrayList<Integer>();
-		for (int i = 0; i < nbTaxa; i++) {
-			originalList.add(i);
-		}
-		
-		PopulationTests popTest = new PopulationTests();
-		Population pop = popTest.createPopulation(originalList, populationSize, minSp, maxSp);
-		if (populationSize == 1000) {
-			XmlSerializer serializer = new XmlSerializer(ObjectUtility.getPackagePath(PopulationTests.class).replace("bin", "manuscripts") + "pop" + populationSize + "_" + minSp + "_" + maxSp);
-			serializer.writeObject(pop);
-		}
-		MultipleSiteIndex msi = new MultipleSiteIndex();
-		Map<BetaIndex, Double> currentIndices = msi.getMultiplesiteDissimilarityIndices(pop);
-		Map<BetaIndex, Double> newIndices = msi.getAdaptedMultiplesiteDissimilarityIndices(pop);
-		Object[] record = new Object[10];
-		record[0] = populationSize;
-		record[1] = nbTaxa;
-		record[2] = minSp;
-		record[3] = maxSp;
-		record[4] = currentIndices.get(BetaIndex.Simpson);
-		record[5] = currentIndices.get(BetaIndex.Sorensen);
-		record[6] = currentIndices.get(BetaIndex.Nestedness);
-		record[7] = newIndices.get(BetaIndex.Simpson);
-		record[8] = newIndices.get(BetaIndex.Sorensen);
-		record[9] = newIndices.get(BetaIndex.Nestedness);
-		return record;
-	}
+//	private static Object[] testThisPopulation(int populationSize, int minSp, int maxSp, int nbTaxa) throws Exception {
+//		List<Integer> originalList = new ArrayList<Integer>();
+//		for (int i = 0; i < nbTaxa; i++) {
+//			originalList.add(i);
+//		}
+//		
+//		PopulationTests popTest = new PopulationTests();
+//		Population pop = popTest.createPopulation(originalList, populationSize, minSp, maxSp);
+//		if (populationSize == 1000) {
+//			XmlSerializer serializer = new XmlSerializer(ObjectUtility.getPackagePath(PopulationTests.class).replace("bin", "manuscripts") + "pop" + populationSize + "_" + minSp + "_" + maxSp);
+//			serializer.writeObject(pop);
+//		}
+//		MultipleSiteIndex msi = new MultipleSiteIndex();
+//		DiversityIndices currentIndices = msi.getMultiplesiteDissimilarityIndices(pop);
+//		DiversityIndices newIndices = msi.getAdaptedMultiplesiteDissimilarityIndices(pop);
+//		Object[] record = new Object[10];
+//		record[0] = populationSize;
+//		record[1] = nbTaxa;
+//		record[2] = minSp;
+//		record[3] = maxSp;
+//		record[4] = currentIndices.get(BetaIndex.Simpson);
+//		record[5] = currentIndices.get(BetaIndex.Sorensen);
+//		record[6] = currentIndices.get(BetaIndex.Nestedness);
+//		record[7] = newIndices.get(BetaIndex.Simpson);
+//		record[8] = newIndices.get(BetaIndex.Sorensen);
+//		record[9] = newIndices.get(BetaIndex.Nestedness);
+//		return record;
+//	}
 	
 	
 	private enum BetaDistributionType {
@@ -143,19 +143,20 @@ class PopulationTests {
 			serializer.writeObject(pop);
 		}
 		MultipleSiteIndex msi = new MultipleSiteIndex();
-		Map<BetaIndex, Double> currentIndices = msi.getMultiplesiteDissimilarityIndices(pop);
-		Map<BetaIndex, Double> newIndices = msi.getAdaptedMultiplesiteDissimilarityIndices(pop);
+		DiversityIndices currentIndices = msi.getMultiplesiteDissimilarityIndices(pop);
+		DiversityIndices newIndices = msi.getAdaptedMultiplesiteDissimilarityIndices(pop);
 		Object[] record = new Object[10];
 		record[0] = populationSize;
-		record[1] = speciesRichness;
-		record[2] = type.getScale1();
-		record[3] = type.getScale2();
-		record[4] = currentIndices.get(BetaIndex.Simpson);
-		record[5] = currentIndices.get(BetaIndex.Sorensen);
-		record[6] = currentIndices.get(BetaIndex.Nestedness);
-		record[7] = newIndices.get(BetaIndex.Simpson);
-		record[8] = newIndices.get(BetaIndex.Sorensen);
-		record[9] = newIndices.get(BetaIndex.Nestedness);
+		record[1] = newIndices.getGammaDiversity();
+		record[2] = newIndices.getAlphaDiversity();
+		record[3] = type.getScale1();
+		record[4] = type.getScale2();
+		record[5] = currentIndices.getBetaIndex(BetaIndex.Simpson);
+		record[6] = currentIndices.getBetaIndex(BetaIndex.Sorensen);
+		record[7] = currentIndices.getBetaIndex(BetaIndex.Nestedness);
+		record[8] = newIndices.getBetaIndex(BetaIndex.Simpson);
+		record[9] = newIndices.getBetaIndex(BetaIndex.Sorensen);
+		record[10] = newIndices.getBetaIndex(BetaIndex.Nestedness);
 		return record;
 	}
 
@@ -164,8 +165,8 @@ class PopulationTests {
 		MultipleSiteIndex msi = new MultipleSiteIndex();
 		for (int real = 0; real < nbRealizations; real++) {
 			Map sample = SamplingUtility.getSample(pop, sampleSize);
-			Map<DiversityIndex, SimpleEstimate> indices = msi.getDissimilarityIndicesMultiplesiteEstimator(sample, pop.size(), true, Mode.LeaveOneOut);
-			SimpleEstimate betaDiversity = indices.get(DiversityIndex.Beta);
+			DiversityIndicesEstimates indices = msi.getDissimilarityIndicesMultiplesiteEstimator(sample, pop.size(), true, Mode.LeaveOneOut);
+			SimpleEstimate betaDiversity = indices.getBetaDiversity();
 			Object[] record = new Object[10];
 			record[0] = sampleSize;
 			record[1] = populationParameters.get(BetaIndex.Simpson);
@@ -193,6 +194,7 @@ class PopulationTests {
 		fields = new ArrayList<FormatField>();
 		fields.add(new CSVField("PopSize"));
 		fields.add(new CSVField("speciesRichness"));
+		fields.add(new CSVField("averageSpecies"));
 		fields.add(new CSVField("scale1"));
 		fields.add(new CSVField("scale2"));
 		fields.add(new CSVField("Simpson"));
