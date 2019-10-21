@@ -206,6 +206,9 @@ class PopulationTests {
 		writer.setFields(fields);
 		
 		List<Integer> populationSizes = new ArrayList<Integer>();
+		populationSizes.add(20);
+		populationSizes.add(30);
+		populationSizes.add(40);
 		populationSizes.add(50);
 		populationSizes.add(60);
 		populationSizes.add(70);
