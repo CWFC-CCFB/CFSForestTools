@@ -21,27 +21,19 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("serial")
 class PopulationTests {
 
-	class Plot extends ArrayList<Integer> {
-		
-		Plot(List<Integer> list) {
-			this();
-			for (Integer i : list) {
-				add(i);
-			}
-		}
-		
-		Plot() {
+	private class Plot extends ArrayList<Integer> {
+		private Plot() {
 			super();
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	class Population extends HashMap<String, List> {}
+	private class Population extends HashMap<String, List> {}
 	
 
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	Population createBetaPopulation(int populationSize, int speciesRichness, double scale1, double scale2) {
+	private Population createBetaPopulation(int populationSize, int speciesRichness, double scale1, double scale2) {
 		List<Integer> plotIndex = new ArrayList<Integer>();
 		Population pop = new Population();
 		for (int i = 0; i < populationSize; i++) {
@@ -63,37 +55,6 @@ class PopulationTests {
 		return pop;
 	}
 
-	
-//	private static Object[] testThisPopulation(int populationSize, int minSp, int maxSp, int nbTaxa) throws Exception {
-//		List<Integer> originalList = new ArrayList<Integer>();
-//		for (int i = 0; i < nbTaxa; i++) {
-//			originalList.add(i);
-//		}
-//		
-//		PopulationTests popTest = new PopulationTests();
-//		Population pop = popTest.createPopulation(originalList, populationSize, minSp, maxSp);
-//		if (populationSize == 1000) {
-//			XmlSerializer serializer = new XmlSerializer(ObjectUtility.getPackagePath(PopulationTests.class).replace("bin", "manuscripts") + "pop" + populationSize + "_" + minSp + "_" + maxSp);
-//			serializer.writeObject(pop);
-//		}
-//		MultipleSiteIndex msi = new MultipleSiteIndex();
-//		DiversityIndices currentIndices = msi.getMultiplesiteDissimilarityIndices(pop);
-//		DiversityIndices newIndices = msi.getAdaptedMultiplesiteDissimilarityIndices(pop);
-//		Object[] record = new Object[10];
-//		record[0] = populationSize;
-//		record[1] = nbTaxa;
-//		record[2] = minSp;
-//		record[3] = maxSp;
-//		record[4] = currentIndices.get(BetaIndex.Simpson);
-//		record[5] = currentIndices.get(BetaIndex.Sorensen);
-//		record[6] = currentIndices.get(BetaIndex.Nestedness);
-//		record[7] = newIndices.get(BetaIndex.Simpson);
-//		record[8] = newIndices.get(BetaIndex.Sorensen);
-//		record[9] = newIndices.get(BetaIndex.Nestedness);
-//		return record;
-//	}
-	
-	
 	private enum BetaDistributionType {
 		
 		JustScarceSpecies(1d,5d),
