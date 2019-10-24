@@ -178,7 +178,7 @@ public class BioSimClient2 {
 		long initialTime = System.currentTimeMillis();
 		Map output = BioSimClient2.getNormals(var, locations);
 		double nbSecs = (System.currentTimeMillis() - initialTime) * .001;
-		System.out.println("Elapsed time = " + nbSecs);
+		System.out.println("Elapsed time = " + nbSecs + "size = " + output.size());
 	}
 	
 	
