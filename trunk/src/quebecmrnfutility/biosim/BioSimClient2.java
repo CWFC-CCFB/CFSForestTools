@@ -1,7 +1,7 @@
 /*
  * This file is part of the mrnf-foresttools library
  *
- * Copyright (C) 2016 Mathieu Fortin - LERFoB AgroParisTech/INRA
+ * Copyright (C) 2019 Mathieu Fortin - Canadian Wood Fibre Centre
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,9 +35,49 @@ import java.util.Map;
 
 /**
  * This class enables a client for the Biosim server at repicea.dyndns.org. 
- * @author Mathieu Fortin - January 2016 (Updated October 2019)
+ * @author Mathieu Fortin - October 2019
  */
 public class BioSimClient2 {
+
+	/**
+	 * An inner class that handles the mean and sum of the different variables.
+	 * @author Mathieu Fortin - October 2019
+	 */
+	static class MonthMap extends HashMap<Month, Map<Variable, Double>> {
+		
+		Map<Variable, Double> getMeanForTheseMonths(List<Month> months, List<Variable> variables) {
+			Map<Variable, Double> outputMap = new HashMap<Variable, Double>();
+			int nbDays = 0;
+			for (Month month : months) {
+				if (containsKey(month)) {
+					for (Variable var : variables) {
+						if (get(month).containsKey(var)) {
+							double value = get(month).get(var);
+							if (!var.isAdditive()) {
+								value *= month.nbDays;
+							} 
+							if (!outputMap.containsKey(var)) {
+								outputMap.put(var, 0d);
+							}
+							outputMap.put(var, outputMap.get(var) + value);
+						} else {
+							throw new InvalidParameterException("The variable " + var.name() + " is not in the MonthMap instance!");
+						}
+					}
+				} else {
+					throw new InvalidParameterException("The month " + month.name() + " is not in the MonthMap instance!");
+				}
+				nbDays += month.nbDays;
+			}
+			for (Variable var : variables) {
+				if (!var.additive) {
+					outputMap.put(var, outputMap.get(var) / nbDays);
+				}
+			}
+			return outputMap;
+		}
+	}
+
 
 	protected static enum Source {
 		FromNormals1981_2010("source=FromNormals&from=1981&to=2010");
@@ -47,7 +88,9 @@ public class BioSimClient2 {
 			this.parsedQuery = parsedRequest;
 		}
 	}
-
+	
+	static final List<Month> AllMonths = Arrays.asList(Month.values());
+	
 		
 	public static enum Variable {	// TODO complete this
 		TN("TMIN_MN", false, "min air temperature"),
@@ -100,13 +143,19 @@ public class BioSimClient2 {
 		}
 	}
 	
-	
-
 	private static final InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 5000);
-	
-	
-	public static Map<PlotLocation, Map<Month, Map<Variable, Double>>> getNormals(List<Variable> variables, List<PlotLocation> locations) throws IOException {
-		Map<PlotLocation, Map<Month, Map<Variable, Double>>> outputMap = new HashMap<PlotLocation, Map<Month, Map<Variable, Double>>>();
+
+	/**
+	 * Retrieves the normals and compiles the mean or sum over some months. 
+	 * @param variables the variables to be retrieved and compiled
+	 * @param locations the locations
+	 * @param averageOverTheseMonths the months over which the mean or sum is to be calculated. If empty or null the 
+	 * method returns the monthly averages.
+	 * @return a Map with the locations as keys and maps as values.
+	 * @throws IOException
+	 */
+	public static Map<PlotLocation, Map> getNormals(List<Variable> variables, List<PlotLocation> locations, List<Month> averageOverTheseMonths) throws IOException {
+		Map<PlotLocation, Map> outputMap = new HashMap<PlotLocation, Map>();
 		Source source = Source.FromNormals1981_2010;
 		
 		String variablesQuery = "";
@@ -134,6 +183,7 @@ public class BioSimClient2 {
 			String inputLine;
 			Map<Variable, Integer> fieldIndices = new HashMap<Variable,Integer>();
 			int i = 0;
+			MonthMap monthMap = new MonthMap();
 			while ((inputLine = in.readLine()) != null) {
 				if (inputLine.startsWith("Error")) {
 					throw new IOException(inputLine);
@@ -144,24 +194,51 @@ public class BioSimClient2 {
 					for (Variable v : variables) {
 						fieldIndices.put(v, fieldNames.indexOf(v.fieldName));
 					}
-					outputMap.put(location, new HashMap<Month, Map<Variable, Double>>());
+					outputMap.put(location, new MonthMap());
 				} else {
 					int monthIndex = Integer.parseInt(str[0]) - 1;
 					Month m = Month.values()[monthIndex];
-					outputMap.get(location).put(m, new HashMap<Variable, Double>());
+					monthMap.put(m, new HashMap<Variable, Double>());
 					for (Variable v : variables) {
 						double value = Double.parseDouble(str[fieldIndices.get(v)]);
-						outputMap.get(location).get(m).put(v, value);
+						monthMap.get(m).put(v, value);
 					}
 				}
 				i++;
 			}
 			in.close();
+			if (averageOverTheseMonths == null || averageOverTheseMonths.isEmpty()) {
+				outputMap.put(location, monthMap);
+			} else {
+				outputMap.put(location, monthMap.getMeanForTheseMonths(averageOverTheseMonths, variables));
+			}
 		}
 		return outputMap;
 	}
 	
+	
+	/**
+	 * Retrieves the monthly normals. 
+	 * @param variables the variables to be retrieved and compiled
+	 * @param locations the locations
+	 * @return a Map with the locations as keys and maps as values.
+	 * @throws IOException
+	 */
+	public static Map<PlotLocation, Map> getMonthlyNormals(List<Variable> variables, List<PlotLocation> locations) throws IOException {
+		return getNormals(variables, locations, null);
+	}
 
+	/**
+	 * Retrieves the yearly normals.
+	 * @param variables the variables to be retrieved and compiled
+	 * @param locations the locations
+	 * @return a Map with the locations as keys and maps as values.
+	 * @throws IOException
+	 */
+	public static Map<PlotLocation, Map> getAnnualNormals(List<Variable> variables, List<PlotLocation> locations) throws IOException {
+		return getNormals(variables, locations, AllMonths);
+	}
+	
 	
 	public static void main(String[] args) throws IOException {
 		List<PlotLocation> locations = new ArrayList<PlotLocation>();
@@ -175,10 +252,18 @@ public class BioSimClient2 {
 		List<Variable> var = new ArrayList<Variable>();
 		var.add(Variable.TN);
 		var.add(Variable.TX);
-		long initialTime = System.currentTimeMillis();
-		Map output = BioSimClient2.getNormals(var, locations);
-		double nbSecs = (System.currentTimeMillis() - initialTime) * .001;
-		System.out.println("Elapsed time = " + nbSecs + "size = " + output.size());
+		var.add(Variable.P);
+		long initialTime;
+		double nbSecs;
+		
+//		initialTime = System.currentTimeMillis();
+//		Map output = BioSimClient2.getMonthlyNormals(var, locations);
+//		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
+//		System.out.println("Elapsed time = " + nbSecs + " size = " + output.size());
+		initialTime = System.currentTimeMillis();
+		Map output2 = BioSimClient2.getAnnualNormals(var, locations);
+		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
+		System.out.println("Elapsed time = " + nbSecs + " size = " + output2.size());
 	}
 	
 	
