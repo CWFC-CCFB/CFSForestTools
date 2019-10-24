@@ -32,8 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import repicea.stats.StatisticalUtility;
-
 /**
  * This class enables a client for the Biosim server at repicea.dyndns.org. 
  * @author Mathieu Fortin - January 2016 (Updated October 2019)
@@ -51,30 +49,33 @@ public class BioSimClient2 {
 	}
 
 		
-	public static enum Variable {
-		TN("TMIN_MN", "min air temperature"),
-		T("", "air temperature"),
-		TX("TMAX_MN", "max air temperature"),
-		P("PRCP_TT", "precipitation"),
-		TD("TDEX_MN", "temperature dew point"),
-		H("", "humidity"),
-		WS("", "wind speed"),
-		WD("", "wind direction"),
-		R("", "solar radiation"),
-		Z("", "atmospheric pressure"),
-		S("", "snow precipitation"),
-		SD("", "snow depth accumulation"),
-		SWE("", "snow water equivalent"),
-		WS2("", "wind speed at 2 m");
+	public static enum Variable {	// TODO complete this
+		TN("TMIN_MN", false, "min air temperature"),
+		T("", false, "air temperature"),
+		TX("TMAX_MN", false, "max air temperature"),
+		P("PRCP_TT", true, "precipitation"),
+		TD("TDEX_MN", false, "temperature dew point"),
+		H("", false, "humidity"),
+		WS("", false, "wind speed"),
+		WD("", false, "wind direction"),
+		R("", true, "solar radiation"),
+		Z("", false, "atmospheric pressure"),
+		S("", true, "snow precipitation"),
+		SD("", false, "snow depth accumulation"),
+		SWE("", true, "snow water equivalent"),
+		WS2("", false, "wind speed at 2 m");
 		
 		String description;
 		String fieldName;
+		boolean additive;
 		
-		Variable(String fieldName, String description) {
+		Variable(String fieldName, boolean additive, String description) {
 			this.fieldName = fieldName;
+			this.additive = additive;
 			this.description = description;
 		}
 		
+		public boolean isAdditive() {return additive;};
 		public String getDescription() {return description;}
 	}
 	
@@ -103,60 +104,6 @@ public class BioSimClient2 {
 
 	private static final InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 5000);
 	
-//	private static boolean isLAN = false;
-//
-//	public static enum BioSimVersion {
-//		VERSION_1971_2000, 
-//		VERSION_1981_2010;
-//	}
-	
-
-//	/**
-//	 * Default constructor.
-//	 * @param version a BioSimVersion enum
-//	 * @throws BasicClientException
-//	 */
-//	protected BioSimClient2(BioSimVersion version) throws BasicClientException {
-//		this(new InetSocketAddress("repicea.dyndns.org", 18000), version); // 20 sec before timeout.
-//	}
-//
-//	/**
-//	 * Complex constructor.
-//	 * @param address an InetSocketAddress instance
-//	 * @param version a BioSimVersion enum
-//	 * @throws BasicClientException
-//	 */
-//	protected BioSimClient2(InetSocketAddress address, BioSimVersion version) throws BasicClientException {
-//		super(address, 20); // 20 sec before timeout.
-//		if (version == null) {
-//			this.version = BioSimVersion.VERSION_1971_2000;
-//		} else {
-//			this.version = version;
-//		}
-//	}
-
-//	/**
-//	 * Returns an instance of BioSimClient. It first tries to connect to repicea.dyndns.org. If 
-//	 * it fails, it tries to connect locally. If it fails again, a BasicClientException is thrown.
-//	 * @param version a BioSimVersion enum
-//	 * @return a BioSimClient instance
-//	 * @throws BasicClientException if the remote and the local connections both fail
-//	 */
-//	public static BioSimClient2 getBioSimClient(BioSimVersion version) throws BasicClientException {
-//		BioSimClient2 client = null;
-//		if (isLAN) {
-//			client = new BioSimClient2(BioSimClient2.LANAddress, version);
-//		} else {
-//			try {
-//				client = new BioSimClient2(BioSimVersion.VERSION_1971_2000);
-//				isLAN = false;
-//			} catch (BasicClientException e) {
-//				client = new BioSimClient2(BioSimClient2.LANAddress, version);
-//				isLAN = true;
-//			}
-//		} 
-//		return client;
-//	}
 	
 	public static Map<PlotLocation, Map<Month, Map<Variable, Double>>> getNormals(List<Variable> variables, List<PlotLocation> locations) throws IOException {
 		Map<PlotLocation, Map<Month, Map<Variable, Double>>> outputMap = new HashMap<PlotLocation, Map<Month, Map<Variable, Double>>>();
@@ -188,6 +135,9 @@ public class BioSimClient2 {
 			Map<Variable, Integer> fieldIndices = new HashMap<Variable,Integer>();
 			int i = 0;
 			while ((inputLine = in.readLine()) != null) {
+				if (inputLine.startsWith("Error")) {
+					throw new IOException(inputLine);
+				}
 				String[] str = inputLine.split(fieldSeparator);
 				if (i==0) {
 					List<String> fieldNames = Arrays.asList(str);
@@ -207,75 +157,28 @@ public class BioSimClient2 {
 				i++;
 			}
 			in.close();
-			
 		}
 		return outputMap;
 	}
 	
-//	/**
-//	 * This method sends a list of plot locations (latitude, longitude and elevation) to the server which returns
-//	 * a list of Double[2] (mean annual temperature, mean annual precipitation)
-//	 * @param obj a List of PlotLocation instances
-//	 * @return a List of mean annual temperatures and precipitations
-//	 * @throws BasicClientException if an exception occurs while sending and processing the request
-//	 */
-//	@SuppressWarnings({ "unchecked", "rawtypes" })
-//	public List<ClimateVariables> getClimateVariables(List<PlotLocation> obj) throws BasicClientException {
-//		List<ClimateVariables> climVar = new ArrayList<ClimateVariables>();
-//		List<PlotLocation> plotLocationsToBeSent = new ArrayList<PlotLocation>();
-//		for (PlotLocation plotLocation : obj) {
-//			if (RecordedClimateVariables.get(version).containsKey(plotLocation.toString())) {
-//				climVar.add(RecordedClimateVariables.get(version).get(plotLocation.toString()));
-//			} else {
-//				plotLocationsToBeSent.add(plotLocation);
-//			}
-//		}
-//		
-//		List<ClimateVariables> climVarReceived;
-//		if (byPassConnectionForTesting || plotLocationsToBeSent.isEmpty()) {
-//			climVarReceived = new ArrayList<ClimateVariables>();
-//		} else {
-//			climVarReceived = (List) super.processRequest(new Request(version, plotLocationsToBeSent));
-//		}
-//		
-//		for (ClimateVariables cv : climVarReceived) {
-//			for (int i = 0; i < plotLocationsToBeSent.size(); i++) {
-//				PlotLocation pl = plotLocationsToBeSent.get(i);
-//				if (cv.getPlotId().equals(pl.getPlotId())) {
-//					RecordedClimateVariables.get(version).put(pl.toString(), cv);
-//					plotLocationsToBeSent.remove(pl);
-//					break;
-//				}
-//			}
-//		}
-//		climVar.addAll(climVarReceived);
-//		return climVar;
-//	}
-
-//	/*
-//	 * For extended visibility (non-Javadoc)
-//	 * @see repicea.net.server.BasicClient#setBypassTimeout(boolean)
-//	 */
-//	@Override
-//	public void setBypassTimeout(boolean bypass) {
-//		super.setBypassTimeout(bypass);
-//	}
 
 	
 	public static void main(String[] args) throws IOException {
 		List<PlotLocation> locations = new ArrayList<PlotLocation>();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1000; i++) {
 			PlotLocation loc = new PlotLocation(((Integer) i).toString(),
-					45 + StatisticalUtility.getRandom().nextGaussian(),
-					-70 + StatisticalUtility.getRandom().nextGaussian(),
-					300 + StatisticalUtility.getRandom().nextGaussian());
+					45,
+					-70,
+					300);
 			locations.add(loc);
 		}
 		List<Variable> var = new ArrayList<Variable>();
 		var.add(Variable.TN);
 		var.add(Variable.TX);
+		long initialTime = System.currentTimeMillis();
 		Map output = BioSimClient2.getNormals(var, locations);
-		int u = 0;
+		double nbSecs = (System.currentTimeMillis() - initialTime) * .001;
+		System.out.println("Elapsed time = " + nbSecs);
 	}
 	
 	
