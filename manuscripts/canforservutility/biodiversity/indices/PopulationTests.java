@@ -105,19 +105,22 @@ class PopulationTests {
 		MultipleSiteIndex msi = new MultipleSiteIndex();
 		for (int real = 0; real < nbRealizations; real++) {
 			Map sample = SamplingUtility.getSample(pop, sampleSize);
-			DiversityIndicesEstimates indices = msi.getDissimilarityIndicesMultiplesiteEstimator(sample, pop.size(), true, Mode.LeaveOneOut);
-			SimpleEstimate betaDiversity = indices.getBetaDiversity();
-			Object[] record = new Object[10];
+			DiversityIndicesEstimates estimatedIndices = msi.getDissimilarityIndicesMultiplesiteEstimator(sample, pop.size(), true, Mode.LeaveOneOut);
+			SimpleEstimate betaDiversity = estimatedIndices.getBetaDiversity();
+			Object[] record = new Object[13];
 			record[0] = sampleSize;
-			record[1] = populationParameters.getBetaIndex(BetaIndex.Simpson);
-			record[2] = populationParameters.getBetaIndex(BetaIndex.Sorensen);
-			record[3] = populationParameters.getBetaIndex(BetaIndex.Nestedness);
-			record[4] = betaDiversity.getMean().m_afData[0][0];
-			record[5] = betaDiversity.getVariance().m_afData[0][0];
-			record[6] = betaDiversity.getMean().m_afData[1][0];
-			record[7] = betaDiversity.getVariance().m_afData[1][1];
-			record[8] = betaDiversity.getMean().m_afData[2][0];
-			record[9] = betaDiversity.getVariance().m_afData[2][2];
+			record[1] = populationParameters.getGammaDiversity();
+			record[2] = populationParameters.getBetaIndex(BetaIndex.Simpson);
+			record[3] = populationParameters.getBetaIndex(BetaIndex.Sorensen);
+			record[4] = populationParameters.getBetaIndex(BetaIndex.Nestedness);
+			record[5] = estimatedIndices.getGammaDiversity().getMean().m_afData[0][0];
+			record[6] = estimatedIndices.getGammaDiversity().getVariance().m_afData[0][0];
+			record[7] = betaDiversity.getMean().m_afData[0][0];
+			record[8] = betaDiversity.getVariance().m_afData[0][0];
+			record[9] = betaDiversity.getMean().m_afData[1][0];
+			record[10] = betaDiversity.getVariance().m_afData[1][1];
+			record[11] = betaDiversity.getMean().m_afData[2][0];
+			record[12] = betaDiversity.getVariance().m_afData[2][2];
 			writer.addRecord(record);
 		}
 	}
@@ -129,53 +132,53 @@ class PopulationTests {
 		List<FormatField> fields;
 		
 		
-		filename =  rootPath + "populationTests.csv";
-		writer = new CSVWriter(new File(filename), false);
-		fields = new ArrayList<FormatField>();
-		fields.add(new CSVField("PopSize"));
-		fields.add(new CSVField("speciesRichness"));
-		fields.add(new CSVField("averageSpecies"));
-		fields.add(new CSVField("scale1"));
-		fields.add(new CSVField("scale2"));
-		fields.add(new CSVField("Simpson"));
-		fields.add(new CSVField("Sorensen"));
-		fields.add(new CSVField("Nestedness"));
-		fields.add(new CSVField("SimpsonCorr"));
-		fields.add(new CSVField("SorensenCorr"));
-		fields.add(new CSVField("NestednessCorr"));
-		writer.setFields(fields);
-		
-		List<Integer> populationSizes = new ArrayList<Integer>();
-		populationSizes.add(20);
-		populationSizes.add(30);
-		populationSizes.add(40);
-		populationSizes.add(50);
-		populationSizes.add(60);
-		populationSizes.add(70);
-		populationSizes.add(80);
-		populationSizes.add(90);
-		populationSizes.add(100);
-		populationSizes.add(200);
-		populationSizes.add(300);
-		populationSizes.add(400);
-		populationSizes.add(500);
-		populationSizes.add(600);
-		populationSizes.add(700);
-		populationSizes.add(800);
-		populationSizes.add(900);
-		populationSizes.add(1000);
-		
-		for (BetaDistributionType type : BetaDistributionType.values()) {
-			for (Integer populationSize : populationSizes) {
-				for (int j = 0; j < 4; j++) {
-					int nbTaxa = 100 - j * 20;
-					System.out.println("Simulation population size " + populationSize + " with species richness = " + nbTaxa + " and species distribution as " + type.name());
-					Object[] record = PopulationTests.testThisBetaPopulation(populationSize, nbTaxa, type);
-					writer.addRecord(record);
-				}
-			}
-		}
-		writer.close();
+//		filename =  rootPath + "populationTests.csv";
+//		writer = new CSVWriter(new File(filename), false);
+//		fields = new ArrayList<FormatField>();
+//		fields.add(new CSVField("PopSize"));
+//		fields.add(new CSVField("speciesRichness"));
+//		fields.add(new CSVField("averageSpecies"));
+//		fields.add(new CSVField("scale1"));
+//		fields.add(new CSVField("scale2"));
+//		fields.add(new CSVField("Simpson"));
+//		fields.add(new CSVField("Sorensen"));
+//		fields.add(new CSVField("Nestedness"));
+//		fields.add(new CSVField("SimpsonCorr"));
+//		fields.add(new CSVField("SorensenCorr"));
+//		fields.add(new CSVField("NestednessCorr"));
+//		writer.setFields(fields);
+//		
+//		List<Integer> populationSizes = new ArrayList<Integer>();
+//		populationSizes.add(20);
+//		populationSizes.add(30);
+//		populationSizes.add(40);
+//		populationSizes.add(50);
+//		populationSizes.add(60);
+//		populationSizes.add(70);
+//		populationSizes.add(80);
+//		populationSizes.add(90);
+//		populationSizes.add(100);
+//		populationSizes.add(200);
+//		populationSizes.add(300);
+//		populationSizes.add(400);
+//		populationSizes.add(500);
+//		populationSizes.add(600);
+//		populationSizes.add(700);
+//		populationSizes.add(800);
+//		populationSizes.add(900);
+//		populationSizes.add(1000);
+//		
+//		for (BetaDistributionType type : BetaDistributionType.values()) {
+//			for (Integer populationSize : populationSizes) {
+//				for (int j = 0; j < 4; j++) {
+//					int nbTaxa = 100 - j * 20;
+//					System.out.println("Simulation population size " + populationSize + " with species richness = " + nbTaxa + " and species distribution as " + type.name());
+//					Object[] record = PopulationTests.testThisBetaPopulation(populationSize, nbTaxa, type);
+//					writer.addRecord(record);
+//				}
+//			}
+//		}
+//		writer.close();
 		
 		Map<String, Population> populationMap = new HashMap<String, Population>();
 		String prefix = "pop1000_";
@@ -208,9 +211,12 @@ class PopulationTests {
 			writer = new CSVWriter(new File(filename), false);
 			fields = new ArrayList<FormatField>();
 			fields.add(new CSVField("SampleSize"));
+			fields.add(new CSVField("SpeciesRichnessTrue"));
 			fields.add(new CSVField("SimpsonTrue"));
 			fields.add(new CSVField("SorensenTrue"));
 			fields.add(new CSVField("NestednessTrue"));
+			fields.add(new CSVField("SpeciesRichnessPoint"));
+			fields.add(new CSVField("SpeciesRichnessVar"));
 			fields.add(new CSVField("SimpsonPoint"));
 			fields.add(new CSVField("SimpsonVar"));
 			fields.add(new CSVField("SorensenPoint"));
