@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import canforservutility.biodiversity.indices.DiversityIndices.BetaIndex;
+import canforservutility.biodiversity.indices.IndexUtility.ValidatedHashMap;
 import repicea.math.Matrix;
 import repicea.stats.estimates.JackknifeEstimate;
 import repicea.stats.estimates.SimpleEstimate;
@@ -80,70 +81,11 @@ public class MultipleSiteIndex {
 
 	}
 	
-	@SuppressWarnings("serial")
-	private static class ValidatedHashMap<K,V> extends HashMap<K,V> {
-		
-		ValidatedHashMap<K,V> getMapWithoutThisKey(K key) {
-			ValidatedHashMap<K,V> newMap = new ValidatedHashMap<K,V>();
-			for (K k : keySet()) {
-				if (!k.equals(key)) {
-					newMap.put(k, get(k));
-				}
-			}
-			return newMap;
-		}
-		
-		@SuppressWarnings("unused")
-		ValidatedHashMap<K,V> getMapWithoutTheseKeys(List<K> keys) {
-			ValidatedHashMap<K,V> newMap = new ValidatedHashMap<K,V>();
-			for (K k : keySet()) {
-				if (!keys.contains(k)) {
-					newMap.put(k, get(k));
-				}
-			}
-			return newMap;
-		}
-		
-		
-	}
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List getUniqueSpeciesList(Map<String, List> oMap) {
-		List speciesList = new ArrayList();
-		for (List innerList : oMap.values()) {
-			for (Object sp : innerList) {
-				if (!speciesList.contains(sp)) {
-					speciesList.add(sp);
-				}
-			}
-		}
-		return speciesList;
-	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private ValidatedHashMap<String, List> validateMap(Map<String, List> oMap) {
-		if (oMap instanceof ValidatedHashMap) {
-			return (ValidatedHashMap) oMap;
-		} else {
-			ValidatedHashMap<String, List> newMap = new ValidatedHashMap<String, List>();
-			for (String key : oMap.keySet()) {
-				List value = new ArrayList();
-				newMap.put(key, value);
-				for (Object s : oMap.get(key)) {
-					if (!value.contains(s)) {
-						value.add(s);
-					}
-				}
-			}
-			return newMap;
-		}
-	}
-	
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private DissimilarityFeatures getInnerDissimilarity(Map<String, List> oMap) {
-		ValidatedHashMap<String, List> validatedMap = validateMap(oMap);
-		List completeSpeciesList = getUniqueSpeciesList(validatedMap);
+		ValidatedHashMap<String, List> validatedMap = IndexUtility.validateMap(oMap);
+		List completeSpeciesList = IndexUtility.getUniqueSpeciesList(validatedMap);
 		int totalNbSpecies = completeSpeciesList.size();
 		int sumS_i = 0;
 		int sumMin_ij = 0;
@@ -234,55 +176,7 @@ public class MultipleSiteIndex {
 //		return newList;
 //	}
 	
-	@SuppressWarnings("rawtypes")
-	private SpeciesFreqMap getSpeciesFreqMap(ValidatedHashMap<String, List> vMap) {
-		SpeciesFreqMap speciesMap = new SpeciesFreqMap();
-		for (List speciesList : vMap.values()) {
-			for (Object s : speciesList) {
-				if (!speciesMap.containsKey(s)) {
-					speciesMap.put(s, 0);
-				}
-				speciesMap.put(s, speciesMap.get(s) + 1);
-			}
-		}
-		return speciesMap;
-	}
 	
-	/**
-	 * THis method returns the Chao2 estimate of species richness.
-	 * @param oMap a Map instance that stands for the sample
-	 * @return a SimpleEstimate instance
-	 */
-	@SuppressWarnings("rawtypes")
-	public SimpleEstimate getChao2Estimator(Map<String, List> oMap) {
-		ValidatedHashMap<String, List> validatedMap = validateMap(oMap);
-
-		int nbPlots = validatedMap.size();
-
-		SpeciesFreqMap speciesFreqMap = getSpeciesFreqMap(validatedMap);
-		int f1 = speciesFreqMap.getNbSpeciesWithThisFreq(1);
-		int f2 = speciesFreqMap.getNbSpeciesWithThisFreq(2);
-		int s = getUniqueSpeciesList(oMap).size();
-		double f1_f2 = ((double) f1) / f2;
-		double k = ((double) (nbPlots - 1)) / nbPlots;
-		double chao2;
-		double variance;
-		if (f2 == 0) {
-			chao2 = s + ((double) (nbPlots - 1)) / nbPlots * f1 * (f1 - 1) / 2; 
-			variance = k * f1 * (f1 - 1) / 2d + k * k * f1 * (2 * f1 - 1) * (2 * f1 - 1) / 4d + k * k * f1 * f1 * f1 * f1  / (4d * chao2); 
-		} else {
-			chao2 = s + ((double) (nbPlots - 1)) / nbPlots * f1 * f1 / (2d * f2); 
-			variance = f2 * (.5 * k * f1_f2 * f1_f2 + k * k * f1_f2 * f1_f2 * f1_f2 + .25 * k * k * f1_f2 * f1_f2 * f1_f2 * f1_f2); 
-		}
-		SimpleEstimate estimate = new SimpleEstimate();
-		Matrix mean = new Matrix(1,1);
-		mean.m_afData[0][0] = chao2;
-		Matrix var = new Matrix(1,1);
-		var.m_afData[0][0] = variance;
-		estimate.setMean(mean);
-		estimate.setVariance(var);
-		return estimate;
-	}
 	
 	private SimpleEstimate getSimpleEstimate(double value) {
 		SimpleEstimate estimate = new SimpleEstimate();
@@ -301,12 +195,13 @@ public class MultipleSiteIndex {
 	 */
 	@SuppressWarnings("rawtypes")
 	public DiversityIndicesEstimates getDissimilarityIndicesMultiplesiteEstimator(Map<String, List> oMap, int populationSize, boolean jackknife, Mode mode) {
-		ValidatedHashMap<String, List> vMap = validateMap(oMap);
+		ValidatedHashMap<String, List> vMap = IndexUtility.validateMap(oMap);
 		if (jackknife && vMap.size() <= 2 && mode != Mode.LeaveOneOut) {
 			throw new InvalidParameterException("There must be at least three observations in the sample to use the Delete-2 or Efron and Stein's (1981) correction!");
 		}
 		
-		SimpleEstimate chao2Estimate = getChao2Estimator(vMap);
+		SimpleEstimate chao2Estimate = Chao2Estimator.getChao2Estimate(vMap, populationSize);
+		SimpleEstimate chao2Estimate2 = Chao2Estimator.getChao2Estimate(vMap);
 		DissimilarityFeatures f = getInnerDissimilarity(vMap);
 		double meanMin_hat = (2d * f.sumMin_ij) / (f.nbPlots * (f.nbPlots - 1));
 		double meanMax_hat = (2d * f.sumMax_ij) / (f.nbPlots * (f.nbPlots - 1));
