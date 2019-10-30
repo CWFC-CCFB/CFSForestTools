@@ -75,8 +75,8 @@ public class Chao2Estimator {
 				chao2 = s +  f1 * f1 / (w * 2d * f2 + r / (1 - r) * f1); 
 				double f0 = chao2 - s;
 				double f0_f1 = f0 / f1;
-				variance = f0 + (2 * w * f2 * f0 * f0 + f1 * f1 * f0) / (f1 * f1 * f1 * f1 * f1) +
-						4 * w * w * f2 * (f0_f1 * f0_f1 * f0_f1 * f0_f1);
+				double varianceInnerTerm = 2 * w * f2 * f0 * f0 + f1 * f1 * f0;
+				variance = f0 + varianceInnerTerm * varianceInnerTerm / (f1 * f1 * f1 * f1 * f1) +	4 * w * w * f2 * (f0_f1 * f0_f1 * f0_f1 * f0_f1);
 			}
 		}
 		SimpleEstimate estimate = new SimpleEstimate();
