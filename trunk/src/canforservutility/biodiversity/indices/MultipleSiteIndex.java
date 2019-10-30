@@ -201,7 +201,7 @@ public class MultipleSiteIndex {
 		}
 		
 		SimpleEstimate chao2Estimate = Chao2Estimator.getChao2Estimate(vMap, populationSize);
-		SimpleEstimate chao2Estimate2 = Chao2Estimator.getChao2Estimate(vMap);
+//		SimpleEstimate chao2Estimate2 = Chao2Estimator.getChao2Estimate(vMap);
 		DissimilarityFeatures f = getInnerDissimilarity(vMap);
 		double meanMin_hat = (2d * f.sumMin_ij) / (f.nbPlots * (f.nbPlots - 1));
 		double meanMax_hat = (2d * f.sumMax_ij) / (f.nbPlots * (f.nbPlots - 1));
