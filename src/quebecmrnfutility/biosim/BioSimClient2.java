@@ -23,9 +23,9 @@ package quebecmrnfutility.biosim;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,12 +79,13 @@ public class BioSimClient2 {
 	}
 
 
-	protected static enum Source {
-		FromNormals1981_2010("source=FromNormals&from=1981&to=2010");
+	protected static enum Period {
+		FromNormals1971_2000("period=1971_2000"),
+		FromNormals1981_2010("period=1981_2010");
 		
 		String parsedQuery;
 		
-		Source(String parsedRequest) {
+		Period(String parsedRequest) {
 			this.parsedQuery = parsedRequest;
 		}
 	}
@@ -143,6 +144,7 @@ public class BioSimClient2 {
 		}
 	}
 	
+	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dyndns.org", 5000);
 	private static final InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 5000);
 
 	/**
@@ -154,9 +156,8 @@ public class BioSimClient2 {
 	 * @return a Map with the locations as keys and maps as values.
 	 * @throws IOException
 	 */
-	public static Map<PlotLocation, Map> getNormals(List<Variable> variables, List<PlotLocation> locations, List<Month> averageOverTheseMonths) throws IOException {
+	public static Map<PlotLocation, Map> getNormals(Period period, List<Variable> variables, List<PlotLocation> locations, List<Month> averageOverTheseMonths) throws IOException {
 		Map<PlotLocation, Map> outputMap = new HashMap<PlotLocation, Map>();
-		Source source = Source.FromNormals1981_2010;
 		
 		String variablesQuery = "";
 		for (Variable v : variables) {
@@ -170,15 +171,27 @@ public class BioSimClient2 {
 		
 		for (PlotLocation location : locations) {
 			String query = "";
-			query += "lat=" + location.getLatitudeDeg() + "&";
-			query += "long=" + location.getLongitudeDeg() + "&";
-			query += "var=" + variablesQuery + "&";
-			query += source.parsedQuery;
+			query += "lat=" + location.getLatitudeDeg();
+			query += "&long=" + location.getLongitudeDeg();
+			query += "&elev=" + location.getElevationM();
+			query += "&var=" + variablesQuery ;
+			query += "&compress=0";
+			query += "&" + period.parsedQuery;
 			
-			String urlString = "http:/" + LANAddress.toString() + "/BioSim?" + query;
+			String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/BioSimNormals?" + query;
 			
 			URL bioSimURL = new URL(urlString);
-			URLConnection connection = bioSimURL.openConnection();
+			HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
+			int code = connection.getResponseCode();
+			if (code != 202) {	// means it is connected
+				String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/BioSimNormals?" + query;
+				bioSimURL = new URL(innerURLString);
+				connection = (HttpURLConnection) bioSimURL.openConnection();
+				code = connection.getResponseCode();
+				if (code != 200) {	// means it is connected
+					throw new IOException("Unable to access BioSIM from internet or the LAN!");
+				}				
+			}
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String inputLine;
 			Map<Variable, Integer> fieldIndices = new HashMap<Variable,Integer>();
@@ -224,8 +237,8 @@ public class BioSimClient2 {
 	 * @return a Map with the locations as keys and maps as values.
 	 * @throws IOException
 	 */
-	public static Map<PlotLocation, Map> getMonthlyNormals(List<Variable> variables, List<PlotLocation> locations) throws IOException {
-		return getNormals(variables, locations, null);
+	public static Map<PlotLocation, Map> getMonthlyNormals(Period period, List<Variable> variables, List<PlotLocation> locations) throws IOException {
+		return getNormals(period, variables, locations, null);
 	}
 
 	/**
@@ -235,36 +248,36 @@ public class BioSimClient2 {
 	 * @return a Map with the locations as keys and maps as values.
 	 * @throws IOException
 	 */
-	public static Map<PlotLocation, Map> getAnnualNormals(List<Variable> variables, List<PlotLocation> locations) throws IOException {
-		return getNormals(variables, locations, AllMonths);
+	public static Map<PlotLocation, Map> getAnnualNormals(Period period, List<Variable> variables, List<PlotLocation> locations) throws IOException {
+		return getNormals(period, variables, locations, AllMonths);
 	}
 	
 	
-	public static void main(String[] args) throws IOException {
-		List<PlotLocation> locations = new ArrayList<PlotLocation>();
-		for (int i = 0; i < 1000; i++) {
-			PlotLocation loc = new PlotLocation(((Integer) i).toString(),
-					45,
-					-70,
-					300);
-			locations.add(loc);
-		}
-		List<Variable> var = new ArrayList<Variable>();
-		var.add(Variable.TN);
-		var.add(Variable.TX);
-		var.add(Variable.P);
-		long initialTime;
-		double nbSecs;
-		
+//	public static void main(String[] args) throws IOException {
+//		List<PlotLocation> locations = new ArrayList<PlotLocation>();
+//		for (int i = 0; i < 1000; i++) {
+//			PlotLocation loc = new PlotLocation(((Integer) i).toString(),
+//					45,
+//					-70,
+//					300);
+//			locations.add(loc);
+//		}
+//		List<Variable> var = new ArrayList<Variable>();
+//		var.add(Variable.TN);
+//		var.add(Variable.TX);
+//		var.add(Variable.P);
+//		long initialTime;
+//		double nbSecs;
+//		
+////		initialTime = System.currentTimeMillis();
+////		Map output = BioSimClient2.getMonthlyNormals(var, locations);
+////		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
+////		System.out.println("Elapsed time = " + nbSecs + " size = " + output.size());
 //		initialTime = System.currentTimeMillis();
-//		Map output = BioSimClient2.getMonthlyNormals(var, locations);
+//		Map output2 = BioSimClient2.getAnnualNormals(Period.FromNormals1971_2000, var, locations);
 //		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
-//		System.out.println("Elapsed time = " + nbSecs + " size = " + output.size());
-		initialTime = System.currentTimeMillis();
-		Map output2 = BioSimClient2.getAnnualNormals(var, locations);
-		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
-		System.out.println("Elapsed time = " + nbSecs + " size = " + output2.size());
-	}
+//		System.out.println("Elapsed time = " + nbSecs + " size = " + output2.size());
+//	}
 	
 	
 	
