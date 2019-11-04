@@ -27,7 +27,6 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -173,7 +172,9 @@ public class BioSimClient2 {
 			String query = "";
 			query += "lat=" + location.getLatitudeDeg();
 			query += "&long=" + location.getLongitudeDeg();
-			query += "&elev=" + location.getElevationM();
+			if (!Double.isNaN(location.getElevationM())) {
+				query += "&elev=" + location.getElevationM();
+			}
 			query += "&var=" + variablesQuery ;
 			query += "&compress=0";
 			query += "&" + period.parsedQuery;
