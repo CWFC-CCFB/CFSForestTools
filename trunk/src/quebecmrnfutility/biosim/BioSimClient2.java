@@ -26,7 +26,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
+import java.nio.CharBuffer;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +40,12 @@ import java.util.Map;
  */
 public class BioSimClient2 {
 
+	private static final String NORMAL_API = "BioSimNormals";
+	private static final String GENERATOR_API = "BioSimWG";
+	private static final String MODEL_API = "BioSimModels";
+	
+	
+	
 	/**
 	 * An inner class that handles the mean and sum of the different variables.
 	 * @author Mathieu Fortin - October 2019
@@ -143,7 +151,7 @@ public class BioSimClient2 {
 		}
 	}
 	
-	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dyndns.org", 5000);
+	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("144.172.156.5", 5000);
 	private static final InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 5000);
 
 	/**
@@ -179,13 +187,13 @@ public class BioSimClient2 {
 			query += "&compress=0";
 			query += "&" + period.parsedQuery;
 			
-			String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/BioSimNormals?" + query;
+			String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/" + NORMAL_API + "?" + query;
 			
 			URL bioSimURL = new URL(urlString);
 			HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
 			int code = connection.getResponseCode();
 			if (code != 202) {	// means it is connected
-				String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/BioSimNormals?" + query;
+				String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/" + NORMAL_API + "?" + query;
 				bioSimURL = new URL(innerURLString);
 				connection = (HttpURLConnection) bioSimURL.openConnection();
 				code = connection.getResponseCode();
@@ -254,35 +262,100 @@ public class BioSimClient2 {
 	}
 	
 	
-//	public static void main(String[] args) throws IOException {
-//		List<PlotLocation> locations = new ArrayList<PlotLocation>();
-//		for (int i = 0; i < 1000; i++) {
-//			PlotLocation loc = new PlotLocation(((Integer) i).toString(),
-//					45,
-//					-70,
-//					300);
-//			locations.add(loc);
-//		}
-//		List<Variable> var = new ArrayList<Variable>();
-//		var.add(Variable.TN);
-//		var.add(Variable.TX);
-//		var.add(Variable.P);
-//		long initialTime;
-//		double nbSecs;
-//		
-////		initialTime = System.currentTimeMillis();
-////		Map output = BioSimClient2.getMonthlyNormals(var, locations);
-////		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
-////		System.out.println("Elapsed time = " + nbSecs + " size = " + output.size());
-//		initialTime = System.currentTimeMillis();
-//		Map output2 = BioSimClient2.getAnnualNormals(Period.FromNormals1971_2000, var, locations);
-//		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
-//		System.out.println("Elapsed time = " + nbSecs + " size = " + output2.size());
-//	}
 	
 	
 	
+	/**
+	 * Retrieves the normals and compiles the mean or sum over some months. 
+	 * @param variables the variables to be retrieved and compiled
+	 * @param locations the locations
+	 * @param averageOverTheseMonths the months over which the mean or sum is to be calculated. If empty or null the 
+	 * method returns the monthly averages.
+	 * @return a Map with the locations as keys and maps as values.
+	 * @throws IOException
+	 */
+	public static Map<PlotLocation, CharBuffer> getGeneratedClimate(boolean compress, int fromYr, int toYr, List<Variable> variables, List<PlotLocation> locations) throws IOException {
+		Map<PlotLocation, CharBuffer> outputMap = new HashMap<PlotLocation, CharBuffer>();
+		
+		String variablesQuery = "";
+		for (Variable v : variables) {
+			variablesQuery += v.name();
+			if (variables.indexOf(v) < variables.size() - 1) {
+				variablesQuery += "%20";
+			}
+		}
+
+		String fieldSeparator = ",";
+		
+		for (PlotLocation location : locations) {
+			String query = "";
+			query += "lat=" + location.getLatitudeDeg();
+			query += "&long=" + location.getLongitudeDeg();
+			if (!Double.isNaN(location.getElevationM())) {
+				query += "&elev=" + location.getElevationM();
+			}
+			query += "&var=" + variablesQuery ;
+			if (compress) {
+				query += "&compress=1";
+			} else {
+				query += "&compress=0";
+			}
+			query += "&from=" + fromYr;
+			query += "&to=" + toYr;
+			
+			String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/" + GENERATOR_API + "?" + query;
+			
+			URL bioSimURL = new URL(urlString);
+			HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
+			int code = connection.getResponseCode();
+			if (code != 202) {	// means it is connected
+				String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/" + GENERATOR_API + "?"  + query;
+				bioSimURL = new URL(innerURLString);
+				connection = (HttpURLConnection) bioSimURL.openConnection();
+				code = connection.getResponseCode();
+				if (code != 200) {	// means it is connected
+					throw new IOException("Unable to access BioSIM from internet or the LAN!");
+				}				
+			}
+			InputStreamReader reader = new InputStreamReader(connection.getInputStream());
+			CharBuffer buffer = CharBuffer.allocate(50000);
+			int u = reader.read(buffer);
+			if (u != -1) {
+				outputMap.put(location, buffer);
+			}
+			reader.close();
+		}
+		return outputMap;
+	}
+
 	
-	
-	
+
+	public static void main(String[] args) throws IOException {
+		List<PlotLocation> locations = new ArrayList<PlotLocation>();
+		for (int i = 0; i < 5; i++) {
+			PlotLocation loc = new PlotLocation(((Integer) i).toString(),
+					45,
+					-70,
+					300);
+			locations.add(loc);
+		}
+		List<Variable> var = new ArrayList<Variable>();
+		var.add(Variable.TN);
+		var.add(Variable.TX);
+		var.add(Variable.P);
+		long initialTime;
+		double nbSecs;
+
+		//	initialTime = System.currentTimeMillis();
+		//	Map output = BioSimClient2.getMonthlyNormals(var, locations);
+		//	nbSecs = (System.currentTimeMillis() - initialTime) * .001;
+		//	System.out.println("Elapsed time = " + nbSecs + " size = " + output.size());
+		initialTime = System.currentTimeMillis();
+		Map output2 = BioSimClient2.getGeneratedClimate(true, 2018, 2019, var, locations);
+		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
+		System.out.println("Elapsed time = " + nbSecs + " size = " + output2.size());
+		
+		// TODO implement the model api
+	}
+
 }
