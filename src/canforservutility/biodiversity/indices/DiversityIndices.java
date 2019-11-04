@@ -43,7 +43,7 @@ public class DiversityIndices {
 		Nestedness
 	}  
 	
-	public void setAlphaDiversity(double alpha) {
+	protected void setAlphaDiversity(double alpha) {
 		innerMap.put(DiversityIndex.Alpha, alpha);
 	}
 	
@@ -55,7 +55,7 @@ public class DiversityIndices {
 		}
 	}
 	
-	public void setGammaDiversity(double gamma) {
+	protected void setGammaDiversity(double gamma) {
 		innerMap.put(DiversityIndex.Gamma, gamma);
 	}
 
@@ -75,11 +75,11 @@ public class DiversityIndices {
 		return (Map) innerMap.get(DiversityIndex.Beta);
 	}
 	
-	public void setBetaDiversity(BetaIndex ind, double value) {
+	protected void setBetaDiversity(BetaIndex ind, double value) {
 		getBetaIndices().put(ind, value);
 	}
 
-	public double getBetaIndex(BetaIndex ind) {
+	public double getBetaDiversity(BetaIndex ind) {
 		if (getBetaIndices().containsKey(ind)) {
 			return getBetaIndices().get(ind);
 		} else {
