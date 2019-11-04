@@ -69,12 +69,12 @@ public class PopulationTestsRealData {
 		record[1] = newIndices.getGammaDiversity();
 		record[2] = newIndices.getAlphaDiversity();
 		record[3] = suffix;
-		record[4] = currentIndices.getBetaIndex(BetaIndex.Simpson);
-		record[5] = currentIndices.getBetaIndex(BetaIndex.Sorensen);
-		record[6] = currentIndices.getBetaIndex(BetaIndex.Nestedness);
-		record[7] = newIndices.getBetaIndex(BetaIndex.Simpson);
-		record[8] = newIndices.getBetaIndex(BetaIndex.Sorensen);
-		record[9] = newIndices.getBetaIndex(BetaIndex.Nestedness);
+		record[4] = currentIndices.getBetaDiversity(BetaIndex.Simpson);
+		record[5] = currentIndices.getBetaDiversity(BetaIndex.Sorensen);
+		record[6] = currentIndices.getBetaDiversity(BetaIndex.Nestedness);
+		record[7] = newIndices.getBetaDiversity(BetaIndex.Simpson);
+		record[8] = newIndices.getBetaDiversity(BetaIndex.Sorensen);
+		record[9] = newIndices.getBetaDiversity(BetaIndex.Nestedness);
 		return record;
 	}
 

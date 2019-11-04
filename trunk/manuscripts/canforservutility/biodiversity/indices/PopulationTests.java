@@ -91,12 +91,12 @@ class PopulationTests {
 		record[2] = newIndices.getAlphaDiversity();
 		record[3] = type.getScale1();
 		record[4] = type.getScale2();
-		record[5] = currentIndices.getBetaIndex(BetaIndex.Simpson);
-		record[6] = currentIndices.getBetaIndex(BetaIndex.Sorensen);
-		record[7] = currentIndices.getBetaIndex(BetaIndex.Nestedness);
-		record[8] = newIndices.getBetaIndex(BetaIndex.Simpson);
-		record[9] = newIndices.getBetaIndex(BetaIndex.Sorensen);
-		record[10] = newIndices.getBetaIndex(BetaIndex.Nestedness);
+		record[5] = currentIndices.getBetaDiversity(BetaIndex.Simpson);
+		record[6] = currentIndices.getBetaDiversity(BetaIndex.Sorensen);
+		record[7] = currentIndices.getBetaDiversity(BetaIndex.Nestedness);
+		record[8] = newIndices.getBetaDiversity(BetaIndex.Simpson);
+		record[9] = newIndices.getBetaDiversity(BetaIndex.Sorensen);
+		record[10] = newIndices.getBetaDiversity(BetaIndex.Nestedness);
 		return record;
 	}
 
@@ -110,9 +110,9 @@ class PopulationTests {
 			Object[] record = new Object[13];
 			record[0] = sampleSize;
 			record[1] = populationParameters.getGammaDiversity();
-			record[2] = populationParameters.getBetaIndex(BetaIndex.Simpson);
-			record[3] = populationParameters.getBetaIndex(BetaIndex.Sorensen);
-			record[4] = populationParameters.getBetaIndex(BetaIndex.Nestedness);
+			record[2] = populationParameters.getBetaDiversity(BetaIndex.Simpson);
+			record[3] = populationParameters.getBetaDiversity(BetaIndex.Sorensen);
+			record[4] = populationParameters.getBetaDiversity(BetaIndex.Nestedness);
 			record[5] = estimatedIndices.getGammaDiversity().getMean().m_afData[0][0];
 			record[6] = estimatedIndices.getGammaDiversity().getVariance().m_afData[0][0];
 			record[7] = betaDiversity.getMean().m_afData[0][0];

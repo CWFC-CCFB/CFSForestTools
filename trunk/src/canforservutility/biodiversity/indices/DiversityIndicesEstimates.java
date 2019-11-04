@@ -38,7 +38,7 @@ public class DiversityIndicesEstimates {
 		innerMap = new HashMap<DiversityIndex, SimpleEstimate>();
 	}
 
-	public void setAlphaDiversity(SimpleEstimate alpha) {
+	protected void setAlphaDiversity(SimpleEstimate alpha) {
 		innerMap.put(DiversityIndex.Alpha, alpha);
 	}
 	
@@ -50,7 +50,7 @@ public class DiversityIndicesEstimates {
 		}
 	}
 	
-	public void setGammaDiversity(SimpleEstimate gamma) {
+	protected void setGammaDiversity(SimpleEstimate gamma) {
 		innerMap.put(DiversityIndex.Gamma, gamma);
 	}
 
@@ -62,7 +62,7 @@ public class DiversityIndicesEstimates {
 		}
 	}
 	
-	public void setBetaDiversity(SimpleEstimate beta) {
+	protected void setBetaDiversity(SimpleEstimate beta) {
 		innerMap.put(DiversityIndex.Beta, beta);
 	}
 

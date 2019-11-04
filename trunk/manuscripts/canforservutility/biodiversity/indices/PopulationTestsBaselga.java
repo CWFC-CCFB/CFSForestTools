@@ -123,12 +123,12 @@ class PopulationTestsBaselga {
 			Population pop = populations.get(p);
 			DiversityIndices currentIndices = msi.getMultiplesiteDissimilarityIndices(pop);
 			DiversityIndices newIndices = msi.getAdaptedMultiplesiteDissimilarityIndices(pop);
-			System.out.println("Site " + p.name() + " Current Simpson = " + currentIndices.getBetaIndex(BetaIndex.Simpson));
-			System.out.println("Site " + p.name() + " Current Sorensen = " + currentIndices.getBetaIndex(BetaIndex.Sorensen));
-			System.out.println("Site " + p.name() + " Current nestedness = " + currentIndices.getBetaIndex(BetaIndex.Nestedness));
-			System.out.println("Site " + p.name() + " Adapted Simpson = " + newIndices.getBetaIndex(BetaIndex.Simpson));
-			System.out.println("Site " + p.name() + " Adapted Sorensen = " + newIndices.getBetaIndex(BetaIndex.Sorensen));
-			System.out.println("Site " + p.name() + " Adapted nestedness = " + newIndices.getBetaIndex(BetaIndex.Nestedness));
+			System.out.println("Site " + p.name() + " Current Simpson = " + currentIndices.getBetaDiversity(BetaIndex.Simpson));
+			System.out.println("Site " + p.name() + " Current Sorensen = " + currentIndices.getBetaDiversity(BetaIndex.Sorensen));
+			System.out.println("Site " + p.name() + " Current nestedness = " + currentIndices.getBetaDiversity(BetaIndex.Nestedness));
+			System.out.println("Site " + p.name() + " Adapted Simpson = " + newIndices.getBetaDiversity(BetaIndex.Simpson));
+			System.out.println("Site " + p.name() + " Adapted Sorensen = " + newIndices.getBetaDiversity(BetaIndex.Sorensen));
+			System.out.println("Site " + p.name() + " Adapted nestedness = " + newIndices.getBetaDiversity(BetaIndex.Nestedness));
 		}
 
 	}
