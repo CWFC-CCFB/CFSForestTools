@@ -13,6 +13,7 @@ import quebecmrnfutility.biosim.BioSimClient2.Period;
 import quebecmrnfutility.biosim.ClimateVariables.Variable;
 import repicea.net.server.BasicClient.BasicClientException;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
+import repicea.stats.StatisticalUtility;
 
 public class BioSimClientTest {
 
@@ -128,14 +129,18 @@ public class BioSimClientTest {
 	public void comparisonBioSimOldVsBioSimNew() throws Exception {
 		BioSimClient client = BioSimClient.getBioSimClient(BioSimVersion.VERSION_1971_2000);
 		List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
-		plotLocations.add(new PlotLocation("Plot 1", new FakeLocation(300, 46, -74)));
-		plotLocations.add(new PlotLocation("Plot 2", new FakeLocation(300, 48, -70)));
-		plotLocations.add(new PlotLocation("Plot 3", new FakeLocation(400, 50, -74)));
+		for (int i = 1; i <= 100; i++) {
+			plotLocations.add(new PlotLocation("Plot " + i, new FakeLocation(200 + StatisticalUtility.getRandom().nextDouble() * 500, 
+					46 + StatisticalUtility.getRandom().nextDouble() * 4,
+					-74 + StatisticalUtility.getRandom().nextDouble() * 8)));
+		}
+		
 		long start = System.currentTimeMillis();
 		List<ClimateVariables> refVariables	= client.getClimateVariables(plotLocations);
 		System.out.println("Original BioSim client = " + ((System.currentTimeMillis() - start) *.001) + " sec.");
 		client.close();
 
+		
 		List<BioSimClient2.Variable> variables = new ArrayList<BioSimClient2.Variable>();
 		variables.add(BioSimClient2.Variable.TN);
 		variables.add(BioSimClient2.Variable.TX);
