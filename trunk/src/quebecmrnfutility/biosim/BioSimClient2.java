@@ -26,7 +26,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
-import java.nio.CharBuffer;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,9 +41,21 @@ public class BioSimClient2 {
 
 	private static final String NORMAL_API = "BioSimNormals";
 	private static final String GENERATOR_API = "BioSimWG";
-	private static final String MODEL_API = "BioSimModels";
+	private static final String MODEL_API = "BioSimModel";
 	
-	
+	static class BioSimTeleIO extends HashMap<String, Object> {
+		 
+		String convertToString() {
+			String outputString = "";
+	        outputString += "comment=" + get("comment") + "///";
+            outputString += "compress=" + get("compress") + "///";
+	        outputString += "metadata=" + get("metadata") + "///";
+	        outputString += "msg=" + get("msg") + "///";
+       		outputString += "text=" + get("text") + "///";
+      		outputString += "data=" + get("data");
+      		return outputString;
+		}
+	}
 	
 	/**
 	 * An inner class that handles the mean and sum of the different variables.
@@ -274,8 +285,8 @@ public class BioSimClient2 {
 	 * @return a Map with the locations as keys and maps as values.
 	 * @throws IOException
 	 */
-	public static Map<PlotLocation, CharBuffer> getGeneratedClimate(boolean compress, int fromYr, int toYr, List<Variable> variables, List<PlotLocation> locations) throws IOException {
-		Map<PlotLocation, CharBuffer> outputMap = new HashMap<PlotLocation, CharBuffer>();
+	public static Map<PlotLocation, Object> getGeneratedClimate(boolean compress, int fromYr, int toYr, List<Variable> variables, List<PlotLocation> locations) throws IOException {
+		Map<PlotLocation, Object> outputMap = new HashMap<PlotLocation, Object>();
 		
 		String variablesQuery = "";
 		for (Variable v : variables) {
@@ -285,9 +296,8 @@ public class BioSimClient2 {
 			}
 		}
 
-		String fieldSeparator = ",";
-		
 		for (PlotLocation location : locations) {
+			Object value = null;
 			String query = "";
 			query += "lat=" + location.getLatitudeDeg();
 			query += "&long=" + location.getLongitudeDeg();
@@ -318,21 +328,89 @@ public class BioSimClient2 {
 				}				
 			}
 			InputStreamReader reader = new InputStreamReader(connection.getInputStream());
-			CharBuffer buffer = CharBuffer.allocate(50000);
+			char[] buffer = new char[50000];
 			int u = reader.read(buffer);
 			if (u != -1) {
-				outputMap.put(location, buffer);
+				String bufferedString = new String(buffer);
+				if (!bufferedString.contains("///")) {
+					value = bufferedString;
+				} else {
+					BioSimTeleIO teleIOObj  = new BioSimTeleIO();
+					String[] returnedStrings = bufferedString.split("///");
+					for (String str : returnedStrings) {
+						String key = str.substring(0, str.indexOf("="));
+						Object innerValue = str.substring(str.indexOf("=") + 1);
+//						if (key.equals("data")) {
+//							value = ((String) value).getBytes();
+//						} 
+						teleIOObj.put(key, innerValue);
+					}
+					value = teleIOObj;
+				}
 			}
 			reader.close();
+			outputMap.put(location, value);
 		}
 		return outputMap;
 	}
 
+	public static Object applyModel(String modelName, boolean compress, Map<PlotLocation, Object> teleIORefs) throws IOException {
+		
+		for (PlotLocation location : teleIORefs.keySet()) {
+			String query = "";
+			query += "model=" + modelName;
+			if (compress) {
+				query += "&compress=1";
+			} else {
+				query += "&compress=0";
+			}
+			Object value = teleIORefs.get(location);
+			if (value instanceof BioSimTeleIO) {
+				query += "&wgout=" + ((BioSimTeleIO) value).convertToString();		// FIXME this does not work
+			} else {
+				query += "&wgout=" + ((String) value);		
+			}
+			
+			String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/" + MODEL_API + "?" + query;
+			
+			URL bioSimURL = new URL(urlString);
+			HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
+			int code = connection.getResponseCode();
+			if (code != 202) {	// means it is connected
+				String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/" + MODEL_API + "?"  + query;
+				bioSimURL = new URL(innerURLString);
+				connection = (HttpURLConnection) bioSimURL.openConnection();
+				code = connection.getResponseCode();
+				if (code != 200) {	// means it is connected
+					throw new IOException("Unable to access BioSIM from internet or the LAN!");
+				}				
+			}
+			InputStreamReader reader = new InputStreamReader(connection.getInputStream());
+			char[] buffer = new char[50000];
+			int u = reader.read(buffer);
+			if (u != -1) {
+//				BioSimTeleIO teleIOObj = new BioSimTeleIO();
+//				String bufferedString = new String(buffer);
+//				String[] returnedStrings = bufferedString.split("///");
+//				for (String str : returnedStrings) {
+//					String key = str.substring(0, str.indexOf("="));
+//					Object value = str.substring(str.indexOf("=") + 1);
+////					if (key.equals("data")) {
+////						value = ((String) value).getBytes();
+////					} 
+//					teleIOObj.put(key, value);
+//				}
+			}
+			reader.close();
+		}
+		return null;
+
+	}
 	
 
 	public static void main(String[] args) throws IOException {
 		List<PlotLocation> locations = new ArrayList<PlotLocation>();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 1; i++) {
 			PlotLocation loc = new PlotLocation(((Integer) i).toString(),
 					45,
 					-70,
@@ -351,10 +429,10 @@ public class BioSimClient2 {
 		//	nbSecs = (System.currentTimeMillis() - initialTime) * .001;
 		//	System.out.println("Elapsed time = " + nbSecs + " size = " + output.size());
 		initialTime = System.currentTimeMillis();
-		Map output2 = BioSimClient2.getGeneratedClimate(true, 2018, 2019, var, locations);
+		Map<PlotLocation, Object> teleIORefs = BioSimClient2.getGeneratedClimate(false, 2018, 2019, var, locations);
 		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
-		System.out.println("Elapsed time = " + nbSecs + " size = " + output2.size());
-		
+		System.out.println("Elapsed time = " + nbSecs + " size = " + teleIORefs.size());
+		BioSimClient2.applyModel("DegreeDay_Annual", true, teleIORefs);
 		// TODO implement the model api
 	}
 
