@@ -42,10 +42,70 @@ import repicea.stats.StatisticalUtility;
  */
 public class BioSimClient {
 
+	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("144.172.156.5", 5000);
+	private static final InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 5000);
+
+	
+	private final static String addQueryIfAny(String urlString, String query) {
+		if (query != null && !query.isEmpty()) {
+			return urlString.trim() + "?" + query;
+		} else {
+			return urlString;
+		}
+	}
+	
+	private final static String getStringFromConnection(String api, String query) throws IOException {
+		String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/" + api;
+		urlString = addQueryIfAny(urlString, query);
+		URL bioSimURL = new URL(urlString);
+		HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
+		int code = connection.getResponseCode();
+		if (code != 202) {	// means it is connected
+			String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/" + api;
+			innerURLString = addQueryIfAny(innerURLString, query);
+			bioSimURL = new URL(innerURLString);
+			connection = (HttpURLConnection) bioSimURL.openConnection();
+			code = connection.getResponseCode();
+			if (code != 200) {	// means it is connected
+				throw new IOException("Unable to access BioSIM from internet or the LAN!");
+			}				
+		}
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String completeString = "";
+		String lineStr;
+		int line = 0;
+		while ((lineStr = br.readLine()) != null) {
+			if (line == 0) {
+				completeString += lineStr;
+			} else {
+				completeString += "\n" + lineStr;
+			}
+			line++;
+		}
+		br.close();
+		return completeString;
+	}
+	
 	private static final String NORMAL_API = "BioSimNormals";
 	private static final String GENERATOR_API = "BioSimWG";
 	private static final String MODEL_API = "BioSimModel";
-	
+	private static final String MODEL_LIST_API = "BioSimModelList";
+
+	private static final List<String> ModelListReference = new ArrayList<String>(); 
+	static {
+		try {
+			String modelList = BioSimClient.getStringFromConnection(BioSimClient.MODEL_LIST_API, null);
+			String[] models = modelList.split("\n");
+			for (String model : models) {
+				ModelListReference.add(model);
+			}
+ 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
 	static class PlotLocation implements GeographicalCoordinatesProvider {
 		
 		private final double elevationM;
@@ -197,8 +257,6 @@ public class BioSimClient {
 		}
 	}
 	
-	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("144.172.156.5", 5000);
-	private static final InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 5000);
 
 	/**
 	 * Retrieves the normals and compiles the mean or sum over some months. 
@@ -284,7 +342,6 @@ public class BioSimClient {
 		return outputMap;
 	}
 	
-	
 	/**
 	 * Retrieves the monthly normals. 
 	 * @param variables the variables to be retrieved and compiled
@@ -348,45 +405,22 @@ public class BioSimClient {
 			query += "&from=" + fromYr;
 			query += "&to=" + toYr;
 			
-			String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/" + GENERATOR_API + "?" + query;
-			
-			URL bioSimURL = new URL(urlString);
-			HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
-			int code = connection.getResponseCode();
-			if (code != 202) {	// means it is connected
-				String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/" + GENERATOR_API + "?"  + query;
-				bioSimURL = new URL(innerURLString);
-				connection = (HttpURLConnection) bioSimURL.openConnection();
-				code = connection.getResponseCode();
-				if (code != 200) {	// means it is connected
-					throw new IOException("Unable to access BioSIM from internet or the LAN!");
-				}				
-			}
-			String serverReply = getStringFromConnection(connection);
+			String serverReply = getStringFromConnection(GENERATOR_API, query);
 			outputMap.put(location, serverReply);
 		}
 		return outputMap;
 	}
-	
-	
-	private static String getStringFromConnection(HttpURLConnection connection) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		String completeString = "";
-		String lineStr;
-		int line = 0;
-		while ((lineStr = br.readLine()) != null) {
-			if (line == 0) {
-				completeString += lineStr;
-			} else {
-				completeString += "\n" + lineStr;
-			}
-			line++;
-		}
-		br.close();
-		return completeString;
+
+	public static List<String> getModelList() {
+		List<String> copy = new ArrayList<String>();
+		copy.addAll(ModelListReference);
+		return copy;
 	}
 
 	public static Map<GeographicalCoordinatesProvider, String> applyModel(String modelName, Map<GeographicalCoordinatesProvider, String> teleIORefs) throws IOException {
+		if (!ModelListReference.contains(modelName)) {
+			throw new InvalidParameterException("The model " + modelName + " is not a valid model. Please consult the list of models through the function getModelList()");
+		}
 		boolean compress = false; // disabling compression
 		Map<GeographicalCoordinatesProvider, String> outputMap = new HashMap<GeographicalCoordinatesProvider, String>();
 		for (GeographicalCoordinatesProvider location : teleIORefs.keySet()) {
@@ -400,21 +434,7 @@ public class BioSimClient {
 			String teleIORef = teleIORefs.get(location);
 			query += "&wgout=" + teleIORef;		
 			
-			String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/" + MODEL_API + "?" + query;
-			
-			URL bioSimURL = new URL(urlString);
-			HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
-			int code = connection.getResponseCode();
-			if (code != 202) {	// means it is connected
-				String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/" + MODEL_API + "?"  + query;
-				bioSimURL = new URL(innerURLString);
-				connection = (HttpURLConnection) bioSimURL.openConnection();
-				code = connection.getResponseCode();
-				if (code != 200) {	// means it is connected
-					throw new IOException("Unable to access BioSIM from internet or the LAN!");
-				}				
-			}
-			String serverReply = getStringFromConnection(connection);
+			String serverReply = getStringFromConnection(MODEL_API, query);
 			outputMap.put(location, serverReply);
 		}
 		return outputMap;
