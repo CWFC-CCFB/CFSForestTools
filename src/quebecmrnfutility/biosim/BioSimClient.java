@@ -33,6 +33,7 @@ import repicea.net.server.BasicClient;
  * This class enables a client for the Biosim server at rouge-epicea.dyndns.org. 
  * @author Mathieu Fortin - January 2016
  */
+@Deprecated
 public class BioSimClient extends BasicClient {
 
 	protected static final Map<BioSimVersion, Map<String, ClimateVariables>> RecordedClimateVariables = new ConcurrentHashMap<BioSimVersion, Map<String, ClimateVariables>>();

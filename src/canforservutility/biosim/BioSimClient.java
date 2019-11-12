@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package quebecmrnfutility.biosim;
+package canforservutility.biosim;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,32 +33,64 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 import repicea.stats.StatisticalUtility;
 
 /**
  * This class enables a client for the Biosim server at repicea.dyndns.org. 
  * @author Mathieu Fortin - October 2019
  */
-@Deprecated
-abstract class BioSimClient2 {
+public class BioSimClient {
 
 	private static final String NORMAL_API = "BioSimNormals";
 	private static final String GENERATOR_API = "BioSimWG";
 	private static final String MODEL_API = "BioSimModel";
 	
-	static class BioSimTeleIO extends HashMap<String, Object> {
-		 
-		String convertToString() {
-			String outputString = "";
-	        outputString += "comment=" + get("comment") + "///";
-            outputString += "compress=" + get("compress") + "///";
-	        outputString += "metadata=" + get("metadata") + "///";
-	        outputString += "msg=" + get("msg") + "///";
-       		outputString += "text=" + get("text") + "///";
-      		outputString += "data=" + get("data");
-      		return outputString;
+	static class PlotLocation implements GeographicalCoordinatesProvider {
+		
+		private final double elevationM;
+		private final double latitude;
+		private final double longitude;
+		private final String plotID;
+		
+		PlotLocation(String plotID, double latitudeDeg, double longitudeDeg, double elevationM) {
+			this.plotID = plotID;
+			this.latitude = latitudeDeg;
+			this.longitude = longitudeDeg;
+			this.elevationM = elevationM;
 		}
+		
+		
+		
+		@Override
+		public double getElevationM() {return elevationM;}
+
+		@Override
+		public double getLatitudeDeg() {return latitude;}
+
+		@Override
+		public double getLongitudeDeg() {return longitude;}
+
+		public String getPlotId() {return plotID;}
+		
+		@Override
+		public String toString() {return latitude + "_" + longitude + "_" + elevationM;}
+		
 	}
+	
+//	static class BioSimTeleIO extends HashMap<String, Object> {
+//		 
+//		String convertToString() {
+//			String outputString = "";
+//	        outputString += "comment=" + get("comment") + "///";
+//            outputString += "compress=" + get("compress") + "///";
+//	        outputString += "metadata=" + get("metadata") + "///";
+//	        outputString += "msg=" + get("msg") + "///";
+//       		outputString += "text=" + get("text") + "///";
+//      		outputString += "data=" + get("data");
+//      		return outputString;
+//		}
+//	}
 	
 	/**
 	 * An inner class that handles the mean and sum of the different variables.
@@ -177,8 +209,8 @@ abstract class BioSimClient2 {
 	 * @return a Map with the locations as keys and maps as values.
 	 * @throws IOException
 	 */
-	public static Map<PlotLocation, Map> getNormals(Period period, List<Variable> variables, List<PlotLocation> locations, List<Month> averageOverTheseMonths) throws IOException {
-		Map<PlotLocation, Map> outputMap = new HashMap<PlotLocation, Map>();
+	public static Map<GeographicalCoordinatesProvider, Map> getNormals(Period period, List<Variable> variables, List<GeographicalCoordinatesProvider> locations, List<Month> averageOverTheseMonths) throws IOException {
+		Map<GeographicalCoordinatesProvider, Map> outputMap = new HashMap<GeographicalCoordinatesProvider, Map>();
 		
 		String variablesQuery = "";
 		for (Variable v : variables) {
@@ -190,7 +222,7 @@ abstract class BioSimClient2 {
 
 		String fieldSeparator = ",";
 		
-		for (PlotLocation location : locations) {
+		for (GeographicalCoordinatesProvider location : locations) {
 			String query = "";
 			query += "lat=" + location.getLatitudeDeg();
 			query += "&long=" + location.getLongitudeDeg();
@@ -260,7 +292,7 @@ abstract class BioSimClient2 {
 	 * @return a Map with the locations as keys and maps as values.
 	 * @throws IOException
 	 */
-	public static Map<PlotLocation, Map> getMonthlyNormals(Period period, List<Variable> variables, List<PlotLocation> locations) throws IOException {
+	public static Map<GeographicalCoordinatesProvider, Map> getMonthlyNormals(Period period, List<Variable> variables, List<GeographicalCoordinatesProvider> locations) throws IOException {
 		return getNormals(period, variables, locations, null);
 	}
 
@@ -271,7 +303,7 @@ abstract class BioSimClient2 {
 	 * @return a Map with the locations as keys and maps as values.
 	 * @throws IOException
 	 */
-	public static Map<PlotLocation, Map> getAnnualNormals(Period period, List<Variable> variables, List<PlotLocation> locations) throws IOException {
+	public static Map<GeographicalCoordinatesProvider, Map> getAnnualNormals(Period period, List<Variable> variables, List<GeographicalCoordinatesProvider> locations) throws IOException {
 		return getNormals(period, variables, locations, AllMonths);
 	}
 	
@@ -288,9 +320,9 @@ abstract class BioSimClient2 {
 	 * @return a Map with the locations as keys and maps as values.
 	 * @throws IOException
 	 */
-	public static Map<PlotLocation, String> getGeneratedClimate(int fromYr, int toYr, List<Variable> variables, List<PlotLocation> locations) throws IOException {
+	public static Map<GeographicalCoordinatesProvider, String> getGeneratedClimate(int fromYr, int toYr, List<Variable> variables, List<GeographicalCoordinatesProvider> locations) throws IOException {
 		boolean compress = false; // disabling compression by default
-		Map<PlotLocation, String> outputMap = new HashMap<PlotLocation, String>();
+		Map<GeographicalCoordinatesProvider, String> outputMap = new HashMap<GeographicalCoordinatesProvider, String>();
 		
 		String variablesQuery = "";
 		for (Variable v : variables) {
@@ -300,8 +332,7 @@ abstract class BioSimClient2 {
 			}
 		}
 
-		for (PlotLocation location : locations) {
-			Object value = null;
+		for (GeographicalCoordinatesProvider location : locations) {
 			String query = "";
 			query += "lat=" + location.getLatitudeDeg();
 			query += "&long=" + location.getLongitudeDeg();
@@ -355,10 +386,10 @@ abstract class BioSimClient2 {
 		return completeString;
 	}
 
-	public static Map<PlotLocation, String> applyModel(String modelName, Map<PlotLocation, String> teleIORefs) throws IOException {
+	public static Map<GeographicalCoordinatesProvider, String> applyModel(String modelName, Map<GeographicalCoordinatesProvider, String> teleIORefs) throws IOException {
 		boolean compress = false; // disabling compression
-		Map<PlotLocation, String> outputMap = new HashMap<PlotLocation, String>();
-		for (PlotLocation location : teleIORefs.keySet()) {
+		Map<GeographicalCoordinatesProvider, String> outputMap = new HashMap<GeographicalCoordinatesProvider, String>();
+		for (GeographicalCoordinatesProvider location : teleIORefs.keySet()) {
 			String query = "";
 			query += "model=" + modelName;
 			if (compress) {
@@ -392,7 +423,7 @@ abstract class BioSimClient2 {
 	
 
 	public static void main(String[] args) throws IOException {
-		List<PlotLocation> locations = new ArrayList<PlotLocation>();
+		List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
 		for (int i = 0; i < 10; i++) {
 			PlotLocation loc = new PlotLocation(((Integer) i).toString(),
 					45 + StatisticalUtility.getRandom().nextDouble() * 7,
@@ -412,12 +443,12 @@ abstract class BioSimClient2 {
 		//	nbSecs = (System.currentTimeMillis() - initialTime) * .001;
 		//	System.out.println("Elapsed time = " + nbSecs + " size = " + output.size());
 		initialTime = System.currentTimeMillis();
-		Map<PlotLocation, String> teleIORefs = BioSimClient2.getGeneratedClimate(2018, 2019, var, locations);
+		Map<GeographicalCoordinatesProvider, String> teleIORefs = BioSimClient.getGeneratedClimate(2018, 2019, var, locations);
 		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs + " size = " + teleIORefs.size());
 		
 		initialTime = System.currentTimeMillis();
-		Map<PlotLocation, String> replies = BioSimClient2.applyModel("DegreeDay_Annual", teleIORefs);
+		Map<GeographicalCoordinatesProvider, String> replies = BioSimClient.applyModel("DegreeDay_Annual", teleIORefs);
 		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs + " size = " + replies.size());
 		int u = 0;
