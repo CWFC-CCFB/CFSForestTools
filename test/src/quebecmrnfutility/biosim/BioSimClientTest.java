@@ -15,6 +15,7 @@ import repicea.net.server.BasicClient.BasicClientException;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 import repicea.stats.StatisticalUtility;
 
+@Deprecated
 public class BioSimClientTest {
 
 	static class FakeLocation implements GeographicalCoordinatesProvider {

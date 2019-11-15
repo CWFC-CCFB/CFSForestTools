@@ -60,7 +60,7 @@ public class BioSimClient {
 		URL bioSimURL = new URL(urlString);
 		HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
 		int code = connection.getResponseCode();
-		if (code != 202) {	// means it is connected
+		if (code < 200 || code > 202) {	// if true that means it is not connected
 			String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/" + api;
 			innerURLString = addQueryIfAny(innerURLString, query);
 			bioSimURL = new URL(innerURLString);
@@ -192,7 +192,9 @@ public class BioSimClient {
 	}
 
 
-	protected static enum Period {
+	public static enum Period {
+		FromNormals1951_1980("period=1951_1980"),
+		FromNormals1961_1990("period=1961_1990"),
 		FromNormals1971_2000("period=1971_2000"),
 		FromNormals1981_2010("period=1981_2010");
 		
@@ -290,27 +292,13 @@ public class BioSimClient {
 			query += "&var=" + variablesQuery ;
 			query += "&compress=0";	// compression is disabled by default
 			query += "&" + period.parsedQuery;
-			
-			String urlString = "http://" + REpiceaAddress.getHostName() + ":" + REpiceaAddress.getPort() + "/" + NORMAL_API + "?" + query;
-			
-			URL bioSimURL = new URL(urlString);
-			HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
-			int code = connection.getResponseCode();
-			if (code != 202) {	// means it is connected
-				String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/" + NORMAL_API + "?" + query;
-				bioSimURL = new URL(innerURLString);
-				connection = (HttpURLConnection) bioSimURL.openConnection();
-				code = connection.getResponseCode();
-				if (code != 200) {	// means it is connected
-					throw new IOException("Unable to access BioSIM from internet or the LAN!");
-				}				
-			}
-			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			String inputLine;
-			Map<Variable, Integer> fieldIndices = new HashMap<Variable,Integer>();
-			int i = 0;
+
+			String outputString = BioSimClient.getStringFromConnection(NORMAL_API, query);
+			Map<Variable,Integer> fieldIndices = new HashMap<Variable,Integer>();
 			MonthMap monthMap = new MonthMap();
-			while ((inputLine = in.readLine()) != null) {
+			int i = 0;
+			String[] lines = outputString.split("\n");
+			for (String inputLine : lines) {
 				if (inputLine.startsWith("Error")) {
 					throw new IOException(inputLine);
 				}
@@ -332,7 +320,6 @@ public class BioSimClient {
 				}
 				i++;
 			}
-			in.close();
 			if (averageOverTheseMonths == null || averageOverTheseMonths.isEmpty()) {
 				outputMap.put(location, monthMap);
 			} else {
