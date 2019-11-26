@@ -30,11 +30,12 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
-import repicea.stats.StatisticalUtility;
 
 /**
  * This class enables a client for the Biosim server at repicea.dyndns.org. 
@@ -44,7 +45,6 @@ public class BioSimClient {
 
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("144.172.156.5", 5000);
 	private static final InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 5000);
-
 	
 	private final static String addQueryIfAny(String urlString, String query) {
 		if (query != null && !query.isEmpty()) {
@@ -87,11 +87,16 @@ public class BioSimClient {
 		return completeString;
 	}
 	
+	private static final String SPACE_IN_REQUEST = "%20";
+	
 	private static final String NORMAL_API = "BioSimNormals";
 	private static final String GENERATOR_API = "BioSimWG";
 	private static final String MODEL_API = "BioSimModel";
 	private static final String MODEL_LIST_API = "BioSimModelList";
 
+	private static final Map<QuerySignature, String> GeneratedClimateMap = new ConcurrentHashMap<QuerySignature, String>();
+	
+	
 	private static final List<String> ModelListReference = new ArrayList<String>(); 
 	static {
 		try {
@@ -105,57 +110,71 @@ public class BioSimClient {
 		}
 	}
 
-
-	static class PlotLocation implements GeographicalCoordinatesProvider {
+	/**
+	 * A class for exceptions specific to BioSim
+	 * @author Mathieu Fortin - November 2019
+	 */
+	@SuppressWarnings("serial")
+	public static class BioSimClientException extends InvalidParameterException {
 		
-		private final double elevationM;
-		private final double latitude;
-		private final double longitude;
-		private final String plotID;
-		
-		PlotLocation(String plotID, double latitudeDeg, double longitudeDeg, double elevationM) {
-			this.plotID = plotID;
-			this.latitude = latitudeDeg;
-			this.longitude = longitudeDeg;
-			this.elevationM = elevationM;
+		protected BioSimClientException(String message) {
+			super(message);
 		}
 		
-		
-		
-		@Override
-		public double getElevationM() {return elevationM;}
-
-		@Override
-		public double getLatitudeDeg() {return latitude;}
-
-		@Override
-		public double getLongitudeDeg() {return longitude;}
-
-		public String getPlotId() {return plotID;}
-		
-		@Override
-		public String toString() {return latitude + "_" + longitude + "_" + elevationM;}
-		
 	}
-	
-//	static class BioSimTeleIO extends HashMap<String, Object> {
-//		 
-//		String convertToString() {
-//			String outputString = "";
-//	        outputString += "comment=" + get("comment") + "///";
-//            outputString += "compress=" + get("compress") + "///";
-//	        outputString += "metadata=" + get("metadata") + "///";
-//	        outputString += "msg=" + get("msg") + "///";
-//       		outputString += "text=" + get("text") + "///";
-//      		outputString += "data=" + get("data");
-//      		return outputString;
-//		}
-//	}
+
+	static class QuerySignature {
+		
+		final int initialYear;
+		final int finalYear;
+		final List<Variable> variables;
+		final double latitudeDeg;
+		final double longitudeDeg;
+		final double elevationM;
+		
+		QuerySignature(int initialYear, int finalYear, List<Variable> variables, GeographicalCoordinatesProvider location) {
+			this.initialYear = initialYear;
+			this.finalYear = finalYear;
+			this.variables = new ArrayList<Variable>();
+			this.variables.addAll(variables);
+			this.latitudeDeg = location.getLatitudeDeg();
+			this.longitudeDeg = location.getLongitudeDeg();
+			this.elevationM = location.getElevationM();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof QuerySignature) {
+				QuerySignature thatQuery = (QuerySignature) obj;
+				if (thatQuery.initialYear == initialYear) {
+					if (thatQuery.finalYear == finalYear) {
+						if (thatQuery.variables.equals(variables)) {
+							if (thatQuery.latitudeDeg == latitudeDeg) {
+								if (thatQuery.longitudeDeg == longitudeDeg) {
+									if (thatQuery.elevationM == elevationM) {
+										return true;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			return false;
+		}
+		
+		@Override
+		public int hashCode() {
+			return initialYear * 10000000 + finalYear + variables.hashCode();
+		}
+	}
+
 	
 	/**
 	 * An inner class that handles the mean and sum of the different variables.
 	 * @author Mathieu Fortin - October 2019
 	 */
+	@SuppressWarnings("serial")
 	static class MonthMap extends HashMap<Month, Map<Variable, Double>> {
 		
 		Map<Variable, Double> getMeanForTheseMonths(List<Month> months, List<Variable> variables) {
@@ -269,46 +288,48 @@ public class BioSimClient {
 	 * @return a Map with the locations as keys and maps as values.
 	 * @throws IOException
 	 */
-	public static Map<GeographicalCoordinatesProvider, Map> getNormals(Period period, List<Variable> variables, List<GeographicalCoordinatesProvider> locations, List<Month> averageOverTheseMonths) throws IOException {
-		Map<GeographicalCoordinatesProvider, Map> outputMap = new HashMap<GeographicalCoordinatesProvider, Map>();
+	public static LinkedHashMap<GeographicalCoordinatesProvider, Map> getNormals(Period period, List<Variable> variables, List<GeographicalCoordinatesProvider> locations, List<Month> averageOverTheseMonths) throws IOException {
+		LinkedHashMap<GeographicalCoordinatesProvider, Map> outputMap = new LinkedHashMap<GeographicalCoordinatesProvider, Map>();
 		
 		String variablesQuery = "";
 		for (Variable v : variables) {
 			variablesQuery += v.name();
 			if (variables.indexOf(v) < variables.size() - 1) {
-				variablesQuery += "%20";
+				variablesQuery += SPACE_IN_REQUEST;
 			}
 		}
 
 		String fieldSeparator = ",";
-		
-		for (GeographicalCoordinatesProvider location : locations) {
-			String query = "";
-			query += "lat=" + location.getLatitudeDeg();
-			query += "&long=" + location.getLongitudeDeg();
-			if (!Double.isNaN(location.getElevationM())) {
-				query += "&elev=" + location.getElevationM();
-			}
-			query += "&var=" + variablesQuery ;
-			query += "&compress=0";	// compression is disabled by default
-			query += "&" + period.parsedQuery;
 
-			String outputString = BioSimClient.getStringFromConnection(NORMAL_API, query);
-			Map<Variable,Integer> fieldIndices = new HashMap<Variable,Integer>();
-			MonthMap monthMap = new MonthMap();
-			int i = 0;
-			String[] lines = outputString.split("\n");
-			for (String inputLine : lines) {
-				if (inputLine.startsWith("Error")) {
-					throw new IOException(inputLine);
-				}
+		String query = constructCoordinatesQuery(locations);
+		
+		query += "&var=" + variablesQuery ;
+		query += "&compress=0";	// compression is disabled by default
+		query += "&" + period.parsedQuery;
+
+		String outputString = BioSimClient.getStringFromConnection(NORMAL_API, query);
+
+		Map<Variable,Integer> fieldIndices = new HashMap<Variable,Integer>();
+		
+		int locationID = 0;
+		MonthMap monthMap = null;
+		String[] lines = outputString.split("\n");
+		for (String inputLine : lines) {
+			if (inputLine.toLowerCase().startsWith("error")) {
+				throw new IOException(inputLine);
+			} else {
 				String[] str = inputLine.split(fieldSeparator);
-				if (i==0) {
-					List<String> fieldNames = Arrays.asList(str);
-					for (Variable v : variables) {
-						fieldIndices.put(v, fieldNames.indexOf(v.fieldName));
+				if (inputLine.toLowerCase().startsWith("month")) {
+					GeographicalCoordinatesProvider location = locations.get(locationID);
+					monthMap = new MonthMap();
+					outputMap.put(location, monthMap);
+					if (locationID == 0) {
+						List<String> fieldNames = Arrays.asList(str);
+						for (Variable v : variables) {
+							fieldIndices.put(v, fieldNames.indexOf(v.fieldName));
+						}
 					}
-					outputMap.put(location, new MonthMap());
+					locationID++;
 				} else {
 					int monthIndex = Integer.parseInt(str[0]) - 1;
 					Month m = Month.values()[monthIndex];
@@ -318,15 +339,20 @@ public class BioSimClient {
 						monthMap.get(m).put(v, value);
 					}
 				}
-				i++;
-			}
-			if (averageOverTheseMonths == null || averageOverTheseMonths.isEmpty()) {
-				outputMap.put(location, monthMap);
-			} else {
-				outputMap.put(location, monthMap.getMeanForTheseMonths(averageOverTheseMonths, variables));
 			}
 		}
-		return outputMap;
+		
+		
+		if (averageOverTheseMonths == null || averageOverTheseMonths.isEmpty()) {
+			return outputMap;
+		} else {
+			LinkedHashMap<GeographicalCoordinatesProvider, Map> formattedOutputMap = new LinkedHashMap<GeographicalCoordinatesProvider, Map>();
+			for (GeographicalCoordinatesProvider location : outputMap.keySet()) {
+				monthMap = (MonthMap) outputMap.get(location);
+				formattedOutputMap.put(location, monthMap.getMeanForTheseMonths(averageOverTheseMonths, variables));
+			}
+			return formattedOutputMap;
+		}
 	}
 	
 	/**
@@ -351,114 +377,195 @@ public class BioSimClient {
 		return getNormals(period, variables, locations, AllMonths);
 	}
 	
-	
-	
-	
+	private static String constructCoordinatesQuery(List<GeographicalCoordinatesProvider> locations) {
+		String latStr = "";
+		String longStr = "";
+		String elevStr = "";
+		for (GeographicalCoordinatesProvider location : locations) {
+			if (latStr.isEmpty()) {
+				latStr += location.getLatitudeDeg();
+			} else {
+				latStr += SPACE_IN_REQUEST + location.getLatitudeDeg();
+			}
+			if (longStr.isEmpty()) {
+				longStr += location.getLongitudeDeg();
+			} else {
+				longStr += SPACE_IN_REQUEST + location.getLongitudeDeg();
+			}
+			if (Double.isNaN(location.getElevationM())) {
+				if (elevStr.isEmpty()) {
+					elevStr += location.getElevationM();
+				} else {
+					elevStr += SPACE_IN_REQUEST + location.getElevationM();
+				}
+			}
+		}
+		
+		String query = "";
+		query += "lat=" + latStr;
+		query += "&long=" + longStr;
+		if (!elevStr.isEmpty()) {
+			query += "&elev=" + elevStr;
+		}
+		return query;
+	}
 	
 	/**
-	 * Retrieves the normals and compiles the mean or sum over some months. 
-	 * @param variables the variables to be retrieved and compiled
-	 * @param locations the locations
-	 * @param averageOverTheseMonths the months over which the mean or sum is to be calculated. If empty or null the 
-	 * method returns the monthly averages.
-	 * @return a Map with the locations as keys and maps as values.
+	 * Generates climate for some locations over a particular time interval.
+	 * @param fromYr beginning of the interval (inclusive)
+	 * @param toYr end of the interval (inclusive)
+	 * @param variables a List of Variable enums
+	 * @param locations a List of GeographicalCoordinatesProvider instances
+	 * @return a LinkedHashMap with GeographicalCoordinatesProvider instances as key and String instances as values. Those strings are actually the code for 
+	 * the TeleIO instance on the server.
 	 * @throws IOException
 	 */
-	public static Map<GeographicalCoordinatesProvider, String> getGeneratedClimate(int fromYr, int toYr, List<Variable> variables, List<GeographicalCoordinatesProvider> locations) throws IOException {
+	protected static LinkedHashMap<GeographicalCoordinatesProvider, String> getGeneratedClimate(int fromYr, int toYr, List<Variable> variables, List<GeographicalCoordinatesProvider> locations) throws IOException {
 		boolean compress = false; // disabling compression by default
-		Map<GeographicalCoordinatesProvider, String> outputMap = new HashMap<GeographicalCoordinatesProvider, String>();
+		LinkedHashMap<GeographicalCoordinatesProvider, String> outputMap = new LinkedHashMap<GeographicalCoordinatesProvider, String>();
 		
 		String variablesQuery = "";
 		for (Variable v : variables) {
 			variablesQuery += v.name();
 			if (variables.indexOf(v) < variables.size() - 1) {
-				variablesQuery += "%20";
+				variablesQuery += SPACE_IN_REQUEST;
 			}
 		}
 
-		for (GeographicalCoordinatesProvider location : locations) {
-			String query = "";
-			query += "lat=" + location.getLatitudeDeg();
-			query += "&long=" + location.getLongitudeDeg();
-			if (!Double.isNaN(location.getElevationM())) {
-				query += "&elev=" + location.getElevationM();
+		String query = constructCoordinatesQuery(locations);
+		query += "&var=" + variablesQuery ;
+		if (compress) {
+			query += "&compress=1";
+		} else {
+			query += "&compress=0";
+		}
+		query += "&from=" + fromYr;
+		query += "&to=" + toYr;
+		
+		String serverReply = getStringFromConnection(GENERATOR_API, query);
+		
+		String[] ids = serverReply.split(" ");
+		if (ids.length != locations.size()) {
+			throw new BioSimClientException("The number of wgout ids is different from the number of locations!");
+		}
+		for (int i = 0; i < locations.size(); i++) {
+			String id = ids[i];
+			GeographicalCoordinatesProvider location = locations.get(i);
+			if (id.toLowerCase().startsWith("error")) {
+				throw new BioSimClientException("The server was unable to generate the climate for this location: " + location.toString() + ": " + id);
 			}
-			query += "&var=" + variablesQuery ;
-			if (compress) {
-				query += "&compress=1";
-			} else {
-				query += "&compress=0";
-			}
-			query += "&from=" + fromYr;
-			query += "&to=" + toYr;
-			
-			String serverReply = getStringFromConnection(GENERATOR_API, query);
-			outputMap.put(location, serverReply);
+			outputMap.put(location, id);
 		}
 		return outputMap;
 	}
 
+	/**
+	 * Returns the names of the available models.
+	 * @return a List of String instances
+	 */
 	public static List<String> getModelList() {
 		List<String> copy = new ArrayList<String>();
 		copy.addAll(ModelListReference);
 		return copy;
 	}
 
-	public static Map<GeographicalCoordinatesProvider, String> applyModel(String modelName, Map<GeographicalCoordinatesProvider, String> teleIORefs) throws IOException {
+	/**
+	 * Applies a particular model on some generated climate variables.
+	 * @param modelName the name of the model
+	 * @param teleIORefs a LinkedHashMap with the references to the TeleIO objects on the server
+	 * @return a LinkedHashMap with GeographicalCoordinatesProvider instances as keys and a Map with years and climate variables values as values.
+	 * @throws IOException
+	 */
+	protected static LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> applyModel(String modelName, LinkedHashMap<GeographicalCoordinatesProvider, String> teleIORefs) throws IOException {
 		if (!ModelListReference.contains(modelName)) {
 			throw new InvalidParameterException("The model " + modelName + " is not a valid model. Please consult the list of models through the function getModelList()");
 		}
 		boolean compress = false; // disabling compression
-		Map<GeographicalCoordinatesProvider, String> outputMap = new HashMap<GeographicalCoordinatesProvider, String>();
+		
+		String wgoutQuery = "";
+		List<GeographicalCoordinatesProvider> refListForLocations = new ArrayList<GeographicalCoordinatesProvider>();
 		for (GeographicalCoordinatesProvider location : teleIORefs.keySet()) {
-			String query = "";
-			query += "model=" + modelName;
-			if (compress) {
-				query += "&compress=1";
+			refListForLocations.add(location);
+			if (wgoutQuery.isEmpty()) {
+				wgoutQuery += teleIORefs.get(location);
 			} else {
-				query += "&compress=0";
+				wgoutQuery += SPACE_IN_REQUEST + teleIORefs.get(location);
 			}
-			String teleIORef = teleIORefs.get(location);
-			query += "&wgout=" + teleIORef;		
-			
-			String serverReply = getStringFromConnection(MODEL_API, query);
-			outputMap.put(location, serverReply);
+		}
+
+		
+		LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer,Double>> outputMap = new LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer,Double>>();
+		String query = "";
+		query += "model=" + modelName;
+		if (compress) {
+			query += "&compress=1";
+		} else {
+			query += "&compress=0";
+		}
+		query += "&wgout=" + wgoutQuery;		
+		
+		String serverReply = getStringFromConnection(MODEL_API, query);
+		String[] lines = serverReply.split("\n");
+		int locationId = 0;
+		GeographicalCoordinatesProvider location = null;
+		Map<Integer,Double> innerMap = null;
+		for (String line : lines) {
+			if (line.toLowerCase().startsWith("year")) {
+				location = refListForLocations.get(locationId);
+				innerMap = new HashMap<Integer,Double>();
+				outputMap.put(location, innerMap);
+				locationId++;
+			} else {
+				String[] fields = line.split(",");
+				Integer year = null;
+				Double value = null;
+				for (int i = 0; i < fields.length; i++) {
+					if (i == 0) {
+						year = Integer.parseInt(fields[i]);
+					} else {
+						value = Double.parseDouble(fields[i]);
+					}
+				}
+				innerMap.put(year, value);
+			}
 		}
 		return outputMap;
-
 	}
 	
 
-	public static void main(String[] args) throws IOException {
-		List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
-		for (int i = 0; i < 10; i++) {
-			PlotLocation loc = new PlotLocation(((Integer) i).toString(),
-					45 + StatisticalUtility.getRandom().nextDouble() * 7,
-					-74 + StatisticalUtility.getRandom().nextDouble() * 8,
-					300 + StatisticalUtility.getRandom().nextDouble() * 400);
-			locations.add(loc);
+	public static LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> getClimateVariables(int fromYr, 
+			int toYr, 
+			List<Variable> variables, 
+			List<GeographicalCoordinatesProvider> locations,
+			String modelName) throws IOException {
+		Map<GeographicalCoordinatesProvider, String> alreadyGeneratedClimate = new HashMap<GeographicalCoordinatesProvider, String>();
+		List<GeographicalCoordinatesProvider> locationsToGenerate = new ArrayList<GeographicalCoordinatesProvider>();
+		for (GeographicalCoordinatesProvider location : locations) {
+			QuerySignature querySignature = new QuerySignature(fromYr, toYr, variables, location);
+			if (GeneratedClimateMap.containsKey(querySignature)) {
+				alreadyGeneratedClimate.put(location, GeneratedClimateMap.get(querySignature));
+			} else {
+				locationsToGenerate.add(location);
+			}
 		}
-		List<Variable> var = new ArrayList<Variable>();
-		var.add(Variable.TN);
-		var.add(Variable.TX);
-		var.add(Variable.P);
-		long initialTime;
-		double nbSecs;
-
-		//	initialTime = System.currentTimeMillis();
-		//	Map output = BioSimClient2.getMonthlyNormals(var, locations);
-		//	nbSecs = (System.currentTimeMillis() - initialTime) * .001;
-		//	System.out.println("Elapsed time = " + nbSecs + " size = " + output.size());
-		initialTime = System.currentTimeMillis();
-		Map<GeographicalCoordinatesProvider, String> teleIORefs = BioSimClient.getGeneratedClimate(2018, 2019, var, locations);
-		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
-		System.out.println("Elapsed time = " + nbSecs + " size = " + teleIORefs.size());
 		
-		initialTime = System.currentTimeMillis();
-		Map<GeographicalCoordinatesProvider, String> replies = BioSimClient.applyModel("DegreeDay_Annual", teleIORefs);
-		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
-		System.out.println("Elapsed time = " + nbSecs + " size = " + replies.size());
-		int u = 0;
+		Map<GeographicalCoordinatesProvider, String> generatedClimate = new HashMap<GeographicalCoordinatesProvider, String>();
+		if (!locationsToGenerate.isEmpty()) {
+			generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, variables, locationsToGenerate));
+			for (GeographicalCoordinatesProvider location : generatedClimate.keySet()) {
+				GeneratedClimateMap.put(new QuerySignature(fromYr, toYr, variables, location), generatedClimate.get(location));
+			}
+		}
+		
+		generatedClimate.putAll(alreadyGeneratedClimate);
+		
+		LinkedHashMap<GeographicalCoordinatesProvider, String> mapForModels = new LinkedHashMap<GeographicalCoordinatesProvider, String>();
+		for (GeographicalCoordinatesProvider location : locations) {
+			mapForModels.put(location, generatedClimate.get(location));
+		}
+		
+		return BioSimClient.applyModel(modelName, mapForModels);
 	}
+	
 
 }

@@ -24,7 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	canforservutility.biodiversity.indices.MultipleSiteIndexTests.class,
 	canforservutility.predictor.disturbances.SimpleRecurrenceBasedDisturbancePredictorTests.class,
 	canforservutility.predictor.disturbances.sprucebudworm.occurrence.boulangerarsenault2004.SpruceBudwormOutbreakOccurrencePredictorTests.class,
-	canforservutility.predictor.disturbances.sprucebudworm.defoliation.gray2013.DefoliationTests.class})
+	canforservutility.predictor.disturbances.sprucebudworm.defoliation.gray2013.DefoliationTests.class,
+	canforservutility.biosim.BioSimClientTest.class})
 	
 public class AllForestToolsTests {}
 
