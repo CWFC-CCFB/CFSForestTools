@@ -49,7 +49,7 @@ public class BioSimClientTest {
 
 	}
 
-	@Ignore
+	
 	@Test
 	public void comparisonElapsedTimeBioSimOldVsBioSimNew() throws Exception {
 		for (int k = 0; k < 10; k++) {
@@ -95,7 +95,7 @@ public class BioSimClientTest {
 	@Test
 	public void testingMemorizer() throws IOException {
 		List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100; i++) {
 			FakeLocation loc = new FakeLocation(45 + StatisticalUtility.getRandom().nextDouble() * 7,
 					-74 + StatisticalUtility.getRandom().nextDouble() * 8,
 					300 + StatisticalUtility.getRandom().nextDouble() * 400);
