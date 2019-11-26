@@ -126,47 +126,6 @@ public class BioSimClientTest {
 		}
 	}
 
-	@Test
-	public void comparisonBioSimOldVsBioSimNew() throws Exception {
-		BioSimClient client = BioSimClient.getBioSimClient(BioSimVersion.VERSION_1971_2000);
-		List<PlotLocation> plotLocations = new ArrayList<PlotLocation>();
-		for (int i = 1; i <= 100; i++) {
-			plotLocations.add(new PlotLocation("Plot " + i, new FakeLocation(200 + StatisticalUtility.getRandom().nextDouble() * 500, 
-					46 + StatisticalUtility.getRandom().nextDouble() * 4,
-					-74 + StatisticalUtility.getRandom().nextDouble() * 8)));
-		}
-		
-		long start = System.currentTimeMillis();
-		List<ClimateVariables> refVariables	= client.getClimateVariables(plotLocations);
-		System.out.println("Original BioSim client = " + ((System.currentTimeMillis() - start) *.001) + " sec.");
-		client.close();
-
-		
-		List<BioSimClient2.Variable> variables = new ArrayList<BioSimClient2.Variable>();
-		variables.add(BioSimClient2.Variable.TN);
-		variables.add(BioSimClient2.Variable.TX);
-		variables.add(BioSimClient2.Variable.P);
-		
-		start = System.currentTimeMillis();
-		Map<PlotLocation, Map> output = BioSimClient2.getAnnualNormals(Period.FromNormals1971_2000, variables, plotLocations);
-		System.out.println("New BioSim client = " + ((System.currentTimeMillis() - start) *.001) + " sec.");
-		for (ClimateVariables var : refVariables) {
-			PlotLocation selectedPlot = null;
-			for (PlotLocation plotLocation : plotLocations) {
-				if (plotLocation.getPlotId().equals(var.getPlotId())) {
-					selectedPlot = plotLocation;
-					break;
-				}
-			}
-			Map vMap = output.get(selectedPlot);
-			double actualMeanTemp = ((Double) vMap.get(BioSimClient2.Variable.TN) + (Double) vMap.get(BioSimClient2.Variable.TX)) * .5;
-			double actualMeanPrec = (Double) vMap.get(BioSimClient2.Variable.P);
-			double expectedMeanTemp = var.getVariable(Variable.MeanAnnualTempC);
-			double expectedMeanPrec = var.getVariable(Variable.MeanAnnualPrecMm);
-			Assert.assertEquals("Comparing mean temperature", expectedMeanTemp, actualMeanTemp, .6);
-			Assert.assertEquals("Comparing mean precipitation", expectedMeanPrec, actualMeanPrec, 70);
-		}
-	}
 	
 	
 	
