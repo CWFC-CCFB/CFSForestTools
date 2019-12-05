@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import canforservutility.biosim.BioSimClient.Period;
@@ -49,7 +48,6 @@ public class BioSimClientTest {
 
 	}
 
-	
 	@Test
 	public void comparisonElapsedTimeBioSimOldVsBioSimNew() throws Exception {
 		for (int k = 0; k < 10; k++) {
@@ -139,5 +137,53 @@ public class BioSimClientTest {
 	}
 
 	
+	/*
+	 * Tests if the weather generation over several contexts.
+	 */
+	@Test
+	public void testingWeatherGenerationOverSeveralContexts() throws IOException {
+		List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
+		for (int i = 0; i < 10; i++) {
+			FakeLocation loc = new FakeLocation(45 + StatisticalUtility.getRandom().nextDouble() * 7,
+					-74 + StatisticalUtility.getRandom().nextDouble() * 8,
+					300 + StatisticalUtility.getRandom().nextDouble() * 400);
+			locations.add(loc);
+		}
+		List<Variable> var = new ArrayList<Variable>();
+		var.add(Variable.TN);
+		var.add(Variable.TX);
+		var.add(Variable.P);
+		long initialTime;
+		double nbSecs1, nbSecs2;
+
+		initialTime = System.currentTimeMillis();
+		LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> teleIORefs = BioSimClient.getClimateVariables(2000, 2019, var, locations, "DegreeDay_Annual");
+		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
+		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
+
+		for (int i = 0; i < 10; i++) {
+			initialTime = System.currentTimeMillis();
+			LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> teleIORefs2 = BioSimClient.getClimateVariables(2000, 2019, var, locations, "DegreeDay_Annual");
+			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
+//			System.out.println("Elapsed time = " + nbSecs2 + " size = " + teleIORefs.size());
+			
+			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));
+			
+			for (GeographicalCoordinatesProvider location : locations) {
+				Map<Integer, Double> expectedMap = teleIORefs.get(location);
+				Map<Integer, Double> actualMap = teleIORefs2.get(location);
+				Assert.assertTrue(expectedMap.size() > 0);
+				Assert.assertEquals("Testing map size",  expectedMap.size(), actualMap.size());
+				for (Integer expectedKey : expectedMap.keySet()) {
+					double expectedValue = expectedMap.get(expectedKey);
+					double actualValue = actualMap.get(expectedKey);
+					Assert.assertEquals("Testing value for key: " + expectedKey,  
+							expectedValue, 
+							actualValue,
+							1E-8);
+				}
+			}
+		}
+	}
 	
 }
