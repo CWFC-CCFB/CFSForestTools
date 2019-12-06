@@ -392,12 +392,10 @@ public class BioSimClient {
 			} else {
 				longStr += SPACE_IN_REQUEST + location.getLongitudeDeg();
 			}
-			if (Double.isNaN(location.getElevationM())) {
-				if (elevStr.isEmpty()) {
-					elevStr += location.getElevationM();
-				} else {
-					elevStr += SPACE_IN_REQUEST + location.getElevationM();
-				}
+			if (elevStr.isEmpty()) {
+				elevStr += processElevationM(location);
+			} else {
+				elevStr += SPACE_IN_REQUEST + processElevationM(location);
 			}
 		}
 		
@@ -409,6 +407,15 @@ public class BioSimClient {
 		}
 		return query;
 	}
+
+	private static String processElevationM(GeographicalCoordinatesProvider location) {
+		if (Double.isNaN(location.getElevationM())) {
+			return "NaN";
+		} else {
+			return "" + location.getElevationM();
+		}
+	}
+	
 	
 	/**
 	 * Generates climate for some locations over a particular time interval.
