@@ -19,6 +19,17 @@ import repicea.stats.StatisticalUtility;
 @SuppressWarnings("deprecation")
 public class BioSimClientTest {
 
+	private static int nbObjectsBefore;
+	
+	static {
+		try {
+			nbObjectsBefore = BioSimClient.getNbWgoutObjectsOnServer();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	static class FakeLocation implements GeographicalCoordinatesProvider {
 
 		private final double elevationM;
@@ -47,7 +58,7 @@ public class BioSimClientTest {
 		public String toString() {return latitude + "_" + longitude + "_" + elevationM;}
 
 	}
-
+	
 	@Test
 	public void comparisonElapsedTimeBioSimOldVsBioSimNew() throws Exception {
 		for (int k = 0; k < 10; k++) {
@@ -80,7 +91,7 @@ public class BioSimClientTest {
 			double elapsedTimeWithoutOverhead = ((System.currentTimeMillis() - start) *.001);
 			System.out.println("Original = " + elapsedTimeOriginal + " sec.; New version = " + elapsedTimeWithoutOverhead + " sec.");
 
-			Assert.assertTrue("Evaluating performance of new client at run " + k, elapsedTimeWithoutOverhead/elapsedTimeOriginal < 1.3);
+			Assert.assertTrue("Evaluating performance of new client at run " + k, elapsedTimeWithoutOverhead/elapsedTimeOriginal < 1.5);
 		}
 	}
 	
@@ -185,5 +196,32 @@ public class BioSimClientTest {
 			}
 		}
 	}
+	
+	
+	@Test
+	public void testingMemoryManagementOnServerThroughEventualShutdownHook() throws Exception {
+		System.out.println("Nb objects before starting test on shutdown hook = " + nbObjectsBefore);
+		List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
+		for (int i = 0; i < 10; i++) {
+			FakeLocation loc = new FakeLocation(45 + StatisticalUtility.getRandom().nextDouble() * 7,
+					-74 + StatisticalUtility.getRandom().nextDouble() * 8,
+					300 + StatisticalUtility.getRandom().nextDouble() * 400);
+			locations.add(loc);
+		}
+		List<Variable> var = new ArrayList<Variable>();
+		var.add(Variable.TN);
+		var.add(Variable.TX);
+		var.add(Variable.P);
+		
+		BioSimClient.getClimateVariables(2018, 2019, var, locations, "DegreeDay_Annual");
+		
+		System.out.println("Nb objects immediately before eventual shutdown hook = " + BioSimClient.getNbWgoutObjectsOnServer());
+		System.out.println("Calling eventual shutdown hook...");
+		BioSimClient.removeWgoutObjectsFromServer();
+		int nbObjectsAfter = BioSimClient.getNbWgoutObjectsOnServer();
+		System.out.println("Nb objects after testing eventual shutdown hook = " + nbObjectsAfter);
+		Assert.assertEquals("Testing if the number of objects before and after is consistent", nbObjectsBefore, nbObjectsAfter);
+	}
+
 	
 }
