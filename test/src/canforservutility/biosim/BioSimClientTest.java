@@ -197,7 +197,30 @@ public class BioSimClientTest {
 		}
 	}
 	
-	
+	@Test
+	public void testingMemoryManagementOnServerAfterEphemeralOptionSetToTrue() throws Exception {
+		for (int nbRuns = 0; nbRuns < 5; nbRuns++) {
+			int nbObjectsBefore = BioSimClient.getNbWgoutObjectsOnServer();
+			System.out.println("Nb objects before this function call = " + nbObjectsBefore);
+			List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
+			for (int i = 0; i < 5; i++) {
+				FakeLocation loc = new FakeLocation(45 + StatisticalUtility.getRandom().nextDouble() * 7,
+						-74 + StatisticalUtility.getRandom().nextDouble() * 8,
+						300 + StatisticalUtility.getRandom().nextDouble() * 400);
+				locations.add(loc);
+			}
+			List<Variable> var = new ArrayList<Variable>();
+			var.add(Variable.TN);
+			var.add(Variable.TX);
+			var.add(Variable.P);
+			
+			BioSimClient.getClimateVariables(2018, 2019, var, locations, "DegreeDay_Annual", true);	// is ephemeral: wgout instances are not stored on the server
+			
+			int nbObjectsAfter = BioSimClient.getNbWgoutObjectsOnServer();
+			Assert.assertEquals("Testing if the number of objects before and after is consistent", nbObjectsBefore, nbObjectsAfter);
+		}
+	}
+
 	@Test
 	public void testingMemoryManagementOnServerThroughEventualShutdownHook() throws Exception {
 		System.out.println("Nb objects before starting test on shutdown hook = " + nbObjectsBefore);
@@ -217,7 +240,7 @@ public class BioSimClientTest {
 		
 		System.out.println("Nb objects immediately before eventual shutdown hook = " + BioSimClient.getNbWgoutObjectsOnServer());
 		System.out.println("Calling eventual shutdown hook...");
-		BioSimClient.removeWgoutObjectsFromServer();
+		BioSimClient.removeWgoutObjectsFromServer(BioSimClient.GeneratedClimateMap.values());
 		int nbObjectsAfter = BioSimClient.getNbWgoutObjectsOnServer();
 		System.out.println("Nb objects after testing eventual shutdown hook = " + nbObjectsAfter);
 		Assert.assertEquals("Testing if the number of objects before and after is consistent", nbObjectsBefore, nbObjectsAfter);
