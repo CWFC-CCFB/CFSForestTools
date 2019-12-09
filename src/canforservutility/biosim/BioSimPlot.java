@@ -32,7 +32,7 @@ public class BioSimPlot implements GeographicalCoordinatesProvider {
 	private final double latitude;
 	private final double longitude;
 
-	BioSimPlot(double latitudeDeg, double longitudeDeg, double elevationM) {
+	public BioSimPlot(double latitudeDeg, double longitudeDeg, double elevationM) {
 		this.latitude = latitudeDeg;
 		this.longitude = longitudeDeg;
 		this.elevationM = elevationM;
