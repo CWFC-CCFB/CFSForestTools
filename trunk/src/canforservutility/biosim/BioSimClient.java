@@ -506,5 +506,15 @@ public class BioSimClient {
 		return resultingMap;
 	}
 	
-
+	public static void main(String[] args) throws IOException {
+		List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
+		locations.add(new BioSimPlot(46,-72,300));
+		locations.add(new BioSimPlot(46,-74,100));
+		List<Variable> variables = new ArrayList<Variable>();
+		variables.add(Variable.TN);
+		variables.add(Variable.TX);
+		variables.add(Variable.P);
+		Object output = BioSimClient.getNormals(Period.FromNormals1981_2010, variables, locations, null);
+		int u = 0;
+	}
 }

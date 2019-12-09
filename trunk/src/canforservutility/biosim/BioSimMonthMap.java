@@ -33,7 +33,7 @@ import canforservutility.biosim.BioSimEnums.Variable;
  * @author Mathieu Fortin - October 2019
  */
 @SuppressWarnings("serial")
-class BioSimMonthMap extends HashMap<Month, Map<Variable, Double>> {
+public class BioSimMonthMap extends HashMap<Month, Map<Variable, Double>> {
 
 	Map<Variable, Double> getMeanForTheseMonths(List<Month> months, List<Variable> variables) {
 		Map<Variable, Double> outputMap = new HashMap<Variable, Double>();
