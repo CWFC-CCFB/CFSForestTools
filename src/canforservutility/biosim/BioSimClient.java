@@ -93,6 +93,8 @@ public class BioSimClient {
 	private static final String GENERATOR_API = "BioSimWG";
 	private static final String MODEL_API = "BioSimModel";
 	private static final String MODEL_LIST_API = "BioSimModelList";
+	private static final String BIOSIMCLEANUP_API = "BioSimMemoryCleanUp";
+	private static final String BIOSIMMEMORYLOAD_API = "BioSimMemoryLoad";
 
 	private static final Map<QuerySignature, String> GeneratedClimateMap = new ConcurrentHashMap<QuerySignature, String>();
 	
@@ -110,6 +112,22 @@ public class BioSimClient {
 		}
 	}
 
+	static class InternalShutDownHook extends Thread {
+		@Override
+		public void run() {
+			try {
+				System.out.println("Shutdown hook from BioSimClient called!");
+				BioSimClient.removeWgoutObjectsFromServer();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	static {
+		Runtime.getRuntime().addShutdownHook(new InternalShutDownHook());
+	}
+	
 	/**
 	 * A class for exceptions specific to BioSim
 	 * @author Mathieu Fortin - November 2019
@@ -354,6 +372,33 @@ public class BioSimClient {
 			return formattedOutputMap;
 		}
 	}
+	
+	protected static void removeWgoutObjectsFromServer() throws IOException {
+		if (!GeneratedClimateMap.isEmpty()) {
+			String query = "";
+			for (String objectID : GeneratedClimateMap.values()) {
+				if (query.isEmpty()) {
+					query += objectID;
+				} else {
+					query += SPACE_IN_REQUEST + objectID;
+				}
+			}
+			
+			getStringFromConnection(BIOSIMCLEANUP_API, "ref=" + query);
+			GeneratedClimateMap.clear();
+		}
+	}
+
+	
+	protected static int getNbWgoutObjectsOnServer() throws Exception {
+		String serverReply = getStringFromConnection(BIOSIMMEMORYLOAD_API, null);
+		try {
+			return Integer.parseInt(serverReply);
+		} catch (NumberFormatException e) {
+			throw new BioSimClientException("The server reply could not be parsed: " + e.getMessage());
+		}
+	}
+
 	
 	/**
 	 * Retrieves the monthly normals. 
