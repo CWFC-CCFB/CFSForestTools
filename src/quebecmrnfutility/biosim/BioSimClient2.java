@@ -114,7 +114,7 @@ abstract class BioSimClient2 {
 	static final List<Month> AllMonths = Arrays.asList(Month.values());
 	
 		
-	public static enum Variable {	// TODO complete this
+	protected static enum Variable {	// TODO complete this
 		TN("TMIN_MN", false, "min air temperature"),
 		T("", false, "air temperature"),
 		TX("TMAX_MN", false, "max air temperature"),
@@ -144,7 +144,7 @@ abstract class BioSimClient2 {
 		public String getDescription() {return description;}
 	}
 	
-	public static enum Month {
+	protected static enum Month {
 		January(31),
 		February(28),
 		March(31),

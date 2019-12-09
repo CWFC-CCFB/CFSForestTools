@@ -9,8 +9,8 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import canforservutility.biosim.BioSimClient.Period;
-import canforservutility.biosim.BioSimClient.Variable;
+import canforservutility.biosim.BioSimEnums.Period;
+import canforservutility.biosim.BioSimEnums.Variable;
 import quebecmrnfutility.biosim.BioSimClient.BioSimVersion;
 import quebecmrnfutility.biosim.PlotLocation;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
@@ -77,10 +77,10 @@ public class BioSimClientTest {
 			client.close();
 
 			
-			List<BioSimClient.Variable> variables = new ArrayList<BioSimClient.Variable>();
-			variables.add(BioSimClient.Variable.TN);
-			variables.add(BioSimClient.Variable.TX);
-			variables.add(BioSimClient.Variable.P);
+			List<BioSimEnums.Variable> variables = new ArrayList<BioSimEnums.Variable>();
+			variables.add(BioSimEnums.Variable.TN);
+			variables.add(BioSimEnums.Variable.TX);
+			variables.add(BioSimEnums.Variable.P);
 	
 			if (k==0) {	// make sure that the model list overhead is computed
 				BioSimClient.getAnnualNormals(Period.FromNormals1971_2000, variables, (List) plotLocations);
