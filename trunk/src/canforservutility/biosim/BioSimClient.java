@@ -29,6 +29,7 @@ import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -96,7 +97,7 @@ public class BioSimClient {
 	private static final String BIOSIMCLEANUP_API = "BioSimMemoryCleanUp";
 	private static final String BIOSIMMEMORYLOAD_API = "BioSimMemoryLoad";
 
-	private static final Map<QuerySignature, String> GeneratedClimateMap = new ConcurrentHashMap<QuerySignature, String>();
+	protected static final Map<QuerySignature, String> GeneratedClimateMap = new ConcurrentHashMap<QuerySignature, String>();
 	
 	
 	private static final List<String> ModelListReference = new ArrayList<String>(); 
@@ -117,7 +118,7 @@ public class BioSimClient {
 		public void run() {
 			try {
 				System.out.println("Shutdown hook from BioSimClient called!");
-				BioSimClient.removeWgoutObjectsFromServer();
+				BioSimClient.removeWgoutObjectsFromServer(GeneratedClimateMap.values());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -373,10 +374,10 @@ public class BioSimClient {
 		}
 	}
 	
-	protected static void removeWgoutObjectsFromServer() throws IOException {
-		if (!GeneratedClimateMap.isEmpty()) {
+	protected static void removeWgoutObjectsFromServer(Collection<String> references) throws IOException {
+		if (references != null && !references.isEmpty()) {
 			String query = "";
-			for (String objectID : GeneratedClimateMap.values()) {
+			for (String objectID : references) {
 				if (query.isEmpty()) {
 					query += objectID;
 				} else {
@@ -583,29 +584,69 @@ public class BioSimClient {
 		}
 		return outputMap;
 	}
-	
 
+	/**
+	 * Returns the climate variables for a particular period with the generated climate stored on the server.
+	 * @param fromYr starting date (yr) of the period (inclusive)
+	 * @param toYr  ending date (yr) of the period (inclusive)
+	 * @param variables the list of variables
+	 * @param locations the locations of the plots (GeographicalCoordinatesProvider instances)
+	 * @param modelName a string representing the model name
+	 * @return a LinkedHashMap of GeographicalCoordinatesProvider instances (keys) and climate variables (values) 
+	 * @throws IOException
+	 */
 	public static LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> getClimateVariables(int fromYr, 
 			int toYr, 
 			List<Variable> variables, 
 			List<GeographicalCoordinatesProvider> locations,
 			String modelName) throws IOException {
+		return BioSimClient.getClimateVariables(fromYr, toYr, variables, locations, modelName, false);
+	}
+	
+	
+	/**
+	 * Returns the climate variables for a particular period. If the isEphemeral parameter is set
+	 * to true, then the generated climate is stored on the server. Subsequent calls to this function
+	 * based on the same locations, period and variables will retrieve the stored generated climate on 
+	 * the server. To disable this feature, the isEphemeral parameter should be set to false.
+	 * @param fromYr starting date (yr) of the period (inclusive)
+	 * @param toYr  ending date (yr) of the period (inclusive)
+	 * @param variables the list of variables
+	 * @param locations the locations of the plots (GeographicalCoordinatesProvider instances)
+	 * @param modelName a string representing the model name
+	 * @param isEphemeral a boolean to enable the storage of the Wgout instances on the server. 
+	 * @return a LinkedHashMap of GeographicalCoordinatesProvider instances (keys) and climate variables (values) 
+	 * @throws IOException
+	 */
+	public static LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> getClimateVariables(int fromYr, 
+			int toYr, 
+			List<Variable> variables, 
+			List<GeographicalCoordinatesProvider> locations,
+			String modelName,
+			boolean isEphemeral) throws IOException {
 		Map<GeographicalCoordinatesProvider, String> alreadyGeneratedClimate = new HashMap<GeographicalCoordinatesProvider, String>();
 		List<GeographicalCoordinatesProvider> locationsToGenerate = new ArrayList<GeographicalCoordinatesProvider>();
-		for (GeographicalCoordinatesProvider location : locations) {
-			QuerySignature querySignature = new QuerySignature(fromYr, toYr, variables, location);
-			if (GeneratedClimateMap.containsKey(querySignature)) {
-				alreadyGeneratedClimate.put(location, GeneratedClimateMap.get(querySignature));
-			} else {
-				locationsToGenerate.add(location);
+		
+		if (isEphemeral) {
+			locationsToGenerate.addAll(locations);
+		} else {  // here we retrieve what is already available
+			for (GeographicalCoordinatesProvider location : locations) {
+				QuerySignature querySignature = new QuerySignature(fromYr, toYr, variables, location);
+				if (GeneratedClimateMap.containsKey(querySignature)) {
+					alreadyGeneratedClimate.put(location, GeneratedClimateMap.get(querySignature));
+				} else {
+					locationsToGenerate.add(location);
+				}
 			}
 		}
 		
 		Map<GeographicalCoordinatesProvider, String> generatedClimate = new HashMap<GeographicalCoordinatesProvider, String>();
-		if (!locationsToGenerate.isEmpty()) {
+		if (!locationsToGenerate.isEmpty()) {	// here we generate the climate if needed
 			generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, variables, locationsToGenerate));
-			for (GeographicalCoordinatesProvider location : generatedClimate.keySet()) {
-				GeneratedClimateMap.put(new QuerySignature(fromYr, toYr, variables, location), generatedClimate.get(location));
+			if (!isEphemeral) {	// then we stored the reference in the static map for future use
+				for (GeographicalCoordinatesProvider location : generatedClimate.keySet()) {
+					GeneratedClimateMap.put(new QuerySignature(fromYr, toYr, variables, location), generatedClimate.get(location));
+				}
 			}
 		}
 		
@@ -615,8 +656,11 @@ public class BioSimClient {
 		for (GeographicalCoordinatesProvider location : locations) {
 			mapForModels.put(location, generatedClimate.get(location));
 		}
-		
-		return BioSimClient.applyModel(modelName, mapForModels);
+		LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> resultingMap = BioSimClient.applyModel(modelName, mapForModels);
+		if (isEphemeral) { // then we remove the wgout instances stored on the server
+			BioSimClient.removeWgoutObjectsFromServer(generatedClimate.values());
+		}
+		return resultingMap;
 	}
 	
 
