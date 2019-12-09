@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import canforservutility.biosim.BioSimEnums.Month;
+import canforservutility.biosim.BioSimEnums.Period;
+import canforservutility.biosim.BioSimEnums.Variable;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 
 /**
@@ -97,7 +100,7 @@ public class BioSimClient {
 	private static final String BIOSIMCLEANUP_API = "BioSimMemoryCleanUp";
 	private static final String BIOSIMMEMORYLOAD_API = "BioSimMemoryLoad";
 
-	protected static final Map<QuerySignature, String> GeneratedClimateMap = new ConcurrentHashMap<QuerySignature, String>();
+	protected static final Map<BioSimQuerySignature, String> GeneratedClimateMap = new ConcurrentHashMap<BioSimQuerySignature, String>();
 	
 	
 	private static final List<String> ModelListReference = new ArrayList<String>(); 
@@ -129,173 +132,13 @@ public class BioSimClient {
 		Runtime.getRuntime().addShutdownHook(new InternalShutDownHook());
 	}
 	
-	/**
-	 * A class for exceptions specific to BioSim
-	 * @author Mathieu Fortin - November 2019
-	 */
-	@SuppressWarnings("serial")
-	public static class BioSimClientException extends InvalidParameterException {
-		
-		protected BioSimClientException(String message) {
-			super(message);
-		}
-		
-	}
 
-	static class QuerySignature {
-		
-		final int initialYear;
-		final int finalYear;
-		final List<Variable> variables;
-		final double latitudeDeg;
-		final double longitudeDeg;
-		final double elevationM;
-		
-		QuerySignature(int initialYear, int finalYear, List<Variable> variables, GeographicalCoordinatesProvider location) {
-			this.initialYear = initialYear;
-			this.finalYear = finalYear;
-			this.variables = new ArrayList<Variable>();
-			this.variables.addAll(variables);
-			this.latitudeDeg = location.getLatitudeDeg();
-			this.longitudeDeg = location.getLongitudeDeg();
-			this.elevationM = location.getElevationM();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (obj instanceof QuerySignature) {
-				QuerySignature thatQuery = (QuerySignature) obj;
-				if (thatQuery.initialYear == initialYear) {
-					if (thatQuery.finalYear == finalYear) {
-						if (thatQuery.variables.equals(variables)) {
-							if (thatQuery.latitudeDeg == latitudeDeg) {
-								if (thatQuery.longitudeDeg == longitudeDeg) {
-									if (thatQuery.elevationM == elevationM) {
-										return true;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			return false;
-		}
-		
-		@Override
-		public int hashCode() {
-			return initialYear * 10000000 + finalYear + variables.hashCode();
-		}
-	}
 
 	
-	/**
-	 * An inner class that handles the mean and sum of the different variables.
-	 * @author Mathieu Fortin - October 2019
-	 */
-	@SuppressWarnings("serial")
-	static class MonthMap extends HashMap<Month, Map<Variable, Double>> {
-		
-		Map<Variable, Double> getMeanForTheseMonths(List<Month> months, List<Variable> variables) {
-			Map<Variable, Double> outputMap = new HashMap<Variable, Double>();
-			int nbDays = 0;
-			for (Month month : months) {
-				if (containsKey(month)) {
-					for (Variable var : variables) {
-						if (get(month).containsKey(var)) {
-							double value = get(month).get(var);
-							if (!var.isAdditive()) {
-								value *= month.nbDays;
-							} 
-							if (!outputMap.containsKey(var)) {
-								outputMap.put(var, 0d);
-							}
-							outputMap.put(var, outputMap.get(var) + value);
-						} else {
-							throw new InvalidParameterException("The variable " + var.name() + " is not in the MonthMap instance!");
-						}
-					}
-				} else {
-					throw new InvalidParameterException("The month " + month.name() + " is not in the MonthMap instance!");
-				}
-				nbDays += month.nbDays;
-			}
-			for (Variable var : variables) {
-				if (!var.additive) {
-					outputMap.put(var, outputMap.get(var) / nbDays);
-				}
-			}
-			return outputMap;
-		}
-	}
 
-
-	public static enum Period {
-		FromNormals1951_1980("period=1951_1980"),
-		FromNormals1961_1990("period=1961_1990"),
-		FromNormals1971_2000("period=1971_2000"),
-		FromNormals1981_2010("period=1981_2010");
-		
-		String parsedQuery;
-		
-		Period(String parsedRequest) {
-			this.parsedQuery = parsedRequest;
-		}
-	}
 	
 	static final List<Month> AllMonths = Arrays.asList(Month.values());
 	
-		
-	public static enum Variable {	// TODO complete this
-		TN("TMIN_MN", false, "min air temperature"),
-		T("", false, "air temperature"),
-		TX("TMAX_MN", false, "max air temperature"),
-		P("PRCP_TT", true, "precipitation"),
-		TD("TDEX_MN", false, "temperature dew point"),
-		H("", false, "humidity"),
-		WS("", false, "wind speed"),
-		WD("", false, "wind direction"),
-		R("", true, "solar radiation"),
-		Z("", false, "atmospheric pressure"),
-		S("", true, "snow precipitation"),
-		SD("", false, "snow depth accumulation"),
-		SWE("", true, "snow water equivalent"),
-		WS2("", false, "wind speed at 2 m");
-		
-		String description;
-		String fieldName;
-		boolean additive;
-		
-		Variable(String fieldName, boolean additive, String description) {
-			this.fieldName = fieldName;
-			this.additive = additive;
-			this.description = description;
-		}
-		
-		public boolean isAdditive() {return additive;};
-		public String getDescription() {return description;}
-	}
-	
-	public static enum Month {
-		January(31),
-		February(28),
-		March(31),
-		April(30),
-		May(31),
-		June(30),
-		July(31),
-		August(31),
-		September(30),
-		October(31),
-		November(30),
-		December(31);
-		
-		int nbDays;
-		
-		Month(int nbDays) {
-			this.nbDays = nbDays;
-		}
-	}
 	
 
 	/**
@@ -331,7 +174,7 @@ public class BioSimClient {
 		Map<Variable,Integer> fieldIndices = new HashMap<Variable,Integer>();
 		
 		int locationID = 0;
-		MonthMap monthMap = null;
+		BioSimMonthMap monthMap = null;
 		String[] lines = outputString.split("\n");
 		for (String inputLine : lines) {
 			if (inputLine.toLowerCase().startsWith("error")) {
@@ -340,7 +183,7 @@ public class BioSimClient {
 				String[] str = inputLine.split(fieldSeparator);
 				if (inputLine.toLowerCase().startsWith("month")) {
 					GeographicalCoordinatesProvider location = locations.get(locationID);
-					monthMap = new MonthMap();
+					monthMap = new BioSimMonthMap();
 					outputMap.put(location, monthMap);
 					if (locationID == 0) {
 						List<String> fieldNames = Arrays.asList(str);
@@ -367,7 +210,7 @@ public class BioSimClient {
 		} else {
 			LinkedHashMap<GeographicalCoordinatesProvider, Map> formattedOutputMap = new LinkedHashMap<GeographicalCoordinatesProvider, Map>();
 			for (GeographicalCoordinatesProvider location : outputMap.keySet()) {
-				monthMap = (MonthMap) outputMap.get(location);
+				monthMap = (BioSimMonthMap) outputMap.get(location);
 				formattedOutputMap.put(location, monthMap.getMeanForTheseMonths(averageOverTheseMonths, variables));
 			}
 			return formattedOutputMap;
@@ -631,7 +474,7 @@ public class BioSimClient {
 			locationsToGenerate.addAll(locations);
 		} else {  // here we retrieve what is already available
 			for (GeographicalCoordinatesProvider location : locations) {
-				QuerySignature querySignature = new QuerySignature(fromYr, toYr, variables, location);
+				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, variables, location);
 				if (GeneratedClimateMap.containsKey(querySignature)) {
 					alreadyGeneratedClimate.put(location, GeneratedClimateMap.get(querySignature));
 				} else {
@@ -645,7 +488,7 @@ public class BioSimClient {
 			generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, variables, locationsToGenerate));
 			if (!isEphemeral) {	// then we stored the reference in the static map for future use
 				for (GeographicalCoordinatesProvider location : generatedClimate.keySet()) {
-					GeneratedClimateMap.put(new QuerySignature(fromYr, toYr, variables, location), generatedClimate.get(location));
+					GeneratedClimateMap.put(new BioSimQuerySignature(fromYr, toYr, variables, location), generatedClimate.get(location));
 				}
 			}
 		}
