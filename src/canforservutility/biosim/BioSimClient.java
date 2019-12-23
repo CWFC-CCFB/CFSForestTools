@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import canforservutility.biosim.BioSimEnums.Month;
 import canforservutility.biosim.BioSimEnums.Period;
@@ -45,8 +44,10 @@ import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesP
  * This class enables a client for the Biosim server at repicea.dyndns.org. 
  * @author Mathieu Fortin - October 2019
  */
-public class BioSimClient {
+public final class BioSimClient {
 
+	private static final int MAXIMUM_NB_OBS_AT_A_TIME = 200;
+	
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("144.172.156.5", 80);
 	private static final InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 5000);
 	
@@ -100,7 +101,7 @@ public class BioSimClient {
 	private static final String BIOSIMCLEANUP_API = "BioSimMemoryCleanUp";
 	private static final String BIOSIMMEMORYLOAD_API = "BioSimMemoryLoad";
 
-	protected static final Map<BioSimQuerySignature, String> GeneratedClimateMap = new ConcurrentHashMap<BioSimQuerySignature, String>();
+	protected static final BioSimGeneratedClimateMap GeneratedClimateMap = new BioSimGeneratedClimateMap();
 	
 	
 	private static final List<String> ModelListReference = new ArrayList<String>(); 
@@ -140,17 +141,9 @@ public class BioSimClient {
 	static final List<Month> AllMonths = Arrays.asList(Month.values());
 	
 	
-
-	/**
-	 * Retrieves the normals and compiles the mean or sum over some months. 
-	 * @param variables the variables to be retrieved and compiled
-	 * @param locations the locations
-	 * @param averageOverTheseMonths the months over which the mean or sum is to be calculated. If empty or null the 
-	 * method returns the monthly averages.
-	 * @return a Map with the locations as keys and maps as values.
-	 * @throws IOException
-	 */
-	public static LinkedHashMap<GeographicalCoordinatesProvider, Map> getNormals(Period period, List<Variable> variables, List<GeographicalCoordinatesProvider> locations, List<Month> averageOverTheseMonths) throws IOException {
+	
+	
+	private static LinkedHashMap<GeographicalCoordinatesProvider, Map> internalCalculationForNormals(Period period, List<Variable> variables, List<GeographicalCoordinatesProvider> locations, List<Month> averageOverTheseMonths) throws IOException {
 		LinkedHashMap<GeographicalCoordinatesProvider, Map> outputMap = new LinkedHashMap<GeographicalCoordinatesProvider, Map>();
 		
 		String variablesQuery = "";
@@ -217,22 +210,67 @@ public class BioSimClient {
 		}
 	}
 	
-	protected static void removeWgoutObjectsFromServer(Collection<String> references) throws IOException {
-		if (references != null && !references.isEmpty()) {
-			String query = "";
-			for (String objectID : references) {
-				if (query.isEmpty()) {
-					query += objectID;
-				} else {
-					query += SPACE_IN_REQUEST + objectID;
+	/**
+	 * Retrieves the normals and compiles the mean or sum over some months. 
+	 * @param variables the variables to be retrieved and compiled
+	 * @param locations the locations
+	 * @param averageOverTheseMonths the months over which the mean or sum is to be calculated. If empty or null the 
+	 * method returns the monthly averages.
+	 * @return a Map with the locations as keys and maps as values.
+	 * @throws IOException
+	 */
+	public static LinkedHashMap<GeographicalCoordinatesProvider, Map> getNormals(Period period, List<Variable> variables, List<GeographicalCoordinatesProvider> locations, List<Month> averageOverTheseMonths) throws IOException {
+		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
+			LinkedHashMap<GeographicalCoordinatesProvider, Map> resultingMap = new LinkedHashMap<GeographicalCoordinatesProvider, Map>();
+			List<GeographicalCoordinatesProvider> copyList = new ArrayList<GeographicalCoordinatesProvider>();
+			copyList.addAll(locations);
+			List<GeographicalCoordinatesProvider> subList = new ArrayList<GeographicalCoordinatesProvider>();
+			while(!copyList.isEmpty()) {
+				while(!copyList.isEmpty() && subList.size() < MAXIMUM_NB_OBS_AT_A_TIME) {
+					subList.add(copyList.remove(0));
 				}
+				resultingMap.putAll(internalCalculationForNormals(period, variables, subList, averageOverTheseMonths));
+				subList.clear();
 			}
-			
-			getStringFromConnection(BIOSIMCLEANUP_API, "ref=" + query);
-			GeneratedClimateMap.clear();
+			return resultingMap;
+		} else {
+			return internalCalculationForNormals(period, variables, locations, averageOverTheseMonths);
+		}
+	}
+	
+	protected static void removeWgoutObjectsFromServer(Collection<String> references) throws IOException {
+		if (references.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
+			List<String> referenceList = new ArrayList<String>();
+			referenceList.addAll(references);
+			List<String> subList = new ArrayList<String>();
+			while (!referenceList.isEmpty()) {
+				while (!referenceList.isEmpty() && subList.size() < MAXIMUM_NB_OBS_AT_A_TIME) {
+					subList.add(referenceList.remove(0));
+				}
+				internalRemovalOfWgoutObjectsFromServer(subList);
+				subList.clear();
+			}
+		} else {
+			internalRemovalOfWgoutObjectsFromServer(references);
 		}
 	}
 
+	private static void internalRemovalOfWgoutObjectsFromServer(Collection<String> references) throws IOException {
+		if (references != null && !references.isEmpty()) {
+			String query = "";
+			for (String reference : references) {
+				if (query.isEmpty()) {
+					query += reference;
+				} else {
+					query += SPACE_IN_REQUEST + reference;
+				}
+			}
+			getStringFromConnection(BIOSIMCLEANUP_API, "ref=" + query);
+			for (String reference : references) {
+				GeneratedClimateMap.removeValue(reference);
+			}
+		}
+	}
 	
 	protected static int getNbWgoutObjectsOnServer() throws Exception {
 		String serverReply = getStringFromConnection(BIOSIMMEMORYLOAD_API, null);
@@ -446,22 +484,7 @@ public class BioSimClient {
 		return BioSimClient.getClimateVariables(fromYr, toYr, variables, locations, modelName, false);
 	}
 	
-	
-	/**
-	 * Returns the climate variables for a particular period. If the isEphemeral parameter is set
-	 * to true, then the generated climate is stored on the server. Subsequent calls to this function
-	 * based on the same locations, period and variables will retrieve the stored generated climate on 
-	 * the server. To disable this feature, the isEphemeral parameter should be set to false.
-	 * @param fromYr starting date (yr) of the period (inclusive)
-	 * @param toYr  ending date (yr) of the period (inclusive)
-	 * @param variables the list of variables
-	 * @param locations the locations of the plots (GeographicalCoordinatesProvider instances)
-	 * @param modelName a string representing the model name
-	 * @param isEphemeral a boolean to enable the storage of the Wgout instances on the server. 
-	 * @return a LinkedHashMap of GeographicalCoordinatesProvider instances (keys) and climate variables (values) 
-	 * @throws IOException
-	 */
-	public static LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> getClimateVariables(int fromYr, 
+	private static LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> internalCalculationForClimateVariables(int fromYr, 
 			int toYr, 
 			List<Variable> variables, 
 			List<GeographicalCoordinatesProvider> locations,
@@ -506,15 +529,51 @@ public class BioSimClient {
 		return resultingMap;
 	}
 	
-//	public static void main(String[] args) throws IOException {
-//		List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
-//		locations.add(new BioSimPlot(46,-72,300));
-//		locations.add(new BioSimPlot(46,-74,100));
-//		List<Variable> variables = new ArrayList<Variable>();
-//		variables.add(Variable.TN);
-//		variables.add(Variable.TX);
-//		variables.add(Variable.P);
-//		Object output = BioSimClient.getNormals(Period.FromNormals1981_2010, variables, locations, null);
-//		int u = 0;
-//	}
+	
+	/**
+	 * Returns the climate variables for a particular period. If the isEphemeral parameter is set
+	 * to true, then the generated climate is stored on the server. Subsequent calls to this function
+	 * based on the same locations, period and variables will retrieve the stored generated climate on 
+	 * the server. To disable this feature, the isEphemeral parameter should be set to false.
+	 * @param fromYr starting date (yr) of the period (inclusive)
+	 * @param toYr  ending date (yr) of the period (inclusive)
+	 * @param variables the list of variables
+	 * @param locations the locations of the plots (GeographicalCoordinatesProvider instances)
+	 * @param modelName a string representing the model name
+	 * @param isEphemeral a boolean to enable the storage of the Wgout instances on the server. 
+	 * @return a LinkedHashMap of GeographicalCoordinatesProvider instances (keys) and climate variables (values) 
+	 * @throws IOException
+	 */
+	public static LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> getClimateVariables(int fromYr, 
+			int toYr, 
+			List<Variable> variables, 
+			List<GeographicalCoordinatesProvider> locations,
+			String modelName,
+			boolean isEphemeral) throws IOException {
+		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
+			LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> resultingMap = new LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>>();
+			List<GeographicalCoordinatesProvider> copyList = new ArrayList<GeographicalCoordinatesProvider>();
+			copyList.addAll(locations);
+			List<GeographicalCoordinatesProvider> subList = new ArrayList<GeographicalCoordinatesProvider>();
+			while (!copyList.isEmpty()) {
+				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_OBS_AT_A_TIME) {
+					subList.add(copyList.remove(0));	
+				}
+				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, variables, subList, modelName, isEphemeral));
+				subList.clear();
+			}
+			return resultingMap;
+		} else {
+			return internalCalculationForClimateVariables(fromYr, toYr, variables, locations, modelName, isEphemeral);
+		}
+	}
+	
+	public static void main(String[] args) throws IOException {
+		List<String> references = new ArrayList<String>();
+		for (int i = 0; i < 402; i++) {
+			references.add("" + i);
+		}			
+		
+		BioSimClient.removeWgoutObjectsFromServer(references);
+	}
 }
