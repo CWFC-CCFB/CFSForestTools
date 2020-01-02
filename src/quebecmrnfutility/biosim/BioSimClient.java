@@ -76,7 +76,7 @@ public class BioSimClient extends BasicClient {
 	 * @throws BasicClientException
 	 */
 	protected BioSimClient(BioSimVersion version) throws BasicClientException {
-		this(new InetSocketAddress("repicea.dyndns.org", 18000), version); // 20 sec before timeout.
+		this(new InetSocketAddress("repicea.dynu.net", 18000), version); // 20 sec before timeout.
 	}
 
 	/**

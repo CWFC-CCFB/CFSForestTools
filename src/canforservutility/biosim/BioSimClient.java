@@ -48,7 +48,7 @@ public final class BioSimClient {
 
 	private static final int MAXIMUM_NB_OBS_AT_A_TIME = 200;
 	
-	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("144.172.156.5", 80);
+	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
 	private static final InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 5000);
 	
 	private final static String addQueryIfAny(String urlString, String query) {
