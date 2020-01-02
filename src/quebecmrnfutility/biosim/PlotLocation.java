@@ -29,7 +29,7 @@ public class PlotLocation implements Serializable, GeographicalCoordinatesProvid
 	
 	private static final long serialVersionUID = -2185075635699712693L;
 	
-	private final double elevationM;
+	private double elevationM;
 	private final double latitude;
 	private final double longitude;
 	private final String plotID;
@@ -58,6 +58,10 @@ public class PlotLocation implements Serializable, GeographicalCoordinatesProvid
 
 	@Override
 	public double getLongitudeDeg() {return longitude;}
+	
+	public void setElevationM(double d) {
+		this.elevationM = d;
+	}
 
 	public String getPlotId() {return plotID;}
 	
