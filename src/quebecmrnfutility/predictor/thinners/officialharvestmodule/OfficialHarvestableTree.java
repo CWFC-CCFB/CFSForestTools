@@ -99,7 +99,7 @@ public interface OfficialHarvestableTree extends DbhCmProvider,
 		 * with the string.
 		 * 
 		 * @param speciesName the species name
-		 * @param treatment the treatment type for the harvester
+		 * @param pTreatment the treatment type for the harvester
 		 * @return the appropriate enum or null if the string does not match any species
 		 */
 		public static OfficialHarvestableSpecies findEligibleSpecies(String speciesName, TreatmentType pTreatment) {

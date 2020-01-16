@@ -90,8 +90,7 @@ public final class BetaHarvestModel extends REpiceaBinaryEventPredictor<BetaHarv
 
 	/**
 	 * General constructor that enables the stochastic implementation. NOTE: there is no random effect variability in this model.
-	 * @param isParameterVariabilityEnabled = a boolean that enables the parameter variability
-	 * @param isResidualVariabilityEnabled = a boolean that enables the residual variability
+	 * @param isVariabilityEnabled true to enable the stochastic mode
 	 */
 	@Deprecated
 	public BetaHarvestModel(boolean isVariabilityEnabled) {

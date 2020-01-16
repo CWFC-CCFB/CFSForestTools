@@ -38,8 +38,7 @@ public class Artemis2009RecruitmentOccurrencePredictor extends REpiceaBinaryEven
 	
 	/**
 	 * Constructor.
-	 * @param isParametersVariabilityEnabled
-	 * @param isResidualVariabilityEnabled
+	 * @param isVariabilityEnabled true to enable the stochastic mode
 	 */
 	public Artemis2009RecruitmentOccurrencePredictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled, false, isVariabilityEnabled);		// no random effect in this module
