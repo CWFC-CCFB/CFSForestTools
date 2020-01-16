@@ -36,8 +36,7 @@ public class Artemis2009RecruitmentNumberPredictor extends REpiceaPredictor {
 	
 	/**
 	 * Constructor.
-	 * @param isParametersVariabilityEnabled
-	 * @param isResidualVariabilityEnabled
+	 * @param isVariabilityEnabled true to enable the stochastic mode
 	 */
 	public Artemis2009RecruitmentNumberPredictor(boolean isVariabilityEnabled) {
 		this(isVariabilityEnabled, isVariabilityEnabled);		

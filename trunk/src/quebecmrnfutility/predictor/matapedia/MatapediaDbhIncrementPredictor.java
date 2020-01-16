@@ -45,9 +45,7 @@ public class MatapediaDbhIncrementPredictor extends REpiceaPredictor implements 
 
 	/**
 	 * Constructor.
-	 * @param isParametersVariabilityEnabled true to enable the variability at the parameter level
-	 * @param isRandomEffectsVariabilityEnabled true to enable the variability at the tree level
-	 * @param isResidualVariabilityEnabled true to enable the variability at the measurement level
+	 * @param isVariabilityEnabled true to enable the stochastic mode
 	 */
 	public MatapediaDbhIncrementPredictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);

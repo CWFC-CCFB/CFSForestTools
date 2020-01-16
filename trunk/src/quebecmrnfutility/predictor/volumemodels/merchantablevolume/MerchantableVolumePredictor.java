@@ -40,7 +40,9 @@ import repicea.util.ObjectUtility;
  * This class implements the merchantable volume equation published in Fortin et al. (2007).
  * NOTE: merchantability is defined as trees with diameter equal to or greater than 9.1 cm at breast height. 
  * @author Mathieu Fortin - October 2009
- * @see Fortin, M., DeBlois, J., Bernier, S., and Blais, G. 2007. Mise au point d'un tarif de cubage g�n�ral pour les for�ts qu�b�coises: une approche pour mieux �valuer l'incertitude associ�e aux pr�visions. Forestry Chronicle 83(5) 754-765.
+ * @see Fortin, M., DeBlois, J., Bernier, S., and Blais, G. 2007. Mise au point d'un tarif de cubage general 
+ * pour les forets quebecoises: une approche pour mieux evaluer l'incertitude associee aux previsions. 
+ * The Forestry Chronicle 83(5) 754-765.
  */
 public final class MerchantableVolumePredictor extends REpiceaPredictor {
 

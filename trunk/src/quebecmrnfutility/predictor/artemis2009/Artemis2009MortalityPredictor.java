@@ -38,8 +38,7 @@ public final class Artemis2009MortalityPredictor extends REpiceaBinaryEventPredi
 	
 	/**
 	 * Constructor.
-	 * @param isParametersVariabilityEnabled
-	 * @param isResidualVariabilityEnabled
+	 * @param isVariabilityEnabled true to enable the stochastic mode
 	 */
 	public Artemis2009MortalityPredictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled, false, isVariabilityEnabled);		// no random effect in this module

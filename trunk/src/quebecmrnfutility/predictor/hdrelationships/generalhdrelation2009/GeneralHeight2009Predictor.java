@@ -147,7 +147,6 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 
 	/**
 	 * Default constructor with all sources of uncertainty disabled.
-	 * @param measurementDates a list of integers that define the measurement dates
 	 */
 	public GeneralHeight2009Predictor() {
 		this(false);

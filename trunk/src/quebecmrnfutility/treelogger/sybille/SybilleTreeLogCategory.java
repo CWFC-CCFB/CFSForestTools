@@ -104,7 +104,8 @@ public class SybilleTreeLogCategory extends LogCategory {
 	/**
 	 * Preferred constructor for script mode.
 	 * @param logName the name of this log category
-	 * @param logLengthM the log length (m)
+	 * @param species the species name
+	 * @param lengthID a LengthID enum 
 	 * @param smallEndDiameterCm the small-end diameter (cm)
 	 */
 	public SybilleTreeLogCategory(String logName, String species, LengthID lengthID, double smallEndDiameterCm) {
