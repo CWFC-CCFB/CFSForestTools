@@ -20,6 +20,8 @@ import repicea.io.javacsv.CSVWriter;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 import repicea.stats.StatisticalUtility;
+import repicea.stats.data.DataSet;
+import repicea.stats.data.Observation;
 import repicea.util.ObjectUtility;
 
 @SuppressWarnings("deprecation")
@@ -77,7 +79,7 @@ public class BioSimClientTest {
 			}
 			
 			long start = System.currentTimeMillis();
-			List<quebecmrnfutility.biosim.ClimateVariables> refVariables = client.getClimateVariables(plotLocations);
+//			List<quebecmrnfutility.biosim.ClimateVariables> refVariables = client.getClimateVariables(plotLocations);
 			double elapsedTimeOriginal = ((System.currentTimeMillis() - start) *.001);
 //			System.out.println("Original BioSim client = " + elapsedTimeOriginal + " sec.");
 			client.close();
@@ -210,30 +212,30 @@ public class BioSimClientTest {
 		double nbSecs1, nbSecs2;
 
 		initialTime = System.currentTimeMillis();
-		LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> teleIORefs = BioSimClient.getClimateVariables(2018, 2019, var, locations, "DegreeDay_Annual");
+		LinkedHashMap<GeographicalCoordinatesProvider, DataSet> teleIORefs = BioSimClient.getClimateVariables(2018, 2019, var, locations, "DegreeDay_Annual");
 		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
 
 		for (int i = 0; i < 10; i++) {
 			initialTime = System.currentTimeMillis();
-			LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> teleIORefs2 = BioSimClient.getClimateVariables(2018, 2019, var, locations, "DegreeDay_Annual");
+			LinkedHashMap<GeographicalCoordinatesProvider, DataSet> teleIORefs2 = BioSimClient.getClimateVariables(2018, 2019, var, locations, "DegreeDay_Annual");
 			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
 //			System.out.println("Elapsed time = " + nbSecs2 + " size = " + teleIORefs.size());
 			
 			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));
 			
 			for (GeographicalCoordinatesProvider location : locations) {
-				Map<Integer, Double> expectedMap = teleIORefs.get(location);
-				Map<Integer, Double> actualMap = teleIORefs2.get(location);
-				Assert.assertTrue(expectedMap.size() > 0);
-				Assert.assertEquals("Testing map size",  expectedMap.size(), actualMap.size());
-				for (Integer expectedKey : expectedMap.keySet()) {
-					double expectedValue = expectedMap.get(expectedKey);
-					double actualValue = actualMap.get(expectedKey);
-					Assert.assertEquals("Testing value for key: " + expectedKey,  
-							expectedValue, 
-							actualValue,
-							1E-8);
+				DataSet expectedMap = teleIORefs.get(location);
+				DataSet actualMap = teleIORefs2.get(location);
+				Assert.assertTrue(expectedMap.getNumberOfObservations() > 0);
+				Assert.assertEquals("Testing map size", 
+						expectedMap.getNumberOfObservations(), 
+						actualMap.getNumberOfObservations());
+				for (int j = 0; j < expectedMap.getNumberOfObservations(); j++) {
+					Observation expected = expectedMap.getObservations().get(j);
+					Observation actual = actualMap.getObservations().get(j);
+					Assert.assertTrue("Testing if observations are equal",  
+							expected.isEqualToThisObservation(actual));
 				}
 			}
 		}
@@ -260,30 +262,31 @@ public class BioSimClientTest {
 		double nbSecs1, nbSecs2;
 
 		initialTime = System.currentTimeMillis();
-		LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> teleIORefs = BioSimClient.getClimateVariables(2000, 2019, var, locations, "DegreeDay_Annual");
+		LinkedHashMap<GeographicalCoordinatesProvider, DataSet> teleIORefs = BioSimClient.getClimateVariables(2000, 2019, var, locations, "DegreeDay_Annual");
 		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
 
 		for (int i = 0; i < 10; i++) {
 			initialTime = System.currentTimeMillis();
-			LinkedHashMap<GeographicalCoordinatesProvider, Map<Integer, Double>> teleIORefs2 = BioSimClient.getClimateVariables(2000, 2019, var, locations, "DegreeDay_Annual");
+			LinkedHashMap<GeographicalCoordinatesProvider, DataSet> teleIORefs2 = BioSimClient.getClimateVariables(2000, 2019, var, locations, "DegreeDay_Annual");
 			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
 //			System.out.println("Elapsed time = " + nbSecs2 + " size = " + teleIORefs.size());
 			
 			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));
 			
 			for (GeographicalCoordinatesProvider location : locations) {
-				Map<Integer, Double> expectedMap = teleIORefs.get(location);
-				Map<Integer, Double> actualMap = teleIORefs2.get(location);
-				Assert.assertTrue(expectedMap.size() > 0);
-				Assert.assertEquals("Testing map size",  expectedMap.size(), actualMap.size());
-				for (Integer expectedKey : expectedMap.keySet()) {
-					double expectedValue = expectedMap.get(expectedKey);
-					double actualValue = actualMap.get(expectedKey);
-					Assert.assertEquals("Testing value for key: " + expectedKey,  
-							expectedValue, 
-							actualValue,
-							1E-8);
+				DataSet expectedMap = teleIORefs.get(location);
+				DataSet actualMap = teleIORefs2.get(location);
+				Assert.assertTrue(expectedMap.getNumberOfObservations() > 0);
+				Assert.assertEquals("Testing map size", 
+						expectedMap.getNumberOfObservations(),
+						actualMap.getNumberOfObservations());
+				for (int j = 0; j < expectedMap.getNumberOfObservations(); j++) {
+					Observation expected = expectedMap.getObservations().get(j);
+					Observation actual = actualMap.getObservations().get(j);
+					Assert.assertTrue("Testing observations",  
+								expected.isEqualToThisObservation(actual));
+					
 				}
 			}
 		}
