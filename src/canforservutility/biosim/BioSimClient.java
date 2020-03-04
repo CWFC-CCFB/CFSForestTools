@@ -85,6 +85,7 @@ public final class BioSimClient {
 		while ((lineStr = br.readLine()) != null) {
 			if (line == 0) {
 				completeString += lineStr;
+				
 			} else {
 				completeString += "\n" + lineStr;
 			}
@@ -454,6 +455,7 @@ public final class BioSimClient {
 		GeographicalCoordinatesProvider location = null;
 		// data set should include the geographical stuff and it could be converted on
 		// the fly by J4R.
+		boolean properlyInitialized = false;
 		for (String line : lines) {
 			if (line.toLowerCase().startsWith("year")) { // means it is a new location
 				if (dataSet != null) {
@@ -465,9 +467,14 @@ public final class BioSimClient {
 				dataSet = new DataSet(fieldNames);
 				outputMap.put(location, dataSet);
 				locationId++;
+				properlyInitialized = true;
 			} else {
-				Object[] fields = Arrays.asList(line.split(",")).toArray(new Object[]{});
-				dataSet.addObservation(fields);
+				if (!properlyInitialized) {
+					throw new BioSimClientException(serverReply);
+				} else {
+					Object[] fields = Arrays.asList(line.split(",")).toArray(new Object[]{});
+					dataSet.addObservation(fields);
+				}
 			}
 		}
 		if (dataSet != null) {
@@ -532,8 +539,7 @@ public final class BioSimClient {
 		for (GeographicalCoordinatesProvider location : locations) {
 			mapForModels.put(location, generatedClimate.get(location));
 		}
-		LinkedHashMap<GeographicalCoordinatesProvider, DataSet> resultingMap = BioSimClient.applyModel(modelName,
-				mapForModels);
+		LinkedHashMap<GeographicalCoordinatesProvider, DataSet> resultingMap = BioSimClient.applyModel(modelName, mapForModels);
 		if (isEphemeral) { // then we remove the wgout instances stored on the server
 			BioSimClient.removeWgoutObjectsFromServer(generatedClimate.values());
 		}
