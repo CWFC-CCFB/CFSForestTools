@@ -18,7 +18,7 @@ public class BioSimInternalModelTest {
 
 	
 	@Test
-	public void testingLengthOfDatasets() throws IOException {
+	public void testingLengthOfDatasets() throws IOException, NoSuchMethodException, SecurityException {
 		List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
 		for (int i = 0; i < 1; i++) {
 			FakeLocation loc = new FakeLocation(45 + StatisticalUtility.getRandom().nextDouble() * 7,
