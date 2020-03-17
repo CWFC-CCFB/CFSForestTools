@@ -20,10 +20,6 @@
  */
 package canforservutility.biosim;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import canforservutility.biosim.BioSimEnums.Variable;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 
 /**
@@ -34,16 +30,16 @@ class BioSimQuerySignature {
 	
 	final int initialYear;
 	final int finalYear;
-	final List<Variable> variables;
+//	final List<Variable> variables;
 	final double latitudeDeg;
 	final double longitudeDeg;
 	final double elevationM;
 	
-	BioSimQuerySignature(int initialYear, int finalYear, List<Variable> variables, GeographicalCoordinatesProvider location) {
+	BioSimQuerySignature(int initialYear, int finalYear, GeographicalCoordinatesProvider location) {
 		this.initialYear = initialYear;
 		this.finalYear = finalYear;
-		this.variables = new ArrayList<Variable>();
-		this.variables.addAll(variables);
+//		this.variables = new ArrayList<Variable>();
+//		this.variables.addAll(variables);
 		this.latitudeDeg = location.getLatitudeDeg();
 		this.longitudeDeg = location.getLongitudeDeg();
 		this.elevationM = location.getElevationM();
@@ -55,7 +51,7 @@ class BioSimQuerySignature {
 			BioSimQuerySignature thatQuery = (BioSimQuerySignature) obj;
 			if (thatQuery.initialYear == initialYear) {
 				if (thatQuery.finalYear == finalYear) {
-					if (thatQuery.variables.equals(variables)) {
+//					if (thatQuery.variables.equals(variables)) {
 						if (thatQuery.latitudeDeg == latitudeDeg) {
 							if (thatQuery.longitudeDeg == longitudeDeg) {
 								if (thatQuery.elevationM == elevationM) {
@@ -63,7 +59,7 @@ class BioSimQuerySignature {
 								}
 							}
 						}
-					}
+//					}
 				}
 			}
 		}
@@ -72,7 +68,8 @@ class BioSimQuerySignature {
 	
 	@Override
 	public int hashCode() {
-		return initialYear * 10000000 + finalYear + variables.hashCode();
+//		return initialYear * 10000000 + finalYear + variables.hashCode();
+		return initialYear * 10000000 + finalYear;
 	}
 
 }

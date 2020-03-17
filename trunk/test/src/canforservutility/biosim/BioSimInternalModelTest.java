@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.Ignore;
 
 import canforservutility.biosim.BioSimClientTest.FakeLocation;
-import canforservutility.biosim.BioSimEnums.Variable;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.data.DataSet;
@@ -17,7 +16,7 @@ import repicea.stats.data.DataSet;
 public class BioSimInternalModelTest {
 
 	
-	@Test
+	@Ignore
 	public void testingLengthOfDatasets() throws IOException, NoSuchMethodException, SecurityException {
 		List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
 		for (int i = 0; i < 1; i++) {
@@ -26,10 +25,7 @@ public class BioSimInternalModelTest {
 					300 + StatisticalUtility.getRandom().nextDouble() * 400);
 			locations.add(loc);
 		}
-		List<Variable> var = new ArrayList<Variable>();
-		var.add(Variable.TN);
-		var.add(Variable.TX);
-		var.add(Variable.P);
+		
 		boolean failed = false;
 		List<String> modelList = BioSimClient.getModelList();
 		for (String model : modelList) {
@@ -45,7 +41,7 @@ public class BioSimInternalModelTest {
 //					if (model.equals("WhitePineWeevil")) {
 //						int u = 0;
 //					}					
-					Map<GeographicalCoordinatesProvider, DataSet> output = BioSimClient.getClimateVariables(2015, 2019, var, locations, model);
+					Map<GeographicalCoordinatesProvider, BioSimDataSet> output = BioSimClient.getClimateVariables(2015, 2019, locations, model);
 					elapsedTimeSec = (System.currentTimeMillis() - start) * .001; 
 					for (DataSet ds : output.values()) {
 						if (model.equals("EmeraldAshBorer") ||
