@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import canforservutility.biosim.BioSimEnums.Period;
-import canforservutility.biosim.BioSimEnums.Variable;
 import quebecmrnfutility.biosim.BioSimClient.BioSimVersion;
 import quebecmrnfutility.biosim.PlotLocation;
 import repicea.io.FormatField;
@@ -20,7 +19,6 @@ import repicea.io.javacsv.CSVWriter;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 import repicea.stats.StatisticalUtility;
-import repicea.stats.data.DataSet;
 import repicea.stats.data.Observation;
 import repicea.util.ObjectUtility;
 
@@ -79,9 +77,9 @@ public class BioSimClientTest {
 			}
 			
 			long start = System.currentTimeMillis();
-//			List<quebecmrnfutility.biosim.ClimateVariables> refVariables = client.getClimateVariables(plotLocations);
+			List<quebecmrnfutility.biosim.ClimateVariables> refVariables = client.getClimateVariables(plotLocations);
 			double elapsedTimeOriginal = ((System.currentTimeMillis() - start) *.001);
-//			System.out.println("Original BioSim client = " + elapsedTimeOriginal + " sec.");
+			System.out.println("Original BioSim client = " + elapsedTimeOriginal + " sec.");
 			client.close();
 
 			
@@ -204,29 +202,25 @@ public class BioSimClientTest {
 					300 + StatisticalUtility.getRandom().nextDouble() * 400);
 			locations.add(loc);
 		}
-		List<Variable> var = new ArrayList<Variable>();
-		var.add(Variable.TN);
-		var.add(Variable.TX);
-		var.add(Variable.P);
+		
 		long initialTime;
 		double nbSecs1, nbSecs2;
 
 		initialTime = System.currentTimeMillis();
-		LinkedHashMap<GeographicalCoordinatesProvider, DataSet> teleIORefs = BioSimClient.getClimateVariables(2018, 2019, var, locations, "DegreeDay_Annual");
+		LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> teleIORefs = BioSimClient.getClimateVariables(2018, 2019, locations, "DegreeDay_Annual");
 		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
 
 		for (int i = 0; i < 10; i++) {
 			initialTime = System.currentTimeMillis();
-			LinkedHashMap<GeographicalCoordinatesProvider, DataSet> teleIORefs2 = BioSimClient.getClimateVariables(2018, 2019, var, locations, "DegreeDay_Annual");
+			LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> teleIORefs2 = BioSimClient.getClimateVariables(2018, 2019, locations, "DegreeDay_Annual");
 			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
-//			System.out.println("Elapsed time = " + nbSecs2 + " size = " + teleIORefs.size());
 			
 			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));
 			
 			for (GeographicalCoordinatesProvider location : locations) {
-				DataSet expectedMap = teleIORefs.get(location);
-				DataSet actualMap = teleIORefs2.get(location);
+				BioSimDataSet expectedMap = teleIORefs.get(location);
+				BioSimDataSet actualMap = teleIORefs2.get(location);
 				Assert.assertTrue(expectedMap.getNumberOfObservations() > 0);
 				Assert.assertEquals("Testing map size", 
 						expectedMap.getNumberOfObservations(), 
@@ -243,7 +237,8 @@ public class BioSimClientTest {
 
 	
 	/*
-	 * Tests if the weather generation over several contexts.
+	 * Tests if the weather generation over several contexts. It uses the memorization. First run should be longer
+	 * than the others.
 	 */
 	@Test
 	public void testingWeatherGenerationOverSeveralContexts() throws IOException {
@@ -254,29 +249,25 @@ public class BioSimClientTest {
 					300 + StatisticalUtility.getRandom().nextDouble() * 400);
 			locations.add(loc);
 		}
-		List<Variable> var = new ArrayList<Variable>();
-		var.add(Variable.TN);
-		var.add(Variable.TX);
-		var.add(Variable.P);
+		
 		long initialTime;
 		double nbSecs1, nbSecs2;
 
 		initialTime = System.currentTimeMillis();
-		LinkedHashMap<GeographicalCoordinatesProvider, DataSet> teleIORefs = BioSimClient.getClimateVariables(2000, 2019, var, locations, "DegreeDay_Annual");
+		LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> teleIORefs = BioSimClient.getClimateVariables(2000, 2019, locations, "DegreeDay_Annual");
 		nbSecs1 = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs1 + " size = " + teleIORefs.size());
 
 		for (int i = 0; i < 10; i++) {
 			initialTime = System.currentTimeMillis();
-			LinkedHashMap<GeographicalCoordinatesProvider, DataSet> teleIORefs2 = BioSimClient.getClimateVariables(2000, 2019, var, locations, "DegreeDay_Annual");
+			LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> teleIORefs2 = BioSimClient.getClimateVariables(2000, 2019, locations, "DegreeDay_Annual");
 			nbSecs2 = (System.currentTimeMillis() - initialTime) * .001;
-//			System.out.println("Elapsed time = " + nbSecs2 + " size = " + teleIORefs.size());
 			
-			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));
+			Assert.assertTrue(nbSecs1 > (nbSecs2 * 5));	// testing that the computational time is five times faster when the memorization is used.
 			
 			for (GeographicalCoordinatesProvider location : locations) {
-				DataSet expectedMap = teleIORefs.get(location);
-				DataSet actualMap = teleIORefs2.get(location);
+				BioSimDataSet expectedMap = teleIORefs.get(location);
+				BioSimDataSet actualMap = teleIORefs2.get(location);
 				Assert.assertTrue(expectedMap.getNumberOfObservations() > 0);
 				Assert.assertEquals("Testing map size", 
 						expectedMap.getNumberOfObservations(),
@@ -304,12 +295,8 @@ public class BioSimClientTest {
 						300 + StatisticalUtility.getRandom().nextDouble() * 400);
 				locations.add(loc);
 			}
-			List<Variable> var = new ArrayList<Variable>();
-			var.add(Variable.TN);
-			var.add(Variable.TX);
-			var.add(Variable.P);
 			
-			BioSimClient.getClimateVariables(2018, 2019, var, locations, "DegreeDay_Annual", true);	// is ephemeral: wgout instances are not stored on the server
+			BioSimClient.getClimateVariables(2018, 2019, locations, "DegreeDay_Annual", true);	// is ephemeral: wgout instances are not stored on the server
 			
 			int nbObjectsAfter = BioSimClient.getNbWgoutObjectsOnServer();
 			Assert.assertEquals("Testing if the number of objects before and after is consistent", nbObjectsBefore, nbObjectsAfter);
@@ -326,12 +313,8 @@ public class BioSimClientTest {
 					300 + StatisticalUtility.getRandom().nextDouble() * 400);
 			locations.add(loc);
 		}
-		List<Variable> var = new ArrayList<Variable>();
-		var.add(Variable.TN);
-		var.add(Variable.TX);
-		var.add(Variable.P);
 		
-		BioSimClient.getClimateVariables(2018, 2019, var, locations, "DegreeDay_Annual");
+		BioSimClient.getClimateVariables(2018, 2019, locations, "DegreeDay_Annual");
 		
 		System.out.println("Nb objects immediately before eventual shutdown hook = " + BioSimClient.getNbWgoutObjectsOnServer());
 		System.out.println("Calling eventual shutdown hook...");
@@ -342,7 +325,7 @@ public class BioSimClientTest {
 	}
 
 	
-	public static void main(String[] args) throws Exception {
-		BioSimClientTest.comparisonValuesBioSimOldVsBioSimNew();
-	}
+//	public static void main(String[] args) throws Exception {
+//		BioSimClientTest.comparisonValuesBioSimOldVsBioSimNew();
+//	}
 }

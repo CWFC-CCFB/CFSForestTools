@@ -39,7 +39,6 @@ import canforservutility.biosim.BioSimEnums.Month;
 import canforservutility.biosim.BioSimEnums.Period;
 import canforservutility.biosim.BioSimEnums.Variable;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
-import repicea.stats.data.DataSet;
 
 /**
  * This class enables a client for the Biosim server at repicea.dyndns.org.
@@ -49,9 +48,11 @@ import repicea.stats.data.DataSet;
 public final class BioSimClient {
 
 	private static final int MAXIMUM_NB_OBS_AT_A_TIME = 200;
+	
+	private static final String FieldSeparator = ",";
+
 
 	private static final InetSocketAddress REpiceaAddress = new InetSocketAddress("repicea.dynu.net", 80);
-	private static final InetSocketAddress LANAddress = new InetSocketAddress("192.168.0.194", 5000);
 
 	private final static String addQueryIfAny(String urlString, String query) {
 		if (query != null && !query.isEmpty()) {
@@ -68,14 +69,7 @@ public final class BioSimClient {
 		HttpURLConnection connection = (HttpURLConnection) bioSimURL.openConnection();
 		int code = connection.getResponseCode();
 		if (code < 200 || code > 202) { // if true that means it is not connected
-			String innerURLString = "http://" + LANAddress.getHostName() + ":" + LANAddress.getPort() + "/" + api;
-			innerURLString = addQueryIfAny(innerURLString, query);
-			bioSimURL = new URL(innerURLString);
-			connection = (HttpURLConnection) bioSimURL.openConnection();
-			code = connection.getResponseCode();
-			if (code != 200) { // means it is connected
-				throw new IOException("Unable to access BioSIM from internet or the LAN!");
-			}
+			throw new IOException("Unable to connect to BioSIM server! Please check your connection or contact your network administrator.");
 		}
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -137,10 +131,10 @@ public final class BioSimClient {
 
 	static final List<Month> AllMonths = Arrays.asList(Month.values());
 
-	private static LinkedHashMap<GeographicalCoordinatesProvider, Map> internalCalculationForNormals(Period period,
+	private static LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> internalCalculationForNormals(Period period,
 			List<Variable> variables, List<GeographicalCoordinatesProvider> locations,
 			List<Month> averageOverTheseMonths) throws IOException {
-		LinkedHashMap<GeographicalCoordinatesProvider, Map> outputMap = new LinkedHashMap<GeographicalCoordinatesProvider, Map>();
+		LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> outputMap = new LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet>();
 
 		String variablesQuery = "";
 		for (Variable v : variables) {
@@ -150,7 +144,6 @@ public final class BioSimClient {
 			}
 		}
 
-		String fieldSeparator = ",";
 
 		String query = constructCoordinatesQuery(locations);
 
@@ -158,53 +151,27 @@ public final class BioSimClient {
 		query += "&compress=0"; // compression is disabled by default
 		query += "&" + period.parsedQuery;
 
-		String outputString = BioSimClient.getStringFromConnection(NORMAL_API, query);
-
-		Map<Variable, Integer> fieldIndices = new HashMap<Variable, Integer>();
-
-		int locationID = 0;
-		BioSimMonthMap monthMap = null;
-		String[] lines = outputString.split("\n");
-		for (String inputLine : lines) {
-			if (inputLine.toLowerCase().startsWith("error")) {
-				throw new IOException(inputLine);
-			} else {
-				String[] str = inputLine.split(fieldSeparator);
-				if (inputLine.toLowerCase().startsWith("month")) {
-					GeographicalCoordinatesProvider location = locations.get(locationID);
-					monthMap = new BioSimMonthMap();
-					outputMap.put(location, monthMap);
-					if (locationID == 0) {
-						List<String> fieldNames = Arrays.asList(str);
-						for (Variable v : variables) {
-							fieldIndices.put(v, fieldNames.indexOf(v.fieldName));
-						}
-					}
-					locationID++;
-				} else {
-					int monthIndex = Integer.parseInt(str[0]) - 1;
-					Month m = Month.values()[monthIndex];
-					monthMap.put(m, new HashMap<Variable, Double>());
-					for (Variable v : variables) {
-						double value = Double.parseDouble(str[fieldIndices.get(v)]);
-						monthMap.get(m).put(v, value);
-					}
-				}
-			}
-		}
+		String serverReply = BioSimClient.getStringFromConnection(NORMAL_API, query);
+		
+		readLines(serverReply, "month", locations, outputMap);
 
 		if (averageOverTheseMonths == null || averageOverTheseMonths.isEmpty()) {
 			return outputMap;
 		} else {
-			LinkedHashMap<GeographicalCoordinatesProvider, Map> formattedOutputMap = new LinkedHashMap<GeographicalCoordinatesProvider, Map>();
+			LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> formattedOutputMap = new LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet>();
 			for (GeographicalCoordinatesProvider location : outputMap.keySet()) {
-				monthMap = (BioSimMonthMap) outputMap.get(location);
-				formattedOutputMap.put(location, monthMap.getMeanForTheseMonths(averageOverTheseMonths, variables));
+				BioSimDataSet ds = outputMap.get(location);
+				BioSimMonthMap bsmm = new BioSimMonthMap(ds);
+				formattedOutputMap.put(location, bsmm.getMeanForTheseMonths(averageOverTheseMonths, variables));
 			}
 			return formattedOutputMap;
 		}
 	}
 
+
+	
+	
+	
 	/**
 	 * Retrieves the normals and compiles the mean or sum over some months.
 	 * 
@@ -216,11 +183,13 @@ public final class BioSimClient {
 	 * @return a Map with the locations as keys and maps as values.
 	 * @throws IOException
 	 */
-	public static LinkedHashMap<GeographicalCoordinatesProvider, Map> getNormals(Period period,
-			List<Variable> variables, List<GeographicalCoordinatesProvider> locations,
+	public static LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> getNormals(
+			Period period,
+			List<Variable> variables, 
+			List<GeographicalCoordinatesProvider> locations,
 			List<Month> averageOverTheseMonths) throws IOException {
 		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
-			LinkedHashMap<GeographicalCoordinatesProvider, Map> resultingMap = new LinkedHashMap<GeographicalCoordinatesProvider, Map>();
+			LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> resultingMap = new LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet>();
 			List<GeographicalCoordinatesProvider> copyList = new ArrayList<GeographicalCoordinatesProvider>();
 			copyList.addAll(locations);
 			List<GeographicalCoordinatesProvider> subList = new ArrayList<GeographicalCoordinatesProvider>();
@@ -285,10 +254,12 @@ public final class BioSimClient {
 	 * 
 	 * @param variables the variables to be retrieved and compiled
 	 * @param locations the locations
-	 * @return a Map with the locations as keys and maps as values.
+	 * @return a DataSet instance
 	 * @throws IOException
 	 */
-	public static Map<GeographicalCoordinatesProvider, Map> getMonthlyNormals(Period period, List<Variable> variables,
+	public static Map<GeographicalCoordinatesProvider, BioSimDataSet> getMonthlyNormals(
+			Period period, 
+			List<Variable> variables,
 			List<GeographicalCoordinatesProvider> locations) throws IOException {
 		return getNormals(period, variables, locations, null);
 	}
@@ -298,10 +269,12 @@ public final class BioSimClient {
 	 * 
 	 * @param variables the variables to be retrieved and compiled
 	 * @param locations the locations
-	 * @return a Map with the locations as keys and maps as values.
+	 * @return a DataSet instance
 	 * @throws IOException
 	 */
-	public static Map<GeographicalCoordinatesProvider, Map> getAnnualNormals(Period period, List<Variable> variables,
+	public static Map<GeographicalCoordinatesProvider, BioSimDataSet> getAnnualNormals(
+			Period period, 
+			List<Variable> variables,
 			List<GeographicalCoordinatesProvider> locations) throws IOException {
 		return getNormals(period, variables, locations, AllMonths);
 	}
@@ -350,22 +323,28 @@ public final class BioSimClient {
 	 * 
 	 * @param fromYr    beginning of the interval (inclusive)
 	 * @param toYr      end of the interval (inclusive)
-	 * @param variables a List of Variable enums
 	 * @param locations a List of GeographicalCoordinatesProvider instances
 	 * @return a LinkedHashMap with GeographicalCoordinatesProvider instances as key
 	 *         and String instances as values. Those strings are actually the code
 	 *         for the TeleIO instance on the server.
 	 * @throws IOException
 	 */
-	protected static LinkedHashMap<GeographicalCoordinatesProvider, String> getGeneratedClimate(int fromYr, int toYr,
-			List<Variable> variables, List<GeographicalCoordinatesProvider> locations) throws IOException {
+	protected static LinkedHashMap<GeographicalCoordinatesProvider, String> getGeneratedClimate(
+			int fromYr, 
+			int toYr,
+			List<GeographicalCoordinatesProvider> locations) throws IOException {
 		boolean compress = false; // disabling compression by default
 		LinkedHashMap<GeographicalCoordinatesProvider, String> outputMap = new LinkedHashMap<GeographicalCoordinatesProvider, String>();
 
+		List<Variable> var = new ArrayList<Variable>();		// TODO remove this part when the server query handler has been updated.
+		var.add(Variable.TN);
+		var.add(Variable.TX);
+		var.add(Variable.P);
+
 		String variablesQuery = "";
-		for (Variable v : variables) {
+		for (Variable v : var) {
 			variablesQuery += v.name();
-			if (variables.indexOf(v) < variables.size() - 1) {
+			if (var.indexOf(v) < var.size() - 1) {
 				variablesQuery += SPACE_IN_REQUEST;
 			}
 		}
@@ -419,7 +398,8 @@ public final class BioSimClient {
 	 *         keys and a Map with years and climate variables values as values.
 	 * @throws IOException
 	 */
-	protected static LinkedHashMap<GeographicalCoordinatesProvider, DataSet> applyModel(String modelName,
+	protected static LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> applyModel(
+			String modelName,
 			LinkedHashMap<GeographicalCoordinatesProvider, String> teleIORefs) throws IOException {
 		if (!ModelListReference.contains(modelName)) {
 			throw new InvalidParameterException("The model " + modelName
@@ -438,7 +418,7 @@ public final class BioSimClient {
 			}
 		}
 
-		LinkedHashMap<GeographicalCoordinatesProvider, DataSet> outputMap = new LinkedHashMap<GeographicalCoordinatesProvider, DataSet>();
+		LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> outputMap = new LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet>();
 		String query = "";
 		query += "model=" + modelName;
 		if (compress) {
@@ -449,22 +429,33 @@ public final class BioSimClient {
 		query += "&wgout=" + wgoutQuery;
 
 		String serverReply = getStringFromConnection(MODEL_API, query);
+		
+		readLines(serverReply, "year", refListForLocations, outputMap);
+		
+		return outputMap;
+	}
+
+	
+	private static void readLines(String serverReply,
+			String fieldLineStarter,
+			List<GeographicalCoordinatesProvider> refListForLocations,
+			LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> outputMap) {
 		String[] lines = serverReply.split("\n");
-		DataSet dataSet = null;
+		BioSimDataSet dataSet = null;
 		int locationId = 0;
 		GeographicalCoordinatesProvider location = null;
-		// data set should include the geographical stuff and it could be converted on
-		// the fly by J4R.
 		boolean properlyInitialized = false;
 		for (String line : lines) {
-			if (line.toLowerCase().startsWith("year")) { // means it is a new location
-				if (dataSet != null) {
+			if (line.toLowerCase().startsWith("error")) {
+				throw new BioSimClientException(line);
+			} else if (line.toLowerCase().startsWith(fieldLineStarter)) { // means it is a new location
+				if (dataSet != null) {	// must be indexed before instantiating a new DataSet
 					dataSet.indexFieldType();
 				}
 				location = refListForLocations.get(locationId);
-				String[] fields = line.split(",");
+				String[] fields = line.split(FieldSeparator);
 				List<String> fieldNames = Arrays.asList(fields);
-				dataSet = new DataSet(fieldNames);
+				dataSet = new BioSimDataSet(fieldNames);
 				outputMap.put(location, dataSet);
 				locationId++;
 				properlyInitialized = true;
@@ -472,24 +463,23 @@ public final class BioSimClient {
 				if (!properlyInitialized) {
 					throw new BioSimClientException(serverReply);
 				} else {
-					Object[] fields = Arrays.asList(line.split(",")).toArray(new Object[]{});
+					Object[] fields = Arrays.asList(line.split(FieldSeparator)).toArray(new Object[]{});
 					dataSet.addObservation(fields);
 				}
 			}
 		}
 		if (dataSet != null) {
-			dataSet.indexFieldType();
+			dataSet.indexFieldType();	// last DataSet has not been instantiated so it needs to be here.
 		}
-		return outputMap;
 	}
-
+	
+	
 	/**
 	 * Returns the climate variables for a particular period with the generated
 	 * climate stored on the server.
 	 * 
 	 * @param fromYr    starting date (yr) of the period (inclusive)
 	 * @param toYr      ending date (yr) of the period (inclusive)
-	 * @param variables the list of variables
 	 * @param locations the locations of the plots (GeographicalCoordinatesProvider
 	 *                  instances)
 	 * @param modelName a string representing the model name
@@ -497,15 +487,20 @@ public final class BioSimClient {
 	 *         and climate variables (values)
 	 * @throws IOException
 	 */
-	public static LinkedHashMap<GeographicalCoordinatesProvider, DataSet> getClimateVariables(int fromYr, int toYr,
-			List<Variable> variables, List<GeographicalCoordinatesProvider> locations, String modelName)
+	public static LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> getClimateVariables(int fromYr, 
+			int toYr,
+			List<GeographicalCoordinatesProvider> locations, 
+			String modelName)
 			throws IOException {
-		return BioSimClient.getClimateVariables(fromYr, toYr, variables, locations, modelName, false);
+		return BioSimClient.getClimateVariables(fromYr, toYr, locations, modelName, false);
 	}
 
-	private static LinkedHashMap<GeographicalCoordinatesProvider, DataSet> internalCalculationForClimateVariables(
-			int fromYr, int toYr, List<Variable> variables, List<GeographicalCoordinatesProvider> locations,
-			String modelName, boolean isEphemeral) throws IOException {
+	private static LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> internalCalculationForClimateVariables(
+			int fromYr, 
+			int toYr, 
+			List<GeographicalCoordinatesProvider> locations,
+			String modelName, 
+			boolean isEphemeral) throws IOException {
 		Map<GeographicalCoordinatesProvider, String> alreadyGeneratedClimate = new HashMap<GeographicalCoordinatesProvider, String>();
 		List<GeographicalCoordinatesProvider> locationsToGenerate = new ArrayList<GeographicalCoordinatesProvider>();
 
@@ -513,7 +508,7 @@ public final class BioSimClient {
 			locationsToGenerate.addAll(locations);
 		} else { // here we retrieve what is already available
 			for (GeographicalCoordinatesProvider location : locations) {
-				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, variables, location);
+				BioSimQuerySignature querySignature = new BioSimQuerySignature(fromYr, toYr, location);
 				if (GeneratedClimateMap.containsKey(querySignature)) {
 					alreadyGeneratedClimate.put(location, GeneratedClimateMap.get(querySignature));
 				} else {
@@ -524,10 +519,10 @@ public final class BioSimClient {
 
 		Map<GeographicalCoordinatesProvider, String> generatedClimate = new HashMap<GeographicalCoordinatesProvider, String>();
 		if (!locationsToGenerate.isEmpty()) { // here we generate the climate if needed
-			generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, variables, locationsToGenerate));
+			generatedClimate.putAll(BioSimClient.getGeneratedClimate(fromYr, toYr, locationsToGenerate));
 			if (!isEphemeral) { // then we stored the reference in the static map for future use
 				for (GeographicalCoordinatesProvider location : generatedClimate.keySet()) {
-					GeneratedClimateMap.put(new BioSimQuerySignature(fromYr, toYr, variables, location),
+					GeneratedClimateMap.put(new BioSimQuerySignature(fromYr, toYr, location),
 							generatedClimate.get(location));
 				}
 			}
@@ -539,7 +534,7 @@ public final class BioSimClient {
 		for (GeographicalCoordinatesProvider location : locations) {
 			mapForModels.put(location, generatedClimate.get(location));
 		}
-		LinkedHashMap<GeographicalCoordinatesProvider, DataSet> resultingMap = BioSimClient.applyModel(modelName, mapForModels);
+		LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> resultingMap = BioSimClient.applyModel(modelName, mapForModels);
 		if (isEphemeral) { // then we remove the wgout instances stored on the server
 			BioSimClient.removeWgoutObjectsFromServer(generatedClimate.values());
 		}
@@ -555,7 +550,6 @@ public final class BioSimClient {
 	 * 
 	 * @param fromYr      starting date (yr) of the period (inclusive)
 	 * @param toYr        ending date (yr) of the period (inclusive)
-	 * @param variables   the list of variables
 	 * @param locations   the locations of the plots
 	 *                    (GeographicalCoordinatesProvider instances)
 	 * @param modelName   a string representing the model name
@@ -565,11 +559,13 @@ public final class BioSimClient {
 	 *         and climate variables (values)
 	 * @throws IOException
 	 */
-	public static LinkedHashMap<GeographicalCoordinatesProvider, DataSet> getClimateVariables(int fromYr, int toYr,
-			List<Variable> variables, List<GeographicalCoordinatesProvider> locations, String modelName,
+	public static LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> getClimateVariables(int fromYr, 
+			int toYr,
+			List<GeographicalCoordinatesProvider> locations, 
+			String modelName,
 			boolean isEphemeral) throws IOException {
 		if (locations.size() > MAXIMUM_NB_OBS_AT_A_TIME) {
-			LinkedHashMap<GeographicalCoordinatesProvider, DataSet> resultingMap = new LinkedHashMap<GeographicalCoordinatesProvider, DataSet>();
+			LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet> resultingMap = new LinkedHashMap<GeographicalCoordinatesProvider, BioSimDataSet>();
 			List<GeographicalCoordinatesProvider> copyList = new ArrayList<GeographicalCoordinatesProvider>();
 			copyList.addAll(locations);
 			List<GeographicalCoordinatesProvider> subList = new ArrayList<GeographicalCoordinatesProvider>();
@@ -577,13 +573,13 @@ public final class BioSimClient {
 				while (!copyList.isEmpty() && subList.size() < MAXIMUM_NB_OBS_AT_A_TIME) {
 					subList.add(copyList.remove(0));
 				}
-				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, variables, subList, modelName,
+				resultingMap.putAll(internalCalculationForClimateVariables(fromYr, toYr, subList, modelName,
 						isEphemeral));
 				subList.clear();
 			}
 			return resultingMap;
 		} else {
-			return internalCalculationForClimateVariables(fromYr, toYr, variables, locations, modelName, isEphemeral);
+			return internalCalculationForClimateVariables(fromYr, toYr, locations, modelName, isEphemeral);
 		}
 	}
 

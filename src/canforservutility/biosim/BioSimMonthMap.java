@@ -21,22 +21,47 @@
 package canforservutility.biosim;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import canforservutility.biosim.BioSimEnums.Month;
 import canforservutility.biosim.BioSimEnums.Variable;
+import repicea.stats.data.Observation;
 
 /**
- * An inner class that handles the mean and sum of the different variables.
+ * An inner class that handles the mean and sum of the different variables for normals.
  * @author Mathieu Fortin - October 2019
  */
 @SuppressWarnings("serial")
-public class BioSimMonthMap extends HashMap<Month, Map<Variable, Double>> {
+class BioSimMonthMap extends LinkedHashMap<Month, Map<Variable, Double>> {
 
-	Map<Variable, Double> getMeanForTheseMonths(List<Month> months, List<Variable> variables) {
-		Map<Variable, Double> outputMap = new HashMap<Variable, Double>();
+	
+	BioSimMonthMap(BioSimDataSet dataSet) {
+		Map<Variable, Integer> fieldIndices = new HashMap<Variable, Integer>();
+		for (Variable v : Variable.values()) {
+			fieldIndices.put(v, dataSet.getFieldNames().indexOf(v.fieldName));
+		}
+		int monthIndexInDataset = dataSet.getFieldNames().indexOf("Month");
+		for (Observation obs : dataSet.getObservations()) {
+			Object[] record = obs.toArray();
+			int monthValue = (int) record[monthIndexInDataset];
+			Month m = Month.values()[monthValue - 1];
+			put(m, new HashMap<Variable, Double>());
+			for (Variable v : Variable.values()) {
+				if (fieldIndices.get(v) != -1) {
+					double value = (double) record[fieldIndices.get(v)];
+					get(m).put(v, value);
+				}
+			}
+		}
+	}
+	
+	
+	final BioSimDataSet getMeanForTheseMonths(List<Month> months, List<Variable> variables) {
+		Map<Variable, Double> outputMap = new LinkedHashMap<Variable, Double>();
 		int nbDays = 0;
 		for (Month month : months) {
 			if (containsKey(month)) {
@@ -64,7 +89,20 @@ public class BioSimMonthMap extends HashMap<Month, Map<Variable, Double>> {
 				outputMap.put(var, outputMap.get(var) / nbDays);
 			}
 		}
-		return outputMap;
+		
+		List<String> fieldNames = new ArrayList<String>();
+		for (Variable v : outputMap.keySet()) {
+			fieldNames.add(v.toString());
+		}
+		BioSimDataSet ds = new BioSimDataSet(fieldNames);
+		Object[] rec = new Object[outputMap.size()];
+		int i = 0;
+		for (Variable v : outputMap.keySet()) {
+			rec[i++] = outputMap.get(v);
+		}
+		ds.addObservation(rec);
+		ds.indexFieldType();
+		return ds;
 	}
 	
 }
