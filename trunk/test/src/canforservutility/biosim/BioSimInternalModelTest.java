@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.Test;
 
 import canforservutility.biosim.BioSimClientTest.FakeLocation;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
@@ -16,8 +16,8 @@ import repicea.stats.data.DataSet;
 public class BioSimInternalModelTest {
 
 	
-	@Ignore
-	public void testingLengthOfDatasets() throws IOException, NoSuchMethodException, SecurityException {
+	@Test
+	public void testingIfReturnDataSetHasAtLeastOneObservation() throws IOException, NoSuchMethodException, SecurityException {
 		List<GeographicalCoordinatesProvider> locations = new ArrayList<GeographicalCoordinatesProvider>();
 		for (int i = 0; i < 1; i++) {
 			FakeLocation loc = new FakeLocation(45 + StatisticalUtility.getRandom().nextDouble() * 7,
@@ -26,81 +26,39 @@ public class BioSimInternalModelTest {
 			locations.add(loc);
 		}
 		
-		boolean failed = false;
+		int nbFailures = 0;
 		List<String> modelList = BioSimClient.getModelList();
 		for (String model : modelList) {
-			if (!model.toLowerCase().contains("hourly") && 
-					!model.equals("ForestTentCaterpillar") &&
-					!model.equals("Insect_Development_Database_II") &&
-					!model.equals("Insect_Development_Database_III")) { // TODO fix the ForestTentCaterpillar it seems to produce a Runtime exception from time to time
-//				System.out.print("Testing model: " + model);
-				long start = System.currentTimeMillis();
-				double elapsedTimeSec;
-				model = "Insect_Development_Database_II";
+			if (!model.equals("ForestTentCaterpillar") // can cause an Exception on the server side
+					&& !model.equals("HWA_Phenology") // can cause an Exception on the server side
+					&& !model.equals("Insect_Development_Database_II")  // can cause an Exception on the server side
+					&& !model.equals("Insect_Development_Database_III")  // can cause an Exception on the server side
+					&& !model.equals("PlantHardiness")	// bad number of parameters 
+					&& !model.equals("Climdex_Annual")  // the base period is not inside the simulation period
+					&& !model.equals("Climdex_Monthly") // the base period is not inside the simulation period
+					&& !model.equals("Spruce_Budworm_Dispersal") // encoding cause an exception from Python to C++ 
+					) { 
+				System.out.print("Testing model: " + model);
 				try {
-//					if (model.equals("WhitePineWeevil")) {
+//					if (model.equals("Spruce_Budworm_Dispersal")) {
 //						int u = 0;
-//					}					
-					Map<GeographicalCoordinatesProvider, BioSimDataSet> output = BioSimClient.getClimateVariables(2015, 2019, locations, model);
-					elapsedTimeSec = (System.currentTimeMillis() - start) * .001; 
+//					}
+					Map<GeographicalCoordinatesProvider, BioSimDataSet> output = BioSimClient.getClimateVariables(2015, 2019, locations, model);					
 					for (DataSet ds : output.values()) {
-						if (model.equals("EmeraldAshBorer") ||
-								model.equals("EuropeanElmScale_param") ||
-								model.equals("EuropeanElmScale") ||
-								model.equals("FallCankerworms") ||
-								model.equals("HWA_Phenology") ||
-								model.equals("HemlockLooper") ||
-								model.equals("HemlockLooperRemi") ||
-								model.equals("Jackpine_Budworm") ||
-								model.equals("LaricobiusNigrinus") ||
-								model.equals("ObliqueBandedLeafroller") ||
-								model.equals("Soil_Temperature") ||
-								model.equals("SpringCankerworms") ||
-								model.equals("Spruce_Budworm_Biology") ||
-								model.equals("Spruce_Budworm_Manitoba") ||
-								model.equals("Western_Spruce_Budworm") ||
-								model.equals("WhitePineWeevil") ||
-								model.toLowerCase().contains("daily")) {
-							Assert.assertTrue(model + ": Testing size of DataSet instance", ds.getNumberOfObservations() == 1826);
-//							System.out.println(" - Ok " + elapsedTimeSec + " sec.");
-						} else if (model.equals("Gypsy_Moth_Seasonality")) {
-							Assert.assertTrue(model + ": Testing size of DataSet instance", ds.getNumberOfObservations() == 1096);
-//							System.out.println(" - Ok " + elapsedTimeSec + " sec.");
-						} else if (model.equals("Standardised_Precipitation_Evapotranspiration_Index_Ex") ||
-								model.equals("Standardised_Precipitation_Evapotranspiration_Index") ||
-								model.toLowerCase().contains("monthly")) {
-							Assert.assertTrue(model + ": Testing size of DataSet instance", ds.getNumberOfObservations() == 60);
-//							System.out.println(" - Ok " + elapsedTimeSec + " sec.");
-						} else if (model.equals("BlueStainIndex") ||
-								model.equals("MPB_SLR") ||
-								model.equals("PlantHardiness") ||
-								model.equals("ReverseDegreeDay_Overall_years")) {
-							Assert.assertTrue(model + ": Testing size of DataSet instance", ds.getNumberOfObservations() == 2);
-//							System.out.println(" - Ok " + elapsedTimeSec + " sec.");
-						} else if (model.equals("BudBurst") ||
-								model.equals("ForestTentCaterpillar") ||
-								model.equals("HemlockWoollyAdelgid_Annual") ||
-								model.equals("MPB_Cold_Tolerance_Annual") ||
-								model.equals("MPBiModel_Annual") ||
-								model.equals("Spruce_Budworm_Biology_Annual") ||
-								model.equals("SpruceBeetle")) {
-							Assert.assertTrue(model + ": Testing size of DataSet instance", ds.getNumberOfObservations() == 3);
-//							System.out.println(" - Ok " + elapsedTimeSec + " sec.");
-						} else if (model.equals("BlueStainVariables") ||
-								model.equals("GrowingSeason") ||
-								model.toLowerCase().contains("annual")) {
-							Assert.assertTrue(model + ": Testing size of DataSet instance", ds.getNumberOfObservations() == 5);
-//							System.out.println(" - Ok " + elapsedTimeSec + " sec.");
-						} 
+						Assert.assertTrue("Testing if DataSet instance has at least one observation", ds.getNumberOfObservations() > 0);
+						System.out.println(" - Ok ");
 					}
 				} catch (Exception e) {
-//					e.printStackTrace();
-					failed = true;
-					System.out.println(model + " - Failed for this reason " + e.toString());
+					e.printStackTrace();
+					nbFailures++;
+					System.out.println(" - Failed for this reason " + e.toString());
 				}
 			}
 		}
-		Assert.assertTrue("No exception thrown", !failed);
+		if (nbFailures > 0) {
+			System.out.println("Nb of failures = " + nbFailures);
+		}
+		Assert.assertTrue("No exception thrown", nbFailures == 0);
 	}
 	
 }
