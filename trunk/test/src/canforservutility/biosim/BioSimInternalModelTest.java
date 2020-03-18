@@ -27,17 +27,18 @@ public class BioSimInternalModelTest {
 		}
 		
 		int nbFailures = 0;
+		int nbSuccesses = 0;
 		List<String> modelList = BioSimClient.getModelList();
 		for (String model : modelList) {
-			if (!model.equals("ForestTentCaterpillar") // can cause an Exception on the server side
-					&& !model.equals("HWA_Phenology") // can cause an Exception on the server side
-					&& !model.equals("Insect_Development_Database_II")  // can cause an Exception on the server side
-					&& !model.equals("Insect_Development_Database_III")  // can cause an Exception on the server side
-					&& !model.equals("PlantHardiness")	// bad number of parameters 
-					&& !model.equals("Climdex_Annual")  // the base period is not inside the simulation period
-					&& !model.equals("Climdex_Monthly") // the base period is not inside the simulation period
-					&& !model.equals("Spruce_Budworm_Dispersal") // encoding cause an exception from Python to C++ 
-					) { 
+//			if (!model.equals("ForestTentCaterpillar") // can cause an Exception on the server side
+//					&& !model.equals("HWA_Phenology") // can cause an Exception on the server side
+//					&& !model.equals("Insect_Development_Database_II")  // can cause an Exception on the server side
+//					&& !model.equals("Insect_Development_Database_III")  // can cause an Exception on the server side
+//					&& !model.equals("PlantHardiness")	// bad number of parameters 
+//					&& !model.equals("Climdex_Annual")  // the base period is not inside the simulation period
+//					&& !model.equals("Climdex_Monthly") // the base period is not inside the simulation period
+//					&& !model.equals("Spruce_Budworm_Dispersal") // encoding cause an exception from Python to C++ 
+//					) { 
 				System.out.print("Testing model: " + model);
 				try {
 //					if (model.equals("Spruce_Budworm_Dispersal")) {
@@ -47,17 +48,16 @@ public class BioSimInternalModelTest {
 					for (DataSet ds : output.values()) {
 						Assert.assertTrue("Testing if DataSet instance has at least one observation", ds.getNumberOfObservations() > 0);
 						System.out.println(" - Ok ");
+						nbSuccesses++;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					nbFailures++;
 					System.out.println(" - Failed for this reason " + e.toString());
 				}
-			}
+//			}
 		}
-		if (nbFailures > 0) {
-			System.out.println("Nb of failures = " + nbFailures);
-		}
+		System.out.println("Nb of failures = " + nbFailures + "; Nb of successes = " + nbSuccesses);
 		Assert.assertTrue("No exception thrown", nbFailures == 0);
 	}
 	
