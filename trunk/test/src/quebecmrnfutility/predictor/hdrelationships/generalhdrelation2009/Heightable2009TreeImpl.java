@@ -6,12 +6,10 @@ class Heightable2009TreeImpl implements Heightable2009Tree {
 	final Heightable2009Stand stand;
 	final int subjectID;
 	double heightM;
-	final double predictedHeightM;
 	Hd2009Species speciesCode;
 	
 	Heightable2009TreeImpl(Heightable2009StandImpl stand,
 			double dbhCm,
-			double predictedHeightM,
 			int subjectID, 
 			String species,
 			double heightM) {
@@ -19,7 +17,6 @@ class Heightable2009TreeImpl implements Heightable2009Tree {
 		stand.trees.add(this);
 		this.dbhCm = dbhCm;
 		this.heightM = heightM;
-		this.predictedHeightM = predictedHeightM;
 		this.subjectID = subjectID;
 		String speciesName = species.toUpperCase().trim();
 		try {
@@ -71,9 +68,6 @@ class Heightable2009TreeImpl implements Heightable2009Tree {
 	public double getSocialStatusIndex() {
 		return getDbhCm() - ((Heightable2009StandImpl) stand).getMeanQuadraticDiameterCm();
 	}
-
-	protected double getPredictedHeight() {return predictedHeightM;}
-
 
 
 	@Override

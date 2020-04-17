@@ -1,6 +1,7 @@
 package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.GeneralHeight2014PredictorTests;
@@ -24,6 +26,10 @@ public class GeneralHeight2009PredictorTests {
 
 	static Map<String, Heightable2009Stand> standMap;
 
+	/*
+	 * Those are the trees used in the 2014 HD relationships. The predicted values are for the 2014 version of the
+	 * model and not for this version. 
+	 */
 	static void ReadStands() {
 		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTests.class) + "fichier_test_unitaire.csv";
 		standMap = new HashMap<String, Heightable2009Stand>();
@@ -49,7 +55,6 @@ public class GeneralHeight2009PredictorTests {
 				
 				double dbhCm = Double.parseDouble(record[4].toString());
 				String species = record[5].toString();
-				double predictedHeight = Double.parseDouble(record[29].toString());
 				
 				if (!standMap.containsKey(placetteID)) {
 					standMap.put(placetteID, new Heightable2009StandImpl(placetteID,
@@ -62,7 +67,7 @@ public class GeneralHeight2009PredictorTests {
 							meanAnnualPrecipitationMm));
 				}
 				Heightable2009StandImpl stand = (Heightable2009StandImpl) standMap.get(placetteID);
-				new Heightable2009TreeImpl(stand, dbhCm, predictedHeight, treeID++, species, heightM);
+				new Heightable2009TreeImpl(stand, dbhCm, treeID++, species, heightM);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -75,7 +80,8 @@ public class GeneralHeight2009PredictorTests {
 	
 
 	/*
-	 * This test compares the blups and the height predictions to reference tables. The simulation is deterministic.
+	 * This test compares the BLUPs and the height predictions to reference tables. 
+	 * The simulation is deterministic.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
@@ -164,8 +170,8 @@ public class GeneralHeight2009PredictorTests {
 	
 	
 	/*
-	 * This test compares the mean of stochastic prediction with the determinitic prediction for a single tree. 
-	 * Sincen the model is purely linear, these two values should be very close. 
+	 * This test compares the mean of stochastic prediction with the deterministic prediction 
+	 * for a single tree. Since the model is purely linear, these two values should be very close. 
 	 */
 	@SuppressWarnings({"rawtypes" })
 	@Test
@@ -186,6 +192,9 @@ public class GeneralHeight2009PredictorTests {
 		String selectedPlotId = plotIds.get(0);
 		Heightable2009Stand s = standMap.get(selectedPlotId);
 		Heightable2009Tree tree = (Heightable2009Tree) ((ArrayList) s.getTrees(StatusClass.alive)).get(0);
+		if (tree.getHeightM() > 0d) {
+			throw new InvalidParameterException("This tree should not have an observed height!");
+		}
 		double detPred = detPredictor.predictHeightM(s, tree);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		Matrix realization;
@@ -197,9 +206,46 @@ public class GeneralHeight2009PredictorTests {
 		}
 		
 		double actual = estimate.getMean().m_afData[0][0];
+		double variance = estimate.getVariance().m_afData[0][0];
 		Assert.assertEquals("Comparing deterministic and stochastic predictions", actual, detPred, 1E-2);
+		Assert.assertEquals("Testing the variance", 3.9, variance, .4);
 		System.out.println("GeneralHeight2009PredictorTests.compareStochasticPredictions - Successful comparisons!");
 	}
 
+	
+	/*
+	 * This test is the follow up of a bug. In stochastic mode, the observed height was reproduced only 
+	 * for the first realization. 
+	 */
+	@Test
+	public void testStochasticPredictionsForTreeWithKnownHeight() {
+		if (standMap == null) {
+			GeneralHeight2009PredictorTests.ReadStands();
+		}
+		
+		List<String> plotIds = new ArrayList<String>();
+		plotIds.addAll(standMap.keySet());
+		
+		Collections.sort(plotIds);
+		
+		GeneralHeight2009Predictor stoPredictor = new GeneralHeight2009Predictor(true); // stochastic simulations
+
+		String selectedPlotId = plotIds.get(0);
+		Heightable2009Stand s = standMap.get(selectedPlotId);
+		List<Heightable2009Tree> livingTrees = (List) s.getTrees(StatusClass.alive);
+		Heightable2009Tree tree = livingTrees.get(4);
+		if (tree.getHeightM() == 0d) {
+			throw new InvalidParameterException("This tree should have an observed height!");
+		}
+		for (int i = 0; i < 10; i++) {
+			((Heightable2009StandImpl) s).monteCarloRealizationID = i;
+			double predictedHeight = stoPredictor.predictHeightM(s, tree);
+			Assert.assertEquals("Comparing stochastic prediction to observed height", tree.getHeightM(), predictedHeight, 1E-8);
+		}
+		
+		System.out.println("GeneralHeight2009PredictorTests.testStochasticPredictionsForTreeWithKnownHeight - Successful comparisons!");
+
+	}
+	
 	
 }
