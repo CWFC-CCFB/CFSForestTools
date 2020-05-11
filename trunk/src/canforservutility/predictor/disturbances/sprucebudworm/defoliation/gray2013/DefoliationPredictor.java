@@ -38,7 +38,7 @@ import repicea.stats.estimates.SimpleEstimate;
 @SuppressWarnings("serial")
 public class DefoliationPredictor extends REpiceaBinaryEventPredictor<DefoliationPlot, Object> {
 
-	private Matrix meanExplanatoryVariables;
+	private static Matrix MeanExplanatoryVariables;
 	private Matrix stdExplanatoryVariables;
 	private Matrix canonicalReg1Coef;
 	private Matrix canonicalReg2Coef;
@@ -59,15 +59,15 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 
 	@Override
 	protected void init() {
-		meanExplanatoryVariables = new Matrix(1,8);
-		meanExplanatoryVariables.m_afData[0][0] = 49.0485;
-		meanExplanatoryVariables.m_afData[0][1] = 38.7728;
-		meanExplanatoryVariables.m_afData[0][2] = 113.2317;
-		meanExplanatoryVariables.m_afData[0][3] = 5.8103;
-		meanExplanatoryVariables.m_afData[0][4] = 82.6894;
-		meanExplanatoryVariables.m_afData[0][5] = 41.5137;
-		meanExplanatoryVariables.m_afData[0][6] = 15.3037;
-		meanExplanatoryVariables.m_afData[0][7] = 0.5807;
+		MeanExplanatoryVariables = new Matrix(1,8);
+		MeanExplanatoryVariables.m_afData[0][0] = 49.0485;
+		MeanExplanatoryVariables.m_afData[0][1] = 38.7728;
+		MeanExplanatoryVariables.m_afData[0][2] = 113.2317;
+		MeanExplanatoryVariables.m_afData[0][3] = 5.8103;
+		MeanExplanatoryVariables.m_afData[0][4] = 82.6894;
+		MeanExplanatoryVariables.m_afData[0][5] = 41.5137;
+		MeanExplanatoryVariables.m_afData[0][6] = 15.3037;
+		MeanExplanatoryVariables.m_afData[0][7] = 0.5807;
 		
 		stdExplanatoryVariables = new Matrix(1,8);
 		stdExplanatoryVariables.m_afData[0][0] = 1.8838;
@@ -114,13 +114,13 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 		int i = 0;
 		oXVector.m_afData[0][i] = plot.getLatitudeDeg();
 		i++;
-		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM for sum of average extreme temperature of April and May (sp_emax) here
+		oXVector.m_afData[0][i] = plot.getSpringSumMaxTemp();	// sp_emax
 		i++;
-		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM for sum of the average accumulation of degree-days (above 5C) of April and May (sp_dd) here 
+		oXVector.m_afData[0][i] = plot.getSpringSumDegreeDays();	// sp_dd 
 		i++;	
-		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM for sum of the average monthly extreme minimum temperatures from June to August (sm_emin) here
+		oXVector.m_afData[0][i] = plot.getSummerSumMinTemp();	// sm_emin
 		i++;
-		oXVector.m_afData[0][i] = meanExplanatoryVariables.m_afData[0][i];	// TODO call BioSIM for sum of the average monthly extreme maximum temperatures from June to August (sm_emax) here
+		oXVector.m_afData[0][i] = plot.getSummerSumMaxTemp();	// sm_emax
 		i++;
 		oXVector.m_afData[0][i] = plot.getVolumeM3HaOfBlackSpruce();
 		i++;
@@ -128,7 +128,7 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 		i++;
 		oXVector.m_afData[0][i] = plot.getProportionForestedArea();
 
-		Matrix standardizedValues = oXVector.subtract(meanExplanatoryVariables).elementWiseDivide(stdExplanatoryVariables);
+		Matrix standardizedValues = oXVector.subtract(MeanExplanatoryVariables).elementWiseDivide(stdExplanatoryVariables);
 		Matrix score = new Matrix(1,2);
 		score.m_afData[0][0] = standardizedValues.multiply(canonicalReg1Coef).m_afData[0][0];
 		score.m_afData[0][1] = standardizedValues.multiply(canonicalReg2Coef).m_afData[0][0];
@@ -171,5 +171,12 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 		} 
 		return 0d;
 	}
+	
+
+	/*
+	 * For test purpose only.
+	 */
+	static Matrix getAverageClimateVariables() {return MeanExplanatoryVariables;}
+	
 	
 }
