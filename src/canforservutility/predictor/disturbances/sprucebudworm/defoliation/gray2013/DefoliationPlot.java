@@ -47,4 +47,39 @@ public interface DefoliationPlot extends GeographicalCoordinatesProvider {
 	 * @return a double
 	 */
 	public double getProportionForestedArea();
+	
+	
+	/**
+	 * This method returns the spring (April-May) sum of the average monthly extreme maximum temperatures. It
+	 * is referred to as sp_emax in the original article of Gray (2013). 
+	 * @return a double 
+	 */
+	public double getSpringSumMaxTemp(); 
+	
+	/**
+	 * This method returns the spring (April-May) sum of the average accumulation of degree-days. It is 
+	 * referred to as sp_dd in the original article of Gray (2013).
+	 * @return a double
+	 */
+	public double getSpringSumDegreeDays();
+
+	/**
+	 * This method returns the summer (June-August) sum of the average monthly extreme
+	 * minimum temperatures. It is referred to as sm_emin in the original article of
+	 * Gray (2013).
+	 * @return a double
+	 */
+	public double getSummerSumMinTemp();
+	
+	
+	/**
+	 * This method return the summer (June-August) sum of the average monthly extreme
+	 * maximum temperatures. It is referred to as sm_emax in the original article of
+	 * Gray (2013).
+	 * @return a double
+	 */
+	public double getSummerSumMaxTemp();
+	
+	
+	
 }
