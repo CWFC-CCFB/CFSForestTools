@@ -1,6 +1,7 @@
 package canforservutility.predictor.iris2020.recruitment;
 
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
+import repicea.math.Matrix;
 
 public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 
@@ -62,6 +63,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	private final double pred;
 	private final String id;
 	private final Iris2020Species species;
+	private final Matrix gSpGrMat;
 		
 	Iris2020CompatibleTestPlotImpl(String id,
 			double growthStepLength,
@@ -81,7 +83,8 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 			boolean isOrganicSoil,
 			SoilTexture soilTexture,
 			Iris2020Species species,
-			double pred) {
+			double pred, 
+			Double gSpGr) {
 		this.id = id;
 		this.growthStepLength = growthStepLength;
 		this.basalAreaM2Ha = basalAreaM2Ha;
@@ -101,14 +104,15 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 		this.soilTexture = soilTexture;
 		this.species = species;
 		this.pred = pred;
+		if (gSpGr == null) {
+			gSpGrMat = null;
+		} else {
+			gSpGrMat = new Matrix(1, Iris2020Species.values().length);
+			gSpGrMat.m_afData[0][species.ordinal()] = gSpGr;
+		}
 	}
 	
 	
-	
-	@Override
-	public double getAreaHa() {
-		return 0.04;
-	}
 
 	@Override
 	public String getSubjectId() {return id;}
@@ -169,5 +173,8 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	Iris2020CompatibleTree getTreeInstance() {
 		return new Iris2020CompatibleTestTreeImpl(species); 
 	}
+
+	@Override
+	public Matrix getBasalAreaM2HaBySpecies() {return gSpGrMat;}
 	
 }

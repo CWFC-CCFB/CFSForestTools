@@ -1,7 +1,7 @@
 /*
  * This file is part of the mrnf-foresttools library.
  *
- * Copyright (C) 2009-2014 Mathieu Fortin for Rouge-Epicea
+ * Copyright (C) 2020 Mathieu Fortin for Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,15 +24,13 @@ import java.util.Map;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.AreaHaProvider;
 import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.standlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.standlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.standlevel.SlopeInclinationPercentProvider;
 import repicea.simulation.covariateproviders.standlevel.StemDensityHaProvider;
 
-public interface Iris2020CompatiblePlot extends AreaHaProvider,
-													MonteCarloSimulationCompliantObject,
+public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantObject,
 													GrowthStepLengthYrProvider,
 													BasalAreaM2HaProvider,
 													StemDensityHaProvider,
@@ -74,7 +72,7 @@ public interface Iris2020CompatiblePlot extends AreaHaProvider,
 		Outbreak,
 		Harvest,
 		Decline,
-		Plantation;
+		Fallow;
 		
 		private static Map<OriginType, Matrix> DummyMap;
 		
@@ -225,6 +223,14 @@ public interface Iris2020CompatiblePlot extends AreaHaProvider,
 	 * @return a SoilTexture enum variable
 	 */
 	public SoilTexture getSoilTexture();
+	
+	/**
+	 * Returns a Matrix with the basal area (m2/ha) for each species or species group. 
+	 * The index of the group corresponds to the ordinal of the Iris2020Species enum
+	 * variable.
+	 * @return a 1x33 Matrix
+	 */
+	public Matrix getBasalAreaM2HaBySpecies();
 	
 	
 	
