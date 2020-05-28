@@ -1,5 +1,7 @@
 package canforservutility.predictor.disturbances.sprucebudworm.defoliation.gray2013;
 
+import repicea.simulation.HierarchicalLevel;
+
 /**
  * This class is a basic implementation of the DefoliationPlot interface. It can be used
  * for punctual call to the DefoliationPredictor class.
@@ -13,10 +15,7 @@ public class DefoliationPlotImpl implements DefoliationPlot {
 	private final double volM3HaBlackSpruce;
 	private final double volM3HaFirOtherSpruces;
 	private final double propForestedArea;
-	private final double springSumMaxTemp;
-	private final double springSumDegreeDays;
-	private final double summerSumMinTemp;
-	private final double summerSumMaxTemp;
+	private int dateYr;
 	
 	/**
 	 * Constructor.
@@ -27,42 +26,16 @@ public class DefoliationPlotImpl implements DefoliationPlot {
 			double volM3HaBlackSpruce, 
 			double volM3HaFirOtherSpruces, 
 			double propForestedArea,
-			double springSumMaxTemp,
-			double springSumDegreeDays,
-			double summerSumMinTemp,
-			double summerSumMaxTemp) {
+			int dateYr) {
 		this.latitudeDeg = latitudeDeg;
 		this.longitudeDeg = longitudeDeg;
 		this.elevationM = elevationM;
 		this.volM3HaBlackSpruce = volM3HaBlackSpruce;
 		this.volM3HaFirOtherSpruces = volM3HaFirOtherSpruces;
 		this.propForestedArea = propForestedArea;
-		this.springSumMaxTemp = springSumMaxTemp;
-		this.springSumDegreeDays = springSumDegreeDays;
-		this.summerSumMinTemp = summerSumMinTemp;
-		this.summerSumMaxTemp = summerSumMaxTemp;
+		this.dateYr = dateYr;
 	}
 	
-	/*
-	 * For test purpose only.
-	 */
-	DefoliationPlotImpl(double latitudeDeg, 
-			double longitudeDeg, 
-			double elevationM, 
-			double volM3HaBlackSpruce, 
-			double volM3HaFirOtherSpruces, 
-			double propForestedArea) {
-		this(latitudeDeg, 
-				longitudeDeg, 
-				elevationM, 
-				volM3HaBlackSpruce, 
-				volM3HaFirOtherSpruces, 
-				propForestedArea, 
-				DefoliationPredictor.getAverageClimateVariables().m_afData[0][1],
-				DefoliationPredictor.getAverageClimateVariables().m_afData[0][2],
-				DefoliationPredictor.getAverageClimateVariables().m_afData[0][3],
-				DefoliationPredictor.getAverageClimateVariables().m_afData[0][4]);
-	}
 	
 	
 	
@@ -85,15 +58,16 @@ public class DefoliationPlotImpl implements DefoliationPlot {
 	public double getProportionForestedArea() {return propForestedArea;}
 
 	@Override
-	public double getSpringSumMaxTemp() {return springSumMaxTemp;}
+	public String getSubjectId() {return "test";}
 
 	@Override
-	public double getSpringSumDegreeDays() {return springSumDegreeDays;}
+	public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 	@Override
-	public double getSummerSumMinTemp() {return summerSumMinTemp;}
+	public int getMonteCarloRealizationId() {return 0;}
 
 	@Override
-	public double getSummerSumMaxTemp() {return summerSumMaxTemp;}
+	public int getDateYr() {return dateYr;}
+
 
 }

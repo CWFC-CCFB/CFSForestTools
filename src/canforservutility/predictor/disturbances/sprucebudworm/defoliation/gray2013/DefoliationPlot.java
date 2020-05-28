@@ -20,6 +20,9 @@
  */
 package canforservutility.predictor.disturbances.sprucebudworm.defoliation.gray2013;
 
+import biosimclient.BioSimPlot;
+import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.covariateproviders.standlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
 
 /**
@@ -27,7 +30,10 @@ import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesP
  * Gray's (2013) model of spruce budworm defoliation.
  * @author Mathieu Fortin - May 2019
  */
-public interface DefoliationPlot extends GeographicalCoordinatesProvider {
+public interface DefoliationPlot extends BioSimPlot,
+										GeographicalCoordinatesProvider, 
+										DateYrProvider,
+										MonteCarloSimulationCompliantObject {
 
 	/**
 	 * This method returns the volume (m3/ha) of black spruce in the plot.
@@ -49,36 +55,38 @@ public interface DefoliationPlot extends GeographicalCoordinatesProvider {
 	public double getProportionForestedArea();
 	
 	
-	/**
-	 * This method returns the spring (April-May) sum of the average monthly extreme maximum temperatures. It
-	 * is referred to as sp_emax in the original article of Gray (2013). 
-	 * @return a double 
-	 */
-	public double getSpringSumMaxTemp(); 
-	
-	/**
-	 * This method returns the spring (April-May) sum of the average accumulation of degree-days. It is 
-	 * referred to as sp_dd in the original article of Gray (2013).
-	 * @return a double
-	 */
-	public double getSpringSumDegreeDays();
+	public int getDateYr();
 
-	/**
-	 * This method returns the summer (June-August) sum of the average monthly extreme
-	 * minimum temperatures. It is referred to as sm_emin in the original article of
-	 * Gray (2013).
-	 * @return a double
-	 */
-	public double getSummerSumMinTemp();
-	
-	
-	/**
-	 * This method return the summer (June-August) sum of the average monthly extreme
-	 * maximum temperatures. It is referred to as sm_emax in the original article of
-	 * Gray (2013).
-	 * @return a double
-	 */
-	public double getSummerSumMaxTemp();
+//	/**
+//	 * This method returns the spring (April-May) sum of the average monthly extreme maximum temperatures. It
+//	 * is referred to as sp_emax in the original article of Gray (2013). 
+//	 * @return a double 
+//	 */
+//	public double getSpringSumMaxTemp(); 
+//	
+//	/**
+//	 * This method returns the spring (April-May) sum of the average accumulation of degree-days. It is 
+//	 * referred to as sp_dd in the original article of Gray (2013).
+//	 * @return a double
+//	 */
+//	public double getSpringSumDegreeDays();
+//
+//	/**
+//	 * This method returns the summer (June-August) sum of the average monthly extreme
+//	 * minimum temperatures. It is referred to as sm_emin in the original article of
+//	 * Gray (2013).
+//	 * @return a double
+//	 */
+//	public double getSummerSumMinTemp();
+//	
+//	
+//	/**
+//	 * This method return the summer (June-August) sum of the average monthly extreme
+//	 * maximum temperatures. It is referred to as sm_emax in the original article of
+//	 * Gray (2013).
+//	 * @return a double
+//	 */
+//	public double getSummerSumMaxTemp();
 	
 	
 	
