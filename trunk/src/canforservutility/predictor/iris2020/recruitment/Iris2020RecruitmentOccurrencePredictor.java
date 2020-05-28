@@ -1,7 +1,7 @@
 /*
  * This file is part of the mrnf-foresttools library.
  *
- * Copyright (C) 2009-2020 Mathieu Fortin for Canadian Forest Service
+ * Copyright (C) 2020 Mathieu Fortin for Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,8 +35,6 @@ import repicea.util.ObjectUtility;
  */
 @SuppressWarnings("serial")
 public class Iris2020RecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<Iris2020CompatiblePlot, Iris2020CompatibleTree> {
-
-	protected static final String ModuleName = "recrutement_l"; 
 
 	private Map<Iris2020Species, Iris2020RecruitmentOccurrenceInternalPredictor> internalPredictors;
 	
@@ -81,12 +79,6 @@ public class Iris2020RecruitmentOccurrencePredictor extends REpiceaBinaryEventPr
 	@Override
 	public double predictEventProbability(Iris2020CompatiblePlot stand, Iris2020CompatibleTree tree, Object... parms) {
 		return internalPredictors.get(tree.getSpecies()).predictEventProbability(stand, tree);
-	}
-	
-
-	public static void main(String[] args) {
-		Iris2020RecruitmentOccurrencePredictor pred = new Iris2020RecruitmentOccurrencePredictor(false);
-		int u = 0;
 	}
 	
 	
