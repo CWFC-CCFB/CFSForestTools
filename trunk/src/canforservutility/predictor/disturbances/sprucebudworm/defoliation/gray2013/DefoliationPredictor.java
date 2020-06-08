@@ -31,6 +31,7 @@ import biosimclient.BioSimDataSet;
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.RCP;
 import biosimclient.BioSimEnums.Variable;
+import biosimclient.BioSimParameterMap;
 import biosimclient.BioSimPlot;
 import biosimclient.BioSimServerException;
 import biosimclient.Observation;
@@ -86,7 +87,7 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 	private final Map<String, Matrix> climateMap;
 	private final RCP rcp;
 	private final ClimateModel climModel;
-	
+	private final BioSimParameterMap ddParms;
 	
 	
 	/**
@@ -98,6 +99,8 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 		this.climateMap = new HashMap<String, Matrix>();
 		this.rcp = rcp;
 		this.climModel = climModel;
+		ddParms = new BioSimParameterMap();
+		ddParms.addParameter("LowerThreshold", 5);
 		init();
 		oXVector = new Matrix(1,8);
 	}
@@ -163,12 +166,6 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 
 	
 	
-	/**
-	 * This method calls the setSpecificPlotRandomEffectsForThisStand method if the random effects variability is enabled and returns 
-	 * a stand-specific simulated vector of random effects. Otherwise it returns a default vector (all elements set to 0).
-	 * @param subject a MonteCarloSimulationCompliantObject object
-	 * @return a Matrix object
-	 */
 	protected Matrix getClimateForThisInterval(DefoliationPlot plot, IntervalNestedInPlotDefinition subject) {
 		if (testPurposes) {
 			Matrix mat = new Matrix(4,1);
@@ -186,12 +183,13 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 			try {
 				double yearFactor = 1d / (finalYear - initYear);
 
-				Map<BioSimPlot, BioSimDataSet> dataSets = BioSimClient.getClimateVariables(initYear, 
+				Map<BioSimPlot, BioSimDataSet> dataSets = BioSimClient.getModelOutput(initYear, 
 						finalYear,
 						plots, 
 						rcp,
 						climModel,
-						"Climatic_Monthly");
+						"Climatic_Monthly",
+						null);
 				BioSimDataSet dataSet = dataSets.get(plot);
 				int indexTMin = dataSet.getFieldNames().indexOf("LowestTmin");
 				int indexTMax = dataSet.getFieldNames().indexOf("HighestTmax");
@@ -213,12 +211,13 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 				}
 
 				
-				dataSets = BioSimClient.getClimateVariables(initYear, 
+				dataSets = BioSimClient.getModelOutput(initYear, 
 						finalYear,
 						plots, 
 						rcp,
 						climModel,
-						"DegreeDay_Monthly");	// TODO FP check if the degree-days are calculated above 5C. It seems they are above 0C. Confirm with R. Saint-Amant
+						"DegreeDay_Monthly",
+						ddParms);
 				dataSet = dataSets.get(plot);
 				double sp_dd = 0;
 				indexMonth = dataSet.getFieldNames().indexOf("Month");
@@ -234,7 +233,7 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 
 				Matrix mat = new Matrix(4,1);
 				mat.m_afData[0][0] = sp_emax;
-				mat.m_afData[1][0] = sp_dd - 300d;  // TODO FP remove this patch here
+				mat.m_afData[1][0] = sp_dd;
 				mat.m_afData[2][0] = sm_emin;
 				mat.m_afData[3][0] = sm_emax;
 				
