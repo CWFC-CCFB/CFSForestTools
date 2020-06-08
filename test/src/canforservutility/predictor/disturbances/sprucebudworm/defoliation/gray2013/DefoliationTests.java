@@ -31,15 +31,31 @@ public class DefoliationTests {
 		DefoliationPlot plot = new DefoliationPlotImpl(48d, -70d, 350d, 15, 70, 1d, 1986);
 		Matrix resultingEstimate = pred.getDurationAndSeverityEstimate(plot);
 		double durationYrs = resultingEstimate.m_afData[0][0];
-		Assert.assertEquals("Testing duration (yrs)", 23.398588840191998, durationYrs, 0.1);
+		Assert.assertEquals("Testing duration (yrs)", 19.408770208511704, durationYrs, 0.2);
 		double severity = resultingEstimate.m_afData[1][0];
-		Assert.assertEquals("Testing severity (%)", 55.66199253209301, severity, 4);
+		Assert.assertEquals("Testing severity (%)", 8.942412817277273, severity, 8);
+		System.out.println("Duration = " + durationYrs + "; severity = " + severity);
 		plot = new DefoliationPlotImpl(51d, -70d, 450d, 70, 15, 1d, 1986);
 		resultingEstimate = pred.getDurationAndSeverityEstimate(plot);
 		durationYrs = resultingEstimate.m_afData[0][0];
-		Assert.assertEquals("Testing duration (yrs)", 25.53337946419431, durationYrs, 0.1);
+		Assert.assertEquals("Testing duration (yrs)", 9.538209491956952, durationYrs, 0.2);
 		severity = resultingEstimate.m_afData[1][0];
-		Assert.assertEquals("Testing severity (%)", 74.81527267016763, severity, 6);
+		Assert.assertEquals("Testing severity (%)", 59.20383493012326, severity, 11);
+		System.out.println("Duration = " + durationYrs + "; severity = " + severity);
+		
+		
+		plot = new DefoliationPlotImpl(49d, -70d, 450d, 0, 100, 1d, 1986);
+		resultingEstimate = pred.getDurationAndSeverityEstimate(plot);
+		durationYrs = resultingEstimate.m_afData[0][0];
+		severity = resultingEstimate.m_afData[1][0];
+		System.out.println("Duration = " + durationYrs + "; severity = " + severity);
+
+		plot = new DefoliationPlotImpl(47d, -71d, 600d, 0, 100, 1d, 1986);
+		resultingEstimate = pred.getDurationAndSeverityEstimate(plot);
+		durationYrs = resultingEstimate.m_afData[0][0];
+		severity = resultingEstimate.m_afData[1][0];
+		System.out.println("Duration = " + durationYrs + "; severity = " + severity);
+
 	}
 	
 	
