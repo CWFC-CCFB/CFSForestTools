@@ -80,7 +80,11 @@ public interface QcDrainageClassProvider extends DrainageGroupProvider {
 	
 	@Override
 	public default DrainageGroup getDrainageGroup() {
-		return getDrainageClass().category;
+		if (getDrainageClass() != null) {
+			return getDrainageClass().category;
+		} else {
+			return null;
+		}
 	}
 	
 }

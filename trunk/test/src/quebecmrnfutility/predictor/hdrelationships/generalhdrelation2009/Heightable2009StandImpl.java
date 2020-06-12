@@ -64,10 +64,10 @@ public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadrat
 		return ecoRegion;
 	}
 
-//	@Override
-//	public String getEcologicalType() {
-//		return ecoType;
-//	}
+	@Override
+	public String getEcologicalType() {
+		return ecoType;
+	}
 
 	@Override
 	public boolean isInterventionResult() {
