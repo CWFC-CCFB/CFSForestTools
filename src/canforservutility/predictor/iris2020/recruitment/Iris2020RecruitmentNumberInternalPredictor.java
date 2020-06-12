@@ -35,11 +35,16 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 
 	private static List<Integer> EffectsNotToBeConsidered = new ArrayList<Integer>();
 	static {
-		EffectsNotToBeConsidered.add(16);
-		EffectsNotToBeConsidered.add(17);
-		EffectsNotToBeConsidered.add(18);
-		EffectsNotToBeConsidered.add(19);
+		EffectsNotToBeConsidered.add(3); // drainage class
+		EffectsNotToBeConsidered.add(4);
+		
+		EffectsNotToBeConsidered.add(19); // originType
 		EffectsNotToBeConsidered.add(20);
+
+		EffectsNotToBeConsidered.add(22); // pastDisturbanceType
+		EffectsNotToBeConsidered.add(23);
+
+		EffectsNotToBeConsidered.add(26); // texture
 	}
 	
 	private List<Integer> effectList;
@@ -83,7 +88,6 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		SoilTexture texture = plot.getSoilTexture();
 		OriginType origin = plot.getOrigin();
 		DisturbanceType pastDist = plot.getPastDisturbance();
-		DisturbanceType upcomingDist = plot.getUpcomingDisturbance();
 		
 		double gTot = plot.getBasalAreaM2Ha();		// TODO this could be optimized by calling it before entering this function.
 		double nTot = plot.getNumberOfStemsHa();
@@ -98,150 +102,90 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				oXVector.m_afData[0][index] = 1d;
 				index++;
 				break;
-			case 2:
+			case 2: // drainage class
+				dummy = Iris2020RecruitmentOccurrenceInternalPredictor.DrainageGroupDummyMatrices.get(plot.getDrainageGroup());
+				oXVector.setSubMatrix(dummy, 0, index);
+				index += dummy.m_iCols;
+				break;
+			case 5: // DD
 				oXVector.m_afData[0][index] = meanDegreeDays;
 				index++;
 				break;
-			case 3:
+			case 6: // dt
 				oXVector.m_afData[0][index] = plot.getGrowthStepLengthYr();
 				index++;
 				break;
-			case 4:
+			case 7: // FrostDay
 				oXVector.m_afData[0][index] = meanFrostDays;
 				index++;
 				break;
-			case 5:
+			case 8: // G_SpGr
 				oXVector.m_afData[0][index] = plot.getBasalAreaM2HaBySpecies().m_afData[0][tree.getSpecies().ordinal()];
 				index++;
 				break;
-			case 6:
+			case 9: // G_TOT
 				oXVector.m_afData[0][index] = gTot;
 				index++;
 				break;
-			case 7:				
-//				if (plot.isOrganicSoil()) {
-					oXVector.m_afData[0][index] = 1d;
-//				}
-				index++;
-				break;
-			case 8:
+			case 10: // Length
 				oXVector.m_afData[0][index] = meanGrowingSeasonLength;
 				index++;
 				break;
-			case 9:
+			case 11: // lnG_TOT
+				oXVector.m_afData[0][index] = Math.log(1d + gTot);
+				index++;
+				break;
+			case 12: // lnN_TOT
 				oXVector.m_afData[0][index] = Math.log(1d + nTot);
 				index++;
 				break;
-			case 10:
+			case 13: // lnPente
 				oXVector.m_afData[0][index] = Math.log(1d + slope);
 				index++;
 				break;
-			case 11:
+			case 14: // logDD
 				oXVector.m_afData[0][index] = Math.log(meanDegreeDays);
 				index++;
 				break;
-			case 12:
+			case 15: // logPrcp
 				oXVector.m_afData[0][index] = Math.log(meanPrecipitation);
 				index++;
 				break;
-			case 13:
+			case 16: // LowestTmin
 				oXVector.m_afData[0][index] = meanLowestTmin;
 				index++;
 				break;
-			case 14:
+			case 17: // N_TOT
 				oXVector.m_afData[0][index] = nTot;
 				index++;
 				break;
-			case 15:
+			case 18: // originType
 				dummy = origin.getDummyMatrix(); // origin effect
 				oXVector.setSubMatrix(dummy, 0, index);
 				index += dummy.m_iCols;
 				break;
-			case 21:
-				if (pastDist == DisturbanceType.Fire) {
-					oXVector.m_afData[0][index] = 1d;
-				}
-				index ++;
+			case 21: // pastDisturbanceType
+				dummy = pastDist.getDummyMatrix(); // origin effect
+				oXVector.setSubMatrix(dummy, 0, index);
+				index += dummy.m_iCols;
 				break;
-			case 22:
-//				if (pastDist == DisturbanceType.Windthrow) {
-					oXVector.m_afData[0][index] = 1d;
-//				}
-				index ++;
-				break;
-			case 23:
-//				if (pastDist == DisturbanceType.Outbreak) {
-					oXVector.m_afData[0][index] = 1d;
-//				}
-				index ++;
-				break;
-			case 24:
-				if (pastDist == DisturbanceType.Harvest) {
-					oXVector.m_afData[0][index] = 1d;
-				}
-				index ++;
-				break;
-			case 25:
-//				if (pastDist == DisturbanceType.Decline) {
-					oXVector.m_afData[0][index] = 1d;
-//				}
-				index ++;
-				break;
-			case 26:
+			case 24: // pentePerc
 				oXVector.m_afData[0][index] = slope;
 				index++;
 				break;
-			case 27:
-				if (texture == SoilTexture.Mixed) {
-					oXVector.m_afData[0][index] = 1d;
-				}
-				index ++;
+			case 25: // texture
+				dummy = texture.getDummyMatrix(); // origin effect
+				oXVector.setSubMatrix(dummy, 0, index);
+				index += dummy.m_iCols;
 				break;
-			case 28:
-				if (texture == SoilTexture.Fine) {
-					oXVector.m_afData[0][index] = 1d;
-				}
-				index ++;
-				break;
-			case 29:
+			case 27: // timeSince1970
 				oXVector.m_afData[0][index] = plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970;
 				index++;
 				break;
-			case 30:
+			case 28:
 				oXVector.m_afData[0][index] = meanPrecipitation;
 				index++;
 				break;
-			case 31:
-				if (upcomingDist == DisturbanceType.Fire) {
-					oXVector.m_afData[0][index] = 1d;
-				}
-				index ++;
-				break;
-			case 32:
-//				if (upcomingDist == DisturbanceType.Windthrow) {
-					oXVector.m_afData[0][index] = 1d;
-//				}
-				index ++;
-				break;
-			case 33:
-//				if (upcomingDist == DisturbanceType.Outbreak) {
-					oXVector.m_afData[0][index] = 1d;
-//				}
-				index ++;
-				break;
-			case 34:
-				if (upcomingDist == DisturbanceType.Harvest) {
-					oXVector.m_afData[0][index] = 1d;
-				}
-				index ++;
-				break;
-			case 35:
-//				if (upcomingDist == DisturbanceType.Decline) {
-					oXVector.m_afData[0][index] = 1d;
-//				}
-				index ++;
-				break;
-
 			default:
 				throw new InvalidParameterException("The effect id " + effectId + " is unknown!");
 			}
