@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.QuebecForestRegionProvider.QuebecForestRegion;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcForestRegionProvider.QcForestRegion;
 import repicea.io.javacsv.CSVReader;
 import repicea.util.ObjectUtility;
 
@@ -39,7 +39,7 @@ public class QuebecGeneralSettings {
 
 	private final static Random RANDOM = new Random();
 	
-	private static final Map<String, Map<QuebecForestRegion, Double>> FOREST_REGION_MAP = new HashMap<String, Map<QuebecForestRegion, Double>>();
+	private static final Map<String, Map<QcForestRegion, Double>> FOREST_REGION_MAP = new HashMap<String, Map<QcForestRegion, Double>>();
 	static {
 		String path = ObjectUtility.getRelativePackagePath(QuebecGeneralSettings.class);
 		CSVReader reader = null;
@@ -49,12 +49,12 @@ public class QuebecGeneralSettings {
 			while ((record = reader.nextRecord()) != null) {
 				String regEco = record[0].toString();
 				int regionCode = Integer.parseInt(record[1].toString());
-				QuebecForestRegion forestRegion = QuebecForestRegion.getRegion(regionCode);
+				QcForestRegion forestRegion = QcForestRegion.getRegion(regionCode);
 				double prob = Double.parseDouble(record[2].toString());
 				if (!FOREST_REGION_MAP.containsKey(regEco)) {
-					FOREST_REGION_MAP.put(regEco, new HashMap<QuebecForestRegion, Double>());
+					FOREST_REGION_MAP.put(regEco, new HashMap<QcForestRegion, Double>());
 				}
-				Map<QuebecForestRegion, Double> innerMap = FOREST_REGION_MAP.get(regEco);
+				Map<QcForestRegion, Double> innerMap = FOREST_REGION_MAP.get(regEco);
 				innerMap.put(forestRegion, prob);
 			}
 		} catch (IOException e) {
@@ -67,13 +67,13 @@ public class QuebecGeneralSettings {
 	}
 	
 	
-	public static QuebecForestRegion getForestRegion(String ecologicalRegion, boolean stochastic) {
-		Map<QuebecForestRegion, Double> forestRegionMap = FOREST_REGION_MAP.get(ecologicalRegion);
+	public static QcForestRegion getForestRegion(String ecologicalRegion, boolean stochastic) {
+		Map<QcForestRegion, Double> forestRegionMap = FOREST_REGION_MAP.get(ecologicalRegion);
 		double maxValue = 0;
 		double sumValue = 0;
 		double randomValue = RANDOM.nextDouble();
-		QuebecForestRegion currentSelectedRegion = null;
-		for (QuebecForestRegion region : forestRegionMap.keySet()) {
+		QcForestRegion currentSelectedRegion = null;
+		for (QcForestRegion region : forestRegionMap.keySet()) {
 			double prob = forestRegionMap.get(region);
 			sumValue += prob;
 			if (prob > maxValue) {

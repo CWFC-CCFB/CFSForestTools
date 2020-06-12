@@ -1,7 +1,7 @@
 package quebecmrnfutility.predictor.thinners.melothinner;
 
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.QuebecForestRegionProvider.QuebecForestRegion;
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.SlopeMRNFClassProvider.SlopeMRNFClass;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcForestRegionProvider.QcForestRegion;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassProvider.QcSlopeClass;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider;
 
 class MeloThinnerPlotImpl implements MeloThinnerPlot, LandOwnershipProvider {
@@ -10,20 +10,20 @@ class MeloThinnerPlotImpl implements MeloThinnerPlot, LandOwnershipProvider {
 	private final double plotBasalAreaM2Ha;
 	private final double stemDensityHa;
 	private final String ecologicalType;
-	private final SlopeMRNFClass slopeClass;
+	private final QcSlopeClass slopeClass;
 	private final int year0;
 	private final int year1;
 	private final double[] aac;
 	private final double pred;
 	private final double meanPA;
-	private final QuebecForestRegion region;
+	private final QcForestRegion region;
 	private final LandOwnership ownership;
 	
 		MeloThinnerPlotImpl(String subjectId, 
 			double plotBasalAreaM2Ha, 
 			double stemDensityHa, 
 			String ecologicalType, 
-			SlopeMRNFClass slopeClass,
+			QcSlopeClass slopeClass,
 			int year0,
 			int year1,
 			int regionCode,
@@ -41,7 +41,7 @@ class MeloThinnerPlotImpl implements MeloThinnerPlot, LandOwnershipProvider {
 		this.aac = aac;
 		this.pred = pred;
 		this.meanPA = meanPA;
-		this.region = QuebecForestRegion.getRegion(regionCode);
+		this.region = QcForestRegion.getRegion(regionCode);
 		this.ownership = LandOwnership.getLandOwnership(ownershipCode);
 	}
 		
@@ -58,7 +58,7 @@ class MeloThinnerPlotImpl implements MeloThinnerPlot, LandOwnershipProvider {
 	public double getNumberOfStemsHa() {return stemDensityHa;}
 
 	@Override
-	public SlopeMRNFClass getSlopeClass() {return slopeClass;}
+	public QcSlopeClass getSlopeClass() {return slopeClass;}
 
 	@Override
 	public String getEcologicalType() {return ecologicalType;}
@@ -76,7 +76,7 @@ class MeloThinnerPlotImpl implements MeloThinnerPlot, LandOwnershipProvider {
 	int getYear1() {return year1;}
 
 	@Override
-	public QuebecForestRegion getQuebecForestRegion() {return region;}
+	public QcForestRegion getQuebecForestRegion() {return region;}
 
 	@Override
 	public LandOwnership getLandOwnership() {return ownership;}

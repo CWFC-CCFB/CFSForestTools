@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.SlopeMRNFClassProvider.SlopeMRNFClass;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassProvider.QcSlopeClass;
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
@@ -74,7 +74,7 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	
 	private boolean quadratureEnabled = true;
 	
-	private Map<SlopeMRNFClass, Matrix> slopeClassDummy;
+	private Map<QcSlopeClass, Matrix> slopeClassDummy;
 	private Map<String, Matrix> dynamicTypeDummy;
 	private final GaussHermiteQuadrature ghq = new GaussHermiteQuadrature(NumberOfPoints.N5);
 	private final EmbeddedFunction embeddedFunction;
@@ -238,11 +238,11 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	}
 	
 	
-	private Matrix getDummySlopeClass(SlopeMRNFClass slopeClass) {
+	private Matrix getDummySlopeClass(QcSlopeClass slopeClass) {
 		if (slopeClassDummy == null) {
-			slopeClassDummy = new HashMap<SlopeMRNFClass, Matrix>();
+			slopeClassDummy = new HashMap<QcSlopeClass, Matrix>();
 			Matrix dummy;
-			for (SlopeMRNFClass sc : SlopeMRNFClass.values()) {
+			for (QcSlopeClass sc : QcSlopeClass.values()) {
 				dummy = new Matrix(1,5);
 				if (sc.ordinal() > 0) {
 					dummy.m_afData[0][sc.ordinal() - 1] = 1d;

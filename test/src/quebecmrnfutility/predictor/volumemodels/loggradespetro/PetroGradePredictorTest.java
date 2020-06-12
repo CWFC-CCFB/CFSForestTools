@@ -6,9 +6,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeSpecies;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.MSCRPriorityProvider.MSCRPriority;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.VigorClassProvider.VigorClass;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcMarkingPriorityProvider.QcMarkingPriority;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcVigorClassProvider.QcVigorClass;
 import repicea.math.Matrix;
 import repicea.serial.xml.XmlMarshallException;
 import repicea.stats.estimates.MonteCarloEstimate;
@@ -46,7 +46,7 @@ public class PetroGradePredictorTest {
 	@Test
 	public void testWithMSCR() throws FileNotFoundException, XmlMarshallException {
 			
-		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, MSCRPriority.C);
+		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, QcMarkingPriority.C);
 		
 		PetroGradePredictor stoPredictor = new PetroGradePredictor(true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
@@ -73,7 +73,7 @@ public class PetroGradePredictorTest {
 	public void testWithABCD() throws FileNotFoundException, XmlMarshallException {
 		
 		
-		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, ABCDQuality.B);
+		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, QcTreeQuality.B);
 		
 		PetroGradePredictor stoPredictor = new PetroGradePredictor(true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
@@ -100,7 +100,7 @@ public class PetroGradePredictorTest {
 	@Test
 	public void testWithVigor() throws FileNotFoundException, XmlMarshallException {
 		
-		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, VigorClass.V2);
+		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, QcVigorClass.V2);
 		
 		PetroGradePredictor stoPredictor = new PetroGradePredictor(true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();

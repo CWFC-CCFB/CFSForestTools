@@ -4,12 +4,12 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 
 	final PetroGradeSpecies species;
 	final double dbhCm;
-	VigorClass vigorClass;
-	MSCRPriority mscrPriority;
-	ABCDQuality abcdQuality;
+	QcVigorClass vigorClass;
+	QcMarkingPriority mscrPriority;
+	QcTreeQuality abcdQuality;
 	
 	
-	private PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, VigorClass vigorClass, MSCRPriority mscrPriority, ABCDQuality abcdQuality) {
+	private PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, QcVigorClass vigorClass, QcMarkingPriority mscrPriority, QcTreeQuality abcdQuality) {
 		this.species = species;
 		this.dbhCm = dbhCm;
 		this.vigorClass = vigorClass;
@@ -22,15 +22,15 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 		this(species, dbhCm, null, null, null);
 	}
 
-	PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, VigorClass vigorClass) {
+	PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, QcVigorClass vigorClass) {
 		this(species, dbhCm, vigorClass, null, null);
 	}
 
-	PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, MSCRPriority mscrPriority) {
+	PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, QcMarkingPriority mscrPriority) {
 		this(species, dbhCm, null, mscrPriority, null);
 	}
 
-	PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, ABCDQuality abcdQuality) {
+	PetroLoggableTreeImpl(PetroGradeSpecies species, double dbhCm, QcTreeQuality abcdQuality) {
 		this(species, dbhCm, null, null, abcdQuality);
 	}
 	
@@ -56,17 +56,17 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 	}
 
 	@Override
-	public ABCDQuality getABCDQuality() {
+	public QcTreeQuality getABCDQuality() {
 		return abcdQuality;
 	}
 
 	@Override
-	public MSCRPriority getMSCRPriority() {
+	public QcMarkingPriority getMSCRPriority() {
 		return mscrPriority;
 	}
 
 	@Override
-	public VigorClass getVigorClass() {
+	public QcVigorClass getVigorClass() {
 		return vigorClass;
 	}
 

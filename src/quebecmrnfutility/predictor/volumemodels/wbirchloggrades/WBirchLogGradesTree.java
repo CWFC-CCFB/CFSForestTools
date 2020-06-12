@@ -20,7 +20,7 @@ package quebecmrnfutility.predictor.volumemodels.wbirchloggrades;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.ABCDQualityProvider;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
@@ -29,7 +29,7 @@ import repicea.util.REpiceaTranslator.TextableEnum;
  * This interface ensures the tree object is compatible with the tree logger WBirchProdVol.
  * @author Mathieu Fortin - September 2013
  */
-public interface WBirchLogGradesTree extends DbhCmProvider, ABCDQualityProvider, MonteCarloSimulationCompliantObject {
+public interface WBirchLogGradesTree extends DbhCmProvider, QcTreeQualityProvider, MonteCarloSimulationCompliantObject {
 	
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}

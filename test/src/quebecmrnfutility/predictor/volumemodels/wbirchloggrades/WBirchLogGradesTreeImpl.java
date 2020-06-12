@@ -7,7 +7,7 @@ class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 
 	private final int treeID;
 	private final double dbhCm;
-	private ABCDQuality quality;
+	private QcTreeQuality quality;
 	private final WBirchLogGradesStandImpl stand;
 	private Matrix predRef;
 	private double h20Obs;
@@ -27,7 +27,7 @@ class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 		if (qualityString.equals("NC")) {
 			quality = null;
 		} else {
-			quality = ABCDQuality.valueOf(qualityString);
+			quality = QcTreeQuality.valueOf(qualityString);
 		}
 		this.dbhCm = dbhCm;
 		this.stand = stand;
@@ -61,7 +61,7 @@ class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 	public double getDbhCm() {return dbhCm;}
 
 	@Override
-	public ABCDQuality getABCDQuality() {return quality;}
+	public QcTreeQuality getABCDQuality() {return quality;}
 
 	@Override
 	public String getSubjectId() {return ((Integer) treeID).toString();}

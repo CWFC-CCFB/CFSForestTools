@@ -6,14 +6,14 @@ public class PetroGradeTreeImpl implements PetroGradeTree {
 
 	final PetroGradeSpecies species;
 	final double dbhCm;
-	VigorClass vigorClass;
-	MSCRPriority mscrPriority;
-	ABCDQuality abcdQuality;
+	QcVigorClass vigorClass;
+	QcMarkingPriority mscrPriority;
+	QcTreeQuality abcdQuality;
 	int realization;
 	private Matrix realizedValues;
 	
 	
-	private PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, VigorClass vigorClass, MSCRPriority mscrPriority, ABCDQuality abcdQuality) {
+	private PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, QcVigorClass vigorClass, QcMarkingPriority mscrPriority, QcTreeQuality abcdQuality) {
 		this.species = species;
 		this.dbhCm = dbhCm;
 		this.vigorClass = vigorClass;
@@ -34,15 +34,15 @@ public class PetroGradeTreeImpl implements PetroGradeTree {
 		this(species, dbhCm, null, null, null);
 	}
 
-	PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, VigorClass vigorClass) {
+	PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, QcVigorClass vigorClass) {
 		this(species, dbhCm, vigorClass, null, null);
 	}
 
-	PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, MSCRPriority mscrPriority) {
+	PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, QcMarkingPriority mscrPriority) {
 		this(species, dbhCm, null, mscrPriority, null);
 	}
 
-	PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, ABCDQuality abcdQuality) {
+	PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, QcTreeQuality abcdQuality) {
 		this(species, dbhCm, null, null, abcdQuality);
 	}
 	
@@ -58,17 +58,17 @@ public class PetroGradeTreeImpl implements PetroGradeTree {
 	}
 
 	@Override
-	public ABCDQuality getABCDQuality() {
+	public QcTreeQuality getABCDQuality() {
 		return abcdQuality;
 	}
 
 	@Override
-	public MSCRPriority getMSCRPriority() {
+	public QcMarkingPriority getMSCRPriority() {
 		return mscrPriority;
 	}
 
 	@Override
-	public VigorClass getVigorClass() {
+	public QcVigorClass getVigorClass() {
 		return vigorClass;
 	}
 

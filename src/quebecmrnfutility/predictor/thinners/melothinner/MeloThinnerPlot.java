@@ -23,8 +23,8 @@ import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.CruiseLineProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.QuebecForestRegionProvider;
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.SlopeMRNFClassProvider;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcForestRegionProvider;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassProvider;
 import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 
 /**
@@ -35,9 +35,9 @@ import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 public interface MeloThinnerPlot extends MonteCarloSimulationCompliantObject, 
 											BasalAreaM2HaProvider, 
 											StemDensityHaProvider,
-											SlopeMRNFClassProvider,
+											QcSlopeClassProvider,
 											EcologicalTypeProvider,
-											QuebecForestRegionProvider,
+											QcForestRegionProvider,
 											CruiseLineProvider {
 
 	@Override
