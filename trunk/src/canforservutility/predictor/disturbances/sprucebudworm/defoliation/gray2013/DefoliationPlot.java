@@ -22,8 +22,8 @@ package canforservutility.predictor.disturbances.sprucebudworm.defoliation.gray2
 
 import biosimclient.BioSimPlot;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.DateYrProvider;
-import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
+import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
+import repicea.simulation.covariateproviders.plotlevel.GeographicalCoordinatesProvider;
 
 /**
  * This interface ensures the plot provides the explanatory variables for using 

@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import repicea.io.javacsv.CSVReader;
-import repicea.simulation.covariateproviders.standlevel.LandOwnershipProvider.LandOwnership;
-import repicea.simulation.covariateproviders.standlevel.QuebecForestRegionProvider.QuebecForestRegion;
+import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider.LandOwnership;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QuebecForestRegionProvider.QuebecForestRegion;
 import repicea.util.ObjectUtility;
 
 class MeloThinnerAACProvider {

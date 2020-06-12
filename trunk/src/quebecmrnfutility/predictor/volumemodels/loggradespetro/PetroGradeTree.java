@@ -21,14 +21,14 @@ package quebecmrnfutility.predictor.volumemodels.loggradespetro;
 import java.util.HashSet;
 import java.util.Set;
 
+import quebecmrnfutility.simulation.covariateproviders.treelevel.ABCDQualityProvider;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.MSCRPriorityProvider;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.VigorClassProvider;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.MSCRPriorityProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.VigorClassProvider;
 
 /**
  * This interface makes sure the tree instance is compatible with the PetroGradePredictor class.

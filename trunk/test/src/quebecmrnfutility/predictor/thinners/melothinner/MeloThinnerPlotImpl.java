@@ -1,6 +1,8 @@
 package quebecmrnfutility.predictor.thinners.melothinner;
 
-import repicea.simulation.covariateproviders.standlevel.LandOwnershipProvider;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QuebecForestRegionProvider.QuebecForestRegion;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.SlopeMRNFClassProvider.SlopeMRNFClass;
+import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider;
 
 class MeloThinnerPlotImpl implements MeloThinnerPlot, LandOwnershipProvider {
 

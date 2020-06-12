@@ -21,13 +21,13 @@ package quebecmrnfutility.predictor.volumemodels.loggradespetro;
 import java.security.InvalidParameterException;
 
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradePredictor.PetroGradePredictorVersion;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.MSCRPriorityProvider.MSCRPriority;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.VigorClassProvider.VigorClass;
 import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
-import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
-import repicea.simulation.covariateproviders.treelevel.MSCRPriorityProvider.MSCRPriority;
-import repicea.simulation.covariateproviders.treelevel.VigorClassProvider.VigorClass;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.ChiSquaredDistribution;
 

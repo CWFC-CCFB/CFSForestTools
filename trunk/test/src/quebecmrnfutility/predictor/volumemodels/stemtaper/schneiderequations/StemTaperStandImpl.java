@@ -27,8 +27,8 @@ class StemTaperStandImpl implements StemTaperStand {
 	}
 
 	@Override
-	public String getDrainageClass() {
-		return "3";
+	public QcDrainageClass getDrainageClass() {
+		return QcDrainageClass.C3;
 	}
 
 	@Override

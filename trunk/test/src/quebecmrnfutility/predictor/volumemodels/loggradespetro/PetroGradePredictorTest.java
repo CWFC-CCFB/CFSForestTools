@@ -6,11 +6,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeSpecies;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.MSCRPriorityProvider.MSCRPriority;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.VigorClassProvider.VigorClass;
 import repicea.math.Matrix;
 import repicea.serial.xml.XmlMarshallException;
-import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
-import repicea.simulation.covariateproviders.treelevel.MSCRPriorityProvider.MSCRPriority;
-import repicea.simulation.covariateproviders.treelevel.VigorClassProvider.VigorClass;
 import repicea.stats.estimates.MonteCarloEstimate;
 
 public class PetroGradePredictorTest {

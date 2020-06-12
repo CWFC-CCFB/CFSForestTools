@@ -22,7 +22,7 @@ package quebecmrnfutility.biosim;
 
 import java.io.Serializable;
 
-import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
+import repicea.simulation.covariateproviders.plotlevel.GeographicalCoordinatesProvider;
 
 @Deprecated
 public class PlotLocation implements Serializable, GeographicalCoordinatesProvider {

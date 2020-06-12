@@ -20,7 +20,7 @@ package quebecmrnfutility.predictor.volumemodels.wbirchloggrades;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.ElevationMProvider;
+import repicea.simulation.covariateproviders.plotlevel.ElevationMProvider;
 
 /**
  * This interface ensures the stand object is compatible with the tree logger WBirchProdVol.

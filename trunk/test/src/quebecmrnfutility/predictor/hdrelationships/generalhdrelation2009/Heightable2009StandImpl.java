@@ -3,7 +3,7 @@ package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import repicea.simulation.covariateproviders.standlevel.MeanQuadraticDiameterCmProvider;
+import repicea.simulation.covariateproviders.plotlevel.MeanQuadraticDiameterCmProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
 public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadraticDiameterCmProvider {
@@ -64,10 +64,10 @@ public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadrat
 		return ecoRegion;
 	}
 
-	@Override
-	public String getEcologicalType() {
-		return ecoType;
-	}
+//	@Override
+//	public String getEcologicalType() {
+//		return ecoType;
+//	}
 
 	@Override
 	public boolean isInterventionResult() {
@@ -114,8 +114,8 @@ public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadrat
 
 
 	@Override
-	public String getDrainageClass() {
-		return "3";			// mesic for the sake of simplicity
+	public DrainageGroup getDrainageGroup() {
+		return DrainageGroup.Mesic;			// mesic for the sake of simplicity
 	}
 
 

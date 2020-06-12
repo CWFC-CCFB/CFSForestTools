@@ -26,14 +26,14 @@ package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014;
 
 import java.util.Collection;
 
-import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
-import repicea.simulation.covariateproviders.standlevel.EcologicalRegionProvider;
-import repicea.simulation.covariateproviders.standlevel.EcologicalTypeProvider;
-import repicea.simulation.covariateproviders.standlevel.ElevationMProvider;
-import repicea.simulation.covariateproviders.standlevel.InterventionResultProvider;
-import repicea.simulation.covariateproviders.standlevel.MeanAnnualPrecipitationMmProvider;
-import repicea.simulation.covariateproviders.standlevel.MeanAnnualTemperatureCProvider;
-import repicea.simulation.covariateproviders.standlevel.SpruceBudwormDefoliatedProvider;
+import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
+import repicea.simulation.covariateproviders.plotlevel.EcologicalRegionProvider;
+import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
+import repicea.simulation.covariateproviders.plotlevel.ElevationMProvider;
+import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
+import repicea.simulation.covariateproviders.plotlevel.MeanAnnualPrecipitationMmProvider;
+import repicea.simulation.covariateproviders.plotlevel.MeanAnnualTemperatureCProvider;
+import repicea.simulation.covariateproviders.plotlevel.SpruceBudwormDefoliatedProvider;
 import repicea.simulation.hdrelationships.HDRelationshipStand;
 
 

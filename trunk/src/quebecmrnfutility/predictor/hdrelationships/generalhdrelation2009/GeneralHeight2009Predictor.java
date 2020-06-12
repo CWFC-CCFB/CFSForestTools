@@ -29,13 +29,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import quebecmrnfutility.predictor.QuebecGeneralSettings;
-import quebecmrnfutility.predictor.QuebecGeneralSettings.DrainageGroup;
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
+import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.hdrelationships.HDRelationshipPredictor;
@@ -135,6 +134,16 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		DUMMY_ECO_REGION.put("6m", dummy);	// region S_EST
 	}
 	
+	private final static Map<DrainageGroup, Matrix> DUMMY_DRAINAGE_GROUP = new HashMap<DrainageGroup, Matrix>();
+	static {
+		for (DrainageGroup dg : DrainageGroup.values()) {
+			Matrix mat = new Matrix(1,4);
+			mat.m_afData[0][dg.ordinal()] = 1d;
+			DUMMY_DRAINAGE_GROUP.put(dg, mat);
+		}
+	}
+	
+	
 	/**
 	 * General constructor for all combinations of uncertainty sources.
 	 * @param isVariabilityEnabled a boolean that enables the stochastic mode
@@ -191,12 +200,13 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
 		double averageTemp = stand.getMeanAnnualTemperatureC();
-		DrainageGroup drainageGroup = getDrainageGroup(stand);
+//		DrainageGroup drainageGroup = getDrainageGroup(stand);
+		DrainageGroup drainageGroup = stand.getDrainageGroup();
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();
 		boolean isDefoliated = stand.isSBWDefoliated();
 		
-		Matrix dummyDrainageClass = drainageGroup.getDrainageDummy();
+		Matrix dummyDrainageClass = DUMMY_DRAINAGE_GROUP.get(drainageGroup);
 		Matrix dummyEcoRegion = GeneralHeight2009Predictor.DUMMY_ECO_REGION.get(ecoRegion);
 		Matrix dummyDisturbance;
 		if (isInterventionResult) {
@@ -250,18 +260,18 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	}
 	
 	
-	private DrainageGroup getDrainageGroup(Heightable2009Stand stand) {
-		DrainageGroup drainageGroup = QuebecGeneralSettings.DRAINAGE_CLASS_LIST.get(stand.getDrainageClass());
-		if (drainageGroup == null) {
-			if (stand.getEcologicalType() != null && stand.getEcologicalType().length() >= 4) {	// else if the ecological type is available then provide a typical class that corresponds to the grouping XERIC MESIC SUBHYDRIC HYDRIC
-				String environmentType = stand.getEcologicalType().substring(3, 4);
-				if (!environmentType.isEmpty()) {
-					drainageGroup = QuebecGeneralSettings.ENVIRONMENT_TYPE.get(environmentType);	
-				} 
-			}
-		} 
-		return drainageGroup; 
-	}
+//	private DrainageGroup getDrainageGroup(Heightable2009Stand stand) {
+//		DrainageGroup drainageGroup = QuebecGeneralSettings.DRAINAGE_CLASS_LIST.get(stand.getDrainageClass());
+//		if (drainageGroup == null) {
+//			if (stand.getEcologicalType() != null && stand.getEcologicalType().length() >= 4) {	// else if the ecological type is available then provide a typical class that corresponds to the grouping XERIC MESIC SUBHYDRIC HYDRIC
+//				String environmentType = stand.getEcologicalType().substring(3, 4);
+//				if (!environmentType.isEmpty()) {
+//					drainageGroup = QuebecGeneralSettings.ENVIRONMENT_TYPE.get(environmentType);	
+//				} 
+//			}
+//		} 
+//		return drainageGroup; 
+//	}
 	
 	/**
 	 * For testing only

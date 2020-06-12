@@ -37,7 +37,7 @@ import biosimclient.BioSimServerException;
 import biosimclient.Observation;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaBinaryEventPredictor;
-import repicea.simulation.covariateproviders.standlevel.SprayedAgainstDefoliatorProvider;
+import repicea.simulation.covariateproviders.plotlevel.SprayedAgainstDefoliatorProvider;
 import repicea.stats.estimates.SimpleEstimate;
 
 /**

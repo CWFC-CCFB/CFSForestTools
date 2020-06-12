@@ -32,6 +32,7 @@ import java.util.Map;
 
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcDrainageClassProvider.QcDrainageClass;
 import repicea.math.Matrix;
 
 /**
@@ -324,33 +325,33 @@ class StemTaperEquationSettings implements Serializable {
 		POTENTIAL_VEGETATION_GROUP_DUMMY_MAP.put(StemTaperTreeSpecies.PIG, oMap);
 	}
 	
-	public static final Map<StemTaperTreeSpecies, Map<String, Matrix>> DRAINAGE_GROUP_DUMMY_MAP = new HashMap<StemTaperTreeSpecies, Map<String, Matrix>>();
+	public static final Map<StemTaperTreeSpecies, Map<QcDrainageClass, Matrix>> DRAINAGE_GROUP_DUMMY_MAP = new HashMap<StemTaperTreeSpecies, Map<QcDrainageClass, Matrix>>();
 	static {
-		Map<String, Matrix> oMap = new HashMap<String, Matrix>();
+		Map<QcDrainageClass, Matrix> oMap = new HashMap<QcDrainageClass, Matrix>();
 		Matrix oMat = new Matrix(1,1);
-		for (String drainageClass : QuebecGeneralSettings.DRAINAGE_CLASS_LIST.keySet()) {
+		for (QcDrainageClass drainageClass : QcDrainageClass.values()) {
 			oMap.put(drainageClass, oMat);
 		}		
 		oMat = new Matrix(1,1);
 		oMat.m_afData[0][0] = 1d;
-		oMap.put("4", oMat);
-		oMap.put("5", oMat);
+		oMap.put(QcDrainageClass.C4, oMat);
+		oMap.put(QcDrainageClass.C5, oMat);
 		
-		oMap.remove("6");
+		oMap.remove(QcDrainageClass.C6);
 		DRAINAGE_GROUP_DUMMY_MAP.put(StemTaperTreeSpecies.EPN, oMap);
 
-		oMap = new HashMap<String, Matrix>();
+		oMap = new HashMap<QcDrainageClass, Matrix>();
 		oMat = new Matrix(1,1);
-		for (String drainageClass : QuebecGeneralSettings.DRAINAGE_CLASS_LIST.keySet()) {
+		for (QcDrainageClass drainageClass : QcDrainageClass.values()) {
 			oMap.put(drainageClass, oMat);
 		}
 		oMat = new Matrix(1,1);
 		oMat.m_afData[0][0] = 1d;
-		oMap.put("3", oMat);
-		oMap.put("4", oMat);
+		oMap.put(QcDrainageClass.C3, oMat);
+		oMap.put(QcDrainageClass.C4, oMat);
 		
-		oMap.remove("5");
-		oMap.remove("6");
+		oMap.remove(QcDrainageClass.C5);
+		oMap.remove(QcDrainageClass.C6);
 		DRAINAGE_GROUP_DUMMY_MAP.put(StemTaperTreeSpecies.SAB, oMap);
 
 	}

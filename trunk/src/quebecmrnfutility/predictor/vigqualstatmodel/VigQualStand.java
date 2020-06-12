@@ -26,8 +26,8 @@ package quebecmrnfutility.predictor.vigqualstatmodel;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
-import repicea.simulation.covariateproviders.standlevel.StemDensityHaProvider;
+import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
+import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 
 /**
  * The VigQualStand interface ensures the compatibility of an instance with 

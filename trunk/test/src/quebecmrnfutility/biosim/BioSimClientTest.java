@@ -12,7 +12,7 @@ import quebecmrnfutility.biosim.BioSimClient.BioSimVersion;
 import quebecmrnfutility.biosim.BioSimClient2.Period;
 import quebecmrnfutility.biosim.ClimateVariables.Variable;
 import repicea.net.server.BasicClient.BasicClientException;
-import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
+import repicea.simulation.covariateproviders.plotlevel.GeographicalCoordinatesProvider;
 import repicea.stats.StatisticalUtility;
 
 @Deprecated

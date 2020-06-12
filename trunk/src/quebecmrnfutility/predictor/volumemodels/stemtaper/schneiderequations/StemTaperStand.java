@@ -24,21 +24,21 @@
  */
 package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
 
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcDrainageClassProvider;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
-import repicea.simulation.covariateproviders.standlevel.DrainageClassProvider;
-import repicea.simulation.covariateproviders.standlevel.EcologicalRegionProvider;
-import repicea.simulation.covariateproviders.standlevel.EcologicalTypeProvider;
-import repicea.simulation.covariateproviders.standlevel.ElevationMProvider;
-import repicea.simulation.covariateproviders.standlevel.StemDensityHaProvider;
+import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
+import repicea.simulation.covariateproviders.plotlevel.EcologicalRegionProvider;
+import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
+import repicea.simulation.covariateproviders.plotlevel.ElevationMProvider;
+import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 
 public interface StemTaperStand extends MonteCarloSimulationCompliantObject,
 										BasalAreaM2HaProvider,
 										StemDensityHaProvider,
 										EcologicalRegionProvider,
 										EcologicalTypeProvider,
-										DrainageClassProvider,
+										QcDrainageClassProvider,
 										ElevationMProvider {
 	
 	@Override

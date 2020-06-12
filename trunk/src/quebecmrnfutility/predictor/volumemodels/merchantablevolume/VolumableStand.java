@@ -26,7 +26,7 @@ package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.CruiseLineProvider;
+import repicea.simulation.covariateproviders.plotlevel.CruiseLineProvider;
 
 /**
  * This interface ensures the compatibility with the general volume model.

@@ -21,18 +21,18 @@ package quebecmrnfutility.predictor.artemis2009;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.AreaHaProvider;
-import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
-import repicea.simulation.covariateproviders.standlevel.DateYrProvider;
-import repicea.simulation.covariateproviders.standlevel.ElevationMProvider;
-import repicea.simulation.covariateproviders.standlevel.GeographicalCoordinatesProvider;
-import repicea.simulation.covariateproviders.standlevel.GrowthStepLengthYrProvider;
-import repicea.simulation.covariateproviders.standlevel.InterventionResultProvider;
-import repicea.simulation.covariateproviders.standlevel.MeanAnnualPrecipitationMmProvider;
-import repicea.simulation.covariateproviders.standlevel.MeanAnnualTemperatureCProvider;
-import repicea.simulation.covariateproviders.standlevel.MeanQuadraticDiameterCmProvider;
-import repicea.simulation.covariateproviders.standlevel.PotentialVegetationProvider;
-import repicea.simulation.covariateproviders.standlevel.StemDensityHaProvider;
+import repicea.simulation.covariateproviders.plotlevel.AreaHaProvider;
+import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
+import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
+import repicea.simulation.covariateproviders.plotlevel.ElevationMProvider;
+import repicea.simulation.covariateproviders.plotlevel.GeographicalCoordinatesProvider;
+import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
+import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
+import repicea.simulation.covariateproviders.plotlevel.MeanAnnualPrecipitationMmProvider;
+import repicea.simulation.covariateproviders.plotlevel.MeanAnnualTemperatureCProvider;
+import repicea.simulation.covariateproviders.plotlevel.MeanQuadraticDiameterCmProvider;
+import repicea.simulation.covariateproviders.plotlevel.PotentialVegetationProvider;
+import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 
 public interface Artemis2009CompatibleStand extends PotentialVegetationProvider, 
 													InterventionResultProvider, 
