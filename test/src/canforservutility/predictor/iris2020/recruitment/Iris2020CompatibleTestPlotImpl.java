@@ -58,7 +58,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	private final DisturbanceType pastDist;
 	private final DisturbanceType upcomingDist;
 	private final OriginType origin;
-	private final boolean isOrganicSoil;
+	private final DrainageGroup drainageGroup;
 	private final SoilTexture soilTexture;
 	private final double pred;
 	private final String id;
@@ -80,7 +80,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 			DisturbanceType pastDist,
 			DisturbanceType upcomingDist,
 			OriginType origin,
-			boolean isOrganicSoil,
+			DrainageGroup drainageClass,
 			SoilTexture soilTexture,
 			Iris2020Species species,
 			double pred, 
@@ -100,7 +100,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 		this.pastDist = pastDist;
 		this.upcomingDist = upcomingDist;
 		this.origin = origin;
-		this.isOrganicSoil = isOrganicSoil;
+		this.drainageGroup = drainageClass;
 		this.soilTexture = soilTexture;
 		this.species = species;
 		this.pred = pred;
@@ -154,7 +154,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	public SoilDepth getSoilDepth() {return soilDepth;}
 
 	@Override
-	public boolean isOrganicSoil() {return isOrganicSoil;}
+	public DrainageGroup getDrainageGroup() {return drainageGroup;}
 
 	@Override
 	public DisturbanceType getPastDisturbance() {return pastDist;}

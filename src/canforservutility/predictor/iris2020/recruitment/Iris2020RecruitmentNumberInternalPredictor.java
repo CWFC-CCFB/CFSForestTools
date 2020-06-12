@@ -119,9 +119,9 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				index++;
 				break;
 			case 7:				
-				if (plot.isOrganicSoil()) {
+//				if (plot.isOrganicSoil()) {
 					oXVector.m_afData[0][index] = 1d;
-				}
+//				}
 				index++;
 				break;
 			case 8:
@@ -164,15 +164,15 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				index ++;
 				break;
 			case 22:
-				if (pastDist == DisturbanceType.Windthrow) {
+//				if (pastDist == DisturbanceType.Windthrow) {
 					oXVector.m_afData[0][index] = 1d;
-				}
+//				}
 				index ++;
 				break;
 			case 23:
-				if (pastDist == DisturbanceType.Outbreak) {
+//				if (pastDist == DisturbanceType.Outbreak) {
 					oXVector.m_afData[0][index] = 1d;
-				}
+//				}
 				index ++;
 				break;
 			case 24:
@@ -182,9 +182,9 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				index ++;
 				break;
 			case 25:
-				if (pastDist == DisturbanceType.Decline) {
+//				if (pastDist == DisturbanceType.Decline) {
 					oXVector.m_afData[0][index] = 1d;
-				}
+//				}
 				index ++;
 				break;
 			case 26:
@@ -218,15 +218,15 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				index ++;
 				break;
 			case 32:
-				if (upcomingDist == DisturbanceType.Windthrow) {
+//				if (upcomingDist == DisturbanceType.Windthrow) {
 					oXVector.m_afData[0][index] = 1d;
-				}
+//				}
 				index ++;
 				break;
 			case 33:
-				if (upcomingDist == DisturbanceType.Outbreak) {
+//				if (upcomingDist == DisturbanceType.Outbreak) {
 					oXVector.m_afData[0][index] = 1d;
-				}
+//				}
 				index ++;
 				break;
 			case 34:
@@ -236,9 +236,9 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				index ++;
 				break;
 			case 35:
-				if (upcomingDist == DisturbanceType.Decline) {
+//				if (upcomingDist == DisturbanceType.Decline) {
 					oXVector.m_afData[0][index] = 1d;
-				}
+//				}
 				index ++;
 				break;
 
