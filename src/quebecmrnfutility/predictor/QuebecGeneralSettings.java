@@ -29,6 +29,7 @@ import java.util.Set;
 
 import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcForestRegionProvider.QcForestRegion;
 import repicea.io.javacsv.CSVReader;
+import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.util.ObjectUtility;
 
 /**
@@ -300,19 +301,19 @@ public class QuebecGeneralSettings {
 //		DRAINAGE_CLASS_LIST.put("6", DrainageGroup.HYDRIC);
 //	}
 
-//	public static final Map<String, DrainageGroup> ENVIRONMENT_TYPE = new HashMap<String, DrainageGroup>();
-//	static {
-//		ENVIRONMENT_TYPE.put("0", DrainageGroup.XERIC);
-//		ENVIRONMENT_TYPE.put("1", DrainageGroup.MESIC);
-//		ENVIRONMENT_TYPE.put("2", DrainageGroup.MESIC);
-//		ENVIRONMENT_TYPE.put("3", DrainageGroup.MESIC);
-//		ENVIRONMENT_TYPE.put("4", DrainageGroup.SUBHYDRIC);
-//		ENVIRONMENT_TYPE.put("5", DrainageGroup.SUBHYDRIC);
-//		ENVIRONMENT_TYPE.put("6", DrainageGroup.SUBHYDRIC);
-//		ENVIRONMENT_TYPE.put("7", DrainageGroup.SUBHYDRIC);
-//		ENVIRONMENT_TYPE.put("8", DrainageGroup.SUBHYDRIC);
-//		ENVIRONMENT_TYPE.put("9", DrainageGroup.SUBHYDRIC);
-//	}
+	public static final Map<String, DrainageGroup> ENVIRONMENT_TYPE = new HashMap<String, DrainageGroup>();
+	static {
+		ENVIRONMENT_TYPE.put("0", DrainageGroup.Xeric);
+		ENVIRONMENT_TYPE.put("1", DrainageGroup.Mesic);
+		ENVIRONMENT_TYPE.put("2", DrainageGroup.Mesic);
+		ENVIRONMENT_TYPE.put("3", DrainageGroup.Mesic);
+		ENVIRONMENT_TYPE.put("4", DrainageGroup.Subhydric);
+		ENVIRONMENT_TYPE.put("5", DrainageGroup.Subhydric);
+		ENVIRONMENT_TYPE.put("6", DrainageGroup.Subhydric);
+		ENVIRONMENT_TYPE.put("7", DrainageGroup.Hydric);
+		ENVIRONMENT_TYPE.put("8", DrainageGroup.Hydric);
+		ENVIRONMENT_TYPE.put("9", DrainageGroup.Hydric);
+	}
 
 	
 	

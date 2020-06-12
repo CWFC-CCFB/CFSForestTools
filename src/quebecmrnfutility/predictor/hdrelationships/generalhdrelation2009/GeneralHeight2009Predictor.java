@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
@@ -200,8 +201,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
 		double averageTemp = stand.getMeanAnnualTemperatureC();
-//		DrainageGroup drainageGroup = getDrainageGroup(stand);
-		DrainageGroup drainageGroup = stand.getDrainageGroup();
+		DrainageGroup drainageGroup = getDrainageGroup(stand);
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();
 		boolean isDefoliated = stand.isSBWDefoliated();
@@ -260,18 +260,18 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	}
 	
 	
-//	private DrainageGroup getDrainageGroup(Heightable2009Stand stand) {
-//		DrainageGroup drainageGroup = QuebecGeneralSettings.DRAINAGE_CLASS_LIST.get(stand.getDrainageClass());
-//		if (drainageGroup == null) {
-//			if (stand.getEcologicalType() != null && stand.getEcologicalType().length() >= 4) {	// else if the ecological type is available then provide a typical class that corresponds to the grouping XERIC MESIC SUBHYDRIC HYDRIC
-//				String environmentType = stand.getEcologicalType().substring(3, 4);
-//				if (!environmentType.isEmpty()) {
-//					drainageGroup = QuebecGeneralSettings.ENVIRONMENT_TYPE.get(environmentType);	
-//				} 
-//			}
-//		} 
-//		return drainageGroup; 
-//	}
+	private DrainageGroup getDrainageGroup(Heightable2009Stand stand) {
+		DrainageGroup drainageGroup = stand.getDrainageGroup();
+		if (drainageGroup == null) {
+			if (stand.getEcologicalType() != null && stand.getEcologicalType().length() >= 4) {	// else if the ecological type is available then provide a typical class that corresponds to the grouping XERIC MESIC SUBHYDRIC HYDRIC
+				String environmentType = stand.getEcologicalType().substring(3, 4);
+				if (!environmentType.isEmpty()) {
+					drainageGroup = QuebecGeneralSettings.ENVIRONMENT_TYPE.get(environmentType);	
+				} 
+			}
+		} 
+		return drainageGroup; 
+	}
 	
 	/**
 	 * For testing only
