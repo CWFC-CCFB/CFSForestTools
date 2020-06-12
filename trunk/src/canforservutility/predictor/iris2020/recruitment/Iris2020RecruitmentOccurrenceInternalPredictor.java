@@ -60,7 +60,7 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 		EffectsNotToBeConsidered.add(35);
 	}
 	
-	private static Map<DrainageGroup, Matrix> DrainageGroupDummyMatrices = new HashMap<DrainageGroup, Matrix>();
+	static Map<DrainageGroup, Matrix> DrainageGroupDummyMatrices = new HashMap<DrainageGroup, Matrix>();
 	static {
 		Matrix oMat = new Matrix(1,3);
 		DrainageGroupDummyMatrices.put(DrainageGroup.Mesic, oMat);
