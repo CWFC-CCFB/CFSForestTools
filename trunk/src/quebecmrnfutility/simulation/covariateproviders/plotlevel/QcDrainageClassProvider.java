@@ -70,7 +70,7 @@ public interface QcDrainageClassProvider extends DrainageGroupProvider {
 		 * @param drainageStr
 		 * @return may return null if the string is not eligible.
 		 */
-		public QcDrainageClass getDrainageClassFromString(String drainageStr) {
+		public static QcDrainageClass getDrainageClassFromString(String drainageStr) {
 			return getDrainageMap().get(drainageStr);
 		}
 		
