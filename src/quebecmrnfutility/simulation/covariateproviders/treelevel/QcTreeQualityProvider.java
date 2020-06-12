@@ -24,25 +24,25 @@ package quebecmrnfutility.simulation.covariateproviders.treelevel;
 import repicea.math.Matrix;
 
 /**
- * This interface ensures the tree instance can provide its harvest priority,
- * i.e. M, S, C, R.
+ * This interface ensures the tree instance can provide its quality
+ * class, i.e. A, B, C, D.
  * @author Mathieu Fortin - November 2012
  */
-public interface MSCRPriorityProvider {
+public interface QcTreeQualityProvider {
 
-	/**
-	 * Harvest priorities MSCR.
+	/** 
+	 * Tree log classification ABCD
 	 * @author Mathieu Fortin - May 2010
 	 */
-	public static enum MSCRPriority {
+	public static enum QcTreeQuality {
+		A,
+		B,
 		C,
-		M,
-		R,
-		S;
+		D;
 		
 		private Matrix dummy;
 		
-		MSCRPriority() {
+		QcTreeQuality() {
 			dummy = new Matrix(1,4);
 			dummy.m_afData[0][this.ordinal()] = 1d;
 		}
@@ -51,9 +51,10 @@ public interface MSCRPriorityProvider {
 	}
 
 	/**
-	 * This method returns the MSCR harvest priority according the current classification in Qu�bec.
-	 * @return a MSCRPriority enum variable
+	 * This method returns the quality class of the stem according to the ABCD classification.
+	 * @return an ABCDQuality enum variable
 	 */
-	public MSCRPriority getMSCRPriority();
+	public QcTreeQuality getABCDQuality();
 
+	
 }
