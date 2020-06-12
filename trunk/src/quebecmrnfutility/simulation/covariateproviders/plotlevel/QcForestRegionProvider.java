@@ -24,9 +24,9 @@ package quebecmrnfutility.simulation.covariateproviders.plotlevel;
 import java.util.HashMap;
 import java.util.Map;
 
-public interface QuebecForestRegionProvider {
+public interface QcForestRegionProvider {
 
-	public static enum QuebecForestRegion {
+	public static enum QcForestRegion {
 		BasStLaurentGaspesie,
 		SaguenayLacSaintJean,
 		Quebec,
@@ -37,17 +37,17 @@ public interface QuebecForestRegionProvider {
 		AbitibiTemiscamingue,
 		CoteNord;
 		
-		private static Map<Integer, QuebecForestRegion> RegionMap;
+		private static Map<Integer, QcForestRegion> RegionMap;
 		
 		/**
 		 * This method returns the QuebecForestRegion enum associated to the region code parameter
 		 * @param regionCode an integer
 		 * @return a QuebecForestRegion enum 
 		 */
-		public static QuebecForestRegion getRegion(int regionCode) {
+		public static QcForestRegion getRegion(int regionCode) {
 			if (RegionMap == null) {
-				RegionMap = new HashMap<Integer, QuebecForestRegion>();
-				for (QuebecForestRegion region : QuebecForestRegion.values()) {
+				RegionMap = new HashMap<Integer, QcForestRegion>();
+				for (QcForestRegion region : QcForestRegion.values()) {
 					RegionMap.put(region.getRegionCode(), region);
 				}
 			}
@@ -66,7 +66,7 @@ public interface QuebecForestRegionProvider {
 	 * it is located.
 	 * @return a QuebecForestRegion enum
 	 */
-	public QuebecForestRegion getQuebecForestRegion();
+	public QcForestRegion getQuebecForestRegion();
 	
 
 }

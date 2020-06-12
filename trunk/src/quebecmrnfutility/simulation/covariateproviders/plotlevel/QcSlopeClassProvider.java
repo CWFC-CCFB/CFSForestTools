@@ -32,9 +32,9 @@ import repicea.util.REpiceaTranslator.TextableEnum;
  * according to the Quebec Ministry of Natural resources classification.
  * @author Mathieu Fortin - March 2017
  */
-public interface SlopeMRNFClassProvider {
+public interface QcSlopeClassProvider {
 
-	public static enum SlopeMRNFClass implements TextableEnum {
+	public static enum QcSlopeClass implements TextableEnum {
 		A("0-3%"),
 		B("4-8%"),
 		C("9-15%"),
@@ -44,14 +44,14 @@ public interface SlopeMRNFClassProvider {
 		
 		private static List<String> AvailableSlopeClasses;
 		
-		SlopeMRNFClass(String text) {
+		QcSlopeClass(String text) {
 			setText(text,text);
 		}
 		
 		public static boolean isThisClassRecognized(String slopeClassString) {
 			if (AvailableSlopeClasses == null) {
 				AvailableSlopeClasses = new ArrayList<String>();
-				for (SlopeMRNFClass slopeClass : SlopeMRNFClass.values()) {
+				for (QcSlopeClass slopeClass : QcSlopeClass.values()) {
 					AvailableSlopeClasses.add(slopeClass.name());
 				}
 			}
@@ -72,6 +72,6 @@ public interface SlopeMRNFClassProvider {
 	 * This method returns the slope class according to the Quebec Ministry of Natural resources classification.
 	 * @return SlopeMRNFClass enum
 	 */
-	public SlopeMRNFClass getSlopeClass();
+	public QcSlopeClass getSlopeClass();
 	
 }

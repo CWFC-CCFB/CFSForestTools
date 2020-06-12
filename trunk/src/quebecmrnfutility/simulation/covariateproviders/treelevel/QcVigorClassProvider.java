@@ -28,13 +28,13 @@ import repicea.math.Matrix;
  * class, i.e. I, II, III, IV.
  * @author Mathieu Fortin - November 2012
  */
-public interface VigorClassProvider {
+public interface QcVigorClassProvider {
 
 	/**
 	 * Vigour class according to Majcen (1990).
 	 * @author Mathieu Fortin - May 2010
 	 */
-	public static enum VigorClass {
+	public static enum QcVigorClass {
 		V1,
 		V2,
 		V3,
@@ -44,7 +44,7 @@ public interface VigorClassProvider {
 		private Matrix dummyVig;
 		private Matrix dummyProd;
 		
-		VigorClass() {
+		QcVigorClass() {
 			dummy = new Matrix(1,4);
 			dummy.m_afData[0][this.ordinal()] = 1d;
 			
@@ -74,6 +74,6 @@ public interface VigorClassProvider {
 	 * This method returns the vigor class for braodleaved stems according to Majcen's system. 
 	 * @return a VigorClass enum variable
 	 */
-	public VigorClass getVigorClass();
+	public QcVigorClass getVigorClass();
 
 }
