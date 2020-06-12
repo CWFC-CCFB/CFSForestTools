@@ -21,6 +21,9 @@
  */
 package quebecmrnfutility.simulation.covariateproviders.plotlevel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
 
 public interface QcDrainageClassProvider extends DrainageGroupProvider {
@@ -36,9 +39,41 @@ public interface QcDrainageClassProvider extends DrainageGroupProvider {
 
 		final DrainageGroup category;
 		
+		static Map<String, QcDrainageClass> DrainageMap;
+		
 		QcDrainageClass(DrainageGroup category) {
 			this.category = category;
 		}
+		
+		private static Map<String, QcDrainageClass> getDrainageMap() {
+			if (DrainageMap == null) {
+				DrainageMap = new HashMap<String, QcDrainageClass>();
+				for (QcDrainageClass dc : QcDrainageClass.values()) {
+					DrainageMap.put(dc.name().substring(1, 2), dc);
+				}
+			}
+			return DrainageMap;
+		}
+
+		/**
+		 * Returns true if the drainage string is among the following
+		 * 0, 1, 2, 3, 4, 5, 6.
+		 * @param drainageStr
+		 * @return a boolean
+		 */
+		public static boolean isEligibleDrainageString(String drainageStr) {
+			return getDrainageMap().containsKey(drainageStr);
+		}
+		
+		/**
+		 * Returns a QcDrainageClass enum from a drainage str.
+		 * @param drainageStr
+		 * @return may return null if the string is not eligible.
+		 */
+		public QcDrainageClass getDrainageClassFromString(String drainageStr) {
+			return getDrainageMap().get(drainageStr);
+		}
+		
 	}
 	
 	public QcDrainageClass getDrainageClass();
