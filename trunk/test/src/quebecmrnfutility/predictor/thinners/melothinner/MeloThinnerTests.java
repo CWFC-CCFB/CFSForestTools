@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import repicea.io.javacsv.CSVReader;
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.SlopeMRNFClassProvider.SlopeMRNFClass;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassProvider.QcSlopeClass;
 import repicea.util.ObjectUtility;
 
 public class MeloThinnerTests {
@@ -30,7 +30,7 @@ public class MeloThinnerTests {
 				String ownershipCode = record[2].toString().trim();
 				int regionCode = Integer.parseInt(record[3].toString());
 				String slopeClass = record[4].toString();
-				SlopeMRNFClass sc = SlopeMRNFClass.valueOf(slopeClass);
+				QcSlopeClass sc = QcSlopeClass.valueOf(slopeClass);
 				double basalAreaM2Ha = Double.parseDouble(record[5].toString());
 				double stemDensityHa = Double.parseDouble(record[6].toString());
 				String ecologicalType = record[7].toString();

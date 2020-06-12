@@ -24,20 +24,20 @@ import java.util.Map;
 
 import repicea.io.javacsv.CSVReader;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider.LandOwnership;
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.QuebecForestRegionProvider.QuebecForestRegion;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcForestRegionProvider.QcForestRegion;
 import repicea.util.ObjectUtility;
 
 class MeloThinnerAACProvider {
 
 	private static MeloThinnerAACProvider Instance;
 
-	private final Map<QuebecForestRegion, Map<LandOwnership, Map<Integer, Double>>> aacMap; // region : land ownership : year : aac/ha
+	private final Map<QcForestRegion, Map<LandOwnership, Map<Integer, Double>>> aacMap; // region : land ownership : year : aac/ha
 
 	private int minimumYearDate;
 	private int maximumYearDate;
 	
 	private MeloThinnerAACProvider() {
-		aacMap = new HashMap<QuebecForestRegion, Map<LandOwnership, Map<Integer, Double>>>();
+		aacMap = new HashMap<QcForestRegion, Map<LandOwnership, Map<Integer, Double>>>();
 		init();
 	}
 	
@@ -49,7 +49,7 @@ class MeloThinnerAACProvider {
 			Object[] record;
 			while ((record = reader.nextRecord()) != null) {
 				int regionCode = Integer.parseInt(record[0].toString());
-				QuebecForestRegion region = QuebecForestRegion.getRegion(regionCode);
+				QcForestRegion region = QcForestRegion.getRegion(regionCode);
 				if (region != null) {
 					if (!aacMap.containsKey(region)) {
 						aacMap.put(region, new HashMap<LandOwnership, Map<Integer, Double>>());
@@ -108,7 +108,7 @@ class MeloThinnerAACProvider {
 	 * @param modulationFactor a double that ranges from -1 to 1
 	 * @return an array of double
 	 */
-	double[] getAACValues(QuebecForestRegion region, LandOwnership ownership, int startingYear, int endingYear, double modulationFactor) {
+	double[] getAACValues(QcForestRegion region, LandOwnership ownership, int startingYear, int endingYear, double modulationFactor) {
 		if (endingYear <= startingYear) {
 			throw new InvalidParameterException("The ending year must be greater than the starting year!");
 		}

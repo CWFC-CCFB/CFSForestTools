@@ -13,9 +13,9 @@ import org.junit.Test;
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeSpecies;
 import repicea.serial.xml.XmlDeserializer;
 import repicea.serial.xml.XmlMarshallException;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.MSCRPriorityProvider.MSCRPriority;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.VigorClassProvider.VigorClass;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcMarkingPriorityProvider.QcMarkingPriority;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcVigorClassProvider.QcVigorClass;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
@@ -76,7 +76,7 @@ public class PetroTreeLoggerTest {
 		String refMapPath = ObjectUtility.getPackagePath(getClass()) + "refMapPetroMSCRVersion.ser";
 		
 		List<PetroLoggableTree> trees = new ArrayList<PetroLoggableTree>();
-		for (MSCRPriority priority : MSCRPriority.values()) {
+		for (QcMarkingPriority priority : QcMarkingPriority.values()) {
 			for (int i = 5; i < 15; i++) {
 				trees.add(new PetroLoggableTreeImpl(PetroGradeSpecies.ERS, i * 5, priority));
 				trees.add(new PetroLoggableTreeImpl(PetroGradeSpecies.BOJ, i * 5, priority));
@@ -123,7 +123,7 @@ public class PetroTreeLoggerTest {
 		String refMapPath = ObjectUtility.getPackagePath(getClass()) + "refMapPetroQualityVersion.ser";
 		
 		List<PetroLoggableTree> trees = new ArrayList<PetroLoggableTree>();
-		for (ABCDQuality quality : ABCDQuality.values()) {
+		for (QcTreeQuality quality : QcTreeQuality.values()) {
 			for (int i = 5; i < 15; i++) {
 				trees.add(new PetroLoggableTreeImpl(PetroGradeSpecies.ERS, i * 5, quality));
 				trees.add(new PetroLoggableTreeImpl(PetroGradeSpecies.BOJ, i * 5, quality));
@@ -170,7 +170,7 @@ public class PetroTreeLoggerTest {
 		String refMapPath = ObjectUtility.getPackagePath(getClass()) + "refMapPetroVigorVersion.ser";
 		
 		List<PetroLoggableTree> trees = new ArrayList<PetroLoggableTree>();
-		for (VigorClass vigor : VigorClass.values()) {
+		for (QcVigorClass vigor : QcVigorClass.values()) {
 			for (int i = 5; i < 15; i++) {
 				trees.add(new PetroLoggableTreeImpl(PetroGradeSpecies.ERS, i * 5, vigor));
 				trees.add(new PetroLoggableTreeImpl(PetroGradeSpecies.BOJ, i * 5, vigor));

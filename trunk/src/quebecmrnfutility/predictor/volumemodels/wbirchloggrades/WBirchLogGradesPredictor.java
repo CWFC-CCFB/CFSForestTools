@@ -27,7 +27,7 @@ import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaPredictor;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
 import repicea.stats.Distribution.Type;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.ChiSquaredDistribution;
@@ -126,11 +126,11 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 		double dbhCm = tree.getDbhCm();
 		double elevationM = stand.getElevationM();
 		double isC = 0d;
-		if (tree.getABCDQuality() == ABCDQuality.C) {
+		if (tree.getABCDQuality() == QcTreeQuality.C) {
 			isC = 1d;
 		}
 		double isD = 0d;
-		if (tree.getABCDQuality() == ABCDQuality.D) {
+		if (tree.getABCDQuality() == QcTreeQuality.D) {
 			isD = 1d;
 		}
 		double isNC = 0d;
@@ -154,7 +154,7 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 		double dbhCm = tree.getDbhCm();
 		
 		double isAB = 0d;
-		if (tree.getABCDQuality() == ABCDQuality.A || tree.getABCDQuality() == ABCDQuality.B) {
+		if (tree.getABCDQuality() == QcTreeQuality.A || tree.getABCDQuality() == QcTreeQuality.B) {
 			isAB = 1d;
 		}
 		
@@ -168,11 +168,11 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 	private double getPulpPrediction(WBirchLogGradesStand stand, WBirchLogGradesTree tree, Matrix beta, double h20Pred, double merVol) {
 		double dbhCm = tree.getDbhCm();
 		double isC = 0d;
-		if (tree.getABCDQuality() == ABCDQuality.C) {
+		if (tree.getABCDQuality() == QcTreeQuality.C) {
 			isC = 1d;
 		}
 		double isD = 0d;
-		if (tree.getABCDQuality() == ABCDQuality.D) {
+		if (tree.getABCDQuality() == QcTreeQuality.D) {
 			isD = 1d;
 		}
 		double isNC = 0d;
