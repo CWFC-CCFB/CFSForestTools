@@ -20,7 +20,9 @@ package canforservutility.predictor.iris2020.recruitment;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.DisturbanceType;
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.OriginType;
@@ -29,6 +31,7 @@ import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.S
 import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 
 @SuppressWarnings("serial")
 class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<Iris2020CompatiblePlot, Iris2020CompatibleTree> {
@@ -39,27 +42,43 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 	 */
 	private static List<Integer> EffectsNotToBeConsidered = new ArrayList<Integer>();
 	static {
+		EffectsNotToBeConsidered.add(3);	// drainage class
 		EffectsNotToBeConsidered.add(4);
-		EffectsNotToBeConsidered.add(5);
 		
-		EffectsNotToBeConsidered.add(21);
-		EffectsNotToBeConsidered.add(22);
-		EffectsNotToBeConsidered.add(23);
+		EffectsNotToBeConsidered.add(7);	// depth2
+		EffectsNotToBeConsidered.add(8);
+		
+		EffectsNotToBeConsidered.add(23);	// originType
 		EffectsNotToBeConsidered.add(24);
-		EffectsNotToBeConsidered.add(25);
 		
+		EffectsNotToBeConsidered.add(26);	// pastDisturbanceType
 		EffectsNotToBeConsidered.add(27);
-		EffectsNotToBeConsidered.add(28);
-		EffectsNotToBeConsidered.add(29);
-		EffectsNotToBeConsidered.add(30);
-
-		EffectsNotToBeConsidered.add(33);
-
-		EffectsNotToBeConsidered.add(37);
-		EffectsNotToBeConsidered.add(38);
-		EffectsNotToBeConsidered.add(39);
-		EffectsNotToBeConsidered.add(40);
+		
+		EffectsNotToBeConsidered.add(30);  	// texture
+		
+		EffectsNotToBeConsidered.add(34);	// upcomingDisturbanceType
+		EffectsNotToBeConsidered.add(35);
 	}
+	
+	private static Map<DrainageGroup, Matrix> DrainageGroupDummyMatrices = new HashMap<DrainageGroup, Matrix>();
+	static {
+		Matrix oMat = new Matrix(1,3);
+		DrainageGroupDummyMatrices.put(DrainageGroup.Mesic, oMat);
+		
+		oMat = new Matrix(1,3);
+		oMat.m_afData[0][0] = 1d;
+		DrainageGroupDummyMatrices.put(DrainageGroup.Xeric, oMat);
+		
+		oMat = new Matrix(1,3);
+		oMat.m_afData[0][1] = 1d;
+		DrainageGroupDummyMatrices.put(DrainageGroup.Subhydric, oMat);
+
+		oMat = new Matrix(1,3);
+		oMat.m_afData[0][2] = 1d;
+		DrainageGroupDummyMatrices.put(DrainageGroup.Hydric, oMat);
+	}
+	
+	
 	
 	private List<Integer> effectList;
 	private final boolean offsetEnabled;
@@ -129,101 +148,100 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 				oXVector.m_afData[0][index] = 1d;
 				index++;
 				break;
-			case 2:
+			case 2: // drainage class
+				dummy = DrainageGroupDummyMatrices.get(plot.getDrainageGroup());
+				oXVector.setSubMatrix(dummy, 0, index);
+				index += dummy.m_iCols;
+				break;
+			case 5: // DD
 				oXVector.m_afData[0][index] = meanDegreeDays;
 				index++;
 				break;
-			case 3:
+			case 6: // depth2
 				dummy = depth.getDummyMatrix();
 				oXVector.setSubMatrix(dummy, 0, index);
 				index += dummy.m_iCols;
 				break;
-			case 6:
+			case 9: // FrostDay
 				oXVector.m_afData[0][index] = meanFrostDays;
 				index++;
 				break;
-			case 7:
+			case 10: // G_TOT
 				oXVector.m_afData[0][index] = gTot;
 				index++;
 				break;
-			case 8:
-				if (plot.isOrganicSoil()) {
-					oXVector.m_afData[0][index] = 1d;
-				}
-				index++;
-				break;
-			case 9:
+			case 11: // Length
 				oXVector.m_afData[0][index] = meanGrowingSeasonLength;
 				index++;
 				break;
-			case 10:
+			case 12: // lnDt
 				oXVector.m_afData[0][index] = Math.log(plot.getGrowthStepLengthYr());
 				index++;
 				break;
-			case 11:
+			case 13: // lnG_TOT
 				oXVector.m_afData[0][index] = Math.log(1d + gTot);
 				index++;
 				break;
-			case 12:
+			case 14: // lnN_TOT
 				oXVector.m_afData[0][index] = Math.log(1d + nTot);
 				index++;
 				break;
-			case 13:
+			case 15: // lnPente
 				oXVector.m_afData[0][index] = Math.log(1d + slope);
 				index++;
 				break;
-			case 14:
+			case 16: // logDD
 				oXVector.m_afData[0][index] = Math.log(meanDegreeDays);
 				index++;
 				break;
-			case 15:
+			case 17: // logDD:logPrcp
 				oXVector.m_afData[0][index] = Math.log(meanDegreeDays) * Math.log(meanPrecipitation);
 				index++;
 				break;
-			case 16:
+			case 18: // logLength
 				oXVector.m_afData[0][index] = Math.log(meanGrowingSeasonLength);
 				index++;
 				break;
-			case 17:
+			case 19: // logPrcp
 				oXVector.m_afData[0][index] = Math.log(meanPrecipitation);
 				index++;
 				break;
-			case 18:
+			case 20: // LowestTmin
 				oXVector.m_afData[0][index] = meanLowestTmin;
 				index++;
 				break;
-			case 19:
+			case 21: // N_TOT
 				oXVector.m_afData[0][index] = nTot;
 				index++;
 				break;
-			case 20:
+			case 22: // originType
 				dummy = origin.getDummyMatrix(); // origin effect
 				oXVector.setSubMatrix(dummy, 0, index);
 				index += dummy.m_iCols;
 				break;
-			case 26:
+			case 25: // pastDisturbanceType
 				dummy = pastDist.getDummyMatrix(); // past disturbance effect
 				oXVector.setSubMatrix(dummy, 0, index);
 				index += dummy.m_iCols;
 				break;
-			case 31:
+			case 28: // pentePerc
 				oXVector.m_afData[0][index] = slope;
 				index++;
 				break;
-			case 32:
+			case 29: // texture
 				dummy = texture.getDummyMatrix(); // texture effect
 				oXVector.setSubMatrix(dummy, 0, index);
 				index += dummy.m_iCols;
 				break;
-			case 34:
+			case 31: // timeSince1970
 				oXVector.m_afData[0][index] = plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970;
 				index++;
 				break;
-			case 35:
+			case 32: // TotalPrcp
 				oXVector.m_afData[0][index] = meanPrecipitation;
 				index++;
 				break;
-			case 36:
+			case 33: // upcomingDisturbanceType
 				dummy = upcomingDist.getDummyMatrix(); // upcoming disturbance effect
 				oXVector.setSubMatrix(dummy, 0, index);
 				index += dummy.m_iCols;

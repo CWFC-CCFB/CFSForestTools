@@ -2,7 +2,9 @@ package canforservutility.predictor.iris2020.recruitment;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,9 +16,18 @@ import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.S
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.util.ObjectUtility;
 
 public class Iris2020RecruitmentTests {
+	
+	private static final Map<String, DrainageGroup> DrainageGroupMatch = new HashMap<String, DrainageGroup>();
+	static {
+		DrainageGroupMatch.put("1mesique", DrainageGroup.Mesic);
+		DrainageGroupMatch.put("2xerique", DrainageGroup.Xeric);
+		DrainageGroupMatch.put("3subhydrique", DrainageGroup.Subhydric);
+		DrainageGroupMatch.put("4hydrique", DrainageGroup.Hydric);
+	}
 
 	private static List<Iris2020CompatibleTestPlotImpl> PlotListForOccurrences;
 	private static List<Iris2020CompatibleTestPlotImpl> PlotListForNumbers;
@@ -45,7 +56,7 @@ public class Iris2020RecruitmentTests {
 		SoilTexture soilTexture = SoilTexture.valueOf(textureStr);
 		String depthStr = record[17].toString().substring(1);
 		SoilDepth soilDepth = SoilDepth.valueOf(depthStr);
-		boolean isOrganicSoil = record[18].toString().equals("1");
+		String drainageClass = record[18].toString();
 		double pred = Double.parseDouble(record[19].toString());
 		Double gSpGr = null;
 		if (record.length > 20) {
@@ -66,7 +77,7 @@ public class Iris2020RecruitmentTests {
 				pastDist,
 				upcomingDist,
 				origin,
-				isOrganicSoil,
+				DrainageGroupMatch.get(drainageClass),
 				soilTexture,
 				species,
 				pred,

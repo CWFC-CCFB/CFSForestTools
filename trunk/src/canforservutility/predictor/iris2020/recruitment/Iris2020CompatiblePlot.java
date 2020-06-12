@@ -24,17 +24,19 @@ import java.util.Map;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
-import repicea.simulation.covariateproviders.standlevel.DateYrProvider;
-import repicea.simulation.covariateproviders.standlevel.GrowthStepLengthYrProvider;
-import repicea.simulation.covariateproviders.standlevel.SlopeInclinationPercentProvider;
-import repicea.simulation.covariateproviders.standlevel.StemDensityHaProvider;
+import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
+import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
+import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
+import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
+import repicea.simulation.covariateproviders.plotlevel.SlopeInclinationPercentProvider;
+import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 
 public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantObject,
 													GrowthStepLengthYrProvider,
 													BasalAreaM2HaProvider,
 													StemDensityHaProvider,
 													SlopeInclinationPercentProvider,
+													DrainageGroupProvider,
 													DateYrProvider {
 	
 	
@@ -68,11 +70,8 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	public static enum OriginType {
 		Unknown,
 		Fire,
-		Windthrow,
-		Outbreak,
-		Harvest,
-		Decline,
-		Fallow;
+		OtherNatural,
+		Harvest;
 		
 		private static Map<OriginType, Matrix> DummyMap;
 		
@@ -99,10 +98,8 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	public static enum DisturbanceType {
 		None,
 		Fire,
-		Windthrow,
-		Outbreak,
-		Harvest,
-		Decline;
+		OtherNatural,
+		Harvest;
 		
 		private static Map<DisturbanceType, Matrix> DummyMap;
 		
@@ -191,13 +188,6 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	 * @return a SoilDepth enum variable
 	 */
 	public SoilDepth getSoilDepth();
-	
-	/**
-	 * Returns true if the plot is located on organic soil.
-	 * @return a boolean
-	 */
-	public boolean isOrganicSoil();
-	
 	
 	/**
 	 * Returns the disturbance that have occurred recently (e.g. in the last 15 years or so)
