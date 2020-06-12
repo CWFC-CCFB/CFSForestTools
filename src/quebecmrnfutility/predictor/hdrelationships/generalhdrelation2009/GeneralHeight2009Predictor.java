@@ -134,14 +134,14 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		DUMMY_ECO_REGION.put("6m", dummy);	// region S_EST
 	}
 	
-	private final static Map<DrainageGroup, Matrix> DUMMY_DRAINAGE_GROUP = new HashMap<DrainageGroup, Matrix>();
-	static {
-		for (DrainageGroup dg : DrainageGroup.values()) {
-			Matrix mat = new Matrix(1,4);
-			mat.m_afData[0][dg.ordinal()] = 1d;
-			DUMMY_DRAINAGE_GROUP.put(dg, mat);
-		}
-	}
+//	private final static Map<DrainageGroup, Matrix> DUMMY_DRAINAGE_GROUP = new HashMap<DrainageGroup, Matrix>();
+//	static {
+//		for (DrainageGroup dg : DrainageGroup.values()) {
+//			Matrix mat = new Matrix(1,4);
+//			mat.m_afData[0][dg.ordinal()] = 1d;
+//			DUMMY_DRAINAGE_GROUP.put(dg, mat);
+//		}
+//	}
 	
 	
 	/**
@@ -206,7 +206,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		boolean isInterventionResult = stand.isInterventionResult();
 		boolean isDefoliated = stand.isSBWDefoliated();
 		
-		Matrix dummyDrainageClass = DUMMY_DRAINAGE_GROUP.get(drainageGroup);
+		Matrix dummyDrainageClass = drainageGroup.getDrainageDummy();
 		Matrix dummyEcoRegion = GeneralHeight2009Predictor.DUMMY_ECO_REGION.get(ecoRegion);
 		Matrix dummyDisturbance;
 		if (isInterventionResult) {
