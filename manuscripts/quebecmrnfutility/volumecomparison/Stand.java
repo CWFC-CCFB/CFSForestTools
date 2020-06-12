@@ -50,8 +50,8 @@ public class Stand implements StemTaperStand, VolumableStand {
 
 	
 	@Override
-	public String getDrainageClass() {
-		return "";	// TO MAKE SURE THE TREE VERSION IS GOING TO BE USED
+	public QcDrainageClass getDrainageClass() {
+		return null;	// TO MAKE SURE THE TREE VERSION IS GOING TO BE USED
 	}
 
 	@Override

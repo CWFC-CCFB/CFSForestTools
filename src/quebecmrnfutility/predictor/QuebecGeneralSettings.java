@@ -27,9 +27,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QuebecForestRegionProvider.QuebecForestRegion;
 import repicea.io.javacsv.CSVReader;
-import repicea.math.Matrix;
-import repicea.simulation.covariateproviders.standlevel.QuebecForestRegionProvider.QuebecForestRegion;
 import repicea.util.ObjectUtility;
 
 /**
@@ -172,21 +171,21 @@ public class QuebecGeneralSettings {
 		SHRUB_SPECIES_LIST.add("ERG");
 	}
 
-	public static enum DrainageGroup {
-		XERIC, 
-		MESIC,
-		SUBHYDRIC,
-		HYDRIC;
-		
-		private Matrix dummy;
-		
-		DrainageGroup() {
-			dummy = new Matrix(1,4);
-			dummy.m_afData[0][this.ordinal()] = 1d;
-		}
-		
-		public Matrix getDrainageDummy() {return dummy;}
-	}
+//	public static enum DrainageGroup {
+//		XERIC, 
+//		MESIC,
+//		SUBHYDRIC,
+//		HYDRIC;
+//		
+//		private Matrix dummy;
+//		
+//		DrainageGroup() {
+//			dummy = new Matrix(1,4);
+//			dummy.m_afData[0][this.ordinal()] = 1d;
+//		}
+//		
+//		public Matrix getDrainageDummy() {return dummy;}
+//	}
 
 
 	public static final Set<String> CONIFEROUS_SPECIES = new HashSet<String>();
@@ -290,30 +289,30 @@ public class QuebecGeneralSettings {
 		ECO_REGION_MAP.put("6r","6est");
 	}
 
-	public static final Map<String, DrainageGroup> DRAINAGE_CLASS_LIST = new HashMap<String, DrainageGroup>();
-	static {
-		DRAINAGE_CLASS_LIST.put("0", DrainageGroup.XERIC);
-		DRAINAGE_CLASS_LIST.put("1", DrainageGroup.XERIC);
-		DRAINAGE_CLASS_LIST.put("2", DrainageGroup.MESIC);
-		DRAINAGE_CLASS_LIST.put("3", DrainageGroup.MESIC);
-		DRAINAGE_CLASS_LIST.put("4", DrainageGroup.SUBHYDRIC);
-		DRAINAGE_CLASS_LIST.put("5", DrainageGroup.HYDRIC);
-		DRAINAGE_CLASS_LIST.put("6", DrainageGroup.HYDRIC);
-	}
+//	public static final Map<String, DrainageGroup> DRAINAGE_CLASS_LIST = new HashMap<String, DrainageGroup>();
+//	static {
+//		DRAINAGE_CLASS_LIST.put("0", DrainageGroup.XERIC);
+//		DRAINAGE_CLASS_LIST.put("1", DrainageGroup.XERIC);
+//		DRAINAGE_CLASS_LIST.put("2", DrainageGroup.MESIC);
+//		DRAINAGE_CLASS_LIST.put("3", DrainageGroup.MESIC);
+//		DRAINAGE_CLASS_LIST.put("4", DrainageGroup.SUBHYDRIC);
+//		DRAINAGE_CLASS_LIST.put("5", DrainageGroup.HYDRIC);
+//		DRAINAGE_CLASS_LIST.put("6", DrainageGroup.HYDRIC);
+//	}
 
-	public static final Map<String, DrainageGroup> ENVIRONMENT_TYPE = new HashMap<String, DrainageGroup>();
-	static {
-		ENVIRONMENT_TYPE.put("0", DrainageGroup.XERIC);
-		ENVIRONMENT_TYPE.put("1", DrainageGroup.MESIC);
-		ENVIRONMENT_TYPE.put("2", DrainageGroup.MESIC);
-		ENVIRONMENT_TYPE.put("3", DrainageGroup.MESIC);
-		ENVIRONMENT_TYPE.put("4", DrainageGroup.SUBHYDRIC);
-		ENVIRONMENT_TYPE.put("5", DrainageGroup.SUBHYDRIC);
-		ENVIRONMENT_TYPE.put("6", DrainageGroup.SUBHYDRIC);
-		ENVIRONMENT_TYPE.put("7", DrainageGroup.SUBHYDRIC);
-		ENVIRONMENT_TYPE.put("8", DrainageGroup.SUBHYDRIC);
-		ENVIRONMENT_TYPE.put("9", DrainageGroup.SUBHYDRIC);
-	}
+//	public static final Map<String, DrainageGroup> ENVIRONMENT_TYPE = new HashMap<String, DrainageGroup>();
+//	static {
+//		ENVIRONMENT_TYPE.put("0", DrainageGroup.XERIC);
+//		ENVIRONMENT_TYPE.put("1", DrainageGroup.MESIC);
+//		ENVIRONMENT_TYPE.put("2", DrainageGroup.MESIC);
+//		ENVIRONMENT_TYPE.put("3", DrainageGroup.MESIC);
+//		ENVIRONMENT_TYPE.put("4", DrainageGroup.SUBHYDRIC);
+//		ENVIRONMENT_TYPE.put("5", DrainageGroup.SUBHYDRIC);
+//		ENVIRONMENT_TYPE.put("6", DrainageGroup.SUBHYDRIC);
+//		ENVIRONMENT_TYPE.put("7", DrainageGroup.SUBHYDRIC);
+//		ENVIRONMENT_TYPE.put("8", DrainageGroup.SUBHYDRIC);
+//		ENVIRONMENT_TYPE.put("9", DrainageGroup.SUBHYDRIC);
+//	}
 
 	
 	

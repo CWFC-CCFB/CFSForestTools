@@ -31,6 +31,7 @@ import java.util.Map;
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperEquationSettings.Effect;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcDrainageClassProvider.QcDrainageClass;
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
 import repicea.stats.LinearStatisticalExpression;
@@ -256,8 +257,8 @@ class InternalStatisticalExpressions {
 					secondLinearTerm.setVariableValue(variableIndex++, 1 - stemTaperPredictor.relativeHeights.m_afData[heightIndex][0]);
 					break;
 				case Drainage:
-					oMap = StemTaperEquationSettings.DRAINAGE_GROUP_DUMMY_MAP.get(currentTree.getStemTaperTreeSpecies());
-					oMat = oMap.get(currentStand.getDrainageClass());
+					Map<QcDrainageClass, Matrix> drainageDummys = StemTaperEquationSettings.DRAINAGE_GROUP_DUMMY_MAP.get(currentTree.getStemTaperTreeSpecies());
+					oMat = drainageDummys.get(currentStand.getDrainageClass());
 					for (int i = 0; i < oMat.m_iCols; i++) {
 						secondLinearTerm.setVariableValue(variableIndex++, oMat.m_afData[0][i]);
 					}

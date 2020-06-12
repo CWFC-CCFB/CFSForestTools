@@ -34,7 +34,7 @@ public class SybilleTreeLoggerTest {
 		private double nbStemsHa;
 		private String ecoRegion;
 		private String ecologicalType;
-		private String drainageClass;
+		private QcDrainageClass drainageClass;
 		private double elevationM;
 
 		private StemTaperStandInternalImpl(int monteCarloRealizationID,
@@ -49,7 +49,7 @@ public class SybilleTreeLoggerTest {
 			this.nbStemsHa = nbStemsHa;
 			this.ecoRegion = ecoRegion;
 			this.ecologicalType = ecologicalType;
-			this.drainageClass = drainageClass;
+			this.drainageClass = QcDrainageClass.valueOf("C".concat(drainageClass));
 			this.elevationM = elevationM;
 		}
 		
@@ -76,7 +76,7 @@ public class SybilleTreeLoggerTest {
 		public String getEcologicalType() {return ecologicalType;}
 
 		@Override
-		public String getDrainageClass() {return drainageClass;}
+		public QcDrainageClass getDrainageClass() {return drainageClass;}
 
 		@Override
 		public double getElevationM() {return elevationM;}

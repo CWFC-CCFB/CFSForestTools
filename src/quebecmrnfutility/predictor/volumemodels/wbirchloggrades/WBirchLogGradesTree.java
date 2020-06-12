@@ -20,7 +20,7 @@ package quebecmrnfutility.predictor.volumemodels.wbirchloggrades;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.ABCDQualityProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;

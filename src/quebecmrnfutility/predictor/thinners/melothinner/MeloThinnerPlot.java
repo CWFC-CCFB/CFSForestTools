@@ -20,12 +20,12 @@ package quebecmrnfutility.predictor.thinners.melothinner;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
-import repicea.simulation.covariateproviders.standlevel.CruiseLineProvider;
-import repicea.simulation.covariateproviders.standlevel.EcologicalTypeProvider;
-import repicea.simulation.covariateproviders.standlevel.QuebecForestRegionProvider;
-import repicea.simulation.covariateproviders.standlevel.SlopeMRNFClassProvider;
-import repicea.simulation.covariateproviders.standlevel.StemDensityHaProvider;
+import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
+import repicea.simulation.covariateproviders.plotlevel.CruiseLineProvider;
+import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QuebecForestRegionProvider;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.SlopeMRNFClassProvider;
+import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 
 /**
  * The MeloThinnerPlot interface ensures that the plot instance is compatible with the MeloThinnerPredictor. The plot

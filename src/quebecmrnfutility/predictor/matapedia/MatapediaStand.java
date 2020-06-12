@@ -22,9 +22,9 @@ import java.util.Collection;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.DateYrProvider;
-import repicea.simulation.covariateproviders.standlevel.SprayedAgainstDefoliatorProvider;
-import repicea.simulation.covariateproviders.standlevel.SpruceBudwormDefoliatedProvider;
+import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
+import repicea.simulation.covariateproviders.plotlevel.SprayedAgainstDefoliatorProvider;
+import repicea.simulation.covariateproviders.plotlevel.SpruceBudwormDefoliatedProvider;
 
 /**
  * The MatapediaStand interface ensures the compatibility of the stand object with 

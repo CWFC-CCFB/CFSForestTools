@@ -27,7 +27,7 @@ import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaPredictor;
-import repicea.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.ABCDQualityProvider.ABCDQuality;
 import repicea.stats.Distribution.Type;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.ChiSquaredDistribution;

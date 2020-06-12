@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import repicea.io.javacsv.CSVReader;
-import repicea.simulation.covariateproviders.standlevel.SlopeMRNFClassProvider.SlopeMRNFClass;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.SlopeMRNFClassProvider.SlopeMRNFClass;
 import repicea.util.ObjectUtility;
 
 public class MeloThinnerTests {

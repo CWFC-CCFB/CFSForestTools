@@ -21,7 +21,7 @@
 package canforservutility.predictor.disturbances.sprucebudworm.occurrence.boulangerarsenault2004;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.standlevel.NaturalDisturbanceInformationProvider;
+import repicea.simulation.covariateproviders.plotlevel.NaturalDisturbanceInformationProvider;
 
 /**
  * This interface ensures that the plot sample can return information about the last spruce budworm outbreak.

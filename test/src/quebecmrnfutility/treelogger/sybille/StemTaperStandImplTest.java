@@ -18,7 +18,7 @@ public class StemTaperStandImplTest implements StemTaperStand {
 	public String getEcoRegion() {return "4a";}
 
 	@Override
-	public String getDrainageClass() {return "3";}
+	public QcDrainageClass getDrainageClass() {return QcDrainageClass.C3;}
 
 	@Override
 	public double getElevationM() {return 500;}

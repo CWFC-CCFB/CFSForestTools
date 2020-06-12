@@ -24,14 +24,13 @@
  */
 package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
 
-import repicea.simulation.covariateproviders.standlevel.BasalAreaM2HaProvider;
-import repicea.simulation.covariateproviders.standlevel.DrainageClassProvider;
-import repicea.simulation.covariateproviders.standlevel.EcologicalRegionProvider;
-import repicea.simulation.covariateproviders.standlevel.EcologicalTypeProvider;
-import repicea.simulation.covariateproviders.standlevel.InterventionResultProvider;
-import repicea.simulation.covariateproviders.standlevel.MeanAnnualTemperatureCProvider;
-import repicea.simulation.covariateproviders.standlevel.SpruceBudwormDefoliatedProvider;
-import repicea.simulation.covariateproviders.standlevel.TreeStatusCollectionsProvider;
+import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
+import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
+import repicea.simulation.covariateproviders.plotlevel.EcologicalRegionProvider;
+import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
+import repicea.simulation.covariateproviders.plotlevel.MeanAnnualTemperatureCProvider;
+import repicea.simulation.covariateproviders.plotlevel.SpruceBudwormDefoliatedProvider;
+import repicea.simulation.covariateproviders.plotlevel.TreeStatusCollectionsProvider;
 import repicea.simulation.hdrelationships.HDRelationshipStand;
 
 
@@ -40,8 +39,7 @@ public interface Heightable2009Stand extends HDRelationshipStand,
 										BasalAreaM2HaProvider,
 										MeanAnnualTemperatureCProvider,
 										EcologicalRegionProvider,
-										EcologicalTypeProvider,
-										DrainageClassProvider,
+										DrainageGroupProvider,
 										InterventionResultProvider,
 										SpruceBudwormDefoliatedProvider {
 	

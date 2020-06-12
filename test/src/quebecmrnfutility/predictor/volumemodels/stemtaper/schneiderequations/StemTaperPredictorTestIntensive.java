@@ -24,19 +24,19 @@ public class StemTaperPredictorTestIntensive {
 	
 	private static class StemTaperStandImpl implements StemTaperStand {
 		
-		private double basalAreaM2Ha;
-		private double numberOfStemsHa;
-		private String ecoRegion;
-		private String ecologicalType;
-		private String drainageClass;
-		private double elevationM;
+		private final double basalAreaM2Ha;
+		private final double numberOfStemsHa;
+		private final String ecoRegion;
+		private final String ecologicalType;
+		private final QcDrainageClass drainageClass;
+		private final double elevationM;
 		
 		private StemTaperStandImpl(Object[] record) {
 			basalAreaM2Ha = Double.parseDouble(record[10].toString());
 			numberOfStemsHa = Double.parseDouble(record[11].toString());
 			ecoRegion = record[12].toString().trim();
 			ecologicalType = record[13].toString().trim();
-			drainageClass = record[14].toString().trim();
+			drainageClass = QcDrainageClass.valueOf("C".concat(record[14].toString().trim().substring(0, 1)));
 			elevationM = Double.parseDouble(record[15].toString());
 		}
 
@@ -65,7 +65,7 @@ public class StemTaperPredictorTestIntensive {
 		public String getEcologicalType() {return ecologicalType;}
 
 		@Override
-		public String getDrainageClass() {return drainageClass.substring(0, 1);}
+		public QcDrainageClass getDrainageClass() {return drainageClass;}
 
 		@Override
 		public double getElevationM() {return elevationM;}
