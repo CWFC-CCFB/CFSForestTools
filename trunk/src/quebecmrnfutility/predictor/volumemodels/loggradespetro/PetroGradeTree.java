@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.QcMarkingPriorityProvider;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcHarvestPriorityProvider;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcVigorClassProvider;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
@@ -37,7 +37,7 @@ import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 public interface PetroGradeTree extends DbhCmProvider,
 										SquaredDbhCmProvider,
 										QcTreeQualityProvider,
-										QcMarkingPriorityProvider,
+										QcHarvestPriorityProvider,
 										QcVigorClassProvider,
 										MonteCarloSimulationCompliantObject {
 

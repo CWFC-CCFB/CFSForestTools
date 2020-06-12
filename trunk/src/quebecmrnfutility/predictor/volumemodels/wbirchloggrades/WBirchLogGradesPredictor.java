@@ -126,15 +126,15 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 		double dbhCm = tree.getDbhCm();
 		double elevationM = stand.getElevationM();
 		double isC = 0d;
-		if (tree.getABCDQuality() == QcTreeQuality.C) {
+		if (tree.getTreeQuality() == QcTreeQuality.C) {
 			isC = 1d;
 		}
 		double isD = 0d;
-		if (tree.getABCDQuality() == QcTreeQuality.D) {
+		if (tree.getTreeQuality() == QcTreeQuality.D) {
 			isD = 1d;
 		}
 		double isNC = 0d;
-		if (tree.getABCDQuality() == null) {
+		if (tree.getTreeQuality() == null) {
 			isNC = 1d;
 		}
 		double z1 = beta.m_afData[4][0];
@@ -154,7 +154,7 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 		double dbhCm = tree.getDbhCm();
 		
 		double isAB = 0d;
-		if (tree.getABCDQuality() == QcTreeQuality.A || tree.getABCDQuality() == QcTreeQuality.B) {
+		if (tree.getTreeQuality() == QcTreeQuality.A || tree.getTreeQuality() == QcTreeQuality.B) {
 			isAB = 1d;
 		}
 		
@@ -168,15 +168,15 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 	private double getPulpPrediction(WBirchLogGradesStand stand, WBirchLogGradesTree tree, Matrix beta, double h20Pred, double merVol) {
 		double dbhCm = tree.getDbhCm();
 		double isC = 0d;
-		if (tree.getABCDQuality() == QcTreeQuality.C) {
+		if (tree.getTreeQuality() == QcTreeQuality.C) {
 			isC = 1d;
 		}
 		double isD = 0d;
-		if (tree.getABCDQuality() == QcTreeQuality.D) {
+		if (tree.getTreeQuality() == QcTreeQuality.D) {
 			isD = 1d;
 		}
 		double isNC = 0d;
-		if (tree.getABCDQuality() == null) {
+		if (tree.getTreeQuality() == null) {
 			isNC = 1d;
 		}
 		double b1 = beta.m_afData[0][0];
@@ -296,12 +296,12 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 	
 	
 	protected Version getVersion(WBirchLogGradesTree tree, double h20Pred) {
-		if (tree.getABCDQuality() != null) {
-			if (tree.getABCDQuality().ordinal() < 3) {
+		if (tree.getTreeQuality() != null) {
+			if (tree.getTreeQuality().ordinal() < 3) {
 				if (h20Pred >= 5d && tree.getDbhCm() > 29d) {
 					return Version.Full;
 				} else {
-					if (tree.getABCDQuality().ordinal() < 2) {
+					if (tree.getTreeQuality().ordinal() < 2) {
 						return Version.FullTruncated;
 					} else {
 						return Version.DClass;

@@ -153,12 +153,12 @@ public class PetroGradePredictor extends REpiceaPredictor {
 	 */
 	private PetroGradePredictorVersion getAppropriateVersion(PetroGradeTree typicalTree) {
 
-		Object qualiteABCD = typicalTree.getABCDQuality();
+		Object qualiteABCD = typicalTree.getTreeQuality();
 		if (qualiteABCD != null) {
 			return PetroGradePredictorVersion.WITH_QUALITY_ABCD;
 		} 
 
-		Object harvestPriorityMSCR = typicalTree.getMSCRPriority();
+		Object harvestPriorityMSCR = typicalTree.getHarvestPriority();
 		if (harvestPriorityMSCR != null) {
 			return PetroGradePredictorVersion.WITH_HARV_PRIOR_MSCR;
 		}

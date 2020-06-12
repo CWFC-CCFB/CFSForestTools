@@ -14,7 +14,7 @@ import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.Pe
 import repicea.serial.xml.XmlDeserializer;
 import repicea.serial.xml.XmlMarshallException;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.QcMarkingPriorityProvider.QcMarkingPriority;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcHarvestPriorityProvider.QcHarvestPriority;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcVigorClassProvider.QcVigorClass;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.WoodPiece;
@@ -76,7 +76,7 @@ public class PetroTreeLoggerTest {
 		String refMapPath = ObjectUtility.getPackagePath(getClass()) + "refMapPetroMSCRVersion.ser";
 		
 		List<PetroLoggableTree> trees = new ArrayList<PetroLoggableTree>();
-		for (QcMarkingPriority priority : QcMarkingPriority.values()) {
+		for (QcHarvestPriority priority : QcHarvestPriority.values()) {
 			for (int i = 5; i < 15; i++) {
 				trees.add(new PetroLoggableTreeImpl(PetroGradeSpecies.ERS, i * 5, priority));
 				trees.add(new PetroLoggableTreeImpl(PetroGradeSpecies.BOJ, i * 5, priority));

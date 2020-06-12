@@ -22,7 +22,7 @@ import java.security.InvalidParameterException;
 
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradePredictor.PetroGradePredictorVersion;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.QcMarkingPriorityProvider.QcMarkingPriority;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcHarvestPriorityProvider.QcHarvestPriority;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcVigorClassProvider.QcVigorClass;
 import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
@@ -76,11 +76,11 @@ abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
 			oMat.setSubMatrix(StatisticalUtility.combineMatrices(dummyProduct, dummyProd), 0, dummyProduct.m_iCols * dummyVig.m_iCols);
 			break;
 		case WITH_HARV_PRIOR_MSCR: 
-			QcMarkingPriority priorityMSCR = tree.getMSCRPriority();
+			QcHarvestPriority priorityMSCR = tree.getHarvestPriority();
 			oMat = StatisticalUtility.combineMatrices(dummyProduct, priorityMSCR.getDummy());
 			break;
 		case WITH_QUALITY_ABCD:
-			QcTreeQuality qualityABCD = tree.getABCDQuality();
+			QcTreeQuality qualityABCD = tree.getTreeQuality();
 			oMat = StatisticalUtility.combineMatrices(dummyProduct, qualityABCD.getDummy());
 			break;
 		}

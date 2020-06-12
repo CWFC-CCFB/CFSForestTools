@@ -52,9 +52,9 @@ public interface QcTreeQualityProvider {
 
 	/**
 	 * This method returns the quality class of the stem according to the ABCD classification.
-	 * @return an ABCDQuality enum variable
+	 * @return an QcTreeQuality enum variable
 	 */
-	public QcTreeQuality getABCDQuality();
+	public QcTreeQuality getTreeQuality();
 
 	
 }
