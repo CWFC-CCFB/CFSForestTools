@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeSpecies;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.QcMarkingPriorityProvider.QcMarkingPriority;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcHarvestPriorityProvider.QcHarvestPriority;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcVigorClassProvider.QcVigorClass;
 import repicea.math.Matrix;
 import repicea.serial.xml.XmlMarshallException;
@@ -46,7 +46,7 @@ public class PetroGradePredictorTest {
 	@Test
 	public void testWithMSCR() throws FileNotFoundException, XmlMarshallException {
 			
-		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, QcMarkingPriority.C);
+		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, QcHarvestPriority.C);
 		
 		PetroGradePredictor stoPredictor = new PetroGradePredictor(true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();

@@ -61,7 +61,7 @@ class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 	public double getDbhCm() {return dbhCm;}
 
 	@Override
-	public QcTreeQuality getABCDQuality() {return quality;}
+	public QcTreeQuality getTreeQuality() {return quality;}
 
 	@Override
 	public String getSubjectId() {return ((Integer) treeID).toString();}

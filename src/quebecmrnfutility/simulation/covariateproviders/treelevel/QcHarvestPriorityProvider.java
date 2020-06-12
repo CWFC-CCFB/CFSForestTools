@@ -28,13 +28,13 @@ import repicea.math.Matrix;
  * i.e. M, S, C, R.
  * @author Mathieu Fortin - November 2012
  */
-public interface QcMarkingPriorityProvider {
+public interface QcHarvestPriorityProvider {
 
 	/**
 	 * Harvest priorities MSCR.
 	 * @author Mathieu Fortin - May 2010
 	 */
-	public static enum QcMarkingPriority {
+	public static enum QcHarvestPriority {
 		C,
 		M,
 		R,
@@ -42,7 +42,7 @@ public interface QcMarkingPriorityProvider {
 		
 		private Matrix dummy;
 		
-		QcMarkingPriority() {
+		QcHarvestPriority() {
 			dummy = new Matrix(1,4);
 			dummy.m_afData[0][this.ordinal()] = 1d;
 		}
@@ -52,8 +52,8 @@ public interface QcMarkingPriorityProvider {
 
 	/**
 	 * This method returns the MSCR harvest priority according the current classification in Qu�bec.
-	 * @return a MSCRPriority enum variable
+	 * @return a QcHarvestPriority enum variable
 	 */
-	public QcMarkingPriority getMSCRPriority();
+	public QcHarvestPriority getHarvestPriority();
 
 }

@@ -7,13 +7,13 @@ public class PetroGradeTreeImpl implements PetroGradeTree {
 	final PetroGradeSpecies species;
 	final double dbhCm;
 	QcVigorClass vigorClass;
-	QcMarkingPriority mscrPriority;
+	QcHarvestPriority mscrPriority;
 	QcTreeQuality abcdQuality;
 	int realization;
 	private Matrix realizedValues;
 	
 	
-	private PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, QcVigorClass vigorClass, QcMarkingPriority mscrPriority, QcTreeQuality abcdQuality) {
+	private PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, QcVigorClass vigorClass, QcHarvestPriority mscrPriority, QcTreeQuality abcdQuality) {
 		this.species = species;
 		this.dbhCm = dbhCm;
 		this.vigorClass = vigorClass;
@@ -38,7 +38,7 @@ public class PetroGradeTreeImpl implements PetroGradeTree {
 		this(species, dbhCm, vigorClass, null, null);
 	}
 
-	PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, QcMarkingPriority mscrPriority) {
+	PetroGradeTreeImpl(PetroGradeSpecies species, double dbhCm, QcHarvestPriority mscrPriority) {
 		this(species, dbhCm, null, mscrPriority, null);
 	}
 
@@ -58,12 +58,12 @@ public class PetroGradeTreeImpl implements PetroGradeTree {
 	}
 
 	@Override
-	public QcTreeQuality getABCDQuality() {
+	public QcTreeQuality getTreeQuality() {
 		return abcdQuality;
 	}
 
 	@Override
-	public QcMarkingPriority getMSCRPriority() {
+	public QcHarvestPriority getHarvestPriority() {
 		return mscrPriority;
 	}
 
