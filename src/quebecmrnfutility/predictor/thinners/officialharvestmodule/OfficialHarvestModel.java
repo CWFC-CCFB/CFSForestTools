@@ -139,8 +139,10 @@ public final class OfficialHarvestModel extends REpiceaBinaryEventPredictor<Offi
 	protected final void init() {
 		try {
 			String path = ObjectUtility.getRelativePackagePath(getClass());
-			InputStream isParameters = ClassLoader.getSystemResourceAsStream(path + "parmsNew.txt");
-			InputStream isOmega = ClassLoader.getSystemResourceAsStream(path + "covbNew.txt");
+//			InputStream isParameters = ClassLoader.getSystemResourceAsStream(path + "parmsNew.txt");
+			InputStream isParameters = getClass().getResourceAsStream("/" + path + "parmsNew.txt");
+//			InputStream isOmega = ClassLoader.getSystemResourceAsStream(path + "covbNew.txt");
+			InputStream isOmega = getClass().getResourceAsStream("/" + path + "covbNew.txt");
 			String speciesPath = path + "species.csv";
 
 			Map<TreatmentType, Matrix> betas = loadFileIntDoubleToMapIntMatrix(isParameters, false);		// is not a variance matrix 

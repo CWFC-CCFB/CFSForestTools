@@ -82,7 +82,8 @@ public class OfficialHarvestModelTest {
 	private static List<OfficialHarvestableStand> readData() throws Exception {
 		List<OfficialHarvestableStand> stands = new ArrayList<OfficialHarvestableStand>();
 		String path = ObjectUtility.getRelativePackagePath(OfficialHarvestModelTest.class);
-		InputStream fileToRead = ClassLoader.getSystemResourceAsStream(path + "testTrees.txt");
+//		InputStream fileToRead = ClassLoader.getSystemResourceAsStream(path + "testTrees.txt");
+		InputStream fileToRead = OfficialHarvestModelTest.class.getResourceAsStream("/" + path + "testTrees.txt");
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(fileToRead));;
 			String str = in.readLine();
