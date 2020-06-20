@@ -111,8 +111,10 @@ public class FormerOfficialHarvestModel extends REpiceaBinaryEventPredictor<Form
 	protected void init() {
 		try {
 			String path = ObjectUtility.getRelativePackagePath(getClass());
-			InputStream isParameters = ClassLoader.getSystemResourceAsStream(path + "parms.txt");
-			InputStream isOmega = ClassLoader.getSystemResourceAsStream(path + "covb.txt");
+//			InputStream isParameters = ClassLoader.getSystemResourceAsStream(path + "parms.txt");
+			InputStream isParameters = getClass().getResourceAsStream("/" + path + "parms.txt");
+//			InputStream isOmega = ClassLoader.getSystemResourceAsStream(path + "covb.txt");
+			InputStream isOmega = getClass().getResourceAsStream("/" + path + "covb.txt");
 
 			Map<Treatment, Matrix> betas = loadFileIntDoubleToMapIntMatrix(isParameters);
 			Map<Treatment, Matrix> variances = loadFileIntDoubleToMapIntMatrix(isOmega); 
