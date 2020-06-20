@@ -301,6 +301,7 @@ abstract class BioSimClient2 {
 		}
 
 		for (PlotLocation location : locations) {
+			@SuppressWarnings("unused")
 			Object value = null;
 			String query = "";
 			query += "lat=" + location.getLatitudeDeg();
@@ -420,7 +421,6 @@ abstract class BioSimClient2 {
 		Map<PlotLocation, String> replies = BioSimClient2.applyModel("DegreeDay_Annual", teleIORefs);
 		nbSecs = (System.currentTimeMillis() - initialTime) * .001;
 		System.out.println("Elapsed time = " + nbSecs + " size = " + replies.size());
-		int u = 0;
 	}
 
 }
