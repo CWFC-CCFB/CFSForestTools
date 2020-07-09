@@ -101,7 +101,8 @@ public class QuebecMRNFGenericTreatment implements Serializable {
 					String className = treatmentName.substring(0, indexLastDot);
 					className = checkClassNameChange(className);
 					String variableName = treatmentName.substring(indexLastDot + 1).trim();
-					Object[] c = ClassLoader.getSystemClassLoader().loadClass(className).getEnumConstants();
+//					Object[] c = ClassLoader.getSystemClassLoader().loadClass(className).getEnumConstants();
+					Object[] c = Class.forName(className).getEnumConstants();
 					if (c[0] instanceof TreatmentType && variableName.equals("CJ")) {
 						variableName = "CJMSCR";
 					}
