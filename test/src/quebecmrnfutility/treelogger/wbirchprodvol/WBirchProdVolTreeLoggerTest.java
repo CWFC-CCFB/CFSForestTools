@@ -38,7 +38,7 @@ public class WBirchProdVolTreeLoggerTest {
 				if (!refMap.containsKey(name)) {
 					refMap.put(name, 0d);
 				}
-				refMap.put(name, refMap.get(name) + piece.getVolumeM3());
+				refMap.put(name, refMap.get(name) + piece.getUnderbarkVolumeM3());
 			}
 		}
 
@@ -46,7 +46,7 @@ public class WBirchProdVolTreeLoggerTest {
 		WBirchLogGradesPredictor predictor = new WBirchLogGradesPredictor(false);
 		for (WBirchProdVolLoggableTree tree : trees) {
 			if (treeLogger.getEligible(tree) != null) {
-				pred = pred.add(predictor.getLogGradeVolumePredictions(tree.getStand(), tree));
+				pred = pred.add(predictor.getLogGradeUnderbarkVolumePredictions(tree.getStand(), tree));
 			}
 		}
 		

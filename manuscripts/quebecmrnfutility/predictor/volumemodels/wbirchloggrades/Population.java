@@ -90,7 +90,7 @@ public class Population {
 	static void setRealizedValues(List<WBirchLogGradesStandImpl> plots, WBirchLogGradesPredictor model) {
 		for (WBirchLogGradesStandImpl plot : plots) {
 			for (WBirchLogGradesTreeImpl tree : plot.getTrees().values()) {
-				tree.setRealizedValues(model.getLogGradeVolumePredictions(plot, tree));
+				tree.setRealizedValues(model.getLogGradeUnderbarkVolumePredictions(plot, tree));
 			}
 		}
 	}

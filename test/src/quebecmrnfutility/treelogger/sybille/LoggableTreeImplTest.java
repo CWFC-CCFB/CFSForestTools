@@ -65,7 +65,7 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 
 
 	@Override
-	public double getCommercialVolumeM3() {
+	public double getCommercialUnderbarkVolumeM3() {
 		return 0;
 	}
 

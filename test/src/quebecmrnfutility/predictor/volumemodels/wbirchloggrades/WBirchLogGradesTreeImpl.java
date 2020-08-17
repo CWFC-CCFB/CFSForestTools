@@ -81,7 +81,7 @@ class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 
 
 	@Override
-	public double getCommercialVolumeM3() {
+	public double getCommercialUnderbarkVolumeM3() {
 		return predRef.m_afData[1][0];
 	}
 

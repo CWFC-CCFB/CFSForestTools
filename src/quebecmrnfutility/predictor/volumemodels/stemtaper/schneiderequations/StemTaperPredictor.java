@@ -48,6 +48,8 @@ import repicea.util.ObjectUtility;
 
 /**
  * The StemTaperEquation class predicts the taper and the volume of different height section in trees.
+ * The taper equation returns the underbark diameter and consequently, the volume estimated from the 
+ * diameter is the underbark volume.
  * The class must be used as follows
  * </br>
  * </br>
@@ -239,7 +241,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	
 	
 	/**
-	 * This method computes the stem taper in mm2.
+	 * This method computes the underbark stem taper in mm2. 
 	 * @param stemTaperSegments a List of StemTaperSegment instances
 	 * @return a StemTaperEstimate instance with the cross section diameter in mm2
 	 */
@@ -253,12 +255,13 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	/**
 	 * This method returns the volume of a series of height sections. The height sections are first sorted and the 
 	 * volume is calculated between the first and the last one by summing the volume of the log between the successive 
-	 * height sections. The volume is calculated using Smalian's formula.
+	 * height sections. The volume is calculated using Smalian's formula. NOTE: the resulting volume is the underbark
+	 * volume.
 	 * @param tree a StemTaperTree instance
-	 * @return the volume in dm3 or -1 if the volume cannot be calculated
+	 * @return the underbark volume in dm3 or -1 if the volume cannot be calculated
 	 */
 	@SuppressWarnings("unchecked")
-	public static double getVolumeThroughSmalianFormula(StemTaperTree tree) {
+	public static double getUnderbarkVolumeThroughSmalianFormula(StemTaperTree tree) {
 		List<StemTaperCrossSection> heightSections = tree.getCrossSections();
 		
 		if (heightSections != null && !heightSections.isEmpty() && heightSections.size() > 1) {

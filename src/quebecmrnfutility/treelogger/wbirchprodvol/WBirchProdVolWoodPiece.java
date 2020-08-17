@@ -23,9 +23,8 @@ import repicea.simulation.treelogger.WoodPiece;
 @SuppressWarnings("serial")
 public class WBirchProdVolWoodPiece extends WoodPiece {
 
-	protected WBirchProdVolWoodPiece(WBirchProdVolTreeLogCategory logCategory, double volumeM3,  WBirchProdVolLoggableTree tree) {
-		super(logCategory, tree);
-		setVolumeM3(volumeM3);
+	protected WBirchProdVolWoodPiece(WBirchProdVolTreeLogCategory logCategory, WBirchProdVolLoggableTree tree, double volumeM3) {
+		super(logCategory, tree, false, volumeM3); // false: underbark volume
 	}
 
 }

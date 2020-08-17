@@ -30,19 +30,21 @@ import repicea.simulation.treelogger.WoodPiece;
 import repicea.stats.estimates.Estimate;
 
 /**
- * The SybilleWoodPiece is the WoodPiece derived class for the Sybille tree logger.
+ * The SybilleWoodPiece is the WoodPiece derived class for the 
+ * Sybille tree logger. The volume originally calculated is that 
+ * UNDER bark.
  * @author Mathieu Fortin - March 2012
  */
 public class SybilleWoodPiece extends WoodPiece {
 	
 	private static final long serialVersionUID = 20120310L;
 	
-	private Estimate<?> volumeEstimate;
+//	private Estimate<?> volumeEstimate;
 	private double trueLengthM;
 		
 	protected SybilleWoodPiece(LogCategory logCategory, LoggableTree tree, Estimate<?> volumeEstimate, double trueLengthM) {
-		super(logCategory, -1, tree, -1, false, true);		// with bark is false, with pith is true
-		this.volumeEstimate = volumeEstimate;
+		super(logCategory, tree, false, volumeEstimate.getMean().getSumOfElements() * .001);		// with bark is false
+//		this.volumeEstimate = volumeEstimate;
 		this.trueLengthM = trueLengthM;
 	}
 	
@@ -51,17 +53,17 @@ public class SybilleWoodPiece extends WoodPiece {
 		return "Log category = " + getLogCategory().getName() + "; Species = " + getTreeFromWhichComesThisPiece().getSpeciesName();
 	}
 
-	/**
-	 * Do not use this method. Use setVolumeDm3(Estimate) instead.
-	 */
-	@Deprecated
-	@Override
-	protected void setVolumeM3(double volumeOfThisWoodPiece_m3) {}
-
-	@Override
-	public double getVolumeM3() {
-		return volumeEstimate.getMean().getSumOfElements() * .001;				
-	}
+//	/**
+//	 * Do not use this method. Use setVolumeDm3(Estimate) instead.
+//	 */
+//	@Deprecated
+//	@Override
+//	protected void setOverBarkVolumeM3(double volumeOfThisWoodPiece_m3) {}
+//
+//	@Override
+//	public double getOverBarkVolumeM3() {
+//		return volumeEstimate.getMean().getSumOfElements() * .001;				
+//	}
 	
 	/**
 	 * This method returns the true length of the log.

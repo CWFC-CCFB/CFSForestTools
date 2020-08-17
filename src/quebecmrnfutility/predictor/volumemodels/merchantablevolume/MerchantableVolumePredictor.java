@@ -38,7 +38,8 @@ import repicea.util.ObjectUtility;
 
 /**
  * This class implements the merchantable volume equation published in Fortin et al. (2007).
- * NOTE: merchantability is defined as trees with diameter equal to or greater than 9.1 cm at breast height. 
+ * NOTE: merchantability is defined as trees with diameter equal to or greater than 9.1 cm 
+ * at breast height. The volume was calculated UNDER bark.
  * @author Mathieu Fortin - October 2009
  * @see Fortin, M., DeBlois, J., Bernier, S., and Blais, G. 2007. Mise au point d'un tarif de cubage general 
  * pour les forets quebecoises: une approche pour mieux evaluer l'incertitude associee aux previsions. 
@@ -96,15 +97,15 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	}
 	
 	/**
-	 * This method return the volume estimate for an individual trees. 
+	 * This method return the underbark volume estimate for an individual trees. 
 	 * NOTE: Stochastic implementation is handled through the general constructor.
 	 * The method returns 0 if the tree is smaller than 9.1 cm in dbh. It returns -1
 	 * if the tree height has not been calculated.
 	 * @param stand a VolumableStand object
 	 * @param tree a TreeVolumable object
-	 * @return the merchantable volume (dm3)
+	 * @return the commercial underbark volume (dm3)
 	 */
-	public double predictTreeCommercialVolumeDm3(VolumableStand stand, VolumableTree tree) {
+	public double predictTreeCommercialUnderbarkVolumeDm3(VolumableStand stand, VolumableTree tree) {
 		try {
 
 			if (tree.getDbhCm() < 9.1) {	// means this is a sapling

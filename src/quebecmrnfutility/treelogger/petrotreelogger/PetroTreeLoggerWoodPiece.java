@@ -26,13 +26,18 @@ package quebecmrnfutility.treelogger.petrotreelogger;
 
 import repicea.simulation.treelogger.WoodPiece;
 
+/**
+ * The PetroTreeLoggerWoodPiece class represents a log of particular quality.
+ * It is always considered over bark.
+ * @author Mathieu Fortin - August 2020
+ *
+ */
 public class PetroTreeLoggerWoodPiece extends WoodPiece {
 
 	private static final long serialVersionUID = 1L;
 
-	protected PetroTreeLoggerWoodPiece(PetroTreeLogCategory logCategory, double volumeM3, PetroLoggableTree tree) {
-		super(logCategory, tree);
-		setVolumeM3(volumeM3);
+	protected PetroTreeLoggerWoodPiece(PetroTreeLogCategory logCategory, PetroLoggableTree tree, double volumeM3) {
+		super(logCategory, tree, false, volumeM3); // false: underbark
 	}
 
 

@@ -204,7 +204,8 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 	}
 
 	/**
-	 * This method returns the predictions for each log grade 
+	 * This method returns the predictions for each log grade. NOTE this is 
+	 * the underbark volume.
 	 * @param stand a WBirchProdVolStand instance
 	 * @param tree a WBirchProdVolTree instance
 	 * @return a Matrix instance 
@@ -218,7 +219,7 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 	 * <li> slot 6 : low grade sawlog volume (m3) </li>
 	 * </ul>
 	 */
-	public Matrix getLogGradeVolumePredictions(WBirchLogGradesStand stand, WBirchLogGradesTree tree) {
+	public Matrix getLogGradeUnderbarkVolumePredictions(WBirchLogGradesStand stand, WBirchLogGradesTree tree) {
 		Matrix modelParameters = getParametersForThisRealization(stand);
 		double h20Pred = getH20Prediction(stand, tree, modelParameters);
 		double merVol = getMerPrediction(stand, tree, modelParameters, h20Pred);

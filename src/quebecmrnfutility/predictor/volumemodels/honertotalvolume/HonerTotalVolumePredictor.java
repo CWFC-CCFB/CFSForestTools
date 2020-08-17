@@ -26,8 +26,8 @@ import repicea.math.Matrix;
 import repicea.simulation.REpiceaPredictor;
 
 /**
- * The HonerTotalVolumePredictor class implements the volume model developed by Honer 1983.
- * It provides the total tree volume based on tree dbh and height.
+ * The HonerTotalVolumePredictor class implements the underbark volume model developed 
+ * by Honer 1983. It provides the total tree volume underbark based on tree dbh and height.
  * @author Mathieu Fortin - March 2013
  */
 @SuppressWarnings("serial")
@@ -175,7 +175,7 @@ public class HonerTotalVolumePredictor extends REpiceaPredictor {
 	 * @param tree a HonerTotalVolumeTree instance
 	 * @return the total volume (m3)
 	 */
-	public double predictTreeTotalVolume(HonerTotalVolumeTree tree) {
+	public double predictTreeTotalUnderbarkVolume(HonerTotalVolumeTree tree) {
 		HonerTotalVolumeTreeSpecies species = tree.getHonerSpecies();
 		Matrix beta = betaMap.get(species);
 		

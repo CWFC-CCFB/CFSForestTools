@@ -36,7 +36,7 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 	
 	
 	@Override
-	public double getCommercialVolumeM3() {
+	public double getCommercialUnderbarkVolumeM3() {
 		return 1d;
 	}
 

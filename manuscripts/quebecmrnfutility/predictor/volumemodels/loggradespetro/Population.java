@@ -58,7 +58,7 @@ public class Population {
 	static void setRealizedValues(List<Plot> plots, PetroGradePredictor model) {
 		for (Plot plot : plots) {
 			for (PetroGradeTreeImpl tree : plot.getTrees()) {
-				tree.setRealizedValues(model.getPredictedGradeVolumes(tree));
+				tree.setRealizedValues(model.getPredictedGradeUnderbarkVolumes(tree));
 			}
 		}
 	}

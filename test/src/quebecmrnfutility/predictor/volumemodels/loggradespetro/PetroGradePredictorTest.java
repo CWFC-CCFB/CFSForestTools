@@ -25,11 +25,11 @@ public class PetroGradePredictorTest {
 		
 		for (int realization = 0; realization < 50000; realization++) {
 			tree.setRealization(realization);
-			estimate.addRealization(stoPredictor.getPredictedGradeVolumes(tree));
+			estimate.addRealization(stoPredictor.getPredictedGradeUnderbarkVolumes(tree));
 		}
 	
 		PetroGradePredictor detPredictor = new PetroGradePredictor(false);
-		Matrix expected = detPredictor.getPredictedGradeVolumes(tree);
+		Matrix expected = detPredictor.getPredictedGradeUnderbarkVolumes(tree);
 		
 		Matrix actual = estimate.getMean();
 
@@ -53,11 +53,11 @@ public class PetroGradePredictorTest {
 		
 		for (int realization = 0; realization < 10000; realization++) {
 			tree.setRealization(realization);
-			estimate.addRealization(stoPredictor.getPredictedGradeVolumes(tree));
+			estimate.addRealization(stoPredictor.getPredictedGradeUnderbarkVolumes(tree));
 		}
 	
 		PetroGradePredictor detPredictor = new PetroGradePredictor(false);
-		Matrix expected = detPredictor.getPredictedGradeVolumes(tree);
+		Matrix expected = detPredictor.getPredictedGradeUnderbarkVolumes(tree);
 		
 		Matrix actual = estimate.getMean();
 
@@ -80,11 +80,11 @@ public class PetroGradePredictorTest {
 		
 		for (int realization = 0; realization < 10000; realization++) {
 			tree.setRealization(realization);
-			estimate.addRealization(stoPredictor.getPredictedGradeVolumes(tree));
+			estimate.addRealization(stoPredictor.getPredictedGradeUnderbarkVolumes(tree));
 		}
 	
 		PetroGradePredictor detPredictor = new PetroGradePredictor(false);
-		Matrix expected = detPredictor.getPredictedGradeVolumes(tree);
+		Matrix expected = detPredictor.getPredictedGradeUnderbarkVolumes(tree);
 		
 		Matrix actual = estimate.getMean();
 
@@ -107,11 +107,11 @@ public class PetroGradePredictorTest {
 		
 		for (int realization = 0; realization < 10000; realization++) {
 			tree.setRealization(realization);
-			estimate.addRealization(stoPredictor.getPredictedGradeVolumes(tree));
+			estimate.addRealization(stoPredictor.getPredictedGradeUnderbarkVolumes(tree));
 		}
 	
 		PetroGradePredictor detPredictor = new PetroGradePredictor(false);
-		Matrix expected = detPredictor.getPredictedGradeVolumes(tree);
+		Matrix expected = detPredictor.getPredictedGradeUnderbarkVolumes(tree);
 		
 		Matrix actual = estimate.getMean();
 
