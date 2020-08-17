@@ -2,8 +2,9 @@ package quebecmrnfutility.predictor.volumemodels.wbirchloggrades;
 
 import quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolLoggableTree;
 import repicea.math.Matrix;
+import repicea.simulation.covariateproviders.treelevel.CommercialUnderbarkVolumeM3Provider;
 
-class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
+class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree, CommercialUnderbarkVolumeM3Provider {
 
 	private final int treeID;
 	private final double dbhCm;

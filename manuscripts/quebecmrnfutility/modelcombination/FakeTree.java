@@ -38,10 +38,6 @@ public class FakeTree implements VolumableTree, SybilleLoggableTree {
 	@Override
 	public double getHeightM() {return heightM;}
 
-	@Override
-	public double getCommercialUnderbarkVolumeM3() {
-		return 0;
-	}
 
 	@Override
 	public String getSpeciesName() {return volSpecies.name();}

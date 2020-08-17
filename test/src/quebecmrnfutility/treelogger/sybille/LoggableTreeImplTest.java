@@ -63,13 +63,6 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 		return getStand().getMonteCarloRealizationId();
 	}
 
-
-	@Override
-	public double getCommercialUnderbarkVolumeM3() {
-		return 0;
-	}
-
-
 	protected double getExpectedVolume() {
 		return refVolume;
 	}
