@@ -41,7 +41,7 @@ public class HonerTotalVolumeTest {
 		List<Double> predictions = new ArrayList<Double>();
 		double volume;
 		for (HonerTotalVolumeTreeImpl tree : trees) {
-			volume = pred.predictTreeTotalVolume(tree);
+			volume = pred.predictTreeTotalUnderbarkVolume(tree);
 			predictions.add(volume);
 			System.out.println("Species " + tree.getHonerSpecies().toString() + "; dbh2 " + tree.getSquaredDbhCm() + "; height " + tree.getHeightM() + "; volume " + volume);
 		}
@@ -85,7 +85,7 @@ public class HonerTotalVolumeTest {
 	public static void main(String[] args) {
 		HonerTotalVolumeTreeImpl tree = new HonerTotalVolumeTreeImpl(HonerTotalVolumeTreeSpecies.SAB, 50, 24);
 		HonerTotalVolumePredictor pred = new HonerTotalVolumePredictor();
-		System.out.println(pred.predictTreeTotalVolume(tree));
+		System.out.println(pred.predictTreeTotalUnderbarkVolume(tree));
 		
 	}
 	

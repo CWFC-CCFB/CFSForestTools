@@ -68,7 +68,7 @@ public class ComparisonPredictions {
 		for (int i = 0; i < 1000; i++) {
 			s.setMonteCarloRealizationId(i);
 			vol = new Matrix(1,1);
-			vol.m_afData[0][0] = pred.predictTreeCommercialVolumeDm3(s, t) * .001;
+			vol.m_afData[0][0] = pred.predictTreeCommercialUnderbarkVolumeDm3(s, t) * .001;
 			estimateVol.addRealization(vol);
 			
 			loggerTree.init(trees);
@@ -101,7 +101,7 @@ public class ComparisonPredictions {
 		Collection<WoodPiece> woodPieceMap = (Collection) logger.getWoodPieces().get(t);
 		if (woodPieceMap != null) {
 			for (WoodPiece woodPiece : woodPieceMap) {
-				loggerVolume += woodPiece.getWeightedVolumeM3();
+				loggerVolume += woodPiece.getWeightedUnderbarkVolumeM3();
 			}
 		}
 		// TODO utiliser la variance du tarif de cubage et verfier la variance de l'erreur residuelle dans le modele de defilement

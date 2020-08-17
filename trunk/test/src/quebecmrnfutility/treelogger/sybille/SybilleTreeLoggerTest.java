@@ -120,7 +120,7 @@ public class SybilleTreeLoggerTest {
 			Map<LoggableTree, Collection<WoodPiece>> woodPieces = treeLogger.getWoodPieces();
 			double merchantableVolume = 0d;
 			for (WoodPiece woodPiece : woodPieces.get(tree)) {
-				merchantableVolume += woodPiece.getVolumeM3();
+				merchantableVolume += woodPiece.getUnderbarkVolumeM3();
 			}	
 			double expectedVolume = tree.getExpectedVolume() * .001;
 			Assert.assertEquals("Comparing species " + species.name(), expectedVolume, merchantableVolume, 2E-3);
@@ -154,7 +154,7 @@ public class SybilleTreeLoggerTest {
 			if (!oColl.isEmpty()) {
 				for (WoodPiece piece : oColl) {
 					String logCategoryName = piece.getLogCategory().getName();
-					volume = piece.getWeightedVolumeM3();
+					volume = piece.getWeightedUnderbarkVolumeM3();
 					if (obsMap.containsKey(logCategoryName)) {
 						volume += obsMap.get(logCategoryName);
 					}
@@ -544,9 +544,9 @@ public class SybilleTreeLoggerTest {
 				LogCategory lc = wp.getLogCategory();
 				double value;
 				if (!obsMap.containsKey(lc)) {
-					value = wp.getVolumeM3() * factor;
+					value = wp.getUnderbarkVolumeM3() * factor;
 				} else {
-					value = obsMap.get(lc) + wp.getVolumeM3() * factor;
+					value = obsMap.get(lc) + wp.getUnderbarkVolumeM3() * factor;
 				}
 				obsMap.put(lc, value);
 			}

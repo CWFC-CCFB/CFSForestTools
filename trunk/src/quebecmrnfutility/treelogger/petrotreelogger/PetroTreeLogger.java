@@ -34,7 +34,7 @@ import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
 
 /**
- * This TreeLogger class makes it possible to estimate the volumes by log grades in
+ * This TreeLogger class makes it possible to estimate the underbark volumes by log grades in
  * sugar maple and yellow birch trees. It is based on the Petro grades (F1, F2, F3, F4, P). This class
  * does not implement the stochastic mode yet.
  * @author Mathieu Fortin - October 2009
@@ -86,12 +86,12 @@ public class PetroTreeLogger extends TreeLogger<PetroTreeLoggerParameters, Petro
 	
 	@Override
 	protected void logThisTree(PetroLoggableTree tree) {
-		Matrix volumes = predictor.getPredictedGradeVolumes(tree);
+		Matrix volumes = predictor.getPredictedGradeUnderbarkVolumes(tree);
 		PetroGradeSpecies species = tree.getPetroGradeSpecies(); 
 		for (int i = 0; i < volumes.m_iRows; i++) {
 			if (volumes.m_afData[i][0] > VERY_SMALL) {
 				PetroTreeLogCategory product = getTreeLoggerParameters().getSpeciesLogCategories(species.name()).get(i);
-				PetroTreeLoggerWoodPiece piece = new PetroTreeLoggerWoodPiece(product, volumes.m_afData[i][0], tree);
+				PetroTreeLoggerWoodPiece piece = new PetroTreeLoggerWoodPiece(product, tree, volumes.m_afData[i][0]);
 				addWoodPiece(tree, piece);
 			}
 		}

@@ -38,7 +38,7 @@ public class WBirchLogGradesPredictorTest {
 				if (tree.getSubjectId().equals("113")) {
 					int u = 0;
 				}
-				Matrix pred = predictor.getLogGradeVolumePredictions(stand, tree);
+				Matrix pred = predictor.getLogGradeUnderbarkVolumePredictions(stand, tree);
 				//		Matrix variances = predictor.getVMatrixForThisTree(tree);
 				Matrix predRef = tree.getRealizedValues();
 				Assert.assertEquals("Number of elements", predRef.m_iRows, pred.m_iRows);
@@ -150,7 +150,7 @@ public class WBirchLogGradesPredictorTest {
 		Matrix pred;
 		for (int i = 0; i < nbRealizations; i++) {
 			((WBirchLogGradesStandImpl) stand).setMonteCarloRealizationId(i);
-			pred = predictor.getLogGradeVolumePredictions(stand, tree);
+			pred = predictor.getLogGradeUnderbarkVolumePredictions(stand, tree);
 			estimate.addRealization(pred);
 		}
 		
@@ -178,7 +178,7 @@ public class WBirchLogGradesPredictorTest {
 			Matrix sumProd = new Matrix(7,1);
 			stand.setMonteCarloRealizationId(i);
 			for (WBirchLogGradesTree tree : stand.getTrees().values()) {
-				sumProd = sumProd.add(predictor.getLogGradeVolumePredictions(stand, tree).scalarMultiply(0.001));
+				sumProd = sumProd.add(predictor.getLogGradeUnderbarkVolumePredictions(stand, tree).scalarMultiply(0.001));
 			}
 			estimate.addRealization(sumProd);
 		}

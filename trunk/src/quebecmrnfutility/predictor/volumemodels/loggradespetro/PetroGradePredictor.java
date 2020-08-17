@@ -31,7 +31,7 @@ import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.util.ObjectUtility;
 
 /**
- * The PetroGradePredictor class generates predictions of volumes by log grades.
+ * The PetroGradePredictor class generates predictions of UNDER-bark volumes by log grades.
  * @author Mathieu Fortin - Sept 2016
  */
 @SuppressWarnings("serial")
@@ -133,7 +133,7 @@ public class PetroGradePredictor extends REpiceaPredictor {
 	 * <li> slot 4 : volume of grade P (m3) </li>
 	 * </ul>
 	 */
-	public Matrix getPredictedGradeVolumes(PetroGradeTree tree) {
+	public Matrix getPredictedGradeUnderbarkVolumes(PetroGradeTree tree) {
 		if (tree.getDbhCm() <= 23d) {
 			return new Matrix(5,1);		// return a matrix of 0 : the trees must have at least 23.1 cm in dbh
 		}
