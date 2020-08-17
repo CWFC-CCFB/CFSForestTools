@@ -68,11 +68,6 @@ class Tree implements SybilleLoggableTree, VolumableTree {
 	public StemTaperTreeSpecies getStemTaperTreeSpecies() {return taperSpecies;}
 
 
-	@Override
-	public double getCommercialUnderbarkVolumeM3() {
-		return 0;
-	}
-	
 	void setCommercialVolumeM3(double volumeM3) {
 		this.commercialVolumeM3 = volumeM3;
 	}
