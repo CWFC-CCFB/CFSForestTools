@@ -77,10 +77,6 @@ class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 
 
 	@Override
-	public WBirchProdVolTreeSpecies getWBirchProdVolTreeSpecies() {return WBirchProdVolTreeSpecies.WhiteBirch;}
-
-
-	@Override
 	public double getCommercialVolumeM3() {
 		return predRef.m_afData[1][0];
 	}
@@ -94,6 +90,8 @@ class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 
 	@Override
 	public WBirchLogGradesStand getStand() {return this.stand;}
+
+
 
 
 }
