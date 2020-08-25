@@ -2,6 +2,7 @@ package quebecmrnfutility.predictor.volumemodels.wbirchloggrades;
 
 import quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolLoggableTree;
 import repicea.math.Matrix;
+import repicea.simulation.species.REpiceaSpecies;
 
 class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 
@@ -90,6 +91,16 @@ class WBirchLogGradesTreeImpl implements WBirchProdVolLoggableTree {
 
 	@Override
 	public WBirchLogGradesStand getStand() {return this.stand;}
+
+	@Override
+	public double getBarkProportionOfWoodVolume() {
+		return REpiceaSpecies.Species.Betula_spp.getBarkProportionOfWoodVolume();
+	}
+	
+	@Override
+	public boolean isCommercialVolumeOverbark() {
+		return false;
+	}
 
 
 

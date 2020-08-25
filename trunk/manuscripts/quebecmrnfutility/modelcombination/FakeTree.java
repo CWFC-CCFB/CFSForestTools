@@ -80,4 +80,16 @@ public class FakeTree implements VolumableTree, SybilleLoggableTree {
 	}
 
 
+	@Override
+	public boolean isCommercialVolumeOverbark() {
+		return false;
+	}
+
+
+	@Override
+	public double getBarkProportionOfWoodVolume() {
+		return 0;
+	}
+
+
 }

@@ -87,4 +87,14 @@ class Tree implements SybilleLoggableTree, VolumableTree {
 		return 0;
 	}
 
+	@Override
+	public boolean isCommercialVolumeOverbark() {
+		return false;
+	}
+
+	@Override
+	public double getBarkProportionOfWoodVolume() {
+		return 0;
+	}
+
 }
