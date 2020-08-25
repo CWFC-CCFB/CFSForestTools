@@ -1,8 +1,6 @@
 package quebecmrnfutility.treelogger.petrotreelogger;
 
-import repicea.simulation.covariateproviders.treelevel.CommercialUnderbarkVolumeM3Provider;
-
-public class PetroLoggableTreeImpl implements PetroLoggableTree, CommercialUnderbarkVolumeM3Provider {
+public class PetroLoggableTreeImpl implements PetroLoggableTree {
 
 	final PetroGradeSpecies species;
 	final double dbhCm;
@@ -38,7 +36,7 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree, CommercialUnder
 	
 	
 	@Override
-	public double getCommercialUnderbarkVolumeM3() {
+	public double getCommercialVolumeM3() {
 		return 1d;
 	}
 

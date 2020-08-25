@@ -47,7 +47,7 @@ public class PetroTreeLoggerTest {
 					volumeByLogGrade.put(logCategoryName, 0d);
 				}
 				double vol = volumeByLogGrade.get(logCategoryName);
-				volumeByLogGrade.put(logCategoryName, vol + wp.getWeightedUnderbarkVolumeM3());
+				volumeByLogGrade.put(logCategoryName, vol + wp.getWeightedWoodVolumeM3());
 			}
 		}
 	
@@ -96,7 +96,7 @@ public class PetroTreeLoggerTest {
 					volumeByLogGrade.put(logCategoryName, 0d);
 				}
 				double vol = volumeByLogGrade.get(logCategoryName);
-				volumeByLogGrade.put(logCategoryName, vol + wp.getWeightedUnderbarkVolumeM3());
+				volumeByLogGrade.put(logCategoryName, vol + wp.getWeightedWoodVolumeM3());
 			}
 		}
 	
@@ -143,7 +143,7 @@ public class PetroTreeLoggerTest {
 					volumeByLogGrade.put(logCategoryName, 0d);
 				}
 				double vol = volumeByLogGrade.get(logCategoryName);
-				volumeByLogGrade.put(logCategoryName, vol + wp.getWeightedUnderbarkVolumeM3());
+				volumeByLogGrade.put(logCategoryName, vol + wp.getWeightedWoodVolumeM3());
 			}
 		}
 	
@@ -190,7 +190,7 @@ public class PetroTreeLoggerTest {
 					volumeByLogGrade.put(logCategoryName, 0d);
 				}
 				double vol = volumeByLogGrade.get(logCategoryName);
-				volumeByLogGrade.put(logCategoryName, vol + wp.getWeightedUnderbarkVolumeM3());
+				volumeByLogGrade.put(logCategoryName, vol + wp.getWeightedWoodVolumeM3());
 			}
 		}
 	

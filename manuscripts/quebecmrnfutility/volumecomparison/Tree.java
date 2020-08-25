@@ -82,4 +82,9 @@ class Tree implements SybilleLoggableTree, VolumableTree {
 		return "Species " + this.getStemTaperTreeSpecies().name() + " dbhcm = " + this.getDbhCm() + " heightm  = " + this.getHeightM(); 
 	}
 
+	@Override
+	public double getCommercialVolumeM3() {
+		return 0;
+	}
+
 }

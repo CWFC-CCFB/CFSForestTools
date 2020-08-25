@@ -38,7 +38,7 @@ public class WBirchProdVolTreeLoggerTest {
 				if (!refMap.containsKey(name)) {
 					refMap.put(name, 0d);
 				}
-				refMap.put(name, refMap.get(name) + piece.getUnderbarkVolumeM3());
+				refMap.put(name, refMap.get(name) + piece.getWoodVolumeM3());
 			}
 		}
 
