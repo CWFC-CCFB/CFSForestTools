@@ -21,14 +21,16 @@ package quebecmrnfutility.predictor.volumemodels.loggradespetro;
 import java.util.HashSet;
 import java.util.Set;
 
-import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcHarvestPriorityProvider;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcVigorClassProvider;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.covariateproviders.treelevel.BarkProportionProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
+import repicea.simulation.species.REpiceaSpecies;
 
 /**
  * This interface makes sure the tree instance is compatible with the PetroGradePredictor class.
@@ -44,15 +46,18 @@ public interface PetroGradeTree extends DbhCmProvider,
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
-	public enum PetroGradeSpecies {
-		BOJ,
-		ERS;
+	public enum PetroGradeSpecies implements BarkProportionProvider {
+		BOJ(REpiceaSpecies.Species.Betula_spp),
+		ERS(REpiceaSpecies.Species.Acer_spp);
 
 		private static Set<String> eligibleSpeciesNames;
 
 		private Matrix dummy;
-
-		PetroGradeSpecies() {
+		
+		private final REpiceaSpecies.Species species;
+		
+		PetroGradeSpecies(REpiceaSpecies.Species species) {
+			this.species = species;
 			dummy = new Matrix(1,2);
 			dummy.m_afData[0][this.ordinal()] = 1d;
 		}
@@ -72,6 +77,11 @@ public interface PetroGradeTree extends DbhCmProvider,
 			} else {
 				return false;
 			}
+		}
+
+		@Override
+		public double getBarkProportionOfWoodVolume() {
+			return species.getBarkProportionOfWoodVolume();
 		}
 
 	}

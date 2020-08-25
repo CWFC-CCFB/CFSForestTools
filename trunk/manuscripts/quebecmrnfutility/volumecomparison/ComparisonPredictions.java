@@ -101,7 +101,7 @@ public class ComparisonPredictions {
 		Collection<WoodPiece> woodPieceMap = (Collection) logger.getWoodPieces().get(t);
 		if (woodPieceMap != null) {
 			for (WoodPiece woodPiece : woodPieceMap) {
-				loggerVolume += woodPiece.getWeightedUnderbarkVolumeM3();
+				loggerVolume += woodPiece.getWeightedWoodVolumeM3();
 			}
 		}
 		// TODO utiliser la variance du tarif de cubage et verfier la variance de l'erreur residuelle dans le modele de defilement

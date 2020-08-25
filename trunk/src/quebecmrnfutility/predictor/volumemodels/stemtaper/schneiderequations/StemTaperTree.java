@@ -30,11 +30,13 @@ import java.util.Set;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.covariateproviders.treelevel.BarkProportionProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
-import repicea.simulation.stemtaper.StemTaperCrossSection;
+import repicea.simulation.species.REpiceaSpecies;
 import repicea.simulation.stemtaper.AbstractStemTaperPredictor.BasicStemTaperTree;
+import repicea.simulation.stemtaper.StemTaperCrossSection;
 
 /**
  * This interface ensures that the object is compatible with the StemTaperEquation class.
@@ -49,50 +51,56 @@ public interface StemTaperTree extends BasicStemTaperTree,
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
-	public enum StemTaperTreeSpecies {
+	public enum StemTaperTreeSpecies implements BarkProportionProvider {
 		/**
 		 * Betula papyrifera
 		 */
-		BOP, 
+		BOP(REpiceaSpecies.Species.Betula_spp), 
 		/**
 		 * Picea glauca
 		 */
-		EPB, 
+		EPB(REpiceaSpecies.Species.Picea_abies), 
 		/**
 		 * Picea mariana
 		 */
-		EPN, 
+		EPN(REpiceaSpecies.Species.Picea_abies), 
 		/**
 		 * Picea rubens
 		 */
-		EPR, 
+		EPR(REpiceaSpecies.Species.Picea_abies), 
 		/**
 		 * Pupolus grandidentata
 		 */
-		PEG,
+		PEG(REpiceaSpecies.Species.Populus_spp),
 		/**
 		 * Pinus strobus
 		 */
-		PIB,
+		PIB(REpiceaSpecies.Species.Pinus_strobus),
 		/**
 		 * Pinus banksiana
 		 */
-		PIG,
+		PIG(REpiceaSpecies.Species.Pinus_sylvestris),
 		/**
 		 * Populus tremuloides
 		 */
-		PET, 
+		PET(REpiceaSpecies.Species.Populus_spp), 
 		/**
 		 * Abies balsamea
 		 */
-		SAB, 
+		SAB(REpiceaSpecies.Species.Abies_spp), 
 		/**
 		 * Thuja occidentalis
 		 */
-		THO;
+		THO(REpiceaSpecies.Species.Thuja_plicata);
 		
 		private static Set<String> eligibleSpeciesNames;
 	
+		private final REpiceaSpecies.Species species;
+		
+		StemTaperTreeSpecies(REpiceaSpecies.Species species) {
+			this.species = species;
+		}
+		
 		/**
 		 * This method returns the StemTaperTreeSpecies Enum associated with the string. 
 		 * @param speciesName the species name
@@ -115,6 +123,11 @@ public interface StemTaperTree extends BasicStemTaperTree,
 					return null;
 				}
 			}
+		}
+
+		@Override
+		public double getBarkProportionOfWoodVolume() {
+			return species.getBarkProportionOfWoodVolume();
 		}
 
 	}

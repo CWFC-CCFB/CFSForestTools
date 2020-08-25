@@ -36,8 +36,8 @@ public class PetroTreeLoggerWoodPiece extends WoodPiece {
 
 	private static final long serialVersionUID = 1L;
 
-	protected PetroTreeLoggerWoodPiece(PetroTreeLogCategory logCategory, PetroLoggableTree tree, double volumeM3) {
-		super(logCategory, tree, false, volumeM3); // false: underbark
+	protected PetroTreeLoggerWoodPiece(PetroTreeLogCategory logCategory, PetroLoggableTree tree, double woodVolumeM3) {
+		super(logCategory, tree, false, woodVolumeM3); // false: underbark
 	}
 
 

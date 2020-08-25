@@ -33,5 +33,10 @@ import repicea.simulation.treelogger.LoggableTree;
  * @author Mathieu Fortin - October 2009
  */
 public interface PetroLoggableTree extends LoggableTree, PetroGradeTree {
+
+	@Override
+	public default double getBarkProportionOfWoodVolume() {
+		return this.getPetroGradeSpecies().getBarkProportionOfWoodVolume();
+	}
 	
 }
