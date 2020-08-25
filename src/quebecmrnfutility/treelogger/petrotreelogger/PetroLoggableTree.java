@@ -34,14 +34,5 @@ import repicea.simulation.treelogger.LoggableTree;
  */
 public interface PetroLoggableTree extends LoggableTree, PetroGradeTree {
 
-	@Override
-	public default double getBarkProportionOfWoodVolume() {
-		return getPetroGradeSpecies().getBarkProportionOfWoodVolume();
-	}
-	
-	@Override
-	public default boolean isCommercialVolumeOverbark() {
-		return false;
-	}
 	
  }

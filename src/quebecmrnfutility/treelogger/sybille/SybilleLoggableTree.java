@@ -33,14 +33,5 @@ import repicea.simulation.treelogger.LoggableTree;
  */
 public interface SybilleLoggableTree extends LoggableTree, StemTaperTree {
 
-	@Override
-	public default double getBarkProportionOfWoodVolume() {
-		return getStemTaperTreeSpecies().getBarkProportionOfWoodVolume();
-	}
-
-	@Override
-	public default boolean isCommercialVolumeOverbark() {
-		return false;
-	}
 
 }

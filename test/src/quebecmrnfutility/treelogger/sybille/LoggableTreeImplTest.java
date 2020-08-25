@@ -72,5 +72,14 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 		return 0;
 	}
 
+	@Override
+	public double getBarkProportionOfWoodVolume() {
+		return getStemTaperTreeSpecies().getBarkProportionOfWoodVolume();
+	}
+
+	@Override
+	public boolean isCommercialVolumeOverbark() {
+		return false;
+	}
 
 }
