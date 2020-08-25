@@ -35,4 +35,15 @@ public interface WBirchProdVolLoggableTree extends WBirchLogGradesTree, Loggable
 	public default double getBarkProportionOfWoodVolume() {
 		return REpiceaSpecies.Species.Betula_spp.getBarkProportionOfWoodVolume();
 	}
+	
+	@Override
+	public default boolean isCommercialVolumeOverbark() {
+		return false;
+	}
+
+	@Override
+	public default WBirchProdVolTreeSpecies getWBirchProdVolTreeSpecies() {
+		return WBirchProdVolTreeSpecies.WhiteBirch;
+	}
+
 }
