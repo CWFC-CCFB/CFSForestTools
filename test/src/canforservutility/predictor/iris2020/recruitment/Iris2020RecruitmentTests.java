@@ -164,7 +164,7 @@ public class Iris2020RecruitmentTests {
 	public void testStochasticMeanNumberPredictions() throws IOException {
 		Iris2020RecruitmentNumberPredictor detPredictor = new Iris2020RecruitmentNumberPredictor(false); // deterministic
 		Iris2020RecruitmentNumberPredictor stoPredictor = new Iris2020RecruitmentNumberPredictor(false, true); // stochastic but with variability disabled for parameter estimates
-		int nbRealizations = 50000;
+		int nbRealizations = 1000000;
 		List<Iris2020CompatibleTestPlotImpl> plots = getPlotListForNumbers(); 
 		Iris2020CompatibleTestPlotImpl plot = plots.get(0);
 		Iris2020CompatibleTree tree = plot.getTreeInstance();

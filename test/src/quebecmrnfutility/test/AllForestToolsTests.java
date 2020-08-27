@@ -23,7 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	canforservutility.predictor.disturbances.SimpleRecurrenceBasedDisturbancePredictorTests.class,
 	canforservutility.predictor.disturbances.sprucebudworm.occurrence.boulangerarsenault2004.SpruceBudwormOutbreakOccurrencePredictorTests.class,
 	canforservutility.predictor.disturbances.sprucebudworm.defoliation.gray2013.DefoliationTests.class,
-//	canforservutility.predictor.iris2020.recruitment.Iris2020RecruitmentTests.class,
+	canforservutility.predictor.iris2020.recruitment.Iris2020RecruitmentTests.class,
 })
 	
 public class AllForestToolsTests {}
