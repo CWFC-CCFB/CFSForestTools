@@ -30,7 +30,6 @@ import biosimclient.BioSimClientException;
 import biosimclient.BioSimDataSet;
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.RCP;
-import biosimclient.BioSimEnums.Variable;
 import biosimclient.BioSimParameterMap;
 import biosimclient.BioSimPlot;
 import biosimclient.BioSimServerException;
@@ -51,11 +50,6 @@ import repicea.stats.estimates.SimpleEstimate;
 public class DefoliationPredictor extends REpiceaBinaryEventPredictor<DefoliationPlot, Object> {
 
 	
-	private static final List<Variable> Var = new ArrayList<Variable>();
-	static {
-		Var.add(Variable.TX);
-		Var.add(Variable.TN);
-	}
 	private final double Over30 = 1d/30;
 	
 	private static final List<Integer> SpringMonths = new ArrayList<Integer>();
