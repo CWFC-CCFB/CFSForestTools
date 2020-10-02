@@ -1,5 +1,7 @@
 package canforservutility.predictor.iris2020.recruitment;
 
+import java.security.InvalidParameterException;
+
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
 import repicea.math.Matrix;
 
@@ -45,15 +47,13 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	
 	
 	private final double growthStepLength;
-	private final double basalAreaM2Ha;
-	private final double stemDensity;
-	private final double slope;
+	private final double basalAreaM2HaConiferous;
+	private final double basalAreaM2HaBroadleaved;
+	private final double slopeInclination;
+	private final double slopeAspect;
 	private final int dateYr;
 	private final double dd;
 	private final double prcp;
-	private final double length;
-	private final double frostDay;
-	private final double lowestTmin;
 	private final SoilDepth soilDepth;
 	private final DisturbanceType pastDist;
 	private final DisturbanceType upcomingDist;
@@ -67,49 +67,44 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 		
 	Iris2020CompatibleTestPlotImpl(String id,
 			double growthStepLength,
-			double basalAreaM2Ha,
-			double stemDensity,
-			double slope,
+			double basalAreaM2HaConiferous,
+			double basalAreaM2HaBroadleaved,
+			double slopeInclination,
+			double slopeAspect,
 			int dateYr,
 			double dd,
 			double prcp,
-			double length,
-			double frostDay,
-			double lowestTmin,
 			SoilDepth soilDepth,
 			DisturbanceType pastDist,
 			DisturbanceType upcomingDist,
 			OriginType origin,
-			DrainageGroup drainageClass,
+			DrainageGroup drainageGroup,
 			SoilTexture soilTexture,
 			Iris2020Species species,
 			double pred, 
 			Double gSpGr) {
+		if (drainageGroup == null) {
+			throw new InvalidParameterException("The drainage group cannot be null!");
+		}
 		this.id = id;
 		this.growthStepLength = growthStepLength;
-		this.basalAreaM2Ha = basalAreaM2Ha;
-		this.stemDensity = stemDensity;
-		this.slope = slope;
+		this.basalAreaM2HaConiferous = basalAreaM2HaConiferous;
+		this.basalAreaM2HaBroadleaved = basalAreaM2HaBroadleaved;
+		this.slopeInclination = slopeInclination;
+		this.slopeAspect = slopeAspect;
 		this.dateYr = dateYr;
 		this.dd = dd;
 		this.prcp = prcp;
-		this.length = length;
-		this.frostDay = frostDay;
-		this.lowestTmin = lowestTmin;
 		this.soilDepth = soilDepth;
 		this.pastDist = pastDist;
 		this.upcomingDist = upcomingDist;
 		this.origin = origin;
-		this.drainageGroup = drainageClass;
+		this.drainageGroup = drainageGroup;
 		this.soilTexture = soilTexture;
 		this.species = species;
 		this.pred = pred;
-		if (gSpGr == null) {
-			gSpGrMat = null;
-		} else {
-			gSpGrMat = new Matrix(1, Iris2020Species.values().length);
-			gSpGrMat.m_afData[0][species.ordinal()] = gSpGr;
-		}
+		gSpGrMat = new Matrix(1, Iris2020Species.values().length);
+		gSpGrMat.m_afData[0][species.ordinal()] = gSpGr;
 	}
 	
 	
@@ -124,13 +119,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	public double getGrowthStepLengthYr() {return growthStepLength;}
 
 	@Override
-	public double getBasalAreaM2Ha() {return basalAreaM2Ha;}
-
-	@Override
-	public double getNumberOfStemsHa() {return stemDensity;}
-
-	@Override
-	public double getSlopeInclinationPercent() {return slope;}
+	public double getSlopeInclinationPercent() {return slopeInclination;}
 
 	@Override
 	public int getDateYr() {return dateYr;}
@@ -140,15 +129,6 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 
 	@Override
 	public double getMeanPrecipitationOverThePeriod() {return prcp;}
-
-	@Override
-	public double getMeanGrowingSeasonLengthOverThePeriod() {return length;}
-
-	@Override
-	public double getMeanFrostDaysOverThePeriod() {return frostDay;}
-
-	@Override
-	public double getMeanLowestTminOverThePeriod() {return lowestTmin;}
 
 	@Override
 	public SoilDepth getSoilDepth() {return soilDepth;}
@@ -176,5 +156,16 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 
 	@Override
 	public Matrix getBasalAreaM2HaBySpecies() {return gSpGrMat;}
+
+
+
+	@Override
+	public double getBasalAreaOfConiferousSpecies() {return basalAreaM2HaConiferous;}
+
+	@Override
+	public double getBasalAreaOfBroadleavedSpecies() {return basalAreaM2HaBroadleaved;}
+
+	@Override
+	public double getSlopeAspect() {return slopeAspect;}
 	
 }

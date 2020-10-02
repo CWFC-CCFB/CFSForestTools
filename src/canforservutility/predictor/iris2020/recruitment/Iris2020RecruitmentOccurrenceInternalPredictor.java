@@ -37,28 +37,28 @@ import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.Dra
 class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<Iris2020CompatiblePlot, Iris2020CompatibleTree> {
 
 
-	/*
-	 * Those are the effects id that are not needed.
-	 */
-	private static List<Integer> EffectsNotToBeConsidered = new ArrayList<Integer>();
-	static {
-		EffectsNotToBeConsidered.add(3);	// drainage class
-		EffectsNotToBeConsidered.add(4);
-		
-		EffectsNotToBeConsidered.add(7);	// depth2
-		EffectsNotToBeConsidered.add(8);
-		
-		EffectsNotToBeConsidered.add(23);	// originType
-		EffectsNotToBeConsidered.add(24);
-		
-		EffectsNotToBeConsidered.add(26);	// pastDisturbanceType
-		EffectsNotToBeConsidered.add(27);
-		
-		EffectsNotToBeConsidered.add(30);  	// texture
-		
-		EffectsNotToBeConsidered.add(34);	// upcomingDisturbanceType
-		EffectsNotToBeConsidered.add(35);
-	}
+//	/*
+//	 * Those are the effects id that are not needed.
+//	 */
+//	private static List<Integer> EffectsNotToBeConsidered = new ArrayList<Integer>();
+//	static {
+//		EffectsNotToBeConsidered.add(3);	// drainage class
+//		EffectsNotToBeConsidered.add(4);
+//		
+//		EffectsNotToBeConsidered.add(7);	// depth2
+//		EffectsNotToBeConsidered.add(8);
+//		
+//		EffectsNotToBeConsidered.add(23);	// originType
+//		EffectsNotToBeConsidered.add(24);
+//		
+//		EffectsNotToBeConsidered.add(26);	// pastDisturbanceType
+//		EffectsNotToBeConsidered.add(27);
+//		
+//		EffectsNotToBeConsidered.add(30);  	// texture
+//		
+//		EffectsNotToBeConsidered.add(34);	// upcomingDisturbanceType
+//		EffectsNotToBeConsidered.add(35);
+//	}
 	
 	static Map<DrainageGroup, Matrix> DrainageGroupDummyMatrices = new HashMap<DrainageGroup, Matrix>();
 	static {
@@ -102,9 +102,9 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 	protected void setEffectList(Matrix effectMat) {
 		for (int i = 0; i < effectMat.m_iRows; i++) {
 			int effectId = (int) effectMat.m_afData[i][0];
-			if (!EffectsNotToBeConsidered.contains(effectId) && !effectList.contains(effectId)) {
+//			if (!EffectsNotToBeConsidered.contains(effectId) && !effectList.contains(effectId)) {
 				effectList.add(effectId);
-			}
+//			}
 		}
 	}
 	
@@ -125,21 +125,20 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 		
 		double meanDegreeDays = plot.getMeanDegreeDaysOverThePeriod();
 		double meanPrecipitation = plot.getMeanPrecipitationOverThePeriod();
-		double meanGrowingSeasonLength = plot.getMeanGrowingSeasonLengthOverThePeriod();
-		double meanFrostDays = plot.getMeanFrostDaysOverThePeriod();
-		double meanLowestTmin = plot.getMeanLowestTminOverThePeriod();
 		
 		SoilDepth depth = plot.getSoilDepth();
 		SoilTexture texture = plot.getSoilTexture();
+		DrainageGroup drainage = plot.getDrainageGroup();
 		OriginType origin = plot.getOrigin();
 		DisturbanceType pastDist = plot.getPastDisturbance();
 		DisturbanceType upcomingDist = plot.getUpcomingDisturbance();
-		
-		double gTot = plot.getBasalAreaM2Ha();		// TODO this could be optimized by calling it before entering this function.
-		double nTot = plot.getNumberOfStemsHa();
-		double slope = plot.getSlopeInclinationPercent();
 
-		Matrix dummy;
+		double g_broadleaved = plot.getBasalAreaOfBroadleavedSpecies();
+		double g_coniferous = plot.getBasalAreaOfConiferousSpecies();
+		double g_spgr = plot.getBasalAreaM2HaBySpecies().m_afData[0][tree.getSpecies().ordinal()];
+		
+		double slope = plot.getSlopeInclinationPercent();
+		double aspect = plot.getSlopeAspect();
 		
 		int index = 0;
 		for (int effectId : effectList) {
@@ -148,103 +147,191 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 				oXVector.m_afData[0][index] = 1d;
 				index++;
 				break;
-			case 2: // drainage class
-				dummy = DrainageGroupDummyMatrices.get(plot.getDrainageGroup());
-				oXVector.setSubMatrix(dummy, 0, index);
-				index += dummy.m_iCols;
-				break;
-			case 5: // DD
+			case 2: // DD
 				oXVector.m_afData[0][index] = meanDegreeDays;
 				index++;
 				break;
-			case 6: // depth2
-				dummy = depth.getDummyMatrix();
-				oXVector.setSubMatrix(dummy, 0, index);
-				index += dummy.m_iCols;
-				break;
-			case 9: // FrostDay
-				oXVector.m_afData[0][index] = meanFrostDays;
+			case 3: // DD:TotalPrcp
+				oXVector.m_afData[0][index] = meanDegreeDays * meanPrecipitation;
 				index++;
 				break;
-			case 10: // G_TOT
-				oXVector.m_afData[0][index] = gTot;
+			case 4: // 
+				if (depth == SoilDepth.Thick) {
+					oXVector.m_afData[0][index] = 1d;
+				}
 				index++;
 				break;
-			case 11: // Length
-				oXVector.m_afData[0][index] = meanGrowingSeasonLength;
+			case 5: // 
+				if (depth == SoilDepth.Average) {
+					oXVector.m_afData[0][index] = 1d;
+				}
 				index++;
 				break;
-			case 12: // lnDt
+			case 6: // 
+				if (depth == SoilDepth.Shallow) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 7: // 
+				if (depth == SoilDepth.VeryShallow) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 8: // 
+				if (drainage == DrainageGroup.Xeric) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 9: // 
+				if (drainage == DrainageGroup.Mesic) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 10: // 
+				if (drainage == DrainageGroup.Subhydric) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 11: // 
+				if (drainage == DrainageGroup.Hydric) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 12: // 
+				if (origin == OriginType.Fire) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 13: // 
+				if (origin == OriginType.OtherNatural) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 14: // 
+				if (origin == OriginType.Harvest) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 15: // 
+				if (pastDist == DisturbanceType.OtherNatural) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 16: // 
+				if (pastDist == DisturbanceType.Harvest) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 17: // 
+				if (texture == SoilTexture.Crude) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 18: // 
+				if (texture == SoilTexture.Mixed) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 19: // 
+				if (texture == SoilTexture.Fine) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 20: // 
+				if (upcomingDist == DisturbanceType.OtherNatural) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 21: // 
+				if (upcomingDist == DisturbanceType.Harvest) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
+				break;
+			case 22:
+				oXVector.m_afData[0][index] = g_broadleaved;
+				index++;
+				break;
+			case 23:
+				oXVector.m_afData[0][index] = g_coniferous;
+				index++;
+				break;
+			case 24:
+				oXVector.m_afData[0][index] = g_spgr;
+				index++;
+				break;
+			case 25:
+				if (slope > 3) { 
+					if (aspect != 400d && aspect != 500d) {
+						oXVector.m_afData[0][index] = Math.cos(2 * Math.PI * aspect / 360d);
+					}
+				}
+				index++;
+				break;
+			case 26: // lnDt
 				oXVector.m_afData[0][index] = Math.log(plot.getGrowthStepLengthYr());
 				index++;
 				break;
-			case 13: // lnG_TOT
-				oXVector.m_afData[0][index] = Math.log(1d + gTot);
+			case 27: // lnG_F
+				oXVector.m_afData[0][index] = Math.log(1d + g_broadleaved);
 				index++;
 				break;
-			case 14: // lnN_TOT
-				oXVector.m_afData[0][index] = Math.log(1d + nTot);
+			case 28: // lnG_R
+				oXVector.m_afData[0][index] = Math.log(1d + g_coniferous);
 				index++;
 				break;
-			case 15: // lnPente
+			case 29: // lnG_SpGr
+				oXVector.m_afData[0][index] = Math.log(1d + g_spgr);
+				index++;
+				break;
+			case 30: // lnPente
 				oXVector.m_afData[0][index] = Math.log(1d + slope);
 				index++;
 				break;
-			case 16: // logDD
+			case 31: // logDD
 				oXVector.m_afData[0][index] = Math.log(meanDegreeDays);
 				index++;
 				break;
-			case 17: // logDD:logPrcp
+			case 32: // logDD:logPrcp
 				oXVector.m_afData[0][index] = Math.log(meanDegreeDays) * Math.log(meanPrecipitation);
 				index++;
 				break;
-			case 18: // logLength
-				oXVector.m_afData[0][index] = Math.log(meanGrowingSeasonLength);
-				index++;
-				break;
-			case 19: // logPrcp
+			case 33: // logPrcp
 				oXVector.m_afData[0][index] = Math.log(meanPrecipitation);
 				index++;
 				break;
-			case 20: // LowestTmin
-				oXVector.m_afData[0][index] = meanLowestTmin;
-				index++;
-				break;
-			case 21: // N_TOT
-				oXVector.m_afData[0][index] = nTot;
-				index++;
-				break;
-			case 22: // originType
-				dummy = origin.getDummyMatrix(); // origin effect
-				oXVector.setSubMatrix(dummy, 0, index);
-				index += dummy.m_iCols;
-				break;
-			case 25: // pastDisturbanceType
-				dummy = pastDist.getDummyMatrix(); // past disturbance effect
-				oXVector.setSubMatrix(dummy, 0, index);
-				index += dummy.m_iCols;
-				break;
-			case 28: // pentePerc
+			case 34: // pentePerc
 				oXVector.m_afData[0][index] = slope;
 				index++;
 				break;
-			case 29: // texture
-				dummy = texture.getDummyMatrix(); // texture effect
-				oXVector.setSubMatrix(dummy, 0, index);
-				index += dummy.m_iCols;
+			case 35:
+				if (g_spgr > 0) {
+					oXVector.m_afData[0][index] = 1d;
+				}
+				index++;
 				break;
-			case 31: // timeSince1970
+			case 36: // timeSince1970
 				oXVector.m_afData[0][index] = plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970;
 				index++;
 				break;
-			case 32: // TotalPrcp
+			case 37: // TotalPrcp
 				oXVector.m_afData[0][index] = meanPrecipitation;
 				index++;
-				break;
-			case 33: // upcomingDisturbanceType
-				dummy = upcomingDist.getDummyMatrix(); // upcoming disturbance effect
-				oXVector.setSubMatrix(dummy, 0, index);
-				index += dummy.m_iCols;
 				break;
 			default:
 				throw new InvalidParameterException("The effect id " + effectId + " is unknown!");
