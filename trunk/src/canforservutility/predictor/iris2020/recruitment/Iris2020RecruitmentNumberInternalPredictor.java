@@ -81,16 +81,12 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		
 		double meanDegreeDays = plot.getMeanDegreeDaysOverThePeriod();
 		double meanPrecipitation = plot.getMeanPrecipitationOverThePeriod();
-		double meanGrowingSeasonLength = plot.getMeanGrowingSeasonLengthOverThePeriod();
-		double meanFrostDays = plot.getMeanFrostDaysOverThePeriod();
-		double meanLowestTmin = plot.getMeanLowestTminOverThePeriod();
 		
 		SoilTexture texture = plot.getSoilTexture();
 		OriginType origin = plot.getOrigin();
 		DisturbanceType pastDist = plot.getPastDisturbance();
 		
-		double gTot = plot.getBasalAreaM2Ha();		// TODO this could be optimized by calling it before entering this function.
-		double nTot = plot.getNumberOfStemsHa();
+//		double gTot = plot.getBasalAreaM2Ha();		// TODO this could be optimized by calling it before entering this function.
 		double slope = plot.getSlopeInclinationPercent();
 
 		Matrix dummy;
@@ -98,96 +94,96 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		int index = 0;
 		for (int effectId : effectList) {
 			switch(effectId) {
-			case 1:	// intercept
-				oXVector.m_afData[0][index] = 1d;
-				index++;
-				break;
-			case 2: // drainage class
-				dummy = Iris2020RecruitmentOccurrenceInternalPredictor.DrainageGroupDummyMatrices.get(plot.getDrainageGroup());
-				oXVector.setSubMatrix(dummy, 0, index);
-				index += dummy.m_iCols;
-				break;
-			case 5: // DD
-				oXVector.m_afData[0][index] = meanDegreeDays;
-				index++;
-				break;
-			case 6: // dt
-				oXVector.m_afData[0][index] = plot.getGrowthStepLengthYr();
-				index++;
-				break;
-			case 7: // FrostDay
-				oXVector.m_afData[0][index] = meanFrostDays;
-				index++;
-				break;
-			case 8: // G_SpGr
-				oXVector.m_afData[0][index] = plot.getBasalAreaM2HaBySpecies().m_afData[0][tree.getSpecies().ordinal()];
-				index++;
-				break;
-			case 9: // G_TOT
-				oXVector.m_afData[0][index] = gTot;
-				index++;
-				break;
-			case 10: // Length
-				oXVector.m_afData[0][index] = meanGrowingSeasonLength;
-				index++;
-				break;
-			case 11: // lnG_TOT
-				oXVector.m_afData[0][index] = Math.log(1d + gTot);
-				index++;
-				break;
-			case 12: // lnN_TOT
-				oXVector.m_afData[0][index] = Math.log(1d + nTot);
-				index++;
-				break;
-			case 13: // lnPente
-				oXVector.m_afData[0][index] = Math.log(1d + slope);
-				index++;
-				break;
-			case 14: // logDD
-				oXVector.m_afData[0][index] = Math.log(meanDegreeDays);
-				index++;
-				break;
-			case 15: // logPrcp
-				oXVector.m_afData[0][index] = Math.log(meanPrecipitation);
-				index++;
-				break;
-			case 16: // LowestTmin
-				oXVector.m_afData[0][index] = meanLowestTmin;
-				index++;
-				break;
-			case 17: // N_TOT
-				oXVector.m_afData[0][index] = nTot;
-				index++;
-				break;
-			case 18: // originType
-				dummy = origin.getDummyMatrix(); // origin effect
-				oXVector.setSubMatrix(dummy, 0, index);
-				index += dummy.m_iCols;
-				break;
-			case 21: // pastDisturbanceType
-				dummy = pastDist.getDummyMatrix(); // origin effect
-				oXVector.setSubMatrix(dummy, 0, index);
-				index += dummy.m_iCols;
-				break;
-			case 24: // pentePerc
-				oXVector.m_afData[0][index] = slope;
-				index++;
-				break;
-			case 25: // texture
-				dummy = texture.getDummyMatrix(); // origin effect
-				oXVector.setSubMatrix(dummy, 0, index);
-				index += dummy.m_iCols;
-				break;
-			case 27: // timeSince1970
-				oXVector.m_afData[0][index] = plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970;
-				index++;
-				break;
-			case 28:
-				oXVector.m_afData[0][index] = meanPrecipitation;
-				index++;
-				break;
-			default:
-				throw new InvalidParameterException("The effect id " + effectId + " is unknown!");
+//			case 1:	// intercept
+//				oXVector.m_afData[0][index] = 1d;
+//				index++;
+//				break;
+//			case 2: // drainage class
+//				dummy = Iris2020RecruitmentOccurrenceInternalPredictor.DrainageGroupDummyMatrices.get(plot.getDrainageGroup());
+//				oXVector.setSubMatrix(dummy, 0, index);
+//				index += dummy.m_iCols;
+//				break;
+//			case 5: // DD
+//				oXVector.m_afData[0][index] = meanDegreeDays;
+//				index++;
+//				break;
+//			case 6: // dt
+//				oXVector.m_afData[0][index] = plot.getGrowthStepLengthYr();
+//				index++;
+//				break;
+//			case 7: // FrostDay
+//				oXVector.m_afData[0][index] = meanFrostDays;
+//				index++;
+//				break;
+//			case 8: // G_SpGr
+//				oXVector.m_afData[0][index] = plot.getBasalAreaM2HaBySpecies().m_afData[0][tree.getSpecies().ordinal()];
+//				index++;
+//				break;
+//			case 9: // G_TOT
+//				oXVector.m_afData[0][index] = gTot;
+//				index++;
+//				break;
+//			case 10: // Length
+//				oXVector.m_afData[0][index] = meanGrowingSeasonLength;
+//				index++;
+//				break;
+//			case 11: // lnG_TOT
+//				oXVector.m_afData[0][index] = Math.log(1d + gTot);
+//				index++;
+//				break;
+//			case 12: // lnN_TOT
+//				oXVector.m_afData[0][index] = Math.log(1d + nTot);
+//				index++;
+//				break;
+//			case 13: // lnPente
+//				oXVector.m_afData[0][index] = Math.log(1d + slope);
+//				index++;
+//				break;
+//			case 14: // logDD
+//				oXVector.m_afData[0][index] = Math.log(meanDegreeDays);
+//				index++;
+//				break;
+//			case 15: // logPrcp
+//				oXVector.m_afData[0][index] = Math.log(meanPrecipitation);
+//				index++;
+//				break;
+//			case 16: // LowestTmin
+//				oXVector.m_afData[0][index] = meanLowestTmin;
+//				index++;
+//				break;
+//			case 17: // N_TOT
+//				oXVector.m_afData[0][index] = nTot;
+//				index++;
+//				break;
+//			case 18: // originType
+//				dummy = origin.getDummyMatrix(); // origin effect
+//				oXVector.setSubMatrix(dummy, 0, index);
+//				index += dummy.m_iCols;
+//				break;
+//			case 21: // pastDisturbanceType
+//				dummy = pastDist.getDummyMatrix(); // origin effect
+//				oXVector.setSubMatrix(dummy, 0, index);
+//				index += dummy.m_iCols;
+//				break;
+//			case 24: // pentePerc
+//				oXVector.m_afData[0][index] = slope;
+//				index++;
+//				break;
+//			case 25: // texture
+//				dummy = texture.getDummyMatrix(); // origin effect
+//				oXVector.setSubMatrix(dummy, 0, index);
+//				index += dummy.m_iCols;
+//				break;
+//			case 27: // timeSince1970
+//				oXVector.m_afData[0][index] = plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970;
+//				index++;
+//				break;
+//			case 28:
+//				oXVector.m_afData[0][index] = meanPrecipitation;
+//				index++;
+//				break;
+//			default:
+//				throw new InvalidParameterException("The effect id " + effectId + " is unknown!");
 			}
 		}
 	}

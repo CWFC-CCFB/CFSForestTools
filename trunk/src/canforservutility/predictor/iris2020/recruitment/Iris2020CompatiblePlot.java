@@ -24,17 +24,13 @@ import java.util.Map;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.SlopeInclinationPercentProvider;
-import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 
 public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantObject,
 													GrowthStepLengthYrProvider,
-													BasalAreaM2HaProvider,
-													StemDensityHaProvider,
 													SlopeInclinationPercentProvider,
 													DrainageGroupProvider,
 													DateYrProvider {
@@ -166,24 +162,6 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	public double getMeanPrecipitationOverThePeriod(); 
 
 	/**
-	 * Returns the mean growing season length (days) over the period.
-	 * @return a double
-	 */
-	public double getMeanGrowingSeasonLengthOverThePeriod(); 
-
-	/**
-	 * Returns the mean number of frost days (days) over the period.
-	 * @return a double
-	 */
-	public double getMeanFrostDaysOverThePeriod(); 
-
-	/**
-	 * Returns the mean lowest minimum temperature (C) over the period.
-	 * @return a double
-	 */
-	public double getMeanLowestTminOverThePeriod(); 
-
-	/**
 	 * Returns the soil depth.
 	 * @return a SoilDepth enum variable
 	 */
@@ -215,14 +193,29 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	public SoilTexture getSoilTexture();
 	
 	/**
-	 * Returns a Matrix with the basal area (m2/ha) for each species or species group. 
+	 * Return a Matrix with the basal area (m2/ha) for each species or species group. 
 	 * The index of the group corresponds to the ordinal of the Iris2020Species enum
 	 * variable.
 	 * @return a 1x33 Matrix
 	 */
 	public Matrix getBasalAreaM2HaBySpecies();
 	
+	/**
+	 * Return the basal area (m2/ha) of coniferous species.
+	 * @return a double
+	 */
+	public double getBasalAreaOfConiferousSpecies();
 	
+	/**
+	 * Return the basal area (m2/ha) of broaleaved species.
+	 * @return a double
+	 */
+	public double getBasalAreaOfBroadleavedSpecies();
 	
+	/**
+	 * Return the slope aspect in degree.
+	 * @return a double
+	 */
+	public double getSlopeAspect();
 	
 }
