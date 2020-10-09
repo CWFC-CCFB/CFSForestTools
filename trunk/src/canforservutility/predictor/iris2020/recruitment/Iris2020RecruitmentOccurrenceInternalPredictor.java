@@ -20,9 +20,7 @@ package canforservutility.predictor.iris2020.recruitment;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.DisturbanceType;
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.OriginType;
@@ -37,46 +35,24 @@ import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.Dra
 class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<Iris2020CompatiblePlot, Iris2020CompatibleTree> {
 
 
-//	/*
-//	 * Those are the effects id that are not needed.
-//	 */
-//	private static List<Integer> EffectsNotToBeConsidered = new ArrayList<Integer>();
-//	static {
-//		EffectsNotToBeConsidered.add(3);	// drainage class
-//		EffectsNotToBeConsidered.add(4);
-//		
-//		EffectsNotToBeConsidered.add(7);	// depth2
-//		EffectsNotToBeConsidered.add(8);
-//		
-//		EffectsNotToBeConsidered.add(23);	// originType
-//		EffectsNotToBeConsidered.add(24);
-//		
-//		EffectsNotToBeConsidered.add(26);	// pastDisturbanceType
-//		EffectsNotToBeConsidered.add(27);
-//		
-//		EffectsNotToBeConsidered.add(30);  	// texture
-//		
-//		EffectsNotToBeConsidered.add(34);	// upcomingDisturbanceType
-//		EffectsNotToBeConsidered.add(35);
-//	}
 	
-	static Map<DrainageGroup, Matrix> DrainageGroupDummyMatrices = new HashMap<DrainageGroup, Matrix>();
-	static {
-		Matrix oMat = new Matrix(1,3);
-		DrainageGroupDummyMatrices.put(DrainageGroup.Mesic, oMat);
-		
-		oMat = new Matrix(1,3);
-		oMat.m_afData[0][0] = 1d;
-		DrainageGroupDummyMatrices.put(DrainageGroup.Xeric, oMat);
-		
-		oMat = new Matrix(1,3);
-		oMat.m_afData[0][1] = 1d;
-		DrainageGroupDummyMatrices.put(DrainageGroup.Subhydric, oMat);
-
-		oMat = new Matrix(1,3);
-		oMat.m_afData[0][2] = 1d;
-		DrainageGroupDummyMatrices.put(DrainageGroup.Hydric, oMat);
-	}
+//	static Map<DrainageGroup, Matrix> DrainageGroupDummyMatrices = new HashMap<DrainageGroup, Matrix>();
+//	static {
+//		Matrix oMat = new Matrix(1,3);
+//		DrainageGroupDummyMatrices.put(DrainageGroup.Mesic, oMat);
+//		
+//		oMat = new Matrix(1,3);
+//		oMat.m_afData[0][0] = 1d;
+//		DrainageGroupDummyMatrices.put(DrainageGroup.Xeric, oMat);
+//		
+//		oMat = new Matrix(1,3);
+//		oMat.m_afData[0][1] = 1d;
+//		DrainageGroupDummyMatrices.put(DrainageGroup.Subhydric, oMat);
+//
+//		oMat = new Matrix(1,3);
+//		oMat.m_afData[0][2] = 1d;
+//		DrainageGroupDummyMatrices.put(DrainageGroup.Hydric, oMat);
+//	}
 	
 	
 	
@@ -102,9 +78,7 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 	protected void setEffectList(Matrix effectMat) {
 		for (int i = 0; i < effectMat.m_iRows; i++) {
 			int effectId = (int) effectMat.m_afData[i][0];
-//			if (!EffectsNotToBeConsidered.contains(effectId) && !effectList.contains(effectId)) {
-				effectList.add(effectId);
-//			}
+			effectList.add(effectId);
 		}
 	}
 	
