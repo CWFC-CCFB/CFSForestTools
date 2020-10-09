@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.DisturbanceType;
@@ -118,14 +117,8 @@ public class Iris2020RecruitmentTests {
 		int nbTested = 0;
 		for (Iris2020CompatibleTestPlotImpl plot : plots) {
 			Iris2020CompatibleTree tree = plot.getTreeInstance();
-			if (tree.getSpecies() == Iris2020Species.CHR) {
-				int u = 0;
-			}
 			double actual = predictor.predictEventProbability(plot, tree);
 			double expected = plot.getPredProb();
-			if (Math.abs(actual - expected) > 1E-8) {
-				int x = 0;
-			}
 			Assert.assertEquals("Testing probability for plot " + plot.getSubjectId() + ", species " + tree.getSpecies().name(), 
 					expected, 
 					actual, 
@@ -139,7 +132,6 @@ public class Iris2020RecruitmentTests {
 	/*
 	 * Validation test for number of recruits using R validation dataset
 	 */
-	@Ignore
 	@Test
 	public void testMeanNumberPredictionsAgainstRPredictions() throws IOException {
 		Iris2020RecruitmentNumberPredictor predictor = new Iris2020RecruitmentNumberPredictor(false); // deterministic
@@ -161,7 +153,6 @@ public class Iris2020RecruitmentTests {
 	/*
 	 * Validation test for stochastic implementation.
 	 */
-	@Ignore
 	@Test
 	public void testStochasticMeanNumberPredictions() throws IOException {
 		Iris2020RecruitmentNumberPredictor detPredictor = new Iris2020RecruitmentNumberPredictor(false); // deterministic
