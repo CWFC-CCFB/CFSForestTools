@@ -170,8 +170,8 @@ public class Iris2020RecruitmentTests {
 		Matrix diff = realizations.scalarAdd(-meanStoPred);
 		Matrix ssq = diff.transpose().multiply(diff);
 		double variance = ssq.m_afData[0][0] / (realizations.m_iRows - 1);
-		double thetaParmEst = stoPredictor.getThetaParameterEstimate(tree.getSpecies());
-		double expectedVariance = (detPred - 1) + thetaParmEst * (detPred - 1) * (detPred - 1);
+		double invThetaParmEst = stoPredictor.getInvThetaParameterEstimate(tree.getSpecies());
+		double expectedVariance = (detPred - 1) + invThetaParmEst * (detPred - 1) * (detPred - 1);
 		Assert.assertEquals("Testing stochastic mean against deterministic mean " + plot.getSubjectId() + ", species " + tree.getSpecies().name(), 
 				detPred, 
 				meanStoPred, 

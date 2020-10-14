@@ -102,7 +102,7 @@ public class Iris2020RecruitmentNumberPredictor extends REpiceaPredictor {
 	/*
 	 * For test purposes.
 	 */
-	double getThetaParameterEstimate(Iris2020Species species) {
-		return internalPredictors.get(species).theta;
+	double getInvThetaParameterEstimate(Iris2020Species species) {
+		return internalPredictors.get(species).invTheta;
 	}
 }
