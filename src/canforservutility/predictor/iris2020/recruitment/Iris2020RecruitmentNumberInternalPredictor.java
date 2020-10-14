@@ -36,12 +36,14 @@ import repicea.stats.StatisticalUtility;
 class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 
 	private List<Integer> effectList;
-	protected final double theta;
+	protected final double theta; // as produced by R
+	protected final double invTheta; //
 	
 	protected Iris2020RecruitmentNumberInternalPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled, double thetaParm) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this model
 		init();
 		this.theta = thetaParm;
+		this.invTheta = 1d/this.theta;
 	}
 
 	protected void init() {
@@ -283,7 +285,7 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		double xBeta = oXVector.multiply(beta).m_afData[0][0];
 		double mu = Math.exp(xBeta);
 		if (isResidualVariabilityEnabled) {
-			return StatisticalUtility.getRandom().nextNegativeBinomial(mu, theta) + 1;
+			return StatisticalUtility.getRandom().nextNegativeBinomial(mu, invTheta) + 1;
 		} else {
 			return mu + 1;		// offset 1 because y = nbRecruits - 1
 		}
