@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.GeneralHeight2014PredictorTests;
@@ -31,7 +30,7 @@ public class GeneralHeight2009PredictorTests {
 	 * model and not for this version. 
 	 */
 	static void ReadStands() {
-		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTests.class) + "fichier_test_unitaire.csv";
+		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTests.class) + "fichier_test_unitaire_smaller.csv";
 		standMap = new HashMap<String, Heightable2009Stand>();
 		CSVReader reader;
 		try {
@@ -118,9 +117,9 @@ public class GeneralHeight2009PredictorTests {
 		String refFilenameBlups = ObjectUtility.getPackagePath(getClass()) + "refBlup.xml";
 		
 		// UNCOMMENT THIS PART TO SAVE NEW REFERENCE FILES
-//		XmlSerializer serializer = new XmlSerializer(refFilenamePredictions);
+//		XmlSerializer serializer = new XmlSerializer(refFilenamePredictions.replace("bin", "test" + File.separator + "src"));
 //		serializer.writeObject(predictedHeights);
-//		serializer = new XmlSerializer(refFilenameBlups);
+//		serializer = new XmlSerializer(refFilenameBlups.replace("bin", "test" + File.separator + "src"));
 //		serializer.writeObject(blupMap);
 		
 		XmlDeserializer deserializer = new XmlDeserializer(refFilenamePredictions);
@@ -198,7 +197,7 @@ public class GeneralHeight2009PredictorTests {
 		double detPred = detPredictor.predictHeightM(s, tree);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		Matrix realization;
-		for (int i = 0; i < 100000; i++) {
+		for (int i = 0; i < 50000; i++) {
 			((Heightable2009StandImpl) s).monteCarloRealizationID = i;
 			realization = new Matrix(1,1);
 			realization.m_afData[0][0] = stoPredictor.predictHeightM(s, tree);
@@ -208,7 +207,7 @@ public class GeneralHeight2009PredictorTests {
 		double actual = estimate.getMean().m_afData[0][0];
 		double variance = estimate.getVariance().m_afData[0][0];
 		Assert.assertEquals("Comparing deterministic and stochastic predictions", actual, detPred, 1E-2);
-		Assert.assertEquals("Testing the variance", 3.9, variance, .4);
+		Assert.assertEquals("Testing the variance", 3.35, variance, .1);
 		System.out.println("GeneralHeight2009PredictorTests.compareStochasticPredictions - Successful comparisons!");
 	}
 
@@ -233,7 +232,7 @@ public class GeneralHeight2009PredictorTests {
 		String selectedPlotId = plotIds.get(0);
 		Heightable2009Stand s = standMap.get(selectedPlotId);
 		List<Heightable2009Tree> livingTrees = (List) s.getTrees(StatusClass.alive);
-		Heightable2009Tree tree = livingTrees.get(4);
+		Heightable2009Tree tree = livingTrees.get(2);
 		if (tree.getHeightM() == 0d) {
 			throw new InvalidParameterException("This tree should have an observed height!");
 		}
