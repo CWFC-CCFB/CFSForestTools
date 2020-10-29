@@ -22,7 +22,7 @@ public class GeneralHeight2014PredictorTests {
 
 	
 	static void ReadStands() {
-		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTests.class) + "fichier_test_unitaire.csv";
+		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTests.class) + "fichier_test_unitaire_smaller.csv";
 		standMap = new HashMap<String, Heightable2014Stand>();
 		CSVReader reader;
 		try {
@@ -95,7 +95,7 @@ public class GeneralHeight2014PredictorTests {
 				goodMatches++;
 			}
 		}
-		System.out.println("BetaHDRelationTests.comparePredictionsWithSAS - Successful comparisons " + goodMatches);
+		System.out.println("Generalhdrelation2014.comparePredictionsWithSAS - Successful comparisons " + goodMatches);
 	}
 	
 }
