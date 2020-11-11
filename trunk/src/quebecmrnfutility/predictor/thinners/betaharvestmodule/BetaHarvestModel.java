@@ -84,7 +84,7 @@ public final class BetaHarvestModel extends REpiceaBinaryEventPredictor<BetaHarv
 
 	}
 	
-	private static Map<BetaHarvestableSpecies, Map<Treatment, Matrix>> speciesTreatmentDummy;
+	private final Map<BetaHarvestableSpecies, Map<Treatment, Matrix>> speciesTreatmentDummy;
 	@SuppressWarnings("unused")
 	private boolean isCorrectlyInitialized;
 
@@ -96,6 +96,7 @@ public final class BetaHarvestModel extends REpiceaBinaryEventPredictor<BetaHarv
 	public BetaHarvestModel(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled, false, isVariabilityEnabled);
 		isCorrectlyInitialized = false;
+		speciesTreatmentDummy = new TreeMap<BetaHarvestableSpecies, Map<Treatment, Matrix>>();
 		init();
 		oXVector = new Matrix(1,getParameterEstimates().getMean().m_iRows);
 		isCorrectlyInitialized = true;
@@ -121,7 +122,6 @@ public final class BetaHarvestModel extends REpiceaBinaryEventPredictor<BetaHarv
 			
 			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance)); 
 			
-			speciesTreatmentDummy = new TreeMap<BetaHarvestableSpecies, Map<Treatment, Matrix>>();
 			Vector<Integer> index = new Vector<Integer>();
 			index.add(31);						// an element that has to be omitted because there was no occurrence in the fitting data (PEU x CP)
 			for (BetaHarvestableSpecies species : BetaHarvestableSpecies.values()) {
