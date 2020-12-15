@@ -159,7 +159,7 @@ public class Population {
 				if (real == 0 && internalReal >= 1) {
 					recordStabilizer[0] = internalReal;
 					Matrix totalReal = hybHTEstimate.getMean();
-					Matrix varReal = hybHTEstimate.getVarianceOfTotalEstimate().getTotalVariance();
+					Matrix varReal = hybHTEstimate.getCorrectedVariance().getTotalVariance();
 					for (int ii = 0; ii < totalReal.m_iRows; ii++) {
 						recordStabilizer[ii*2 + 1] = totalReal.m_afData[ii][0];
 						recordStabilizer[ii*2 + 2] = varReal.m_afData[ii][ii];
@@ -170,7 +170,7 @@ public class Population {
 					isWriterStabilizerOpen = false;
 				}
 			}
-			VariancePointEstimate correctedVarEstimate = hybHTEstimate.getVarianceOfTotalEstimate();
+			VariancePointEstimate correctedVarEstimate = hybHTEstimate.getCorrectedVariance();
 			Realization thisRealization = new Realization(total, 
 					hybHTEstimate.getMean(), 
 					hybHTEstimate.getUncorrectedVariance().getTotalVariance(), 
