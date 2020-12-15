@@ -141,14 +141,14 @@ public class Population {
 				if (!SimpleLinearModel.R2_95Version && real == 0 && internalReal >= 1) {
 					recordStabilizer[0] = internalReal;
 					recordStabilizer[1] = hybHTEstimate.getMean().m_afData[0][0];
-					recordStabilizer[2] = hybHTEstimate.getVarianceOfTotalEstimate().getTotalVariance().m_afData[0][0];
+					recordStabilizer[2] = hybHTEstimate.getCorrectedVariance().getTotalVariance().m_afData[0][0];
 					writerStabilizer.addRecord(recordStabilizer);
 				} else if (real > 0 && isWriterStabilizerOpen) {
 					writerStabilizer.close();
 					isWriterStabilizerOpen = false;
 				}
 			}
-			VariancePointEstimate correctedVarEstimate = hybHTEstimate.getVarianceOfTotalEstimate();
+			VariancePointEstimate correctedVarEstimate = hybHTEstimate.getCorrectedVariance();
 			double uncorrectedVariance = hybHTEstimate.getUncorrectedVariance().getTotalVariance().m_afData[0][0];
 			if (isCompleteBootstrap) {
 				uncorrectedVariance = hybHTEstimate.getUncorrectedVariance().getModelRelatedVariance().m_afData[0][0];  // onmy the variance of the point estimates for the complete bootstrap

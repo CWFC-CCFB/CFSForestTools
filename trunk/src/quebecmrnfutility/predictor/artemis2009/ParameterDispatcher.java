@@ -223,38 +223,7 @@ public class ParameterDispatcher {
 				dummyTBE = 1;
 			}
 		}
-//		if (moduleID == 2) {
-//			if (stand.isGoingToBeDefoliated()) {		// the dummyTBE affects all the species in the diameter growth model
-//				dummyTBE = 1;
-//			}
-//		} else {
-//			if (stand.isGoingToBeDefoliated() && SPECIES_FOR_TBE.contains(tree.getSpeciesName())) {	// in this case dummyTBE applies only for vulnerable species
-//				dummyTBE = 1;
-//			}
-//		}
-//		
-//		switch (moduleID) {
-//		case 1:
-//		case 3:
-//		case 4:
-//		case 5:
-////			dummyEssence = getSettings().getSpeciesGroupDummyMap().get(stand.getPotentialVegetationID()).get(tree.getSpecies().getValue());
-////			oXVector.m_afData[0][0] = 1.0;
-////			pointer = 1;
-//			if (stand.isGoingToBeDefoliated() && SPECIES_FOR_TBE.contains(tree.getSpeciesName())) {	// in this case dummyTBE applies only for vulnerable species
-//				dummyTBE = 1;
-//			}
-//			break;
-//		case 2:
-////			dummyEssence = getSettings().getSpeciesGroupDummyMap().get(stand.getPotentialVegetationID()).get(tree.getSpecies().getValue());
-////			oXVector.m_afData[0][0] = 1.0;
-////			pointer = 1;
-//			if (stand.isGoingToBeDefoliated()) {		// the dummyTBE affects all the species in the diameter growth model
-//				dummyTBE = 1;
-//			}
-//			break;
-//		}	
-
+		
 		double fTmp = 0.0;
 
 		for (Integer iCase : effectList) {
@@ -314,9 +283,7 @@ public class ParameterDispatcher {
 			case 34: // 7436 occurences
 				double logdt_cc = 0;
 				if (stand.getDateYr() <= 1994) {
-					logdt_cc = Math.log(1995 - stand.getDateYr());		// changed for stand.getDate() TODO check if this works properly
-					//				if (getSettings().getInitialSimulationYear() <= 1994) {
-					//					logdt_cc = Math.log(1995 - getSettings().getInitialSimulationYear());
+					logdt_cc = Math.log(1995 - stand.getDateYr());		// changed for stand.getDate() 
 				}
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
 					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*logdt_cc;
@@ -360,7 +327,7 @@ public class ParameterDispatcher {
 				pointer ++;
 				break;
 			case 51: // 3700 occurences
-				fTmp = (stand.getMeanAnnualTemperatureC());
+				fTmp = stand.getMeanAnnualTemperatureC();
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++)
 					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
 				pointer += dummyEssence.m_iCols;
@@ -370,7 +337,7 @@ public class ParameterDispatcher {
 				pointer ++;
 				break;
 			case 42: // 2366 occurences
-				fTmp = (stand.getMeanAnnualPrecipitationMm());
+				fTmp = stand.getMeanAnnualPrecipitationMm();
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++)
 					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
 				pointer += dummyEssence.m_iCols;
