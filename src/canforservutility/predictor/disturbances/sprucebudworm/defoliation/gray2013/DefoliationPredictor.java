@@ -37,7 +37,6 @@ import biosimclient.Observation;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.covariateproviders.plotlevel.SprayedAgainstDefoliatorProvider;
-import repicea.stats.estimates.SimpleEstimate;
 
 /**
  * This class implements the defoliation model found in Gray (2013).
@@ -279,11 +278,11 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 		double sinSeverity = Math.sin(severityResult); 
 		severityResult = sinSeverity * sinSeverity * 100d;
 		
-		SimpleEstimate estimate = new SimpleEstimate();
-		List<String> indices = new ArrayList<String>();
-		indices.add("Duration");
-		indices.add("Severity");
-		estimate.setRowIndex(indices);
+//		SimpleEstimate estimate = new SimpleEstimate();
+//		List<String> indices = new ArrayList<String>();
+//		indices.add("Duration");
+//		indices.add("Severity");
+//		estimate.setRowIndex(indices);
 		Matrix mean = new Matrix(2,1);
 		mean.m_afData[0][0] = durationResult;
 		mean.m_afData[1][0] = severityResult;
