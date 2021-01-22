@@ -11,7 +11,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.GeneralHeight2014PredictorTests;
+import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.GeneralHeight2014PredictorTest;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.serial.xml.XmlDeserializer;
@@ -20,7 +20,7 @@ import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
 
-public class GeneralHeight2009PredictorTests {
+public class GeneralHeight2009PredictorTest {
 
 
 	static Map<String, Heightable2009Stand> standMap;
@@ -30,7 +30,7 @@ public class GeneralHeight2009PredictorTests {
 	 * model and not for this version. 
 	 */
 	static void ReadStands() {
-		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTests.class) + "fichier_test_unitaire_smaller.csv";
+		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTest.class) + "fichier_test_unitaire_smaller.csv";
 		standMap = new HashMap<String, Heightable2009Stand>();
 		CSVReader reader;
 		try {
@@ -86,7 +86,7 @@ public class GeneralHeight2009PredictorTests {
 	@Test
 	public void comparePredictionsAndBlups() throws Exception {
 		if (standMap == null) {
-			GeneralHeight2009PredictorTests.ReadStands();
+			GeneralHeight2009PredictorTest.ReadStands();
 		}
 		
 		List<String> plotIds = new ArrayList<String>();
@@ -176,7 +176,7 @@ public class GeneralHeight2009PredictorTests {
 	@Test
 	public void compareStochasticPredictions() throws Exception {
 		if (standMap == null) {
-			GeneralHeight2009PredictorTests.ReadStands();
+			GeneralHeight2009PredictorTest.ReadStands();
 		}
 		
 		List<String> plotIds = new ArrayList<String>();
@@ -219,7 +219,7 @@ public class GeneralHeight2009PredictorTests {
 	@Test
 	public void testStochasticPredictionsForTreeWithKnownHeight() {
 		if (standMap == null) {
-			GeneralHeight2009PredictorTests.ReadStands();
+			GeneralHeight2009PredictorTest.ReadStands();
 		}
 		
 		List<String> plotIds = new ArrayList<String>();

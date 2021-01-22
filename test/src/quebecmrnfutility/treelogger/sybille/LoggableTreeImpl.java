@@ -5,7 +5,7 @@ import java.util.Vector;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 
-public class LoggableTreeImplTest implements SybilleLoggableTree {
+public class LoggableTreeImpl implements SybilleLoggableTree {
 
 	
 	private StemTaperStand stand;
@@ -20,7 +20,7 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 	 * @param dbhmm (cm)
 	 * @param heightm (m)
 	 */
-	protected LoggableTreeImplTest(StemTaperStand stand, StemTaperTreeSpecies species, double dbhmm, double heightm, double refVolume) {
+	protected LoggableTreeImpl(StemTaperStand stand, StemTaperTreeSpecies species, double dbhmm, double heightm, double refVolume) {
 		this.stand = stand;
 		this.species = species;
 		this.dbhmm = dbhmm;
@@ -28,7 +28,7 @@ public class LoggableTreeImplTest implements SybilleLoggableTree {
 		this.refVolume = refVolume;
 	}
 
-	protected LoggableTreeImplTest(StemTaperStand stand, StemTaperTreeSpecies species, double dbhmm, double heightm) {
+	protected LoggableTreeImpl(StemTaperStand stand, StemTaperTreeSpecies species, double dbhmm, double heightm) {
 		this(stand, species, dbhmm, heightm, 0d);
 	}
 

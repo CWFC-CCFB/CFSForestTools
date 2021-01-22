@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import repicea.math.Matrix;
 
-public class DefoliationTests {
+public class DefoliationTest {
 
 	@Test
 	public void simpleTestWithoutBioSIM() {

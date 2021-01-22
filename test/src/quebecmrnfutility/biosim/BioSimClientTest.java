@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import quebecmrnfutility.biosim.BioSimClient.BioSimVersion;
@@ -42,7 +43,7 @@ public class BioSimClientTest {
 
 	}
 
-	
+	@Ignore
 	@Test
 	public void simpleConnectionTest() throws BasicClientException {
 		BioSimClient client = BioSimClient.getBioSimClient(BioSimVersion.VERSION_1971_2000);
@@ -55,7 +56,8 @@ public class BioSimClientTest {
 		client.close();
 	}
 
-	
+
+	@Ignore
 	@Test
 	public void repeatedConnectionTestSameCoordinates() throws BasicClientException {
 		for (int i = 0; i < 10; i++) {
@@ -71,6 +73,7 @@ public class BioSimClientTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void repeatedConnectionTestDifferentCoordinates() throws BasicClientException {
 		Random randomGen = new Random();
@@ -88,6 +91,7 @@ public class BioSimClientTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void climateRecordingTestWithConnectionDisabled() throws Exception {
 		BioSimClient client = BioSimClient.getBioSimClient(BioSimVersion.VERSION_1971_2000);

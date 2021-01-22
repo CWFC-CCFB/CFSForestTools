@@ -11,7 +11,7 @@ import repicea.io.javacsv.CSVReader;
 import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassProvider.QcSlopeClass;
 import repicea.util.ObjectUtility;
 
-public class MeloThinnerTests {
+public class MeloThinnerTest {
 
 	private static List<MeloThinnerPlotImpl> Plots;
 	
@@ -22,7 +22,7 @@ public class MeloThinnerTests {
 	private static void ReadPlots() throws IOException {
 		if (Plots == null) {
 			Plots = new ArrayList<MeloThinnerPlotImpl>();
-			String testFile = ObjectUtility.getRelativePackagePath(MeloThinnerTests.class) + "HarvestPred.csv";
+			String testFile = ObjectUtility.getRelativePackagePath(MeloThinnerTest.class) + "HarvestPred.csv";
 			CSVReader reader = new CSVReader(testFile);
 			Object[] record;
 			while ((record = reader.nextRecord()) != null) {

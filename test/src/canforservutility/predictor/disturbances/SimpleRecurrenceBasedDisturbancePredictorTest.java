@@ -7,7 +7,7 @@ import canforservutility.predictor.disturbances.SimpleRecurrenceBasedDisturbance
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 
-public class SimpleRecurrenceBasedDisturbancePredictorTests {
+public class SimpleRecurrenceBasedDisturbancePredictorTest {
 
 	static class Stand implements MonteCarloSimulationCompliantObject {
 
