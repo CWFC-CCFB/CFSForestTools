@@ -2,7 +2,7 @@
 
 	<property name="project.name" value="canforservutility" />
 	<property name="project.description" value="Growth Models for Eastern Canada" />
-	<property name="ext.dir" value="../externallibraries" />
+	<property name="ext.dir" value="../externalLibraries" />
 	<property name="bin.dir" value="bin" />
 	<property name="src.dir" value="src" />
 	<property name="test.dir" value="test/src" />
