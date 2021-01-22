@@ -23,9 +23,14 @@ import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
+import repicea.util.REpiceaTranslator;
 
 @SuppressWarnings("rawtypes")
 public class SybilleTreeLoggerTest {
+
+	static {
+		REpiceaTranslator.setCurrentLanguage(REpiceaTranslator.Language.French); // test results were initially recorded with language set to French
+	}
 
 	private class StemTaperStandInternalImpl implements StemTaperStand {
 
@@ -111,7 +116,7 @@ public class SybilleTreeLoggerTest {
 			double dbhCm = Double.parseDouble(record[dbfReader.getHeader().getIndexOfThisField("dhpcm")].toString());
 			double heightM = Double.parseDouble(record[dbfReader.getHeader().getIndexOfThisField("hautm_arte")].toString());
 			double refVolume = Double.parseDouble(record[dbfReader.getHeader().getIndexOfThisField("vol_defil0")].toString());
-			LoggableTreeImplTest tree = new LoggableTreeImplTest(stand, species, dbhCm, heightM, refVolume);
+			LoggableTreeImpl tree = new LoggableTreeImpl(stand, species, dbhCm, heightM, refVolume);
 			SybilleTreeLogger treeLogger = new SybilleTreeLogger();
 			SybilleTreeLoggerParameters param = treeLogger.createDefaultTreeLoggerParameters();
 			param.load(paramFilename);
@@ -128,17 +133,17 @@ public class SybilleTreeLoggerTest {
 	}
 	
 	private Map<String, Double> getObservedMap(EstimationMethodInDeterministicMode estimationMethod, boolean optimization) throws IOException {
-		StemTaperStand stand = new StemTaperStandImplTest();
+		StemTaperStand stand = new StemTaperStandImpl();
 		
 		Collection<SybilleLoggableTree> coll = new ArrayList<SybilleLoggableTree>();
-		coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.BOP, 25, 20));
-		coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.EPB, 25, 20));
-		coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.EPN, 25, 20));
-		coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.EPR, 25, 20));
-		coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.PET, 25, 20));
-		coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.PEG, 25, 20));
-		coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.SAB, 25, 20));
-		coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.THO, 25, 20));
+		coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.BOP, 25, 20));
+		coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.EPB, 25, 20));
+		coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.EPN, 25, 20));
+		coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.EPR, 25, 20));
+		coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.PET, 25, 20));
+		coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.PEG, 25, 20));
+		coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.SAB, 25, 20));
+		coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.THO, 25, 20));
 		
 		SybilleTreeLogger treeLogger = new SybilleTreeLogger();
 		treeLogger.init(coll);
@@ -493,9 +498,9 @@ public class SybilleTreeLoggerTest {
 		int nbRealizations = 10000;
 		Collection<SybilleLoggableTree> coll = new ArrayList<SybilleLoggableTree>();
 		for (int i = 0; i < nbRealizations; i++) {
-			StemTaperStandImplTest stand = new StemTaperStandImplTest();
+			StemTaperStandImpl stand = new StemTaperStandImpl();
 			stand.setMonteCarloRealizationId(i);
-			coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.BOP, dbhCm, heightM));
+			coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.BOP, dbhCm, heightM));
 		}
 
 		SybilleTreeLogger treeLogger = new SybilleTreeLogger(true);	// true : in stochastic mode
@@ -507,8 +512,8 @@ public class SybilleTreeLoggerTest {
 		Map<LogCategory, Double> obsMapStochastic = this.getMap(factor, treeLogger);
 		
 		coll = new ArrayList<SybilleLoggableTree>();
-		StemTaperStandImplTest stand = new StemTaperStandImplTest();
-		coll.add(new LoggableTreeImplTest(stand, StemTaperTreeSpecies.BOP, dbhCm, heightM));
+		StemTaperStandImpl stand = new StemTaperStandImpl();
+		coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.BOP, dbhCm, heightM));
 		treeLogger = new SybilleTreeLogger();	// in deterministic mode
 		treeLogger.init(coll);
 		treeLogger.setTreeLoggerParameters(treeLogger.createDefaultTreeLoggerParameters());

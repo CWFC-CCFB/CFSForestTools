@@ -15,14 +15,14 @@ import repicea.io.javacsv.CSVReader;
 import repicea.util.ObjectUtility;
 
 
-public class GeneralHeight2014PredictorTests {
+public class GeneralHeight2014PredictorTest {
 
 	
 	static Map<String, Heightable2014Stand> standMap;
 
 	
 	static void ReadStands() {
-		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTests.class) + "fichier_test_unitaire_smaller.csv";
+		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTest.class) + "fichier_test_unitaire_smaller.csv";
 		standMap = new HashMap<String, Heightable2014Stand>();
 		CSVReader reader;
 		try {
@@ -70,7 +70,7 @@ public class GeneralHeight2014PredictorTests {
 	@Test
 	public void comparePredictionsWithSAS() {
 		if (standMap == null) {
-			GeneralHeight2014PredictorTests.ReadStands();
+			GeneralHeight2014PredictorTest.ReadStands();
 		}
 		List<Integer> measurementDates = new ArrayList<Integer>();
 		measurementDates.add(2015);

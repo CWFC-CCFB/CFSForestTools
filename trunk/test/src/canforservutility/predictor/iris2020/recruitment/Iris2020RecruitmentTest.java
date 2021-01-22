@@ -19,7 +19,7 @@ import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.util.ObjectUtility;
 
-public class Iris2020RecruitmentTests {
+public class Iris2020RecruitmentTest {
 	
 	private static final Map<String, DrainageGroup> DrainageGroupMatch = new HashMap<String, DrainageGroup>();
 	static {
@@ -81,7 +81,7 @@ public class Iris2020RecruitmentTests {
 	private static List<Iris2020CompatibleTestPlotImpl> getPlotListForOccurrences() throws IOException {
 		if (PlotListForOccurrences == null) {
 			PlotListForOccurrences = new ArrayList<Iris2020CompatibleTestPlotImpl>();
-			String filename = ObjectUtility.getPackagePath(Iris2020RecruitmentTests.class) + "0_RecruitmentOccurrenceValidationDataset.csv";
+			String filename = ObjectUtility.getPackagePath(Iris2020RecruitmentTest.class) + "0_RecruitmentOccurrenceValidationDataset.csv";
 			CSVReader reader = new CSVReader(filename);
 			Object[] record;
 			while ((record = reader.nextRecord()) != null) {
@@ -95,7 +95,7 @@ public class Iris2020RecruitmentTests {
 	private static List<Iris2020CompatibleTestPlotImpl> getPlotListForNumbers() throws IOException {
 		if (PlotListForNumbers == null) {
 			PlotListForNumbers = new ArrayList<Iris2020CompatibleTestPlotImpl>();
-			String filename = ObjectUtility.getPackagePath(Iris2020RecruitmentTests.class) + "0_RecruitmentNumberValidationDataset.csv";
+			String filename = ObjectUtility.getPackagePath(Iris2020RecruitmentTest.class) + "0_RecruitmentNumberValidationDataset.csv";
 			CSVReader reader = new CSVReader(filename);
 			Object[] record;
 			while ((record = reader.nextRecord()) != null) {

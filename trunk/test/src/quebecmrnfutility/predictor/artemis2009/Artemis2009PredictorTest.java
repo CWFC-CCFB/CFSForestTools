@@ -16,7 +16,7 @@ import repicea.math.Matrix;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
-public class Artemis2009PredictorTests {
+public class Artemis2009PredictorTest {
 
 	private static class ReferenceTree implements Comparable<ReferenceTree> {
 		private final double dbhCm;
@@ -75,7 +75,7 @@ public class Artemis2009PredictorTests {
 	
 	private void readReferenceTrees() {
 		try {
-			String referenceFilename = ObjectUtility.getRelativePackagePath(Artemis2009PredictorTests.class) + "pred10yrs.csv";
+			String referenceFilename = ObjectUtility.getRelativePackagePath(Artemis2009PredictorTest.class) + "pred10yrs.csv";
 
 			ReferenceTreeMap = new HashMap<String, List<ReferenceTree>>();
 			

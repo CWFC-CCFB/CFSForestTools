@@ -2,7 +2,7 @@ package quebecmrnfutility.treelogger.sybille;
 
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
 
-public class StemTaperStandImplTest implements StemTaperStand {
+public class StemTaperStandImpl implements StemTaperStand {
 
 	private int monteCarloId;
 	

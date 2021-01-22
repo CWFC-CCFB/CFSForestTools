@@ -31,7 +31,7 @@ import repicea.simulation.disturbances.DisturbanceTypeProvider.DisturbanceType;
 
 
 
-public class SpruceBudwormOutbreakOccurrencePredictorTests {
+public class SpruceBudwormOutbreakOccurrencePredictorTest {
 
 	@Test
 	public void simpleTest() {
