@@ -322,22 +322,27 @@ public class QuebecGeneralSettings {
 		TREE_STATUS_LIST.put(10, "Vivant");
 		TREE_STATUS_LIST.put(12, "Vivant");
 		TREE_STATUS_LIST.put(14, "Mort");
+		TREE_STATUS_LIST.put(15, "Mort");
 		TREE_STATUS_LIST.put(16, "Mort");
 		TREE_STATUS_LIST.put(23, "Mort");
 		TREE_STATUS_LIST.put(24, "Mort");
+		// STATUS 25 - intruder should not be listed
 		TREE_STATUS_LIST.put(26, "Coup\u00E9");
 		TREE_STATUS_LIST.put(29, "Vivant");
 		TREE_STATUS_LIST.put(30, "Vivant");
 		TREE_STATUS_LIST.put(32, "Vivant");
 		TREE_STATUS_LIST.put(34, "Mort");
+		TREE_STATUS_LIST.put(35, "Mort");
 		TREE_STATUS_LIST.put(36, "Mort");
 		TREE_STATUS_LIST.put(40, "Vivant");
 		TREE_STATUS_LIST.put(42, "Vivant");
 		TREE_STATUS_LIST.put(44, "Mort");
+		TREE_STATUS_LIST.put(45, "Mort");
 		TREE_STATUS_LIST.put(46, "Mort");
 		TREE_STATUS_LIST.put(50, "Vivant");
 		TREE_STATUS_LIST.put(52, "Vivant");
 		TREE_STATUS_LIST.put(54, "Mort");
+		TREE_STATUS_LIST.put(55, "Mort");
 		TREE_STATUS_LIST.put(56, "Mort");
 	}
 

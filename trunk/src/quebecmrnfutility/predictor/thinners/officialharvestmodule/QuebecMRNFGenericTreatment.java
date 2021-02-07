@@ -25,8 +25,8 @@
 package quebecmrnfutility.predictor.thinners.officialharvestmodule;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestModel;
 import quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestModel.Treatment;
@@ -41,10 +41,11 @@ public class QuebecMRNFGenericTreatment implements Serializable {
 
 	private static final long serialVersionUID = 20110407;
 	
-	private static Map<String, String> CLASS_MAP = new HashMap<String, String>();
+	private static Map<String, String> CLASS_MAP = new TreeMap<String, String>();
 	static {
 		CLASS_MAP.put("FormerOfficialHarvestModel","quebecmrnfutility.predictor.thinners.formerofficialharvestmodule.FormerOfficialHarvestModel$Treatment");
 		CLASS_MAP.put("BetaHarvestModel","quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestModel$Treatment");
+		CLASS_MAP.put("OfficialHarvestModel","quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel$TreatmentType");	// OfficialHarvestModel must be after FormerOfficialHarvestModel, otherwise there might be confusion
 	}
 	
 	
