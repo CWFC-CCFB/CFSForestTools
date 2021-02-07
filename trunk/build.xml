@@ -1,6 +1,6 @@
 <project name="canforservutility">
 
-	<property name="project.name" value="canforservutility" />
+	<property name="project.name" value="mrnf-foresttools" />
 	<property name="project.description" value="Growth Models for Eastern Canada" />
 	<property name="ext.dir" value="../externalLibraries" />
 	<property name="bin.dir" value="bin" />
