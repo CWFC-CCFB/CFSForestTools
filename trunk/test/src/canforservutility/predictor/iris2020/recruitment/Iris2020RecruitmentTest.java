@@ -180,7 +180,7 @@ public class Iris2020RecruitmentTest {
 		Assert.assertEquals("Testing stochastic variance against expected variance " + plot.getSubjectId() + ", species " + tree.getSpecies().name(), 
 				expectedVariance, 
 				variance, 
-				1E-1);
+				1.5E-1);
 		System.out.println("Expected variance = " + expectedVariance + " Actual variance = " + variance);
 	}
 
