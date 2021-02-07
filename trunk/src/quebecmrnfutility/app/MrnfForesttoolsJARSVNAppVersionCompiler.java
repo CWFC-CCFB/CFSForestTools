@@ -28,7 +28,6 @@ public class MrnfForesttoolsJARSVNAppVersionCompiler extends AbstractAppVersionC
 
 	private static final String APP_URL = "http://svn.code.sf.net/p/mrnfforesttools/code/trunk";
 	private static String Version_Filename_Bin = ObjectUtility.getPackagePath(MrnfForesttoolsJARSVNAppVersionCompiler.class) + MrnfForesttoolsJARSVNAppVersion.ShortFilename;
-	private static String Version_Filename_Src = ObjectUtility.getPackagePath(MrnfForesttoolsJARSVNAppVersionCompiler.class).replace("bin", "src") + MrnfForesttoolsJARSVNAppVersion.ShortFilename;
 	
 	public MrnfForesttoolsJARSVNAppVersionCompiler() {
 		super();
@@ -37,8 +36,6 @@ public class MrnfForesttoolsJARSVNAppVersionCompiler extends AbstractAppVersionC
 	public static void main(String args[]) {
 		MrnfForesttoolsJARSVNAppVersionCompiler compiler = new MrnfForesttoolsJARSVNAppVersionCompiler();
 		try {
-			compiler.createRevisionFile(APP_URL, Version_Filename_Src);
-			System.out.println("Revision file in sources successfully updated!");
 			compiler.createRevisionFile(APP_URL, Version_Filename_Bin);
 			System.out.println("Revision file in binaries successfully updated!");
 		} catch (Exception e) {
