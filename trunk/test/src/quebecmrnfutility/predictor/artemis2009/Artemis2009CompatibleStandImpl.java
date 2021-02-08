@@ -139,5 +139,8 @@ class Artemis2009CompatibleStandImpl implements Artemis2009CompatibleStand {
 	@Override
 	public Matrix getBasalAreaBySpeciesGroup() {return this.basalAreaBySpeciesGroups;}
 
+	@Override
+	public boolean isGoingToBeHarvested() {return false;}
+
 
 }

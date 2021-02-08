@@ -27,6 +27,7 @@ import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.ElevationMProvider;
 import repicea.simulation.covariateproviders.plotlevel.GeographicalCoordinatesProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
+import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
 import repicea.simulation.covariateproviders.plotlevel.MeanAnnualPrecipitationMmProvider;
 import repicea.simulation.covariateproviders.plotlevel.MeanAnnualTemperatureCProvider;
@@ -46,7 +47,8 @@ public interface Artemis2009CompatibleStand extends PotentialVegetationProvider,
 													StemDensityHaProvider,
 													AreaHaProvider,
 													MonteCarloSimulationCompliantObject,
-													GrowthStepLengthYrProvider {
+													GrowthStepLengthYrProvider,
+													InterventionPlannedProvider {
 	
 	
 	@Override
