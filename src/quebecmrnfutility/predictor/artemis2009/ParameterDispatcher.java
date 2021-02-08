@@ -247,14 +247,16 @@ public class ParameterDispatcher {
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 3: // 22 091 occurences
-				oXVector.m_afData[0][pointer] = 0.0;
+//				oXVector.m_afData[0][pointer] = 0.0;
 
-				if (stand.isInterventionResult()) {
-					if (!stand.isInitialStand() || moduleID != 2) {		// 2 : diameter growth module 
-						oXVector.m_afData[0][pointer] = 1.0;
-					}
+//				if (stand.isInterventionResult()) {
+//					if (!stand.isInitialStand() || moduleID != 2) {		// 2 : diameter growth module 
+//						oXVector.m_afData[0][pointer] = 1.0;
+//					}
+//				} 
+				if (stand.isGoingToBeHarvested()) {
+					oXVector.m_afData[0][pointer] = 1.0;
 				} 
-
 				pointer ++;
 				break;
 			case 45: // 17 833 occurences
@@ -360,19 +362,26 @@ public class ParameterDispatcher {
 				pointer ++;
 				break;
 			case 2: // 1006 occurences
-				//if (stand.isCutPreviousStep()) {			// this effect no longer applies because the cut is always done immediately after the measurement MF2011-04-24
-				//oXVector.m_afData[0][pointeur] = 1.0;
-				//} else {
-				oXVector.m_afData[0][pointer] = 0.0;
-				//}
+//				//if (stand.isCutPreviousStep()) {			// this effect no longer applies because the cut is always done immediately after the measurement MF2011-04-24
+//				//oXVector.m_afData[0][pointeur] = 1.0;
+//				//} else {
+//				oXVector.m_afData[0][pointer] = 0.0;
+//				//}
+//				pointer ++;
+				if (stand.isInterventionResult()) {	// was harvested in the previous step
+					oXVector.m_afData[0][pointer] = 1.0;
+				}
 				pointer ++;
 				break;
 			case 4: // 995 occurences
 				int currentCut = 0;
-				if (stand.isInterventionResult()) {
-					if (!stand.isInitialStand() || moduleID != 2) {		// 2: diameter growth module id
-						currentCut = 1;
-					}
+//				if (stand.isInterventionResult()) {
+//					if (!stand.isInitialStand() || moduleID != 2) {		// 2: diameter growth module id
+//						currentCut = 1;
+//					}
+//				}
+				if (stand.isGoingToBeHarvested()) {
+					currentCut = 1;
 				}
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
 					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii] * currentCut;
