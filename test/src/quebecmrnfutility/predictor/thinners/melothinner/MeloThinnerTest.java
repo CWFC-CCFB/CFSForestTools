@@ -148,4 +148,19 @@ public class MeloThinnerTest {
 		Assert.assertEquals("Comparing plot no " + plot.getSubjectId() + " with and without a 30% increase of AAC", -0.13954637384827573, diff, 1E-6);
 	}
 
+	@Test
+	public void testModelWithFixedAAC() throws IOException {
+		ReadPlots();
+		MeloThinnerPredictor predictor = new MeloThinnerPredictor(false);
+		MeloThinnerPlotImpl plot = Plots.get(0);
+		double basicAACprediction = predictor.predictEventProbability(plot, null, plot.getYear0(), plot.getYear1()); 
+		predictor.setFixedAAC(3d);
+		double withAACSetTo3prediction = predictor.predictEventProbability(plot, null, plot.getYear0(), plot.getYear1()); 
+		predictor.setFixedAAC(null);
+		double basicAACprediction2 = predictor.predictEventProbability(plot, null, plot.getYear0(), plot.getYear1()); 
+		double diff = basicAACprediction - withAACSetTo3prediction;
+		Assert.assertEquals("Comparing plot no " + plot.getSubjectId() + " current AAC and AAC set to 3 m3/ha/yr", -0.440087368502928843, diff, 1E-8);
+		Assert.assertEquals("Comparing plot no " + plot.getSubjectId() + " current AAC before and after using the setFixedAAC method", basicAACprediction, basicAACprediction2, 1E-8);
+	}
+
 }

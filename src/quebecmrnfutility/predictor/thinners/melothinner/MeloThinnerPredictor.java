@@ -19,6 +19,7 @@
  */
 package quebecmrnfutility.predictor.thinners.melothinner;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +79,12 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	private Map<String, Matrix> dynamicTypeDummy;
 	private final GaussHermiteQuadrature ghq = new GaussHermiteQuadrature(NumberOfPoints.N5);
 	private final EmbeddedFunction embeddedFunction;
+	private Double fixedAAC;
 	
+	/**
+	 * Constructor.
+	 * @param isVariabilityEnabled a boolean that enables or disables the stochastic mode
+	 */
 	public MeloThinnerPredictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
 		init();
@@ -89,6 +95,19 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 		embeddedFunction.setParameterValue(1, 0);
 	}
 
+	/**
+	 * Set the annual allowance cut volume. The aac parameter must be the annual
+	 * allowance cut volume per hectare. It has to be positive or null. If null,
+	 * the aac is derived from past aac.
+	 * @param aac a Double
+	 */
+	public void setFixedAAC(Double aac) {
+		if (aac != null && (aac < 0 || Double.isNaN(aac))) {
+			throw new InvalidParameterException("The aac parameter must be a positive double!");
+		}
+		fixedAAC = aac;
+	}
+	
 	@Override
 	protected void init() {
 		try {
@@ -122,8 +141,8 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	/**
 	 *  {@inheritDoc}
 	 *  For this class, the tree parameter should be null.
-	 *  Moreover, the additional parameters in the parms parameter ar are first the 
-	 *  initial year, then the final year and 	 *  an optional modulation factor 
+	 *  Moreover, the additional parameters in the parms parameter are are first the 
+	 *  initial year, then the final year and an optional modulation factor 
 	 *  for the AAC. The modulation factor must be something between -1 (exclusive)
 	 *  and +1 (inclusive) which are interpreted as -100% and +100% of the AAC. 
 	 *  Values beyond this range are not considered and no modulation factor is then used.
@@ -154,11 +173,18 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 			} else {
 				ownership = LandOwnership.Public;
 			}
-			aac = MeloThinnerAACProvider.getInstance().getAACValues(stand.getQuebecForestRegion(),
-					ownership, 
-					year0,
-					year1,
-					modulationFactor);
+			if (this.fixedAAC != null) {
+				aac = new double[year1 - year0];
+				for (int i = 0; i < aac.length; i++) {
+					aac[i] = fixedAAC * (1d + modulationFactor);
+				}
+			} else {
+				aac = MeloThinnerAACProvider.getInstance().getAACValues(stand.getQuebecForestRegion(),
+						ownership, 
+						year0,
+						year1,
+						modulationFactor);
+			}
 		}
 		double baseline = getBaseline(beta, aac);
 
