@@ -19,6 +19,9 @@
  */
 package quebecmrnfutility.predictor.thinners.melothinner;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Window;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassProvider.QcSlopeClass;
+import repicea.gui.REpiceaShowableUIWithParent;
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
@@ -50,7 +54,7 @@ import repicea.util.ObjectUtility;
  * </a>
  */
 @SuppressWarnings("serial")
-public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<MeloThinnerPlot, Object> {
+public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<MeloThinnerPlot, Object> implements REpiceaShowableUIWithParent {
 
 
 	class EmbeddedFunction extends AbstractMathematicalFunction {
@@ -79,7 +83,8 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	private Map<String, Matrix> dynamicTypeDummy;
 	private final GaussHermiteQuadrature ghq = new GaussHermiteQuadrature(NumberOfPoints.N5);
 	private final EmbeddedFunction embeddedFunction;
-	private Double fixedAAC;
+	protected Double fixedAAC;
+	private transient MeloThinnerPredictorDialog dialog;
 	
 	/**
 	 * Constructor.
@@ -302,9 +307,27 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	void setGaussianQuadrature(boolean quadEnabled) {
 		this.quadratureEnabled = quadEnabled;
 	}
+
+	@Override
+	public Component getUI(Container parent) {
+		if (dialog == null) {
+			dialog = new MeloThinnerPredictorDialog(this, (Window) parent);
+		}
+		return dialog;
+	}
+
+	@Override
+	public boolean isVisible() {
+		if (dialog != null && dialog.isVisible()) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void showUI(Window parent) {
+		getUI(parent).setVisible(true);
+	}
 	
 
-//	public static void main(String[] args) {
-//		new MeloThinnerPredictor(false);
-//	}
 }
