@@ -20,6 +20,7 @@ package quebecmrnfutility.predictor.matapedia;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import quebecmrnfutility.predictor.matapedia.MatapediaTree.MatapediaTreeSpecies;
 import repicea.math.Matrix;
@@ -59,9 +60,10 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 	private static final long serialVersionUID = 20120912L;
 
 	private final static double offset5Years = Math.log(5d);		
+
+	public final static String ParmTimeStep = "timeStep";
 	
 	private final LinkFunction linkFunction;
-//	private final LinearStatisticalExpression eta;
 	private final GaussHermiteQuadrature ghq;
 	private final List<Integer> indicesForGaussianQuad;
 	
@@ -117,7 +119,7 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 	 * @return the predicted probability of mortality
 	 */
 	@Override
-	public synchronized double predictEventProbability(MatapediaStand stand, MatapediaTree tree, Object... parms) {
+	public synchronized double predictEventProbability(MatapediaStand stand, MatapediaTree tree, Map<String, Object> parms) {
 		
 		double etaValue = fixedEffectsPrediction(stand, tree);
 		linkFunction.setVariableValue(1, etaValue);
@@ -135,8 +137,8 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 					getDefaultRandomEffects(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT).getDistribution().getStandardDeviation());
 		}
 		
-		if (parms != null && parms.length > 0 && parms[0] instanceof Double) {
-			double timeStep = (Double) parms[0];
+		if (parms != null && parms.containsKey(ParmTimeStep)) {
+			double timeStep = (Double) parms.get(ParmTimeStep);
 			prob = 1 - Math.pow (1 - prob, timeStep / 5d);		// correction in case of 6-yr growth step
 		}
 		return prob;

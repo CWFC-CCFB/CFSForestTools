@@ -21,6 +21,7 @@ package canforservutility.predictor.iris2020.recruitment;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.DisturbanceType;
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.OriginType;
@@ -34,27 +35,6 @@ import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.Dra
 @SuppressWarnings("serial")
 class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<Iris2020CompatiblePlot, Iris2020CompatibleTree> {
 
-
-	
-//	static Map<DrainageGroup, Matrix> DrainageGroupDummyMatrices = new HashMap<DrainageGroup, Matrix>();
-//	static {
-//		Matrix oMat = new Matrix(1,3);
-//		DrainageGroupDummyMatrices.put(DrainageGroup.Mesic, oMat);
-//		
-//		oMat = new Matrix(1,3);
-//		oMat.m_afData[0][0] = 1d;
-//		DrainageGroupDummyMatrices.put(DrainageGroup.Xeric, oMat);
-//		
-//		oMat = new Matrix(1,3);
-//		oMat.m_afData[0][1] = 1d;
-//		DrainageGroupDummyMatrices.put(DrainageGroup.Subhydric, oMat);
-//
-//		oMat = new Matrix(1,3);
-//		oMat.m_afData[0][2] = 1d;
-//		DrainageGroupDummyMatrices.put(DrainageGroup.Hydric, oMat);
-//	}
-	
-	
 	
 	private List<Integer> effectList;
 	private final boolean offsetEnabled;
@@ -83,7 +63,7 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 	}
 	
 	@Override
-	public synchronized double predictEventProbability(Iris2020CompatiblePlot plot, Iris2020CompatibleTree tree, Object... parms) {
+	public synchronized double predictEventProbability(Iris2020CompatiblePlot plot, Iris2020CompatibleTree tree, Map<String, Object> parms) {
 		Matrix beta = getParametersForThisRealization(plot);
 		constructXVector(plot, tree);
 		double xBeta = oXVector.multiply(beta).m_afData[0][0];

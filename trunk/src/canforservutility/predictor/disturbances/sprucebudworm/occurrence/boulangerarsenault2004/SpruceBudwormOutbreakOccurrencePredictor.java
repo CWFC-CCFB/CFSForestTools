@@ -47,6 +47,8 @@ import repicea.util.ObjectUtility;
  */
 public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinaryEventPredictor<SpruceBudwormOutbreakOccurrencePlot, Object> {
 
+	public static final String ParmCurrentDateYr = "currentDateYr";
+	public static final String ParmDisturbanceOccurrences = "disturbanceOccurrences";
 	
 	static class InternalParameterEstimates extends ModelParameterEstimates {
 
@@ -117,17 +119,17 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	
 
 	@Override
-	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Object... parms) {
+	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<String, Object> parms) {
 		Matrix recurrence = getParametersForThisRealization(plotSample);
 		double betaParm = recurrence.m_afData[1][0];
 		double lambdaParm = 1d / recurrence.m_afData[0][0];
 //		double tmp = GammaFunction.gamma(1 + 1d/betaParm);
 //		double estimatedPopVariance = 1d / (lambdaParm * lambdaParm) * (GammaFunction.gamma(1 + 2d/betaParm) - tmp * tmp);
-		Integer currentDateYr = (Integer) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Integer.class, parms);
+		Integer currentDateYr = (Integer) parms.get(ParmCurrentDateYr);
 		if (currentDateYr == null) {
 			throw new InvalidParameterException("The parms argument must provide at least an instance of integer which represents the current date (yrs)");
 		}
-		DisturbanceOccurrences occurrences = (DisturbanceOccurrences) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(DisturbanceOccurrences.class, parms);
+		DisturbanceOccurrences occurrences = (DisturbanceOccurrences) parms.get(ParmDisturbanceOccurrences);
 		Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
 		if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
 			double marginalProb = 0d;
@@ -200,13 +202,13 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	
 	
 	@Override
-	public Object predictEvent(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Object... parms) {
+	public Object predictEvent(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<String, Object> parms) {
 		double eventProbability = predictEventProbability(plotSample, tree, parms);
 		if (eventProbability < 0 || eventProbability > 1) {
 			return null;
 		} else if (isResidualVariabilityEnabled) {
-			int currentDateYr = (Integer) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Integer.class, parms);
-			DisturbanceOccurrences occurrences = (DisturbanceOccurrences) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(DisturbanceOccurrences.class, parms);
+			int currentDateYr = (Integer) parms.get(ParmCurrentDateYr);
+			DisturbanceOccurrences occurrences = (DisturbanceOccurrences) parms.get(ParmDisturbanceOccurrences);
 			Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
 			boolean occurred;
 			if (timeSinceLastOutbreak == null) {
