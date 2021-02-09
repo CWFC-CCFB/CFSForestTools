@@ -48,6 +48,7 @@ public class FormerOfficialHarvestModel extends REpiceaBinaryEventPredictor<Form
 	
 	private static final long serialVersionUID = 20100905L;
 
+	public final static String ParmTreatment = "treat";
 	/**
 	 * This Enum class contains all the available treatment for this harvester.
 	 * @author M. Fortin - September 2010
@@ -135,8 +136,8 @@ public class FormerOfficialHarvestModel extends REpiceaBinaryEventPredictor<Form
 	
 	
 	@Override
-	public synchronized double predictEventProbability(FormerOfficialHarvestableStand stand, FormerOfficialHarvestableTree tree, Object... parms) {
-		Enum<?> treatment = (Enum<?>) parms[0];
+	public synchronized double predictEventProbability(FormerOfficialHarvestableStand stand, FormerOfficialHarvestableTree tree, Map<String, Object> parms) {
+		Enum<?> treatment = (Enum<?>) parms.get(ParmTreatment);
 		FormerOfficialHarvestSubmodel submodel = modelParametersLibrary.get(treatment);
 		Matrix modelParameters = submodel.getSubParametersForThisStand(stand);
 		oXVector = xVectorFactory.getFixedEffectVector(stand, tree, (Treatment) treatment);

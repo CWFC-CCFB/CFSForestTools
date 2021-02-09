@@ -20,6 +20,7 @@ package quebecmrnfutility.predictor.artemis2009;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
@@ -53,7 +54,7 @@ class Artemis2009RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEve
 	}
 	
 	@Override
-	public synchronized double predictEventProbability(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree, Object... parms) {
+	public synchronized double predictEventProbability(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree, Map<String, Object> parms) {
 		Matrix beta = getParametersForThisRealization(stand);
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009RecruitmentOccurrencePredictor.ModuleName, effectList);
 		double xBeta = oXVector.multiply(beta).m_afData[0][0];

@@ -56,7 +56,11 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("serial")
 public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<MeloThinnerPlot, Object> implements REpiceaShowableUIWithParent {
 
-
+	public final static String ParmAAC = "aac";
+	public final static String ParmYear0 = "year0";
+	public final static String ParmYear1 = "year1";
+	public final static String ParmModulation = "modulation";
+	
 	class EmbeddedFunction extends AbstractMathematicalFunction {
 		@Override
 		public Double getValue() {
@@ -153,20 +157,20 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	 *  Values beyond this range are not considered and no modulation factor is then used.
 	 */
 	@Override
-	public synchronized double predictEventProbability(MeloThinnerPlot stand, Object tree, Object... parms) {
+	public synchronized double predictEventProbability(MeloThinnerPlot stand, Object tree, Map<String, Object> parms) {
 		oXVector.resetMatrix();
 		Matrix beta = getParametersForThisRealization(stand);
 		double proportionalPart = getProportionalPart(stand, beta);
 		double[] aac;
 		double modulationFactor = 0d;
-		if (parms[0] instanceof double[]) {
-			aac = (double[]) parms[0];
+		if (parms.containsKey(ParmAAC)) {
+			aac = (double[]) parms.get(ParmAAC);
 		} else {
-			int year0 = (Integer) parms[0];
-			int year1 = (Integer) parms[1];
+			int year0 = (Integer) parms.get(ParmYear0);
+			int year1 = (Integer) parms.get(ParmYear1);
 
-			if (parms.length > 2) {
-				modulationFactor = (Double) parms[2];
+			if (parms.containsKey(ParmModulation)) {
+				modulationFactor = (Double) parms.get(ParmModulation);
 				if (modulationFactor <= -1d || modulationFactor > 1d) {
 					modulationFactor = 0;
 				}
@@ -231,7 +235,7 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	 *  Values beyond this range are not considered and no modulation factor is then used.
 	 */
 	@Override
-	public Object predictEvent(MeloThinnerPlot stand, Object tree, Object... parms) {
+	public Object predictEvent(MeloThinnerPlot stand, Object tree, Map<String, Object> parms) {
 		return super.predictEvent(stand, tree, parms);
 	}
 	

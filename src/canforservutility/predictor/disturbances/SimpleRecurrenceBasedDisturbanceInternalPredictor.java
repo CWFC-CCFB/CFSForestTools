@@ -69,7 +69,7 @@ class SimpleRecurrenceBasedDisturbanceInternalPredictor extends REpiceaBinaryEve
 
 	
 	@Override
-	public double predictEventProbability(MonteCarloSimulationCompliantObject stand, Object tree, Object... parms) {
+	public double predictEventProbability(MonteCarloSimulationCompliantObject stand, Object tree, Map<String, Object> parms) {
 		Matrix beta = getParametersForThisRealization(stand);
 		double recurrence = beta.m_afData[0][0];
 		return 1 - Math.exp(-1d/recurrence);
@@ -98,12 +98,13 @@ class SimpleRecurrenceBasedDisturbanceInternalPredictor extends REpiceaBinaryEve
 
 
 	@Override
-	public Object predictEvent(MonteCarloSimulationCompliantObject plotSample, Object tree, Object... parms) {
+	public Object predictEvent(MonteCarloSimulationCompliantObject plotSample, Object tree, Map<String, Object> parms) {
 		double eventProbability = predictEventProbability(plotSample, tree);	// parms are not needed here
 		if (eventProbability < 0 || eventProbability > 1) {
 			return null;
 		} else if (isResidualVariabilityEnabled) {
-			int currentDateYrs = (Integer) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Integer.class, parms);
+//			int currentDateYrs = (Integer) REpiceaBinaryEventPredictor.findFirstParameterOfThisClass(Integer.class, parms);
+			int currentDateYrs = (Integer) parms.get(SimpleRecurrenceBasedDisturbancePredictor.ParmCurrentDateYr);
 			double recurrence = getParameterEstimates().getMean().m_afData[0][0];
 			return getResidualError(recorderMap,
 					plotSample.getMonteCarloRealizationId(), 

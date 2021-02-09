@@ -1,5 +1,8 @@
 package canforservutility.predictor.disturbances;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,9 +47,12 @@ public class SimpleRecurrenceBasedDisturbancePredictorTest {
 		Stand s = new Stand("myStand");
 		SimpleRecurrenceBasedDisturbanceParameters p = new SimpleRecurrenceBasedDisturbanceParameters(35,0);	// recurrence of 35 years without variance
 		Object reference = null;
-		int currentDateYr = 2000;
+//		int currentDateYr = 2000;
+		Map<String, Object> parms = new HashMap<String, Object>();
+		parms.put(SimpleRecurrenceBasedDisturbancePredictor.ParmCurrentDateYr, 2000);
+		parms.put(SimpleRecurrenceBasedDisturbancePredictor.ParmSimpleRecurrenceBasedParameters, p);
 		for (int i = 0; i < 1000; i++) {
-			Object result = predictor.predictEvent(s, null, currentDateYr, p);
+			Object result = predictor.predictEvent(s, null, parms);
 			Assert.assertTrue("Testing if the same instance of internal predictor is used", predictor.internalPredictorMap.size() == 1);
 			if (reference == null) {
 				reference = result;

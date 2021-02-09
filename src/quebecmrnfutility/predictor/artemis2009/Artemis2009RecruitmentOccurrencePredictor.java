@@ -67,7 +67,7 @@ public class Artemis2009RecruitmentOccurrencePredictor extends REpiceaBinaryEven
 	}
 
 	@Override
-	public double predictEventProbability(Artemis2009CompatibleStand stand,	Artemis2009CompatibleTree tree, Object... parms) {
+	public double predictEventProbability(Artemis2009CompatibleStand stand,	Artemis2009CompatibleTree tree, Map<String, Object> parms) {
 		String potentialVegetationCode = stand.getPotentialVegetation();
 		if (potentialVegetationCode != null && internalPredictors.containsKey(potentialVegetationCode)) {
 			return internalPredictors.get(potentialVegetationCode).predictEventProbability(stand, tree);

@@ -7,7 +7,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
@@ -24,11 +26,13 @@ public class OfficialHarvestModelTest {
     public void PredictedProbabilitiesTest() throws Exception {
 		Collection<OfficialHarvestableStand> stands = readData();
 		OfficialHarvestModel harvester = new OfficialHarvestModel();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		for (OfficialHarvestableStand stand : stands) {
 			for (OfficialHarvestableTree tree : ((OfficialHarvestableStandImpl) stand).getTrees()) {
-				System.out.println("Treatment = " + ((OfficialHarvestableStandImpl) stand).getTreatment().toString() 
- + ", Species = " + tree.getOfficialHarvestableTreeSpecies(((OfficialHarvestableStandImpl) stand).getTreatment()).toString());
-				double actual = (Double) harvester.predictEvent(stand, tree, ((OfficialHarvestableStandImpl) stand).getTreatment(), 0);
+				System.out.println("Treatment = " + ((OfficialHarvestableStandImpl) stand).getTreatment().toString() + ", Species = " + tree.getOfficialHarvestableTreeSpecies(((OfficialHarvestableStandImpl) stand).getTreatment()).toString());
+				parms.put(OfficialHarvestModel.ParmTreatment, ((OfficialHarvestableStandImpl) stand).getTreatment());
+				parms.put(OfficialHarvestModel.ParmModifier, 0);
+				double actual = (Double) harvester.predictEvent(stand, tree, parms);
 				double expected = ((OfficialHarvestableTreeImpl) tree).getPredictedProbabilityFromFile();
 				assertEquals(expected, actual, 1E-5);
 
@@ -43,11 +47,13 @@ public class OfficialHarvestModelTest {
     public void PredictedProbabilitiesTestWithModifier() throws Exception {
 		Collection<OfficialHarvestableStand> stands = readData();
 		OfficialHarvestModel harvester = new OfficialHarvestModel();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		for (OfficialHarvestableStand stand : stands) {
 			for (OfficialHarvestableTree tree : ((OfficialHarvestableStandImpl) stand).getTrees()) {
-				System.out.println("Treatment = " + ((OfficialHarvestableStandImpl) stand).getTreatment().toString() 
-						+", Species = " + tree.getOfficialHarvestableTreeSpecies(((OfficialHarvestableStandImpl) stand).getTreatment()).toString());
-				double actual = harvester.predictEventProbability(stand, tree, ((OfficialHarvestableStandImpl) stand).getTreatment(), 50);
+				System.out.println("Treatment = " + ((OfficialHarvestableStandImpl) stand).getTreatment().toString() +", Species = " + tree.getOfficialHarvestableTreeSpecies(((OfficialHarvestableStandImpl) stand).getTreatment()).toString());
+				parms.put(OfficialHarvestModel.ParmTreatment, ((OfficialHarvestableStandImpl) stand).getTreatment());
+				parms.put(OfficialHarvestModel.ParmModifier, 50);
+				double actual = harvester.predictEventProbability(stand, tree, parms);
 				double expected = ((OfficialHarvestableTreeImpl) tree).getPredictedProbabilityFromFile() * 1.5;
 				if (expected > 1d) {
 					expected = 1;
@@ -69,10 +75,14 @@ public class OfficialHarvestModelTest {
 		for (OfficialHarvestableSpecies species : OfficialHarvestableSpecies.values()) {
 			trees.add(new OfficialHarvestableTreeImpl(species, 30d, 0d));
 		}
+		Map<String, Object> parms = new HashMap<String, Object>();
 		for (TreatmentType treatment : TreatmentType.values()) {
 			for (OfficialHarvestableTree tree : trees) {
 				System.out.println("Testing treatment : " + treatment.name() + " and species " + tree.getOfficialHarvestableTreeSpecies(treatment));
-				harvester.predictEventProbability(stand, tree, treatment, 0);
+				parms.put(OfficialHarvestModel.ParmTreatment, treatment);
+				parms.put(OfficialHarvestModel.ParmModifier, 0);
+				
+				harvester.predictEventProbability(stand, tree, parms);
 			}
 		}
 	}

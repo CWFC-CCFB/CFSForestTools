@@ -47,6 +47,8 @@ public final class BetaHarvestModel extends REpiceaBinaryEventPredictor<BetaHarv
 	
 	private static final long serialVersionUID = 20100905L;
 
+	public final static String ParmTreatment = "treat";
+
 	/**
 	 * This Enum class defines the possible treatments in this harvest module.
 	 * @author M. Fortin - Septembre 2010
@@ -141,8 +143,8 @@ public final class BetaHarvestModel extends REpiceaBinaryEventPredictor<BetaHarv
 		
 	
 	@Override
-	public synchronized double predictEventProbability(BetaHarvestableStand stand, BetaHarvestableTree t, Object... parms) {
-		Enum<?> treatment = (Enum<?>) parms[0];
+	public synchronized double predictEventProbability(BetaHarvestableStand stand, BetaHarvestableTree t, Map<String, Object> parms) {
+		Enum<?> treatment = (Enum<?>) parms.get(ParmTreatment);
 		Matrix modelParameters = getParametersForThisRealization(stand);
 		double basalAreaHA = stand.getBasalAreaM2Ha();
 		double densityHA = stand.getNumberOfStemsHa();
