@@ -119,7 +119,7 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 	 * @return the predicted probability of mortality
 	 */
 	@Override
-	public synchronized double predictEventProbability(MatapediaStand stand, MatapediaTree tree, Map<String, Object> parms) {
+	public synchronized double predictEventProbability(MatapediaStand stand, MatapediaTree tree, Map<Integer, Object> parms) {
 		
 		double etaValue = fixedEffectsPrediction(stand, tree);
 		linkFunction.setVariableValue(1, etaValue);

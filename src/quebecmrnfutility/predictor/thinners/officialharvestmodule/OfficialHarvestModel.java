@@ -36,6 +36,7 @@ import java.util.Vector;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -46,8 +47,6 @@ import repicea.util.REpiceaTranslator;
  */
 public final class OfficialHarvestModel extends REpiceaBinaryEventPredictor<OfficialHarvestableStand, OfficialHarvestableTree> {
 	
-	public final static String ParmTreatment = "treat";
-	public final static String ParmModifier = "mod";
 	 
 	
 	private static final long serialVersionUID = 20100905L;
@@ -168,12 +167,12 @@ public final class OfficialHarvestModel extends REpiceaBinaryEventPredictor<Offi
 	}	
 	
 	@Override
-	public synchronized double predictEventProbability(OfficialHarvestableStand stand, OfficialHarvestableTree tree, Map<String, Object> parms) {
+	public synchronized double predictEventProbability(OfficialHarvestableStand stand, OfficialHarvestableTree tree, Map<Integer, Object> parms) {
 		Enum<?> treatment;
 		int modifier;
 		if (selector == null) {
-			treatment = (Enum<?>) parms.get(OfficialHarvestModel.ParmTreatment);
-			modifier = (Integer) parms.get(OfficialHarvestModel.ParmModifier);
+			treatment = (Enum<?>) parms.get(DisturbanceParameter.ParmTreatment);
+			modifier = (Integer) parms.get(DisturbanceParameter.ParmModulation);
 		} else {
 			treatment = selector.getMatch(stand.getPotentialVegetation());
 			modifier = 0;

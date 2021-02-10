@@ -9,6 +9,7 @@ import org.junit.Test;
 import canforservutility.predictor.disturbances.SimpleRecurrenceBasedDisturbancePredictor.SimpleRecurrenceBasedDisturbanceParameters;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.disturbances.DisturbanceParameter;
 
 public class SimpleRecurrenceBasedDisturbancePredictorTest {
 
@@ -48,9 +49,9 @@ public class SimpleRecurrenceBasedDisturbancePredictorTest {
 		SimpleRecurrenceBasedDisturbanceParameters p = new SimpleRecurrenceBasedDisturbanceParameters(35,0);	// recurrence of 35 years without variance
 		Object reference = null;
 //		int currentDateYr = 2000;
-		Map<String, Object> parms = new HashMap<String, Object>();
-		parms.put(SimpleRecurrenceBasedDisturbancePredictor.ParmCurrentDateYr, 2000);
-		parms.put(SimpleRecurrenceBasedDisturbancePredictor.ParmSimpleRecurrenceBasedParameters, p);
+		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		parms.put(DisturbanceParameter.ParmCurrentDateYr, 2000);
+		parms.put(DisturbanceParameter.ParmSimpleRecurrenceBasedParameters, p);
 		for (int i = 0; i < 1000; i++) {
 			Object result = predictor.predictEvent(s, null, parms);
 			Assert.assertTrue("Testing if the same instance of internal predictor is used", predictor.internalPredictorMap.size() == 1);

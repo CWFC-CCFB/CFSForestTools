@@ -34,6 +34,7 @@ import repicea.math.Matrix;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
+import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.stats.StatisticalUtility;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
@@ -47,7 +48,6 @@ public final class BetaHarvestModel extends REpiceaBinaryEventPredictor<BetaHarv
 	
 	private static final long serialVersionUID = 20100905L;
 
-	public final static String ParmTreatment = "treat";
 
 	/**
 	 * This Enum class defines the possible treatments in this harvest module.
@@ -143,8 +143,8 @@ public final class BetaHarvestModel extends REpiceaBinaryEventPredictor<BetaHarv
 		
 	
 	@Override
-	public synchronized double predictEventProbability(BetaHarvestableStand stand, BetaHarvestableTree t, Map<String, Object> parms) {
-		Enum<?> treatment = (Enum<?>) parms.get(ParmTreatment);
+	public synchronized double predictEventProbability(BetaHarvestableStand stand, BetaHarvestableTree t, Map<Integer, Object> parms) {
+		Enum<?> treatment = (Enum<?>) parms.get(DisturbanceParameter.ParmTreatment);
 		Matrix modelParameters = getParametersForThisRealization(stand);
 		double basalAreaHA = stand.getBasalAreaM2Ha();
 		double densityHA = stand.getNumberOfStemsHa();

@@ -39,6 +39,7 @@ import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider.LandOwnership;
+import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.integral.GaussHermiteQuadrature;
 import repicea.stats.integral.GaussQuadrature.NumberOfPoints;
@@ -56,10 +57,6 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("serial")
 public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<MeloThinnerPlot, Object> implements REpiceaShowableUIWithParent {
 
-	public final static String ParmAAC = "aac";
-	public final static String ParmYear0 = "year0";
-	public final static String ParmYear1 = "year1";
-	public final static String ParmModulation = "modulation";
 	
 	class EmbeddedFunction extends AbstractMathematicalFunction {
 		@Override
@@ -149,28 +146,35 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	
 	/**
 	 *  {@inheritDoc}
-	 *  For this class, the tree parameter should be null.
-	 *  Moreover, the additional parameters in the parms parameter are are first the 
-	 *  initial year, then the final year and an optional modulation factor 
-	 *  for the AAC. The modulation factor must be something between -1 (exclusive)
+	 *  For this class, the tree parameter should be null. The parms argument is a map
+	 *  whose keys and values can be <br>
+	 *  <ul> 
+	 *  <li>DisturbanceParameter.ParmAAC: an array of annual allowance cut volumes (m3/ha/yr)</li>
+	 *  <li>DisturbanceParameter.ParmYear0: the date at the beginning of the time step</li>
+	 *  <li>DisturbanceParameter.ParmYear1: the date at the end of the time step</li>
+	 *  <li>DisturbanceParameter.ParmModulation: a modulation factor (optional)
+	 *  </ul>
+	 *  If the ParmAAC parameter is specified, the other three are not taken into account.
+	 *  If the ParmAAC parameter is missing, then the ParmYear0 and ParmYear1 are
+	 *  mandatory. However, the modulation factor is optional. It must be range between -1 (exclusive)
 	 *  and +1 (inclusive) which are interpreted as -100% and +100% of the AAC. 
 	 *  Values beyond this range are not considered and no modulation factor is then used.
 	 */
 	@Override
-	public synchronized double predictEventProbability(MeloThinnerPlot stand, Object tree, Map<String, Object> parms) {
+	public synchronized double predictEventProbability(MeloThinnerPlot stand, Object tree, Map<Integer, Object> parms) {
 		oXVector.resetMatrix();
 		Matrix beta = getParametersForThisRealization(stand);
 		double proportionalPart = getProportionalPart(stand, beta);
 		double[] aac;
 		double modulationFactor = 0d;
-		if (parms.containsKey(ParmAAC)) {
-			aac = (double[]) parms.get(ParmAAC);
+		if (parms.containsKey(DisturbanceParameter.ParmAAC)) {
+			aac = (double[]) parms.get(DisturbanceParameter.ParmAAC);
 		} else {
-			int year0 = (Integer) parms.get(ParmYear0);
-			int year1 = (Integer) parms.get(ParmYear1);
+			int year0 = (Integer) parms.get(DisturbanceParameter.ParmYear0);
+			int year1 = (Integer) parms.get(DisturbanceParameter.ParmYear1);
 
-			if (parms.containsKey(ParmModulation)) {
-				modulationFactor = (Double) parms.get(ParmModulation);
+			if (parms.containsKey(DisturbanceParameter.ParmModulation)) {
+				modulationFactor = (Double) parms.get(DisturbanceParameter.ParmModulation);
 				if (modulationFactor <= -1d || modulationFactor > 1d) {
 					modulationFactor = 0;
 				}
@@ -227,15 +231,22 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	
 	/**
 	 *  {@inheritDoc}
-	 *  For this class, the tree parameter should be null.
-	 *  Moreover, the additional parameters in the parms parameter ar are first the 
-	 *  initial year, then the final year and 	 *  an optional modulation factor 
-	 *  for the AAC. The modulation factor must be something between -1 (exclusive)
+	 *  For this class, the tree parameter should be null. The parms argument is a map
+	 *  whose keys and values can be <br>
+	 *  <ul> 
+	 *  <li>DisturbanceParameter.ParmAAC: an array of annual allowance cut volumes (m3/ha/yr)</li>
+	 *  <li>DisturbanceParameter.ParmYear0: the date at the beginning of the time step</li>
+	 *  <li>DisturbanceParameter.ParmYear1: the date at the end of the time step</li>
+	 *  <li>DisturbanceParameter.ParmModulation: a modulation factor (optional)
+	 *  </ul>
+	 *  If the ParmAAC parameter is specified, the other three are not taken into account.
+	 *  If the ParmAAC parameter is missing, then the ParmYear0 and ParmYear1 are
+	 *  mandatory. However, the modulation factor is optional. It must be range between -1 (exclusive)
 	 *  and +1 (inclusive) which are interpreted as -100% and +100% of the AAC. 
 	 *  Values beyond this range are not considered and no modulation factor is then used.
 	 */
 	@Override
-	public Object predictEvent(MeloThinnerPlot stand, Object tree, Map<String, Object> parms) {
+	public Object predictEvent(MeloThinnerPlot stand, Object tree, Map<Integer, Object> parms) {
 		return super.predictEvent(stand, tree, parms);
 	}
 	

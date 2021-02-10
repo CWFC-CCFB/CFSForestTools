@@ -27,6 +27,7 @@ import java.util.Map;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.disturbances.DisturbanceParameter;
 
 /**
  * The SimpleRecurrenceBasedDisturbancePredictor class implements a lifetime model based on a simple exponential distribution. 
@@ -37,8 +38,6 @@ import repicea.simulation.REpiceaBinaryEventPredictor;
 @SuppressWarnings("serial")
 public class SimpleRecurrenceBasedDisturbancePredictor extends REpiceaBinaryEventPredictor<MonteCarloSimulationCompliantObject, Object>{
 
-	public final static String ParmCurrentDateYr = "currentDateYr";
-	public final static String ParmSimpleRecurrenceBasedParameters = "simpleRecurrenceBasedParameters";
 	
 	/**
 	 * This inner class contains the parameters for the predictor to work, namely an estimated recurrence and its variance (which can be equal to 0).
@@ -92,8 +91,8 @@ public class SimpleRecurrenceBasedDisturbancePredictor extends REpiceaBinaryEven
 	}
 	
 	@Override
-	public double predictEventProbability(MonteCarloSimulationCompliantObject stand, Object tree, Map<String, Object> parms) {
-		SimpleRecurrenceBasedDisturbanceParameters selectedParms = (SimpleRecurrenceBasedDisturbanceParameters) parms.get(ParmSimpleRecurrenceBasedParameters);
+	public double predictEventProbability(MonteCarloSimulationCompliantObject stand, Object tree, Map<Integer, Object> parms) {
+		SimpleRecurrenceBasedDisturbanceParameters selectedParms = (SimpleRecurrenceBasedDisturbanceParameters) parms.get(DisturbanceParameter.ParmSimpleRecurrenceBasedParameters);
 		if (selectedParms == null) {
 			throw new InvalidParameterException("The SimpleRecurrenceBasedDisturbancePredictor.predictEventProbability() requires a SimpleRecurrenceBasedDisturbanceParameters instance in the parms argument!");
 		} else {
@@ -105,8 +104,8 @@ public class SimpleRecurrenceBasedDisturbancePredictor extends REpiceaBinaryEven
 	protected void init() {}
 	
 	@Override
-	public Object predictEvent(MonteCarloSimulationCompliantObject stand, Object tree, Map<String, Object> parms) {
-		SimpleRecurrenceBasedDisturbanceParameters selectedParms = (SimpleRecurrenceBasedDisturbanceParameters) parms.get(ParmSimpleRecurrenceBasedParameters);
+	public Object predictEvent(MonteCarloSimulationCompliantObject stand, Object tree, Map<Integer, Object> parms) {
+		SimpleRecurrenceBasedDisturbanceParameters selectedParms = (SimpleRecurrenceBasedDisturbanceParameters) parms.get(DisturbanceParameter.ParmSimpleRecurrenceBasedParameters);
 		if (selectedParms == null) {
 			throw new InvalidParameterException("The SimpleRecurrenceBasedDisturbancePredictor.predictEventProbability() requires a SimpleRecurrenceBasedDisturbanceParameters instance in the parms argument!");
 		} else {
