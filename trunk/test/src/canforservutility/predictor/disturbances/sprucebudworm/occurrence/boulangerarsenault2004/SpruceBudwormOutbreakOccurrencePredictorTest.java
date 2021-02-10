@@ -29,6 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import repicea.simulation.disturbances.DisturbanceOccurrences;
+import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.disturbances.DisturbanceTypeProvider.DisturbanceType;
 
 
@@ -43,8 +44,8 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 		}
 		double probSurv = 1d;
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 0);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 0);
 		for (SpruceBudwormOutbreakOccurrencePlot plot : plots) {
 			double prob = predictor.predictEventProbability(plot, null, predParms);
 			probSurv *= (1 - prob);
@@ -63,8 +64,8 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 	public void simpleTestWithUnknownTimeOfLastOccurrenceAndInitialTimeSetTo0() {
 		SpruceBudwormOutbreakOccurrencePlot plot = new SpruceBudwormOutbreakOccurrencePlotImpl(null, 0);
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 0);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 0);
 		double prob = predictor.predictEventProbability(plot, null, predParms);
 		System.out.println("Prob = " + prob);
 		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.07326448875128741, prob, 1E-4);
@@ -75,8 +76,8 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 	public void simpleTestWithUnknownTimeOfLastOccurrenceAndInitialTimeSetTo10() {
 		SpruceBudwormOutbreakOccurrencePlot plot = new SpruceBudwormOutbreakOccurrencePlotImpl(null, 10);
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 0);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 0);
 		double prob = predictor.predictEventProbability(plot, null, predParms);
 		System.out.println("Prob = " + prob);
 		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.07362230035437763, prob, 1E-4);
@@ -86,8 +87,8 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 	public void simpleTestWithUnknownTimeOfLastOccurrenceAndInitialTimeSetTo40() {
 		SpruceBudwormOutbreakOccurrencePlot plot = new SpruceBudwormOutbreakOccurrencePlotImpl(null, 40);
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 0);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 0);
 		double prob = predictor.predictEventProbability(plot, null, predParms);
 		System.out.println("Prob = " + prob);
 		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.11594906884437328, prob, 1E-4);
@@ -97,8 +98,8 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 	public void simpleTestWithUnknownTimeOfLastOccurrenceAndInitialTimeSetTo50() {
 		SpruceBudwormOutbreakOccurrencePlot plot = new SpruceBudwormOutbreakOccurrencePlotImpl(null, 50);
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 0);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 0);
 		double prob = predictor.predictEventProbability(plot, null, predParms);
 		System.out.println("Prob = " + prob);
 		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.1585175051027792, prob, 1E-4);
@@ -108,8 +109,8 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 	public void simpleTestWithUnknownTimeOfLastOccurrenceAndInitialTimeSetTo60() {
 		SpruceBudwormOutbreakOccurrencePlot plot = new SpruceBudwormOutbreakOccurrencePlotImpl(null, 60);
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 0);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 0);
 		double prob = predictor.predictEventProbability(plot, null, predParms);
 		System.out.println("Prob = " + prob);
 		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.21806173583507135, prob, 1E-4);
@@ -119,8 +120,8 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 	public void simpleTestWithUnknownTimeOfLastOccurrenceAndInitialTimeSetTo70() {
 		SpruceBudwormOutbreakOccurrencePlot plot = new SpruceBudwormOutbreakOccurrencePlotImpl(null, 70);
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(false, true);
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 0);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 0);
 		double prob = predictor.predictEventProbability(plot, null, predParms);
 		System.out.println("Prob = " + prob);
 		Assert.assertEquals("Testing initial time = " + plot.getTimeSinceFirstKnownDateYrs(0), 0.2928574702983688, prob, 1E-4);
@@ -132,11 +133,11 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 		SpruceBudwormOutbreakOccurrencePlotImpl plot = new SpruceBudwormOutbreakOccurrencePlotImpl(10, 0);
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(true, true);
 		double prob = 0;
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 2000);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 2000);
 		for (int i = 0; i < nbRealizations; i++) {
 			DisturbanceOccurrences occ = new DisturbanceOccurrences(null);
-			predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmDisturbanceOccurrences, occ);
+			predParms.put(DisturbanceParameter.ParmDisturbanceOccurrences, occ);
 			plot.setMonteCarloId(i);
 			prob += predictor.predictEventProbability(plot, null, predParms);
 		}
@@ -150,11 +151,11 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 		SpruceBudwormOutbreakOccurrencePlotImpl plot = new SpruceBudwormOutbreakOccurrencePlotImpl(20, 0);
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(true, true);
 		double prob = 0;
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 2000);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 2000);
 		for (int i = 0; i < nbRealizations; i++) {
 			DisturbanceOccurrences occ = new DisturbanceOccurrences(null);
-			predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmDisturbanceOccurrences, occ);
+			predParms.put(DisturbanceParameter.ParmDisturbanceOccurrences, occ);
 			plot.setMonteCarloId(i);
 			prob += predictor.predictEventProbability(plot, null, predParms);
 		}
@@ -169,11 +170,11 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 		SpruceBudwormOutbreakOccurrencePlotImpl plot = new SpruceBudwormOutbreakOccurrencePlotImpl(10, 0);
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(true, true);
 		double prob = 0;
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 2000);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 2000);
 		for (int i = 0; i < nbRealizations; i++) {
 			DisturbanceOccurrences occ = new DisturbanceOccurrences(null, 1995);
-			predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmDisturbanceOccurrences, occ);
+			predParms.put(DisturbanceParameter.ParmDisturbanceOccurrences, occ);
 			plot.setMonteCarloId(i);
 			prob += predictor.predictEventProbability(plot, null, predParms);
 		}
@@ -187,11 +188,11 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 		SpruceBudwormOutbreakOccurrencePlotImpl plot = new SpruceBudwormOutbreakOccurrencePlotImpl(10, 0);
 		SpruceBudwormOutbreakOccurrencePredictor predictor = new SpruceBudwormOutbreakOccurrencePredictor(true, true);
 		double prob = 0;
-		Map<String, Object> predParms = new HashMap<String, Object>();
-		predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmCurrentDateYr, 2000);
+		Map<Integer, Object> predParms = new HashMap<Integer, Object>();
+		predParms.put(DisturbanceParameter.ParmCurrentDateYr, 2000);
 		for (int i = 0; i < nbRealizations; i++) {
 			DisturbanceOccurrences occ = new DisturbanceOccurrences(null, 2000);
-			predParms.put(SpruceBudwormOutbreakOccurrencePredictor.ParmDisturbanceOccurrences, occ);
+			predParms.put(DisturbanceParameter.ParmDisturbanceOccurrences, occ);
 			plot.setMonteCarloId(i);
 			prob += predictor.predictEventProbability(plot, null, predParms);
 		}

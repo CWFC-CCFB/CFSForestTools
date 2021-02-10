@@ -35,6 +35,7 @@ import java.util.Vector;
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -48,7 +49,6 @@ public class FormerOfficialHarvestModel extends REpiceaBinaryEventPredictor<Form
 	
 	private static final long serialVersionUID = 20100905L;
 
-	public final static String ParmTreatment = "treat";
 	/**
 	 * This Enum class contains all the available treatment for this harvester.
 	 * @author M. Fortin - September 2010
@@ -136,8 +136,8 @@ public class FormerOfficialHarvestModel extends REpiceaBinaryEventPredictor<Form
 	
 	
 	@Override
-	public synchronized double predictEventProbability(FormerOfficialHarvestableStand stand, FormerOfficialHarvestableTree tree, Map<String, Object> parms) {
-		Enum<?> treatment = (Enum<?>) parms.get(ParmTreatment);
+	public synchronized double predictEventProbability(FormerOfficialHarvestableStand stand, FormerOfficialHarvestableTree tree, Map<Integer, Object> parms) {
+		Enum<?> treatment = (Enum<?>) parms.get(DisturbanceParameter.ParmTreatment);
 		FormerOfficialHarvestSubmodel submodel = modelParametersLibrary.get(treatment);
 		Matrix modelParameters = submodel.getSubParametersForThisStand(stand);
 		oXVector = xVectorFactory.getFixedEffectVector(stand, tree, (Treatment) treatment);

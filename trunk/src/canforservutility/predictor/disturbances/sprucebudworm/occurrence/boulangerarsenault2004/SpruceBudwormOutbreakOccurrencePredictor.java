@@ -31,6 +31,7 @@ import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.disturbances.DisturbanceOccurrences;
+import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.disturbances.DisturbanceTypeProvider.DisturbanceType;
 import repicea.stats.StatisticalUtility;
 import repicea.util.ObjectUtility;
@@ -47,9 +48,6 @@ import repicea.util.ObjectUtility;
  */
 public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinaryEventPredictor<SpruceBudwormOutbreakOccurrencePlot, Object> {
 
-	public static final String ParmCurrentDateYr = "currentDateYr";
-	public static final String ParmDisturbanceOccurrences = "disturbanceOccurrences";
-	
 	static class InternalParameterEstimates extends ModelParameterEstimates {
 
 		InternalParameterEstimates(Matrix mean, Matrix variance) {
@@ -119,17 +117,17 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	
 
 	@Override
-	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<String, Object> parms) {
+	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<Integer, Object> parms) {
 		Matrix recurrence = getParametersForThisRealization(plotSample);
 		double betaParm = recurrence.m_afData[1][0];
 		double lambdaParm = 1d / recurrence.m_afData[0][0];
 //		double tmp = GammaFunction.gamma(1 + 1d/betaParm);
 //		double estimatedPopVariance = 1d / (lambdaParm * lambdaParm) * (GammaFunction.gamma(1 + 2d/betaParm) - tmp * tmp);
-		Integer currentDateYr = (Integer) parms.get(ParmCurrentDateYr);
+		Integer currentDateYr = (Integer) parms.get(DisturbanceParameter.ParmCurrentDateYr);
 		if (currentDateYr == null) {
 			throw new InvalidParameterException("The parms argument must provide at least an instance of integer which represents the current date (yrs)");
 		}
-		DisturbanceOccurrences occurrences = (DisturbanceOccurrences) parms.get(ParmDisturbanceOccurrences);
+		DisturbanceOccurrences occurrences = (DisturbanceOccurrences) parms.get(DisturbanceParameter.ParmDisturbanceOccurrences);
 		Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
 		if (timeSinceLastOutbreak == null) {		// here we have to calculate the marginal probability
 			double marginalProb = 0d;
@@ -202,13 +200,13 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	
 	
 	@Override
-	public Object predictEvent(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<String, Object> parms) {
+	public Object predictEvent(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<Integer, Object> parms) {
 		double eventProbability = predictEventProbability(plotSample, tree, parms);
 		if (eventProbability < 0 || eventProbability > 1) {
 			return null;
 		} else if (isResidualVariabilityEnabled) {
-			int currentDateYr = (Integer) parms.get(ParmCurrentDateYr);
-			DisturbanceOccurrences occurrences = (DisturbanceOccurrences) parms.get(ParmDisturbanceOccurrences);
+			int currentDateYr = (Integer) parms.get(DisturbanceParameter.ParmCurrentDateYr);
+			DisturbanceOccurrences occurrences = (DisturbanceOccurrences) parms.get(DisturbanceParameter.ParmDisturbanceOccurrences);
 			Integer timeSinceLastOutbreak = getTimeSinceLastOutbreak(plotSample, currentDateYr, occurrences);
 			boolean occurred;
 			if (timeSinceLastOutbreak == null) {

@@ -63,7 +63,7 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 	}
 	
 	@Override
-	public synchronized double predictEventProbability(Iris2020CompatiblePlot plot, Iris2020CompatibleTree tree, Map<String, Object> parms) {
+	public synchronized double predictEventProbability(Iris2020CompatiblePlot plot, Iris2020CompatibleTree tree, Map<Integer, Object> parms) {
 		Matrix beta = getParametersForThisRealization(plot);
 		constructXVector(plot, tree);
 		double xBeta = oXVector.multiply(beta).m_afData[0][0];

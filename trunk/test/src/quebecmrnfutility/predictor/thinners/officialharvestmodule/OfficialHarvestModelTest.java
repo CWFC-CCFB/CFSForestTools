@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestableTree.OfficialHarvestableSpecies;
+import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.util.ObjectUtility;
 
 
@@ -26,12 +27,12 @@ public class OfficialHarvestModelTest {
     public void PredictedProbabilitiesTest() throws Exception {
 		Collection<OfficialHarvestableStand> stands = readData();
 		OfficialHarvestModel harvester = new OfficialHarvestModel();
-		Map<String, Object> parms = new HashMap<String, Object>();
+		Map<Integer, Object> parms = new HashMap<Integer, Object>();
 		for (OfficialHarvestableStand stand : stands) {
 			for (OfficialHarvestableTree tree : ((OfficialHarvestableStandImpl) stand).getTrees()) {
 				System.out.println("Treatment = " + ((OfficialHarvestableStandImpl) stand).getTreatment().toString() + ", Species = " + tree.getOfficialHarvestableTreeSpecies(((OfficialHarvestableStandImpl) stand).getTreatment()).toString());
-				parms.put(OfficialHarvestModel.ParmTreatment, ((OfficialHarvestableStandImpl) stand).getTreatment());
-				parms.put(OfficialHarvestModel.ParmModifier, 0);
+				parms.put(DisturbanceParameter.ParmTreatment, ((OfficialHarvestableStandImpl) stand).getTreatment());
+				parms.put(DisturbanceParameter.ParmModulation, 0);
 				double actual = (Double) harvester.predictEvent(stand, tree, parms);
 				double expected = ((OfficialHarvestableTreeImpl) tree).getPredictedProbabilityFromFile();
 				assertEquals(expected, actual, 1E-5);
@@ -47,12 +48,12 @@ public class OfficialHarvestModelTest {
     public void PredictedProbabilitiesTestWithModifier() throws Exception {
 		Collection<OfficialHarvestableStand> stands = readData();
 		OfficialHarvestModel harvester = new OfficialHarvestModel();
-		Map<String, Object> parms = new HashMap<String, Object>();
+		Map<Integer, Object> parms = new HashMap<Integer, Object>();
 		for (OfficialHarvestableStand stand : stands) {
 			for (OfficialHarvestableTree tree : ((OfficialHarvestableStandImpl) stand).getTrees()) {
 				System.out.println("Treatment = " + ((OfficialHarvestableStandImpl) stand).getTreatment().toString() +", Species = " + tree.getOfficialHarvestableTreeSpecies(((OfficialHarvestableStandImpl) stand).getTreatment()).toString());
-				parms.put(OfficialHarvestModel.ParmTreatment, ((OfficialHarvestableStandImpl) stand).getTreatment());
-				parms.put(OfficialHarvestModel.ParmModifier, 50);
+				parms.put(DisturbanceParameter.ParmTreatment, ((OfficialHarvestableStandImpl) stand).getTreatment());
+				parms.put(DisturbanceParameter.ParmModulation, 50);
 				double actual = harvester.predictEventProbability(stand, tree, parms);
 				double expected = ((OfficialHarvestableTreeImpl) tree).getPredictedProbabilityFromFile() * 1.5;
 				if (expected > 1d) {
@@ -75,12 +76,12 @@ public class OfficialHarvestModelTest {
 		for (OfficialHarvestableSpecies species : OfficialHarvestableSpecies.values()) {
 			trees.add(new OfficialHarvestableTreeImpl(species, 30d, 0d));
 		}
-		Map<String, Object> parms = new HashMap<String, Object>();
+		Map<Integer, Object> parms = new HashMap<Integer, Object>();
 		for (TreatmentType treatment : TreatmentType.values()) {
 			for (OfficialHarvestableTree tree : trees) {
 				System.out.println("Testing treatment : " + treatment.name() + " and species " + tree.getOfficialHarvestableTreeSpecies(treatment));
-				parms.put(OfficialHarvestModel.ParmTreatment, treatment);
-				parms.put(OfficialHarvestModel.ParmModifier, 0);
+				parms.put(DisturbanceParameter.ParmTreatment, treatment);
+				parms.put(DisturbanceParameter.ParmModulation, 0);
 				
 				harvester.predictEventProbability(stand, tree, parms);
 			}
