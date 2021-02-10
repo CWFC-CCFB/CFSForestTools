@@ -19,6 +19,7 @@
 package quebecmrnfutility.predictor.matapedia;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -138,7 +139,7 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 		}
 		
 		if (parms != null && parms.containsKey(ParmTimeStep)) {
-			double timeStep = (Double) parms.get(ParmTimeStep);
+			double timeStep = ((Number) parms.get(ParmTimeStep)).doubleValue();
 			prob = 1 - Math.pow (1 - prob, timeStep / 5d);		// correction in case of 6-yr growth step
 		}
 		return prob;
