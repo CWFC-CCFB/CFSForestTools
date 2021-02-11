@@ -178,9 +178,9 @@ public class MeloThinnerTest {
 		parms.put(DisturbanceParameter.ParmYear0, plot.getYear0());
 		parms.put(DisturbanceParameter.ParmYear1, plot.getYear1());
 		double basicAACprediction = predictor.predictEventProbability(plot, null, parms); 
-		predictor.setFixedAAC(3d);
+		predictor.setTargetAACPerHa(3d);
 		double withAACSetTo3prediction = predictor.predictEventProbability(plot, null, parms); 
-		predictor.setFixedAAC(null);
+		predictor.setTargetAACPerHa(null);
 		double basicAACprediction2 = predictor.predictEventProbability(plot, null, parms); 
 		double diff = basicAACprediction - withAACSetTo3prediction;
 		Assert.assertEquals("Comparing plot no " + plot.getSubjectId() + " current AAC and AAC set to 3 m3/ha/yr", -0.440087368502928843, diff, 1E-8);
