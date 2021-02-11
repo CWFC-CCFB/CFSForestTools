@@ -85,9 +85,9 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 		aacField = NumberFormatFieldFactory.createNumberFormatField(15, NumberFormatFieldFactory.Type.Double, 
 				NumberFormatFieldFactory.Range.Positive,
 				false);
-		if (caller.fixedAAC != null) {
+		if (caller.targetAACPerHa != null) {
 			userSpecifiedAACButton.setSelected(true);
-			aacField.setText(caller.fixedAAC.toString());
+			aacField.setText(caller.targetAACPerHa.toString());
 		} else {
 			defaultAACButton.setSelected(true);
 			aacField.setText("0.0");
@@ -155,9 +155,9 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 	@Override
 	public void windowClosing(WindowEvent e) {
 		if (userSpecifiedAACButton.isSelected()) {
-			caller.setFixedAAC((Double) aacField.getValue());
+			caller.setTargetAACPerHa((Double) aacField.getValue());
 		} else {
-			caller.setFixedAAC(null);
+			caller.setTargetAACPerHa(null);
 		}
 	}
 

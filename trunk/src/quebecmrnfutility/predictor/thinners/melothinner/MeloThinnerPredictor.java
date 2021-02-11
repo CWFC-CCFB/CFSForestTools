@@ -84,7 +84,7 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	private Map<String, Matrix> dynamicTypeDummy;
 	private final GaussHermiteQuadrature ghq = new GaussHermiteQuadrature(NumberOfPoints.N5);
 	private final EmbeddedFunction embeddedFunction;
-	protected Double fixedAAC;
+	protected Double targetAACPerHa;
 	private transient MeloThinnerPredictorDialog dialog;
 	
 	/**
@@ -107,11 +107,11 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	 * the aac is derived from past aac.
 	 * @param aac a Double
 	 */
-	public void setFixedAAC(Double aac) {
+	public void setTargetAACPerHa(Double aac) {
 		if (aac != null && (aac < 0 || Double.isNaN(aac))) {
 			throw new InvalidParameterException("The aac parameter must be a positive double!");
 		}
-		fixedAAC = aac;
+		targetAACPerHa = aac;
 	}
 	
 	@Override
@@ -154,11 +154,15 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	 *  <li>DisturbanceParameter.ParmYear1: the date at the end of the time step</li>
 	 *  <li>DisturbanceParameter.ParmModulation: a modulation factor (optional)
 	 *  </ul>
-	 *  If the ParmAAC parameter is specified, the other three are not taken into account.
+	 *  If the ParmAAC parameter is specified, the other three are not taken into account. 
 	 *  If the ParmAAC parameter is missing, then the ParmYear0 and ParmYear1 are
 	 *  mandatory. However, the modulation factor is optional. It must be range between -1 (exclusive)
-	 *  and +1 (inclusive) which are interpreted as -100% and +100% of the AAC. 
-	 *  Values beyond this range are not considered and no modulation factor is then used.
+	 *  and +1 (inclusive) which are interpreted as -100% and +100% of the AAC. Values beyond this range 
+	 *  are not considered and no modulation factor is then used. <br>
+	 *  <br>
+	 *  If the ParmAAC parameter is missing but the AAC has been set through the 
+	 *  setFixedAACPerHa method then the modulation factor is discarded. 
+	 *  
 	 */
 	@Override
 	public synchronized double predictEventProbability(MeloThinnerPlot stand, Object tree, Map<Integer, Object> parms) {
@@ -186,10 +190,10 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 			} else {
 				ownership = LandOwnership.Public;
 			}
-			if (this.fixedAAC != null) {
+			if (this.targetAACPerHa != null) {
 				aac = new double[year1 - year0];
 				for (int i = 0; i < aac.length; i++) {
-					aac[i] = fixedAAC * (1d + modulationFactor);
+					aac[i] = targetAACPerHa;		// modulation factor should not be taken into account here 
 				}
 			} else {
 				aac = MeloThinnerAACProvider.getInstance().getAACValues(stand.getQuebecForestRegion(),
@@ -343,6 +347,13 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	public void showUI(Window parent) {
 		getUI(parent).setVisible(true);
 	}
-	
+
+	/**
+	 * Return the target annual allowance cut (AAC) volume per ha. 
+	 * @return a Double or null if the AAC has not been set.
+	 */
+	public Double getTargetAACPerHa() {
+		return targetAACPerHa;
+	}
 
 }
