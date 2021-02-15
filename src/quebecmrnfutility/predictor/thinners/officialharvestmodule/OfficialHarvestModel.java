@@ -35,8 +35,8 @@ import java.util.Vector;
 
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
-import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.disturbances.DisturbanceParameter;
+import repicea.simulation.thinners.REpiceaThinner;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -45,7 +45,7 @@ import repicea.util.REpiceaTranslator;
  * Based on database provided by Gordon Weber on March 1st, 2010.
  * @author M. Fortin - August 2010
  */
-public final class OfficialHarvestModel extends REpiceaBinaryEventPredictor<OfficialHarvestableStand, OfficialHarvestableTree> {
+public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestableStand, OfficialHarvestableTree> {
 	
 	 
 	
@@ -142,9 +142,7 @@ public final class OfficialHarvestModel extends REpiceaBinaryEventPredictor<Offi
 	protected final void init() {
 		try {
 			String path = ObjectUtility.getRelativePackagePath(getClass());
-//			InputStream isParameters = ClassLoader.getSystemResourceAsStream(path + "parmsNew.txt");
 			InputStream isParameters = getClass().getResourceAsStream("/" + path + "parmsNew.txt");
-//			InputStream isOmega = ClassLoader.getSystemResourceAsStream(path + "covbNew.txt");
 			InputStream isOmega = getClass().getResourceAsStream("/" + path + "covbNew.txt");
 			String speciesPath = path + "species.csv";
 
@@ -174,7 +172,7 @@ public final class OfficialHarvestModel extends REpiceaBinaryEventPredictor<Offi
 			treatment = (Enum<?>) parms.get(DisturbanceParameter.ParmTreatment);
 			modifier = (Integer) parms.get(DisturbanceParameter.ParmModulation);
 		} else {
-			treatment = selector.getMatch(stand.getPotentialVegetation()).treatmentType;
+			treatment = getInformationOnThinning(stand).treatmentType;
 			modifier = 0;
 		}
 
@@ -302,6 +300,16 @@ public final class OfficialHarvestModel extends REpiceaBinaryEventPredictor<Offi
 			e.printStackTrace();
 			throw e;
 		} 
+	}
+
+	@Override
+	public OfficialHarvestTreatmentDefinition getInformationOnThinning(OfficialHarvestableStand stand) {
+		if (selector != null) {
+			OfficialHarvestTreatmentDefinition def = selector.getMatch(stand.getPotentialVegetation());
+			return def;
+		} else {
+			return null;
+		}
 	}
 
 //	@Override

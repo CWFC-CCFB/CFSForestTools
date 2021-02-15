@@ -34,8 +34,8 @@ import java.util.Vector;
 
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
-import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.disturbances.DisturbanceParameter;
+import repicea.simulation.thinners.REpiceaThinner;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -45,7 +45,7 @@ import repicea.util.REpiceaTranslator;
  * @author M. Fortin - August 2010
  */
 @Deprecated
-public class FormerOfficialHarvestModel extends REpiceaBinaryEventPredictor<FormerOfficialHarvestableStand, FormerOfficialHarvestableTree> {
+public class FormerOfficialHarvestModel extends REpiceaThinner<FormerOfficialHarvestableStand, FormerOfficialHarvestableTree> {
 	
 	private static final long serialVersionUID = 20100905L;
 
@@ -196,6 +196,9 @@ public class FormerOfficialHarvestModel extends REpiceaBinaryEventPredictor<Form
 				throw e;
 			}
 	}
+
+	@Override
+	public Object getInformationOnThinning(FormerOfficialHarvestableStand stand) {return null;}
 
 	
 //	@Override
