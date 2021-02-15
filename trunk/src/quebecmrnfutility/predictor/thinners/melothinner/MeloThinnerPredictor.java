@@ -35,11 +35,11 @@ import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
-import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider.LandOwnership;
 import repicea.simulation.disturbances.DisturbanceParameter;
+import repicea.simulation.thinners.REpiceaThinner;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.integral.GaussHermiteQuadrature;
 import repicea.stats.integral.GaussQuadrature.NumberOfPoints;
@@ -55,7 +55,7 @@ import repicea.util.ObjectUtility;
  * </a>
  */
 @SuppressWarnings("serial")
-public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<MeloThinnerPlot, Object> implements REpiceaShowableUIWithParent {
+public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, Object> implements REpiceaShowableUIWithParent {
 
 	
 	class EmbeddedFunction extends AbstractMathematicalFunction {
@@ -355,5 +355,8 @@ public final class MeloThinnerPredictor extends REpiceaBinaryEventPredictor<Melo
 	public Double getTargetAACPerHa() {
 		return targetAACPerHa;
 	}
+
+	@Override
+	public Object getInformationOnThinning(MeloThinnerPlot stand) {return null;}
 
 }
