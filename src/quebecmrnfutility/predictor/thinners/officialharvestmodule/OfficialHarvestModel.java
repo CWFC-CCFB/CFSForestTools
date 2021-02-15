@@ -174,7 +174,7 @@ public final class OfficialHarvestModel extends REpiceaBinaryEventPredictor<Offi
 			treatment = (Enum<?>) parms.get(DisturbanceParameter.ParmTreatment);
 			modifier = (Integer) parms.get(DisturbanceParameter.ParmModulation);
 		} else {
-			treatment = selector.getMatch(stand.getPotentialVegetation());
+			treatment = selector.getMatch(stand.getPotentialVegetation()).treatmentType;
 			modifier = 0;
 		}
 
