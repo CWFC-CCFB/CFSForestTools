@@ -39,7 +39,7 @@ import repicea.serial.xml.XmlSerializerChangeMonitor;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
-public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<OfficialHarvestModel.TreatmentType> {
+public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<OfficialHarvestTreatmentDefinition> {
 		
 	static {
 		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector",
@@ -51,7 +51,6 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector$ColumnID",
 				"quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestSubmodelSelector$ColumnID");
 	}
-	
 	
 	protected static enum Mode implements TextableEnum {
 		SingleTreatment("Single treatment", "Traitement unique"),
@@ -72,7 +71,9 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 	
 	private static enum ColumnID implements TextableEnum {
 		PotentialVegetation("Potential vegetation", "V\u00E9g\u00E9tation potentielle"),
-		SilviculturalTreatment("Treatment", "Traitement");
+		SilviculturalTreatment("Treatment", "Traitement"),
+		DelayBeforeReentry("Time before next treatment (yrs)", "Temps avant le prochain traitement (ann\u00E9es)"),
+		;
 
 		ColumnID(String englishText, String frenchText) {
 			setText(englishText, frenchText);
@@ -89,22 +90,24 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 
 	
 	
-//	protected final Map<String, Enum<?>> treatmentMatchMap;
-//	protected final List<Enum<?>> potentialTreatments;
-//	private String filename;
 	protected Mode mode;
-	protected Enum<OfficialHarvestModel.TreatmentType> singleTreatment;
+	protected OfficialHarvestTreatmentDefinition singleTreatment;
 
 	/**
 	 * Official constructor.
 	 */
 	public OfficialHarvestSubmodelSelector() {
 		super(QuebecGeneralSettings.POTENTIAL_VEGETATION_LIST.toArray(), 
-				OfficialHarvestModel.TreatmentType.values(), 
-				OfficialHarvestModel.TreatmentType.CPRS, 
+				OfficialHarvestTreatmentDefinition.getDefinitionOfAllAvailableTreatment(),
 				ColumnID.values());
+		
 		mode = Mode.SingleTreatment;
-		singleTreatment = OfficialHarvestModel.TreatmentType.CPRS;
+		for (OfficialHarvestTreatmentDefinition def : getPotentialMatches()) {
+			if (def.isTotalHarvest()) {
+				singleTreatment = def;
+				break;
+			}
+		}
 	}
 	
 	protected Mode getMode() {return mode;}
@@ -114,21 +117,10 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 	 * @see repicea.gui.components.REpiceaMatchSelector#getPotentialMatches()
 	 */
 	@Override
-	protected List<Enum<OfficialHarvestModel.TreatmentType>> getPotentialMatches() {
+	protected List<OfficialHarvestTreatmentDefinition> getPotentialMatches() {
 		return super.getPotentialMatches();
 	}
 	
-//	/**
-//	 * This method adds a potential treatment to the list of available treatments
-//	 * @param enumValues an array of enum variable 
-//	 */
-//	public void addPotentialTreatments(Enum<?>[] enumValues) {
-//		for (Enum<?> enumValue : enumValues) {
-//			if (!potentialTreatments.contains(enumValue)) {
-//				potentialTreatments.add(enumValue);
-//			}
-//		}
-//	}
 		
 	@Override
 	public OfficialHarvestSubmodelSelectorDialog getUI(Container parent) {
@@ -144,7 +136,6 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 		try {
 			deserializer = new XmlDeserializer(filename);
 		} catch (Exception e) {
-//			InputStream is = ClassLoader.getSystemResourceAsStream(filename);
 			InputStream is = getClass().getResourceAsStream("/" + filename);
 			if (is == null) {
 				throw new IOException("The filename is not a file and cannot be converted into a stream!");
@@ -172,16 +163,15 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void unpackMemorizerPackage(MemorizerPackage wasMemorized) {
 		super.unpackMemorizerPackage(wasMemorized);
 		mode = (Mode) wasMemorized.get(2);
-		singleTreatment = (Enum<OfficialHarvestModel.TreatmentType>) wasMemorized.get(3);
+		singleTreatment = (OfficialHarvestTreatmentDefinition) wasMemorized.get(3);
 	}
 
 	@Override
-	public Enum<OfficialHarvestModel.TreatmentType> getMatch(Object potentialVegetation) {
+	public OfficialHarvestTreatmentDefinition getMatch(Object potentialVegetation) {
 		if (mode == Mode.SingleTreatment) {
 			return singleTreatment;
 		} else {
@@ -195,6 +185,7 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 		selector.showUI(null);
 		boolean cancelled = selector.getUI(null).hasBeenCancelled();
 		System.out.println("The dialog has been cancelled : " + cancelled);
+		System.exit(0);
 	}
 
 }

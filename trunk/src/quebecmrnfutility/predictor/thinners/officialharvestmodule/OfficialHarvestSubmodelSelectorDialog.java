@@ -28,7 +28,7 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 
 	private JRadioButton singleTreatmentButton;
 	private JRadioButton treatmentByPotentialVegetationButton;
-	private JComboBox<OfficialHarvestModel.TreatmentType> uniqueTreatmentComboBox;
+	private JComboBox<OfficialHarvestTreatmentDefinition> uniqueTreatmentComboBox;
 	
 	protected OfficialHarvestSubmodelSelectorDialog(OfficialHarvestSubmodelSelector caller, Window parent, Object[] columnNames) {
 		super(caller, parent, columnNames);
@@ -38,7 +38,7 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 	protected void init() {
 		super.init();
 		singleTreatmentButton = new JRadioButton(Mode.SingleTreatment.toString());
-		uniqueTreatmentComboBox = new JComboBox<OfficialHarvestModel.TreatmentType>(getCaller().getPotentialMatches().toArray(new OfficialHarvestModel.TreatmentType[]{}));
+		uniqueTreatmentComboBox = new JComboBox<OfficialHarvestTreatmentDefinition>(getCaller().getPotentialMatches().toArray(new OfficialHarvestTreatmentDefinition[]{}));
 		treatmentByPotentialVegetationButton = new JRadioButton(Mode.TreatmentByPotentialVegetation.toString());
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(singleTreatmentButton);
@@ -124,11 +124,10 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getSource().equals(uniqueTreatmentComboBox)) {
-			getCaller().singleTreatment = (Enum<OfficialHarvestModel.TreatmentType>) uniqueTreatmentComboBox.getSelectedItem();
+			getCaller().singleTreatment = (OfficialHarvestTreatmentDefinition) uniqueTreatmentComboBox.getSelectedItem();
 			System.out.println("Treatment selected = " + uniqueTreatmentComboBox.getSelectedItem());
 		}
 	}
