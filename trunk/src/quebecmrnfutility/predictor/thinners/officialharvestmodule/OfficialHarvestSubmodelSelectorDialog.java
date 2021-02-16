@@ -2,6 +2,7 @@ package quebecmrnfutility.predictor.thinners.officialharvestmodule;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -19,7 +20,7 @@ import repicea.gui.UIControlManager;
 import repicea.gui.components.REpiceaMatchSelectorDialog;
 
 @SuppressWarnings("serial")
-public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorDialog implements ItemListener {
+public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorDialog implements ItemListener, ActionListener {
 	
 	static {
 		UIControlManager.setTitle(OfficialHarvestSubmodelSelectorDialog.class, "Treatments to be applied in each potential vegetation", "Traitement \u00E0 appliquer dans chaque v\u00E9g\u00E9tation potentielle");
@@ -119,8 +120,6 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 				getCaller().mode = Mode.TreatmentByPotentialVegetation;
 				checkFeaturesToEnable();
 			}
-		} else {
-			super.actionPerformed(e);
 		}
 	}
 

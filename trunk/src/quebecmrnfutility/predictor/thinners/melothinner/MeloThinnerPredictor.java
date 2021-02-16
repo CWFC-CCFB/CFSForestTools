@@ -328,7 +328,7 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 	}
 
 	@Override
-	public Component getUI(Container parent) {
+	public MeloThinnerPredictorDialog getUI(Container parent) {
 		if (dialog == null) {
 			dialog = new MeloThinnerPredictorDialog(this, (Window) parent);
 		}

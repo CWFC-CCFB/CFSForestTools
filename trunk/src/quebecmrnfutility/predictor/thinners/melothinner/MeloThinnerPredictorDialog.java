@@ -33,6 +33,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import repicea.gui.REpiceaControlPanel;
 import repicea.gui.REpiceaDialog;
 import repicea.gui.UIControlManager;
 import repicea.gui.components.NumberFormatFieldFactory;
@@ -72,6 +73,8 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 	private final JRadioButton defaultAACButton;
 	private final JRadioButton userSpecifiedAACButton;
 	private final JFormattedNumericField aacField;
+	
+	private boolean isCancelled;
 	
 	protected MeloThinnerPredictorDialog(MeloThinnerPredictor caller, Window parent) {
 		super(parent);
@@ -128,7 +131,8 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 		addUserSpecifiedAACPanel.add(Box.createHorizontalStrut(5));
 		
 		mainPanel.add(addUserSpecifiedAACPanel);
-		getContentPane().add(mainPanel);
+		getContentPane().add(mainPanel, BorderLayout.CENTER);
+		getContentPane().add(new REpiceaControlPanel(this), BorderLayout.SOUTH);
 	}
 
 	
@@ -149,6 +153,28 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 		aacField.setEnabled(userSpecifiedAACButton.isSelected());
 	}
 
+	@Override
+	public void cancelAction() {
+		super.cancelAction();
+		this.isCancelled = true;
+	}
+
+	/**
+	 * This method returns true if the window has been cancelled.
+	 * @return a boolean
+	 */
+	public boolean hasBeenCancelled() {return isCancelled;}
+	
+	@Override
+	public void setVisible(boolean bool) {
+		if (!isVisible() && bool) {
+			isCancelled = false;
+		}
+		super.setVisible(bool);
+	}
+
+	
+	
 	@Override
 	public void windowOpened(WindowEvent e) {}
 
@@ -180,7 +206,9 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 	public static void main(String[] args) {
 		MeloThinnerPredictor pred = new MeloThinnerPredictor(true);
 		pred.showUI(null);
+		System.out.println("Dialog has been cancelled: " + pred.getUI(null).hasBeenCancelled());
 		pred.showUI(null);
+		System.out.println("Dialog has been cancelled: " + pred.getUI(null).hasBeenCancelled());
 		System.exit(0);
 	}
 
