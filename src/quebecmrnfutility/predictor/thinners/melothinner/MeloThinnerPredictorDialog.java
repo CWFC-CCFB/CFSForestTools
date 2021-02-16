@@ -78,7 +78,7 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 	
 	protected MeloThinnerPredictorDialog(MeloThinnerPredictor caller, Window parent) {
 		super(parent);
-		this.setCancelOnClose(false);
+		setCancelOnClose(true);
 		this.caller = caller;
 		defaultAACButton = new JRadioButton(MessageID.DefaultAAC.toString());
 		userSpecifiedAACButton = new JRadioButton(MessageID.UserSpecifiedAAC.toString());
