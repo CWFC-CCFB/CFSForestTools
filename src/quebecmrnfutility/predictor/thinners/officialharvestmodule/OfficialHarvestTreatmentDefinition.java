@@ -34,7 +34,7 @@ import repicea.gui.components.REpiceaMatchComplexObject;
  * @author Mathieu Fortin - February 2021
  */
 @SuppressWarnings("serial")
-public class OfficialHarvestTreatmentDefinition implements Serializable, REpiceaMatchComplexObject {
+public class OfficialHarvestTreatmentDefinition implements Serializable, REpiceaMatchComplexObject<OfficialHarvestTreatmentDefinition> {
 
 	protected final TreatmentType treatmentType;
 	private int delayBeforeNextTreatmentYrs;
@@ -81,5 +81,12 @@ public class OfficialHarvestTreatmentDefinition implements Serializable, REpicea
 	}
 	
 	public int getDelayBeforeNextTreatmentYrs() {return delayBeforeNextTreatmentYrs;}
+
+	@Override
+	public OfficialHarvestTreatmentDefinition copy() {
+		OfficialHarvestTreatmentDefinition copy = new OfficialHarvestTreatmentDefinition(this.treatmentType);
+		copy.delayBeforeNextTreatmentYrs = delayBeforeNextTreatmentYrs;
+		return copy;
+	}
 	
 }
