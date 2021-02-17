@@ -62,7 +62,7 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 
 	private final static double offset5Years = Math.log(5d);		
 
-	public final static String ParmTimeStep = "timeStep";
+	public final static int ParmTimeStep = 895;
 	
 	private final LinkFunction linkFunction;
 	private final GaussHermiteQuadrature ghq;
@@ -120,7 +120,7 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 	 * @return the predicted probability of mortality
 	 */
 	@Override
-	public synchronized double predictEventProbability(MatapediaStand stand, MatapediaTree tree, Map<Integer, Object> parms) {
+	public synchronized double predictEventProbability(MatapediaStand stand, MatapediaTree tree, Map<String, Object> parms) {
 		
 		double etaValue = fixedEffectsPrediction(stand, tree);
 		linkFunction.setVariableValue(1, etaValue);

@@ -136,7 +136,7 @@ public class FormerOfficialHarvestModel extends REpiceaThinner<FormerOfficialHar
 	
 	
 	@Override
-	public synchronized double predictEventProbability(FormerOfficialHarvestableStand stand, FormerOfficialHarvestableTree tree, Map<Integer, Object> parms) {
+	public synchronized double predictEventProbability(FormerOfficialHarvestableStand stand, FormerOfficialHarvestableTree tree, Map<String, Object> parms) {
 		Enum<?> treatment = (Enum<?>) parms.get(DisturbanceParameter.ParmTreatment);
 		FormerOfficialHarvestSubmodel submodel = modelParametersLibrary.get(treatment);
 		Matrix modelParameters = submodel.getSubParametersForThisStand(stand);

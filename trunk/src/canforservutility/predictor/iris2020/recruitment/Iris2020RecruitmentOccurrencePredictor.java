@@ -77,7 +77,7 @@ public class Iris2020RecruitmentOccurrencePredictor extends REpiceaBinaryEventPr
 	}
 
 	@Override
-	public double predictEventProbability(Iris2020CompatiblePlot stand, Iris2020CompatibleTree tree, Map<Integer, Object> parms) {
+	public double predictEventProbability(Iris2020CompatiblePlot stand, Iris2020CompatibleTree tree, Map<String, Object> parms) {
 		return internalPredictors.get(tree.getSpecies()).predictEventProbability(stand, tree, parms);
 	}
 	

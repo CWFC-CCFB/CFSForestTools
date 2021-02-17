@@ -143,7 +143,7 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 		
 	
 	@Override
-	public synchronized double predictEventProbability(BetaHarvestableStand stand, BetaHarvestableTree t, Map<Integer, Object> parms) {
+	public synchronized double predictEventProbability(BetaHarvestableStand stand, BetaHarvestableTree t, Map<String, Object> parms) {
 		Enum<?> treatment = (Enum<?>) parms.get(DisturbanceParameter.ParmTreatment);
 		Matrix modelParameters = getParametersForThisRealization(stand);
 		double basalAreaHA = stand.getBasalAreaM2Ha();

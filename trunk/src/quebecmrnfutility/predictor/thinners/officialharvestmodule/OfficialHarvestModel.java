@@ -165,7 +165,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	}	
 	
 	@Override
-	public synchronized double predictEventProbability(OfficialHarvestableStand stand, OfficialHarvestableTree tree, Map<Integer, Object> parms) {
+	public synchronized double predictEventProbability(OfficialHarvestableStand stand, OfficialHarvestableTree tree, Map<String, Object> parms) {
 		Enum<?> treatment;
 		int modifier;
 		if (selector == null) {

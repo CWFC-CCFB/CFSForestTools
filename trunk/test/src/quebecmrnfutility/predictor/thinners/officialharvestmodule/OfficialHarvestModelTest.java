@@ -27,7 +27,7 @@ public class OfficialHarvestModelTest {
     public void PredictedProbabilitiesTest() throws Exception {
 		Collection<OfficialHarvestableStand> stands = readData();
 		OfficialHarvestModel harvester = new OfficialHarvestModel();
-		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		for (OfficialHarvestableStand stand : stands) {
 			for (OfficialHarvestableTree tree : ((OfficialHarvestableStandImpl) stand).getTrees()) {
 				System.out.println("Treatment = " + ((OfficialHarvestableStandImpl) stand).getTreatment().toString() + ", Species = " + tree.getOfficialHarvestableTreeSpecies(((OfficialHarvestableStandImpl) stand).getTreatment()).toString());
@@ -48,7 +48,7 @@ public class OfficialHarvestModelTest {
     public void PredictedProbabilitiesTestWithModifier() throws Exception {
 		Collection<OfficialHarvestableStand> stands = readData();
 		OfficialHarvestModel harvester = new OfficialHarvestModel();
-		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		for (OfficialHarvestableStand stand : stands) {
 			for (OfficialHarvestableTree tree : ((OfficialHarvestableStandImpl) stand).getTrees()) {
 				System.out.println("Treatment = " + ((OfficialHarvestableStandImpl) stand).getTreatment().toString() +", Species = " + tree.getOfficialHarvestableTreeSpecies(((OfficialHarvestableStandImpl) stand).getTreatment()).toString());
@@ -76,7 +76,7 @@ public class OfficialHarvestModelTest {
 		for (OfficialHarvestableSpecies species : OfficialHarvestableSpecies.values()) {
 			trees.add(new OfficialHarvestableTreeImpl(species, 30d, 0d));
 		}
-		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		for (TreatmentType treatment : TreatmentType.values()) {
 			for (OfficialHarvestableTree tree : trees) {
 				System.out.println("Testing treatment : " + treatment.name() + " and species " + tree.getOfficialHarvestableTreeSpecies(treatment));

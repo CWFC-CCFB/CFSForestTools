@@ -91,7 +91,7 @@ public class SimpleRecurrenceBasedDisturbancePredictor extends REpiceaBinaryEven
 	}
 	
 	@Override
-	public double predictEventProbability(MonteCarloSimulationCompliantObject stand, Object tree, Map<Integer, Object> parms) {
+	public double predictEventProbability(MonteCarloSimulationCompliantObject stand, Object tree, Map<String, Object> parms) {
 		SimpleRecurrenceBasedDisturbanceParameters selectedParms = (SimpleRecurrenceBasedDisturbanceParameters) parms.get(DisturbanceParameter.ParmSimpleRecurrenceBasedParameters);
 		if (selectedParms == null) {
 			throw new InvalidParameterException("The SimpleRecurrenceBasedDisturbancePredictor.predictEventProbability() requires a SimpleRecurrenceBasedDisturbanceParameters instance in the parms argument!");
@@ -104,7 +104,7 @@ public class SimpleRecurrenceBasedDisturbancePredictor extends REpiceaBinaryEven
 	protected void init() {}
 	
 	@Override
-	public Object predictEvent(MonteCarloSimulationCompliantObject stand, Object tree, Map<Integer, Object> parms) {
+	public Object predictEvent(MonteCarloSimulationCompliantObject stand, Object tree, Map<String, Object> parms) {
 		SimpleRecurrenceBasedDisturbanceParameters selectedParms = (SimpleRecurrenceBasedDisturbanceParameters) parms.get(DisturbanceParameter.ParmSimpleRecurrenceBasedParameters);
 		if (selectedParms == null) {
 			throw new InvalidParameterException("The SimpleRecurrenceBasedDisturbancePredictor.predictEventProbability() requires a SimpleRecurrenceBasedDisturbanceParameters instance in the parms argument!");
