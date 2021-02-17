@@ -30,6 +30,7 @@ import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
+import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.integral.GaussHermiteQuadrature;
 import repicea.stats.integral.GaussQuadrature.NumberOfPoints;
@@ -62,7 +63,6 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 
 	private final static double offset5Years = Math.log(5d);		
 
-	public final static int ParmTimeStep = 895;
 	
 	private final LinkFunction linkFunction;
 	private final GaussHermiteQuadrature ghq;
@@ -138,8 +138,8 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 					getDefaultRandomEffects(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT).getDistribution().getStandardDeviation());
 		}
 		
-		if (parms != null && parms.containsKey(ParmTimeStep)) {
-			double timeStep = ((Number) parms.get(ParmTimeStep)).doubleValue();
+		if (parms != null && parms.containsKey(DisturbanceParameter.ParmTimeStep)) {
+			double timeStep = ((Number) parms.get(DisturbanceParameter.ParmTimeStep)).doubleValue();
 			prob = 1 - Math.pow (1 - prob, timeStep / 5d);		// correction in case of 6-yr growth step
 		}
 		return prob;
