@@ -117,7 +117,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	
 
 	@Override
-	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<Integer, Object> parms) {
+	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<String, Object> parms) {
 		Matrix recurrence = getParametersForThisRealization(plotSample);
 		double betaParm = recurrence.m_afData[1][0];
 		double lambdaParm = 1d / recurrence.m_afData[0][0];
@@ -200,7 +200,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	
 	
 	@Override
-	public Object predictEvent(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<Integer, Object> parms) {
+	public Object predictEvent(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<String, Object> parms) {
 		double eventProbability = predictEventProbability(plotSample, tree, parms);
 		if (eventProbability < 0 || eventProbability > 1) {
 			return null;

@@ -76,7 +76,7 @@ public class MeloThinnerTest {
 		int nbPlots = 0;
 		MeloThinnerPredictor predictor = new MeloThinnerPredictor(false);
 		predictor.setGaussianQuadrature(false);
-		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		for (MeloThinnerPlotImpl plot : Plots) {
 			parms.put(DisturbanceParameter.ParmAAC, plot.getAAC());
 			double actual = 1 - predictor.predictEventProbability(plot, null, parms); // 1 - probability of harvesting to get the survival
@@ -92,7 +92,7 @@ public class MeloThinnerTest {
 		ReadPlots();
 		int nbPlots = 0;
 		MeloThinnerPredictor predictor = new MeloThinnerPredictor(false);
-		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		for (MeloThinnerPlotImpl plot : Plots) {
 			parms.put(DisturbanceParameter.ParmAAC, plot.getAAC());
 			double actual = 1 - predictor.predictEventProbability(plot, null, parms); // 1 - probability of harvesting to get the survival
@@ -109,7 +109,7 @@ public class MeloThinnerTest {
 		int nbPlots = 0;
 		MeloThinnerPredictor predictor = new MeloThinnerPredictor(false);
 		predictor.setGaussianQuadrature(false);
-		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		for (MeloThinnerPlotImpl plot : Plots) {
 			parms.put(DisturbanceParameter.ParmYear0, plot.getYear0());
 			parms.put(DisturbanceParameter.ParmYear1, plot.getYear1());
@@ -126,7 +126,7 @@ public class MeloThinnerTest {
 		ReadPlots();
 		int nbPlots = 0;
 		MeloThinnerPredictor predictor = new MeloThinnerPredictor(false);
-		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		for (MeloThinnerPlotImpl plot : Plots) {
 			parms.put(DisturbanceParameter.ParmYear0, plot.getYear0());
 			parms.put(DisturbanceParameter.ParmYear1, plot.getYear1());
@@ -144,7 +144,7 @@ public class MeloThinnerTest {
 		ReadPlots();
 		MeloThinnerPredictor predictor = new MeloThinnerPredictor(false);
 		MeloThinnerPlotImpl plot = Plots.get(0);
-		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		parms.put(DisturbanceParameter.ParmYear0, plot.getYear0());
 		parms.put(DisturbanceParameter.ParmYear1, plot.getYear1());
 		double withoutReduction = predictor.predictEventProbability(plot, null, parms); 
@@ -159,7 +159,7 @@ public class MeloThinnerTest {
 		ReadPlots();
 		MeloThinnerPredictor predictor = new MeloThinnerPredictor(false);
 		MeloThinnerPlotImpl plot = Plots.get(0);
-		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		parms.put(DisturbanceParameter.ParmYear0, plot.getYear0());
 		parms.put(DisturbanceParameter.ParmYear1, plot.getYear1());
 		double withoutIncrease = predictor.predictEventProbability(plot, null, parms); 
@@ -174,7 +174,7 @@ public class MeloThinnerTest {
 		ReadPlots();
 		MeloThinnerPredictor predictor = new MeloThinnerPredictor(false);
 		MeloThinnerPlotImpl plot = Plots.get(0);
-		Map<Integer, Object> parms = new HashMap<Integer, Object>();
+		Map<String, Object> parms = new HashMap<String, Object>();
 		parms.put(DisturbanceParameter.ParmYear0, plot.getYear0());
 		parms.put(DisturbanceParameter.ParmYear1, plot.getYear1());
 		double basicAACprediction = predictor.predictEventProbability(plot, null, parms); 

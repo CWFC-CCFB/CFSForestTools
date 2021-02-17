@@ -291,7 +291,7 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 	
 	
 	@Override
-	public double predictEventProbability(DefoliationPlot plot, Object tree, Map<Integer, Object> parms) {
+	public double predictEventProbability(DefoliationPlot plot, Object tree, Map<String, Object> parms) {
 		if (plot instanceof SprayedAgainstDefoliatorProvider) {
 			if (((SprayedAgainstDefoliatorProvider) plot).isSprayed()) {
 				return 0d;

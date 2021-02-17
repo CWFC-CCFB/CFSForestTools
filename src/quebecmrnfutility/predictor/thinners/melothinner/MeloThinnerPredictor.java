@@ -165,7 +165,7 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 	 *  
 	 */
 	@Override
-	public synchronized double predictEventProbability(MeloThinnerPlot stand, Object tree, Map<Integer, Object> parms) {
+	public synchronized double predictEventProbability(MeloThinnerPlot stand, Object tree, Map<String, Object> parms) {
 		oXVector.resetMatrix();
 		Matrix beta = getParametersForThisRealization(stand);
 		double proportionalPart = getProportionalPart(stand, beta);
@@ -250,7 +250,7 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 	 *  Values beyond this range are not considered and no modulation factor is then used.
 	 */
 	@Override
-	public Object predictEvent(MeloThinnerPlot stand, Object tree, Map<Integer, Object> parms) {
+	public Object predictEvent(MeloThinnerPlot stand, Object tree, Map<String, Object> parms) {
 		return super.predictEvent(stand, tree, parms);
 	}
 	
