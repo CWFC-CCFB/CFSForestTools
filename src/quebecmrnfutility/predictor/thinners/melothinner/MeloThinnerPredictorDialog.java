@@ -24,8 +24,6 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -44,7 +42,7 @@ import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
 @SuppressWarnings("serial")
-public final class MeloThinnerPredictorDialog extends REpiceaDialog implements ItemListener, NumberFieldListener, WindowListener {
+public final class MeloThinnerPredictorDialog extends REpiceaDialog implements ItemListener, NumberFieldListener {
 
 	private enum MessageID implements TextableEnum {
 		Title("Melo et al.'s thinner options", "Options du module de r\u00E9colte de Melo et al."),
@@ -105,7 +103,6 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 		defaultAACButton.addItemListener(this);
 		userSpecifiedAACButton.addItemListener(this);
 		aacField.addNumberFieldListener(this);
-		addWindowListener(this);
 	}
 
 	@Override
@@ -113,7 +110,6 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 		defaultAACButton.removeItemListener(this);
 		userSpecifiedAACButton.removeItemListener(this);
 		aacField.removeNumberFieldListener(this);
-		removeWindowListener(this);
 	}
 
 	@Override
@@ -173,35 +169,16 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 		super.setVisible(bool);
 	}
 
-	
-	
-	@Override
-	public void windowOpened(WindowEvent e) {}
 
 	@Override
-	public void windowClosing(WindowEvent e) {
+	public void okAction() {
 		if (userSpecifiedAACButton.isSelected()) {
 			caller.setTargetAACPerHa((Double) aacField.getValue());
 		} else {
 			caller.setTargetAACPerHa(null);
 		}
+		super.okAction();
 	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {}
-
-	@Override
-	public void windowIconified(WindowEvent e) {}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {}
-
-	@Override
-	public void windowActivated(WindowEvent e) {}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {}
-
 
 	public static void main(String[] args) {
 		MeloThinnerPredictor pred = new MeloThinnerPredictor(true);
