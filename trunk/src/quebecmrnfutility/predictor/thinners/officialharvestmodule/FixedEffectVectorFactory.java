@@ -271,7 +271,7 @@ class FixedEffectVectorFactory implements Serializable {
 		switch (effect) {
 		
 		case Intercept:
-			xVector.m_afData[0][pointer] = 1d;
+			xVector.setValueAt(0, pointer, 1d);
 			output = 1;
 			break;
 	
@@ -307,34 +307,34 @@ class FixedEffectVectorFactory implements Serializable {
 			break;
 			
 		case OffsetDbh:
-			xVector.m_afData[0][pointer] = offsetDbh;
+			xVector.setValueAt(0, pointer, offsetDbh);
 			output = 1;
 			break;
 			
 		case OffsetDbhXDummyDbh:
 			dummyDbh = (offsetDbh > 0d) ? 1 : 0;
 			if (dummyDbh !=0) {
-				xVector.m_afData[0][pointer] = offsetDbh;
+				xVector.setValueAt(0, pointer, offsetDbh);
 			}
 			output = 1;
 			break;
 
 		case OffsetDbhXOffsetDbh:
-			xVector.m_afData[0][pointer] = offsetDbh2;
+			xVector.setValueAt(0, pointer, offsetDbh2);
 			output = 1;
 			break;
 
 		case OffsetDbhXOffsetDbhXDummyDbh:
 			dummyDbh = (offsetDbh > 0d) ? 1 : 0;
 			if (dummyDbh !=0) {
-				xVector.m_afData[0][pointer] = offsetDbh2;
+				xVector.setValueAt(0, pointer, offsetDbh2);
 			}
 			output = 1;
 			break;
 			
 		case LogNbHa:
 			double logNbHa = Math.log(numberOfStemsHa + 1);
-			xVector.m_afData[0][pointer] = logNbHa;
+			xVector.setValueAt(0, pointer, logNbHa);
 			output = 1;
 			break;
 		case SpeciesXLogNbHa:

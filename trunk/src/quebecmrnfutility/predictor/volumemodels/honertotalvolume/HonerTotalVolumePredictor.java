@@ -48,125 +48,125 @@ public class HonerTotalVolumePredictor extends REpiceaPredictor {
 	protected final void init() {
 		Matrix mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.SAB, mat);
-		mat.m_afData[0][0] = 2.139;
-		mat.m_afData[1][0] = 91.938;
-		mat.m_afData[2][0] = 0.004331;
+		mat.setValueAt(0, 0, 2.139);
+		mat.setValueAt(1, 0, 91.938);
+		mat.setValueAt(2, 0, 0.004331);
 		
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.PRU, mat);
-		mat.m_afData[0][0] = 1.112;
-		mat.m_afData[1][0] = 106.708;
-		mat.m_afData[2][0] = 0.004330;
+		mat.setValueAt(0, 0, 1.112);
+		mat.setValueAt(1, 0, 106.708);
+		mat.setValueAt(2, 0, 0.004330);
 		
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.THO, mat);
-		mat.m_afData[0][0] = 4.167;
-		mat.m_afData[1][0] = 74.647;
-		mat.m_afData[2][0] = 0.004330;
+		mat.setValueAt(0, 0, 4.167);
+		mat.setValueAt(1, 0, 74.647);
+		mat.setValueAt(2, 0, 0.004330);
 		
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.PIG, mat);
-		mat.m_afData[0][0] = 0.897;
-		mat.m_afData[1][0] = 106.232;
-		mat.m_afData[2][0] = 0.004331;
+		mat.setValueAt(0, 0, 0.897);
+		mat.setValueAt(1, 0, 106.232);
+		mat.setValueAt(2, 0, 0.004331);
 		
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.PIB, mat);
-		mat.m_afData[0][0] = 0.691;
-		mat.m_afData[1][0] = 110.848;
-		mat.m_afData[2][0] = 0.004319;
+		mat.setValueAt(0, 0, 0.691);
+		mat.setValueAt(1, 0, 110.848);
+		mat.setValueAt(2, 0, 0.004319);
 		
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.PIR, mat);
-		mat.m_afData[0][0] = 0.710;
-		mat.m_afData[1][0] = 108.394;
-		mat.m_afData[2][0] = 0.004331;
+		mat.setValueAt(0, 0, 0.710);
+		mat.setValueAt(1, 0, 108.394);
+		mat.setValueAt(2, 0, 0.004331);
 		
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.EPN, mat);
-		mat.m_afData[0][0] = 1.588;
-		mat.m_afData[1][0] = 101.609;
-		mat.m_afData[2][0] = 0.004327;
+		mat.setValueAt(0, 0, 1.588);
+		mat.setValueAt(1, 0, 101.609);
+		mat.setValueAt(2, 0, 0.004327);
 	
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.EPB, mat);
-		mat.m_afData[0][0] = 1.440;
-		mat.m_afData[1][0] = 104.295;
-		mat.m_afData[2][0] = 0.004322;
+		mat.setValueAt(0, 0, 1.440);
+		mat.setValueAt(1, 0, 104.295);
+		mat.setValueAt(2, 0, 0.004322);
 
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.EPR, mat);
-		mat.m_afData[0][0] = 1.226;
-		mat.m_afData[1][0] = 96.266;
-		mat.m_afData[2][0] = 0.004325;
+		mat.setValueAt(0, 0, 1.226);
+		mat.setValueAt(1, 0, 96.266);
+		mat.setValueAt(2, 0, 0.004325);
 		
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.BOJ, mat);
-		mat.m_afData[0][0] = 1.449;
-		mat.m_afData[1][0] = 105.081;
-		mat.m_afData[2][0] = 0.004320;
+		mat.setValueAt(0, 0, 1.449);
+		mat.setValueAt(1, 0, 105.081);
+		mat.setValueAt(2, 0, 0.004320);
 
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.BOP, mat);
-		mat.m_afData[0][0] = 2.222;
-		mat.m_afData[1][0] = 91.554;
-		mat.m_afData[2][0] = 0.004322;
+		mat.setValueAt(0, 0, 2.222);
+		mat.setValueAt(1, 0, 91.554);
+		mat.setValueAt(2, 0, 0.004322);
 
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.CET, mat);
-		mat.m_afData[0][0] = 0.033;
-		mat.m_afData[1][0] = 119.889;
-		mat.m_afData[2][0] = 0.004334;
+		mat.setValueAt(0, 0, 0.033);
+		mat.setValueAt(1, 0, 119.889);
+		mat.setValueAt(2, 0, 0.004334);
 
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.ERR, mat);
 		betaMap.put(HonerTotalVolumeTreeSpecies.ERS, mat);
 		betaMap.put(HonerTotalVolumeTreeSpecies.ERN, mat);
-		mat.m_afData[0][0] = 1.046;
-		mat.m_afData[1][0] = 117.035;
-		mat.m_afData[2][0] = 0.004334;
+		mat.setValueAt(0, 0, 1.046);
+		mat.setValueAt(1, 0, 117.035);
+		mat.setValueAt(2, 0, 0.004334);
 
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.PET, mat);
-		mat.m_afData[0][0] = -0.312;
-		mat.m_afData[1][0] = 133.101;
-		mat.m_afData[2][0] = 0.004341;
+		mat.setValueAt(0, 0, -0.312);
+		mat.setValueAt(1, 0, 133.101);
+		mat.setValueAt(2, 0, 0.004341);
 
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.PEB, mat);
-		mat.m_afData[0][0] = 0.420;
-		mat.m_afData[1][0] = 120.287;
-		mat.m_afData[2][0] = 0.004341;
+		mat.setValueAt(0, 0, 0.420);
+		mat.setValueAt(1, 0, 120.287);
+		mat.setValueAt(2, 0, 0.004341);
 		
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.HEG, mat);
-		mat.m_afData[0][0] = 0.959;
-		mat.m_afData[1][0] = 102.056;
-		mat.m_afData[2][0] = 0.004334;
+		mat.setValueAt(0, 0, 0.959);
+		mat.setValueAt(1, 0, 102.056);
+		mat.setValueAt(2, 0, 0.004334);
 		
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.CHR, mat);
-		mat.m_afData[0][0] = 1.512;
-		mat.m_afData[1][0] = 102.568;
-		mat.m_afData[2][0] = 0.004334;
+		mat.setValueAt(0, 0, 1.512);
+		mat.setValueAt(1, 0, 102.568);
+		mat.setValueAt(2, 0, 0.004334);
 		
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.OSV, mat);
-		mat.m_afData[0][0] = 1.877;
-		mat.m_afData[1][0] = 101.372;
-		mat.m_afData[2][0] = 0.004334;
+		mat.setValueAt(0, 0, 1.877);
+		mat.setValueAt(1, 0, 101.372);
+		mat.setValueAt(2, 0, 0.004334);
 
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.TIL, mat);
-		mat.m_afData[0][0] = 0.948;
-		mat.m_afData[1][0] = 122.364;
-		mat.m_afData[2][0] = 0.004334;
+		mat.setValueAt(0, 0, 0.948);
+		mat.setValueAt(1, 0, 122.364);
+		mat.setValueAt(2, 0, 0.004334);
 
 		mat = new Matrix(3,1);
 		betaMap.put(HonerTotalVolumeTreeSpecies.ORA, mat);
-		mat.m_afData[0][0] = 0.634;
-		mat.m_afData[1][0] = 134.263;
-		mat.m_afData[2][0] = 0.004334;
+		mat.setValueAt(0, 0, 0.634);
+		mat.setValueAt(1, 0, 134.263);
+		mat.setValueAt(2, 0, 0.004334);
 		
 	}
 	
@@ -179,9 +179,9 @@ public class HonerTotalVolumePredictor extends REpiceaPredictor {
 		HonerTotalVolumeTreeSpecies species = tree.getHonerSpecies();
 		Matrix beta = betaMap.get(species);
 		
-		double a0 = beta.m_afData[0][0];
-		double a1 = beta.m_afData[1][0];
-		double a2 = beta.m_afData[2][0];
+		double a0 = beta.getValueAt(0, 0);
+		double a1 = beta.getValueAt(1, 0);
+		double a2 = beta.getValueAt(2, 0);
 		double h = tree.getHeightM();
 		
 		

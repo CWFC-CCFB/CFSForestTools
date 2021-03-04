@@ -55,7 +55,7 @@ public interface BetaHarvestableTree extends DbhCmProvider,
 		
 		BetaHarvestableSpecies() {
 			dummy = new Matrix(1,12);
-			dummy.m_afData[0][this.ordinal()] = 1d;
+			dummy.setValueAt(0, ordinal(), 1d);
 		}
 		
 		public Matrix getDummy() {return this.dummy;}

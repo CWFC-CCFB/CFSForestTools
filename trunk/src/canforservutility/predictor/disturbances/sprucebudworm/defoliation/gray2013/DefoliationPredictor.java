@@ -109,52 +109,52 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 	@Override
 	protected void init() {
 		MeanExplanatoryVariables = new Matrix(1,8);
-		MeanExplanatoryVariables.m_afData[0][0] = 49.0485;
-		MeanExplanatoryVariables.m_afData[0][1] = 38.7728;
-		MeanExplanatoryVariables.m_afData[0][2] = 113.2317;
-		MeanExplanatoryVariables.m_afData[0][3] = 5.8103;
-		MeanExplanatoryVariables.m_afData[0][4] = 82.6894;
-		MeanExplanatoryVariables.m_afData[0][5] = 41.5137;
-		MeanExplanatoryVariables.m_afData[0][6] = 15.3037;
-		MeanExplanatoryVariables.m_afData[0][7] = 0.5807;
+		MeanExplanatoryVariables.setValueAt(0, 0, 49.0485);
+		MeanExplanatoryVariables.setValueAt(0, 1, 38.7728);
+		MeanExplanatoryVariables.setValueAt(0, 2, 113.2317);
+		MeanExplanatoryVariables.setValueAt(0, 3, 5.8103);
+		MeanExplanatoryVariables.setValueAt(0, 4, 82.6894);
+		MeanExplanatoryVariables.setValueAt(0, 5, 41.5137);
+		MeanExplanatoryVariables.setValueAt(0, 6, 15.3037);
+		MeanExplanatoryVariables.setValueAt(0, 7, 0.5807);
 		
 		stdExplanatoryVariables = new Matrix(1,8);
-		stdExplanatoryVariables.m_afData[0][0] = 1.8838;
-		stdExplanatoryVariables.m_afData[0][1] = 4.3036;
-		stdExplanatoryVariables.m_afData[0][2] = 51.4563;
-		stdExplanatoryVariables.m_afData[0][3] = 4.3139;
-		stdExplanatoryVariables.m_afData[0][4] = 4.6368;
-		stdExplanatoryVariables.m_afData[0][5] = 25.1083;
-		stdExplanatoryVariables.m_afData[0][6] = 11.0932;
-		stdExplanatoryVariables.m_afData[0][7] = 0.2069;
+		stdExplanatoryVariables.setValueAt(0, 0, 1.8838);
+		stdExplanatoryVariables.setValueAt(0, 1, 4.3036);
+		stdExplanatoryVariables.setValueAt(0, 2, 51.4563);
+		stdExplanatoryVariables.setValueAt(0, 3, 4.3139);
+		stdExplanatoryVariables.setValueAt(0, 4, 4.6368);
+		stdExplanatoryVariables.setValueAt(0, 5, 25.1083);
+		stdExplanatoryVariables.setValueAt(0, 6, 11.0932);
+		stdExplanatoryVariables.setValueAt(0, 7, 0.2069);
 		
 		canonicalReg1Coef = new Matrix(8,1);
-		canonicalReg1Coef.m_afData[0][0] = 0.8760;
-		canonicalReg1Coef.m_afData[1][0] = -1.0791;
-		canonicalReg1Coef.m_afData[2][0] = 1.6679;
-		canonicalReg1Coef.m_afData[3][0] = -0.1370;
-		canonicalReg1Coef.m_afData[4][0] = -0.2757;
-		canonicalReg1Coef.m_afData[5][0] = 0.0242;
-		canonicalReg1Coef.m_afData[6][0] = -0.2754;
-		canonicalReg1Coef.m_afData[7][0] = -0.4493;
+		canonicalReg1Coef.setValueAt(0, 0, 0.8760);
+		canonicalReg1Coef.setValueAt(1, 0, -1.0791);
+		canonicalReg1Coef.setValueAt(2, 0, 1.6679);
+		canonicalReg1Coef.setValueAt(3, 0, -0.1370);
+		canonicalReg1Coef.setValueAt(4, 0, -0.2757);
+		canonicalReg1Coef.setValueAt(5, 0, 0.0242);
+		canonicalReg1Coef.setValueAt(6, 0, -0.2754);
+		canonicalReg1Coef.setValueAt(7, 0, -0.4493);
 
 		canonicalReg2Coef = new Matrix(8,1);
-		canonicalReg2Coef.m_afData[0][0] = 0.1586;
-		canonicalReg2Coef.m_afData[1][0] = 0.5446;
-		canonicalReg2Coef.m_afData[2][0] = 2.4593;
-		canonicalReg2Coef.m_afData[3][0] = -1.4997;
-		canonicalReg2Coef.m_afData[4][0] = -1.0369;
-		canonicalReg2Coef.m_afData[5][0] = 1.0801;
-		canonicalReg2Coef.m_afData[6][0] = 0.2540;
-		canonicalReg2Coef.m_afData[7][0] = -0.1964;
+		canonicalReg2Coef.setValueAt(0, 0, 0.1586);
+		canonicalReg2Coef.setValueAt(1, 0, 0.5446);
+		canonicalReg2Coef.setValueAt(2, 0, 2.4593);
+		canonicalReg2Coef.setValueAt(3, 0, -1.4997);
+		canonicalReg2Coef.setValueAt(4, 0, -1.0369);
+		canonicalReg2Coef.setValueAt(5, 0, 1.0801);
+		canonicalReg2Coef.setValueAt(6, 0, 0.2540);
+		canonicalReg2Coef.setValueAt(7, 0, -0.1964);
 		
 		scoreDuration = new Matrix(2,1);
-		scoreDuration.m_afData[0][0] = -0.8056;
-		scoreDuration.m_afData[1][0] = -0.1053;
+		scoreDuration.setValueAt(0, 0, -0.8056);
+		scoreDuration.setValueAt(1, 0, -0.1053);
 		
 		scoreSeverity = new Matrix(2,1);
-		scoreSeverity.m_afData[0][0] = -0.6920;
-		scoreSeverity.m_afData[1][0] = 0.1668;
+		scoreSeverity.setValueAt(0, 0, -0.6920);
+		scoreSeverity.setValueAt(1, 0, 0.1668);
 	}
 
 	
@@ -162,10 +162,10 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 	protected Matrix getClimateForThisInterval(DefoliationPlot plot, IntervalNestedInPlotDefinition subject) {
 		if (testPurposes) {
 			Matrix mat = new Matrix(4,1);
-			mat.m_afData[0][0] = MeanExplanatoryVariables.m_afData[0][1];
-			mat.m_afData[1][0] = MeanExplanatoryVariables.m_afData[0][2];
-			mat.m_afData[2][0] = MeanExplanatoryVariables.m_afData[0][3];
-			mat.m_afData[3][0] = MeanExplanatoryVariables.m_afData[0][4];
+			mat.setValueAt(0, 0, MeanExplanatoryVariables.getValueAt(0, 1));
+			mat.setValueAt(1, 0, MeanExplanatoryVariables.getValueAt(0, 2));
+			mat.setValueAt(2, 0, MeanExplanatoryVariables.getValueAt(0, 3));
+			mat.setValueAt(3, 0, MeanExplanatoryVariables.getValueAt(0, 4));
 			return mat;
 		} else if (!climateMap.containsKey(subject)) {
 			List<BioSimPlot> plots = new ArrayList<BioSimPlot>();
@@ -225,10 +225,10 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 				}
 
 				Matrix mat = new Matrix(4,1);
-				mat.m_afData[0][0] = sp_emax;
-				mat.m_afData[1][0] = sp_dd;
-				mat.m_afData[2][0] = sm_emin;
-				mat.m_afData[3][0] = sm_emax;
+				mat.setValueAt(0, 0, sp_emax);
+				mat.setValueAt(1, 0, sp_dd);
+				mat.setValueAt(2, 0, sm_emin);
+				mat.setValueAt(3, 0, sm_emax);
 				
 
 				
@@ -252,40 +252,35 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 		
 		oXVector.resetMatrix();
 		int i = 0;
-		oXVector.m_afData[0][i] = plot.getLatitudeDeg();
+		oXVector.setValueAt(0, i, plot.getLatitudeDeg());
 		i++;
-		oXVector.m_afData[0][i] = climate.m_afData[0][0]; // plot.getSpringSumMaxTemp();	// sp_emax
+		oXVector.setValueAt(0, i, climate.getValueAt(0, 0)); // plot.getSpringSumMaxTemp();	// sp_emax
 		i++;
-		oXVector.m_afData[0][i] = climate.m_afData[1][0]; // plot.getSpringSumDegreeDays();	// sp_dd 
+		oXVector.setValueAt(0, i, climate.getValueAt(1, 0)); // plot.getSpringSumDegreeDays();	// sp_dd 
 		i++;	
-		oXVector.m_afData[0][i] = climate.m_afData[2][0]; // plot.getSummerSumMinTemp();	// sm_emin
+		oXVector.setValueAt(0, i, climate.getValueAt(2, 0)); // plot.getSummerSumMinTemp();	// sm_emin
 		i++;
-		oXVector.m_afData[0][i] = climate.m_afData[3][0]; // plot.getSummerSumMaxTemp();	// sm_emax
+		oXVector.setValueAt(0, i, climate.getValueAt(3, 0)); // plot.getSummerSumMaxTemp();	// sm_emax
 		i++;
-		oXVector.m_afData[0][i] = plot.getVolumeM3HaOfBlackSpruce();
+		oXVector.setValueAt(0, i, plot.getVolumeM3HaOfBlackSpruce());
 		i++;
-		oXVector.m_afData[0][i] = plot.getVolumeM3HaOfFirAndOtherSpruces();
+		oXVector.setValueAt(0, i, plot.getVolumeM3HaOfFirAndOtherSpruces());
 		i++;
-		oXVector.m_afData[0][i] = plot.getProportionForestedArea();
+		oXVector.setValueAt(0, i, plot.getProportionForestedArea());
 
 		Matrix standardizedValues = oXVector.subtract(MeanExplanatoryVariables).elementWiseDivide(stdExplanatoryVariables);
 		Matrix score = new Matrix(1,2);
-		score.m_afData[0][0] = standardizedValues.multiply(canonicalReg1Coef).m_afData[0][0];
-		score.m_afData[0][1] = standardizedValues.multiply(canonicalReg2Coef).m_afData[0][0];
+		score.setValueAt(0, 0, standardizedValues.multiply(canonicalReg1Coef).getValueAt(0, 0));
+		score.setValueAt(0, 1, standardizedValues.multiply(canonicalReg2Coef).getValueAt(0, 0));
 		
-		double durationResult = score.multiply(scoreDuration).m_afData[0][0] * 5.1463 + 4.7506;
-		double severityResult = score.multiply(scoreSeverity).m_afData[0][0] * 20.4069 + 25.6180;
+		double durationResult = score.multiply(scoreDuration).getValueAt(0, 0) * 5.1463 + 4.7506;
+		double severityResult = score.multiply(scoreSeverity).getValueAt(0, 0) * 20.4069 + 25.6180;
 		double sinSeverity = Math.sin(severityResult); 
 		severityResult = sinSeverity * sinSeverity * 100d;
 		
-//		SimpleEstimate estimate = new SimpleEstimate();
-//		List<String> indices = new ArrayList<String>();
-//		indices.add("Duration");
-//		indices.add("Severity");
-//		estimate.setRowIndex(indices);
 		Matrix mean = new Matrix(2,1);
-		mean.m_afData[0][0] = durationResult;
-		mean.m_afData[1][0] = severityResult;
+		mean.setValueAt(0, 0, durationResult);
+		mean.setValueAt(1, 0, severityResult);
 		return mean;
 	}
 	
@@ -298,8 +293,8 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 			}
 		} 
 		Matrix estimate = getDurationAndSeverityEstimate(plot);
-		double durationResult = estimate.m_afData[0][0];
-		double severityResult = estimate.m_afData[1][0];
+		double durationResult = estimate.getValueAt(0, 0);
+		double severityResult = estimate.getValueAt(1, 0);
 		if (durationResult >= nbYearsWithModerateToSevereDefoliation) {
 			double minSeverity = nbYearsWithModerateToSevereDefoliation * .65 + (durationResult - nbYearsWithModerateToSevereDefoliation) * .20;
 			if (severityResult > minSeverity) {

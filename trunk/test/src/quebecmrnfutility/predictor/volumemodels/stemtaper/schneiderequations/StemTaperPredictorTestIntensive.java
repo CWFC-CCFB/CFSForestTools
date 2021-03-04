@@ -164,7 +164,7 @@ public class StemTaperPredictorTestIntensive {
 			StemTaperPredictor stm = new StemTaperPredictor();
 			for (StemTaperTree tree : trees) {
 				AbstractStemTaperEstimate estimate = stm.getPredictedTaperForTheseHeights(tree, ((StemTaperTreeImpl) tree).getHeightList(), EstimationMethodInDeterministicMode.FirstOrderMeanOnly, ModelType.TREEMODEL);
-				double newValue = estimate.getMean().m_afData[0][0];
+				double newValue = estimate.getMean().getValueAt(0, 0);
 				double oldValue = ((StemTaperTreeImpl) tree).getPredicted();
 //				if (Math.abs(oldValue - newValue) > 1E-8) {
 //					int u = 0;

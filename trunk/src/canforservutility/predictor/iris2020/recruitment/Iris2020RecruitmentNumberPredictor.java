@@ -75,7 +75,7 @@ public class Iris2020RecruitmentNumberPredictor extends REpiceaPredictor {
 				Matrix omega = omegaMap.get(sp.ordinal() + 1).squareSym();
 				Matrix thetaMat = thetaMap.get(sp.ordinal() + 1);
 				Matrix speciesEffectMatches = speciesEffectMatchesMap.get(sp.ordinal() + 1);
-				Iris2020RecruitmentNumberInternalPredictor subPredictor = new Iris2020RecruitmentNumberInternalPredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled, thetaMat.m_afData[0][0]);
+				Iris2020RecruitmentNumberInternalPredictor subPredictor = new Iris2020RecruitmentNumberInternalPredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled, thetaMat.getValueAt(0, 0));
 				subPredictor.setBeta(beta, omega);
 				subPredictor.setEffectList(speciesEffectMatches);
 				internalPredictors.put(sp, subPredictor);

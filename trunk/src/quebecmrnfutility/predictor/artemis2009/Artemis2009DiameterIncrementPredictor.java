@@ -61,7 +61,7 @@ public class Artemis2009DiameterIncrementPredictor extends REpiceaPredictor {
 				
 				internalPredictor.setRandomEffect(HierarchicalLevel.PLOT, covparms.getSubMatrix(0, 0, 0, 0));
 				internalPredictor.setRandomEffect(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT, covparms.getSubMatrix(1, 1, 0, 0));
-				internalPredictor.setResidualErrorCovariance(covparms.m_afData[3][0], covparms.m_afData[2][0]);
+				internalPredictor.setResidualErrorCovariance(covparms.getValueAt(3, 0), covparms.getValueAt(2, 0));
 			}
 		}
 	}

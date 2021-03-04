@@ -104,7 +104,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 		this.species = species;
 		this.pred = pred;
 		gSpGrMat = new Matrix(1, Iris2020Species.values().length);
-		gSpGrMat.m_afData[0][species.ordinal()] = gSpGr;
+		gSpGrMat.setValueAt(0, species.ordinal(), gSpGr);
 	}
 	
 	

@@ -107,11 +107,9 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	
 	protected List<Double> getParameters(SpruceBudwormOutbreakOccurrencePlot plotSample) {
 		Matrix recurrence = getParametersForThisRealization(plotSample);
-//		double betaParm = calculateBeta(recurrence.m_afData[0][0], 1, 10);
-//		double lambdaParm = calculateLambda(betaParm, recurrence.m_afData[0][0]);
 		List<Double> parameters = new ArrayList<Double>();
-		parameters.add(recurrence.m_afData[0][0]);
-		parameters.add(recurrence.m_afData[1][0]);
+		parameters.add(recurrence.getValueAt(0, 0));
+		parameters.add(recurrence.getValueAt(1, 0));
 		return parameters;
 	}
 	
@@ -119,8 +117,8 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	@Override
 	public double predictEventProbability(SpruceBudwormOutbreakOccurrencePlot plotSample, Object tree, Map<String, Object> parms) {
 		Matrix recurrence = getParametersForThisRealization(plotSample);
-		double betaParm = recurrence.m_afData[1][0];
-		double lambdaParm = 1d / recurrence.m_afData[0][0];
+		double betaParm = recurrence.getValueAt(1, 0);
+		double lambdaParm = 1d / recurrence.getValueAt(0, 0);
 //		double tmp = GammaFunction.gamma(1 + 1d/betaParm);
 //		double estimatedPopVariance = 1d / (lambdaParm * lambdaParm) * (GammaFunction.gamma(1 + 2d/betaParm) - tmp * tmp);
 		Integer currentDateYr = (Integer) parms.get(DisturbanceParameter.ParmCurrentDateYr);

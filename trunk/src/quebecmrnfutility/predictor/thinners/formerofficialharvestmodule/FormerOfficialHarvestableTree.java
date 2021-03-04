@@ -58,7 +58,7 @@ public interface FormerOfficialHarvestableTree extends  DbhCmProvider,
 		
 		private FormerOfficialHarvestableSpecies() {
 			dummy = new Matrix(1,13);
-			dummy.m_afData[0][this.ordinal()] = 1d;
+			dummy.setValueAt(0, ordinal(), 1d);
 		}
 		
 		public Matrix getDummy() {return this.dummy;}

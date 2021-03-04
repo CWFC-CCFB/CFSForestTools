@@ -190,14 +190,14 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 						oVec = ParameterLoader.loadVectorFromFile(correlationStructureFilename).get();
 						double currentValue, expCurrentValue;
 						for (int i = 0; i < oVec.m_iRows; i++) {		// link function following the implementation in nlme
-							currentValue = oVec.m_afData[i][0];
+							currentValue = oVec.getValueAt(i, 0);
 							expCurrentValue = Math.exp(currentValue);
-							oVec.m_afData[i][0] = expCurrentValue / (1 + expCurrentValue);
+							oVec.setValueAt(i, 0, expCurrentValue / (1 + expCurrentValue));
 						}
-						currentSubModule.setCorrelationParameter(oVec.m_afData[0][0]);
+						currentSubModule.setCorrelationParameter(oVec.getValueAt(0, 0));
 
 						oVec = ParameterLoader.loadVectorFromFile(residStdDevFilename).get();
-						currentSubModule.setResidualStdDev(oVec.m_afData[0][0]); 
+						currentSubModule.setResidualStdDev(oVec.getValueAt(0, 0)); 
 					}
 				}
 			}

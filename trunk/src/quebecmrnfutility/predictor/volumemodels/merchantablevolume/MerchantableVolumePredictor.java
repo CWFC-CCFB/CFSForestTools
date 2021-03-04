@@ -145,7 +145,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		double height = t.getHeightM();
 		double cylindre = Math.PI*dbh2*height*0.025;
 		
-		oXVector.m_afData[0][pointeur] = height/dbh;
+		oXVector.setValueAt(0, pointeur, height/dbh);
 		pointeur++;
 
 		Matrix dummy = species.getDummy();
@@ -156,7 +156,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			oXVector.setSubMatrix(dummy.scalarMultiply(cylindreRes), 0, pointeur);
 		}
 		
-		return oXVector.multiply(modelParameters).m_afData[0][0];
+		return oXVector.multiply(modelParameters).getValueAt(0, 0);
 	}
 
 	/**
@@ -182,7 +182,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			if (species.getSpeciesType() == SpeciesType.ConiferousSpecies) {
 				type = 0;
 			}
-			return totalRandomEffects.m_afData[type][0]*dbh2;
+			return totalRandomEffects.getValueAt(type, 0) * dbh2;
 		} else {
 			return 0d;
 		}
@@ -200,7 +200,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			Matrix dummy = species.getDummy();
 			double dbh2 = t.getSquaredDbhCm();
 
-			return Math.sqrt(dummy.multiply(sigma2).m_afData[0][0]) * dbh2 * StatisticalUtility.getRandom().nextGaussian();
+			return Math.sqrt(dummy.multiply(sigma2).getValueAt(0, 0)) * dbh2 * StatisticalUtility.getRandom().nextGaussian();
 		} else {
 			return 0d;
 		}

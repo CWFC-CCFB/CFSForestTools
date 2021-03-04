@@ -89,8 +89,8 @@ public class StemTaperPredictorTest {
 			Matrix currentValue = outputMap.get(species.name());
 			for (int i = 0; i < ref.m_iRows; i++) {
 				assertEquals("Testing species " + species.name(), 
-						ref.m_afData[i][0], 
-						currentValue.m_afData[i][0],
+						ref.getValueAt(i, 0), 
+						currentValue.getValueAt(i, 0),
 						1E-8);
 			}
 		}
@@ -130,8 +130,8 @@ public class StemTaperPredictorTest {
 			Matrix currentValue = outputMap.get(species.name());
 			for (int i = 0; i < ref.m_iRows; i++) {
 				assertEquals("Testing species " + species.name(), 
-						ref.m_afData[i][0], 
-						currentValue.m_afData[i][0],
+						ref.getValueAt(i, 0), 
+						currentValue.getValueAt(i, 0),
 						1E-8);
 			}
 		}
@@ -251,8 +251,8 @@ public class StemTaperPredictorTest {
 			Matrix currentValue = outputMap.get(species.name());
 			for (int i = 0; i < ref.m_iRows; i++) {
 				assertEquals("Testing species " + species.name(), 
-						ref.m_afData[i][0], 
-						currentValue.m_afData[i][0],
+						ref.getValueAt(i, 0), 
+						currentValue.getValueAt(i, 0),
 						1E-8);
 			}
 		}
@@ -290,8 +290,8 @@ public class StemTaperPredictorTest {
 			Matrix currentValue = outputMap.get(species.name());
 			for (int i = 0; i < ref.m_iRows; i++) {
 				assertEquals("Testing species " + species.name(), 
-						ref.m_afData[i][0], 
-						currentValue.m_afData[i][0],
+						ref.getValueAt(i, 0), 
+						currentValue.getValueAt(i, 0),
 						1E-8);
 			}
 		}

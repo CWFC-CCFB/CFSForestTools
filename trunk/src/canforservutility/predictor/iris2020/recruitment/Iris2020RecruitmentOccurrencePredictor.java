@@ -65,7 +65,7 @@ public class Iris2020RecruitmentOccurrencePredictor extends REpiceaBinaryEventPr
 				Matrix omega = omegaMap.get(sp.ordinal() + 1).squareSym();
 				Matrix speciesEffectMatches = speciesEffectMatchesMap.get(sp.ordinal() + 1);
 				Matrix offset = offsetListMap.get(sp.ordinal() + 1);
-				boolean isOffsetEnabled = offset.m_afData[0][0] == 1d;
+				boolean isOffsetEnabled = offset.getValueAt(0, 0) == 1d;
 				Iris2020RecruitmentOccurrenceInternalPredictor subPredictor = new Iris2020RecruitmentOccurrenceInternalPredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled, isOffsetEnabled);
 				subPredictor.setBeta(beta, omega);
 				subPredictor.setEffectList(speciesEffectMatches);

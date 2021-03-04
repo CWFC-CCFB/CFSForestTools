@@ -129,7 +129,7 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 		if (isRandomEffectsVariabilityEnabled) { 
 			IntervalNestedInPlotDefinition interval = getIntervalNestedInPlotDefinition(stand, stand.getDateYr());
 			Matrix randomEffects = getRandomEffectsForThisSubject(interval);
-			linkFunction.setParameterValue(0, randomEffects.m_afData[0][0]);
+			linkFunction.setParameterValue(0, randomEffects.getValueAt(0, 0));
 			prob = linkFunction.getValue();
 		} else {
 			linkFunction.setParameterValue(0, 0d);
@@ -152,7 +152,7 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 		
 		int pointer = 0;
 		
-		oXVector.m_afData[0][pointer] = 1d;
+		oXVector.setValueAt(0, pointer, 1d);
 		pointer++;
 		
 		MatapediaTreeSpecies species = tree.getMatapediaTreeSpecies();
@@ -160,7 +160,7 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 		oXVector.setSubMatrix(dummySpeciesDbh0, 0, pointer);
 		pointer += species.getDummy().m_iCols;
 
-		oXVector.m_afData[0][pointer] = tree.getSquaredDbhCm();
+		oXVector.setValueAt(0, pointer, tree.getSquaredDbhCm());
 		pointer++;
 		
 		if (stand.isSBWDefoliated() && !stand.isSprayed()) {
@@ -172,10 +172,10 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 		oXVector.setSubMatrix(species.getDummy().scalarMultiply(bal), 0, pointer);
 		pointer += species.getDummy().m_iCols;
 		
-		oXVector.m_afData[0][pointer] = offset5Years;
+		oXVector.setValueAt(0, pointer, offset5Years);
 		pointer++;
 		
-		double result = oXVector.multiply(beta).m_afData[0][0];
+		double result = oXVector.multiply(beta).getValueAt(0, 0);
 		return result;
 	}
 

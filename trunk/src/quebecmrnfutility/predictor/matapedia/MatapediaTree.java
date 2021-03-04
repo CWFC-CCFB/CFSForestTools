@@ -69,7 +69,7 @@ public interface MatapediaTree extends MonteCarloSimulationCompliantObject,
 		MatapediaTreeSpecies(boolean isSpruceOrFir, String englishText, String frenchText) {
 			setText(englishText, frenchText);
 			this.isSpruceOrFir = isSpruceOrFir;
-			dummy.m_afData[0][ordinal()] = 1d; 
+			dummy.setValueAt(0, ordinal(), 1d); 
 		}
 		
 		public Matrix getDummy() {

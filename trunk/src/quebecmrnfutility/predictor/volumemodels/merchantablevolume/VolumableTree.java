@@ -81,7 +81,7 @@ public interface VolumableTree extends DbhCmProvider,
 		
 		VolSpecies() {
 			dummy = new Matrix(1,26);
-			dummy.m_afData[0][this.ordinal()] = 1d;
+			dummy.setValueAt(0, ordinal(), 1d);
 			if (QuebecGeneralSettings.CONIFEROUS_SPECIES.contains(this.name().toUpperCase().trim())) {
 				speciesType = SpeciesType.ConiferousSpecies;
 			} else {

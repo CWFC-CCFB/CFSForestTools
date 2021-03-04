@@ -35,7 +35,7 @@ public class PetroGradePredictorTest {
 
 		double relDiff;
 		for (int i = 0; i < actual.m_iRows; i++) {
-			relDiff = Math.abs(1 - actual.m_afData[i][0] / expected.m_afData[i][0]); 
+			relDiff = Math.abs(1 - actual.getValueAt(i, 0) / expected.getValueAt(i, 0)); 
 			Assert.assertEquals(0, relDiff, .05);
 		}
 	}
@@ -63,7 +63,7 @@ public class PetroGradePredictorTest {
 
 		double relDiff;
 		for (int i = 0; i < actual.m_iRows; i++) {
-			relDiff = Math.abs(1 - actual.m_afData[i][0] / expected.m_afData[i][0]); 
+			relDiff = Math.abs(1 - actual.getValueAt(i, 0) / expected.getValueAt(i, 0)); 
 			Assert.assertEquals(0, relDiff, .065);
 		}
 	}
@@ -90,7 +90,7 @@ public class PetroGradePredictorTest {
 
 		double relDiff;
 		for (int i = 0; i < actual.m_iRows; i++) {
-			relDiff = Math.abs(1 - actual.m_afData[i][0] / expected.m_afData[i][0]); 
+			relDiff = Math.abs(1 - actual.getValueAt(i, 0) / expected.getValueAt(i, 0)); 
 			Assert.assertEquals(0, relDiff, .08);
 		}
 			
@@ -118,8 +118,8 @@ public class PetroGradePredictorTest {
 		double relDiff;
 		double diff;
 		for (int i = 0; i < actual.m_iRows; i++) {
-			diff = Math.abs(actual.m_afData[i][0] - expected.m_afData[i][0]); 
-			relDiff = Math.abs(1 - actual.m_afData[i][0] / expected.m_afData[i][0]); 
+			diff = Math.abs(actual.getValueAt(i, 0) - expected.getValueAt(i, 0)); 
+			relDiff = Math.abs(1 - actual.getValueAt(i, 0) / expected.getValueAt(i, 0)); 
 			Assert.assertTrue(relDiff < 0.05 || diff < 0.02);
 		}
 			

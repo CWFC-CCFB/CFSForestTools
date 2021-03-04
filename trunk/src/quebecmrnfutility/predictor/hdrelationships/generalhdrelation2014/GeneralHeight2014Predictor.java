@@ -131,7 +131,7 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 		if (oList != null && !oList.isEmpty()) {
 			Matrix oMat = new Matrix(1, oList.size());
 			if(oList.indexOf(obj) != -1){
-				oMat.m_afData[0][oList.indexOf(obj)] = 1d;
+				oMat.setValueAt(0, oList.indexOf(obj), 1d);
 			}
 			return oMat;
 		} else {
@@ -176,7 +176,7 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 				internalPredictor.setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
 				
 				Matrix sigma2 = randomEffects.getSubMatrix(2, 2, 0, 0);
-				double phi = randomEffects.m_afData[1][0];//tree
+				double phi = randomEffects.getValueAt(1, 0);//tree
 				GaussianErrorTermEstimate estimate = new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.POWER);
 				setDefaultResidualError(ErrorTermGroup.Default, estimate);
 				internalPredictor.setDefaultResidualError(ErrorTermGroup.Default, estimate);

@@ -211,7 +211,7 @@ public class SybilleTreeLogCategory extends LogCategory {
 			}
 			double trueLengthM = crossSectionHeights.get(endIndex) - crossSectionHeights.get(startIndex); 
 			Estimate<?> volumeEstimateForThisSection;
-			double estimatedD2 = estimate.getMean().m_afData[endIndex][0];
+			double estimatedD2 = estimate.getMean().getValueAt(endIndex, 0);
 			if (estimatedD2 * .01 >= smallEndDiameterCm * smallEndDiameterCm) {	// .01 required to shift from mm2 to cm2
 				List<Double> heightsForTheseSegments = new ArrayList<Double>();
 				for (int i = startIndex; i <= endIndex; i++) {
@@ -244,7 +244,7 @@ public class SybilleTreeLogCategory extends LogCategory {
 	private int findCloserFloorCrossSectionIndex(Matrix squaredDmm2, double squaredSmallEndDiameter) {
 		int i;
 		for (i = 0; i < squaredDmm2.m_iRows; i++) {
-			if (squaredDmm2.m_afData[i][0] * .01 <= squaredSmallEndDiameter) {		// .01 to scale from mm2 to cm2
+			if (squaredDmm2.getValueAt(i, 0) * .01 <= squaredSmallEndDiameter) {		// .01 to scale from mm2 to cm2
 				return i - 1;
 			}
 		}

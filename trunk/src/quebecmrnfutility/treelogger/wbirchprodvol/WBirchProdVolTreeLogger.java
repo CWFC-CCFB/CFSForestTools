@@ -55,7 +55,7 @@ public class WBirchProdVolTreeLogger extends TreeLogger<WBirchProdVolTreeLoggerP
 		Matrix predictedVolumes = wbp.getLogGradeUnderbarkVolumePredictions(stand, tree);
 		List<WBirchProdVolTreeLogCategory> logCategory = getTreeLoggerParameters().getLogCategoryList();
 		for (ProductID productID : ProductID.values()) {
-			addThisWoodPiece(logCategory.get(productID.ordinal()), predictedVolumes.m_afData[productID.getIndex()][0], tree);
+			addThisWoodPiece(logCategory.get(productID.ordinal()), predictedVolumes.getValueAt(productID.getIndex(), 0), tree);
 		}
 	}
 	

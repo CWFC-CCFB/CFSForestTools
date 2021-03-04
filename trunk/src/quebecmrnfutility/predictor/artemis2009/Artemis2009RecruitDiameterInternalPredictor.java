@@ -49,18 +49,18 @@ class Artemis2009RecruitDiameterInternalPredictor extends REpiceaPredictor {
 	
 	protected void setEffectList(Matrix effectList) {
 		for (int i = 0; i < effectList.m_iRows; i++) {
-			this.effectList.add((int) effectList.m_afData[i][0]);
+			this.effectList.add((int) effectList.getValueAt(i, 0));
 		}
 	}
 	
 	protected synchronized double[] predictRecruitDiameter(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree) {
 		Matrix beta = getParametersForThisRealization(stand);
 		
-		double dispersion = beta.m_afData[beta.m_iRows-1][0];	// last element (dispersion) is taken out of the vector
+		double dispersion = beta.getValueAt(beta.m_iRows-1, 0);	// last element (dispersion) is taken out of the vector
 		beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0); 	// vector is resized to omit the last element (dispersion)
 
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009MortalityPredictor.ModuleName, effectList);
-		double xBeta = oXVector.multiply(beta).m_afData[0][0];
+		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		
 		double fGammaMean = Math.exp(xBeta);
 
