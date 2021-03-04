@@ -57,7 +57,7 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 	
 	protected void setEffectList(Matrix effectMat) {
 		for (int i = 0; i < effectMat.m_iRows; i++) {
-			int effectId = (int) effectMat.m_afData[i][0];
+			int effectId = (int) effectMat.getValueAt(i, 0);
 			effectList.add(effectId);
 		}
 	}
@@ -66,7 +66,7 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 	public synchronized double predictEventProbability(Iris2020CompatiblePlot plot, Iris2020CompatibleTree tree, Map<String, Object> parms) {
 		Matrix beta = getParametersForThisRealization(plot);
 		constructXVector(plot, tree);
-		double xBeta = oXVector.multiply(beta).m_afData[0][0];
+		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		if (offsetEnabled) {
 			xBeta += Math.log(plot.getGrowthStepLengthYr());
 		}
@@ -89,7 +89,7 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 
 		double g_broadleaved = plot.getBasalAreaOfBroadleavedSpecies();
 		double g_coniferous = plot.getBasalAreaOfConiferousSpecies();
-		double g_spgr = plot.getBasalAreaM2HaBySpecies().m_afData[0][tree.getSpecies().ordinal()];
+		double g_spgr = plot.getBasalAreaM2HaBySpecies().getValueAt(0, tree.getSpecies().ordinal());
 		
 		double slope = plot.getSlopeInclinationPercent();
 		double aspect = plot.getSlopeAspect();
@@ -98,193 +98,193 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 		for (int effectId : effectList) {
 			switch(effectId) {
 			case 1:	// intercept
-				oXVector.m_afData[0][index] = 1d;
+				oXVector.setValueAt(0, index, 1d);
 				index++;
 				break;
 			case 2: // DD
-				oXVector.m_afData[0][index] = meanDegreeDays;
+				oXVector.setValueAt(0, index, meanDegreeDays);
 				index++;
 				break;
 			case 3: // DD:TotalPrcp
-				oXVector.m_afData[0][index] = meanDegreeDays * meanPrecipitation;
+				oXVector.setValueAt(0, index, meanDegreeDays * meanPrecipitation);
 				index++;
 				break;
 			case 4: // 
 				if (depth == SoilDepth.Thick) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 5: // 
 				if (depth == SoilDepth.Average) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 6: // 
 				if (depth == SoilDepth.Shallow) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 7: // 
 				if (depth == SoilDepth.VeryShallow) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 8: // 
 				if (drainage == DrainageGroup.Xeric) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 9: // 
 				if (drainage == DrainageGroup.Mesic) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 10: // 
 				if (drainage == DrainageGroup.Subhydric) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 11: // 
 				if (drainage == DrainageGroup.Hydric) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 12: // 
 				if (origin == OriginType.Fire) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 13: // 
 				if (origin == OriginType.OtherNatural) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 14: // 
 				if (origin == OriginType.Harvest) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 15: // 
 				if (pastDist == DisturbanceType.OtherNatural) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 16: // 
 				if (pastDist == DisturbanceType.Harvest) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 17: // 
 				if (texture == SoilTexture.Crude) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 18: // 
 				if (texture == SoilTexture.Mixed) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 19: // 
 				if (texture == SoilTexture.Fine) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 20: // 
 				if (upcomingDist == DisturbanceType.OtherNatural) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 21: // 
 				if (upcomingDist == DisturbanceType.Harvest) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 22:
-				oXVector.m_afData[0][index] = g_broadleaved;
+				oXVector.setValueAt(0, index, g_broadleaved);
 				index++;
 				break;
 			case 23:
-				oXVector.m_afData[0][index] = g_coniferous;
+				oXVector.setValueAt(0, index, g_coniferous);
 				index++;
 				break;
 			case 24:
-				oXVector.m_afData[0][index] = g_spgr;
+				oXVector.setValueAt(0, index, g_spgr);
 				index++;
 				break;
 			case 25:
 				if (slope > 3) { 
 					if (aspect != 400d && aspect != 500d) {
-						oXVector.m_afData[0][index] = Math.cos(2 * Math.PI * aspect / 360d);
+						oXVector.setValueAt(0, index, Math.cos(2 * Math.PI * aspect / 360d));
 					}
 				}
 				index++;
 				break;
 			case 26: // lnDt
-				oXVector.m_afData[0][index] = Math.log(plot.getGrowthStepLengthYr());
+				oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 				index++;
 				break;
 			case 27: // lnG_F
-				oXVector.m_afData[0][index] = Math.log(1d + g_broadleaved);
+				oXVector.setValueAt(0, index, Math.log(1d + g_broadleaved));
 				index++;
 				break;
 			case 28: // lnG_R
-				oXVector.m_afData[0][index] = Math.log(1d + g_coniferous);
+				oXVector.setValueAt(0, index, Math.log(1d + g_coniferous));
 				index++;
 				break;
 			case 29: // lnG_SpGr
-				oXVector.m_afData[0][index] = Math.log(1d + g_spgr);
+				oXVector.setValueAt(0, index, Math.log(1d + g_spgr));
 				index++;
 				break;
 			case 30: // lnPente
-				oXVector.m_afData[0][index] = Math.log(1d + slope);
+				oXVector.setValueAt(0, index, Math.log(1d + slope));
 				index++;
 				break;
 			case 31: // logDD
-				oXVector.m_afData[0][index] = Math.log(meanDegreeDays);
+				oXVector.setValueAt(0, index, Math.log(meanDegreeDays));
 				index++;
 				break;
 			case 32: // logDD:logPrcp
-				oXVector.m_afData[0][index] = Math.log(meanDegreeDays) * Math.log(meanPrecipitation);
+				oXVector.setValueAt(0, index, Math.log(meanDegreeDays) * Math.log(meanPrecipitation));
 				index++;
 				break;
 			case 33: // logPrcp
-				oXVector.m_afData[0][index] = Math.log(meanPrecipitation);
+				oXVector.setValueAt(0, index, Math.log(meanPrecipitation));
 				index++;
 				break;
 			case 34: // pentePerc
-				oXVector.m_afData[0][index] = slope;
+				oXVector.setValueAt(0, index, slope);
 				index++;
 				break;
 			case 35:
 				if (g_spgr > 0) {
-					oXVector.m_afData[0][index] = 1d;
+					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 36: // timeSince1970
-				oXVector.m_afData[0][index] = plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970;
+				oXVector.setValueAt(0, index, plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970);
 				index++;
 				break;
 			case 37: // TotalPrcp
-				oXVector.m_afData[0][index] = meanPrecipitation;
+				oXVector.setValueAt(0, index, meanPrecipitation);
 				index++;
 				break;
 			default:

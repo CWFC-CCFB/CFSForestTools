@@ -59,7 +59,7 @@ public interface PetroGradeTree extends DbhCmProvider,
 		PetroGradeSpecies(REpiceaSpecies.Species species) {
 			this.species = species;
 			dummy = new Matrix(1,2);
-			dummy.m_afData[0][this.ordinal()] = 1d;
+			dummy.setValueAt(0, ordinal(), 1d);
 		}
 
 		public Matrix getDummy() {return this.dummy;}
@@ -99,7 +99,7 @@ public interface PetroGradeTree extends DbhCmProvider,
 		PetroGradeType(String name) {
 			this.name = name;
 			this.dummy = new Matrix(1,5);
-			dummy.m_afData[0][this.ordinal()] = 1d;
+			dummy.setValueAt(0, ordinal(), 1d);
 		}	
 
 		public String getName() {return this.name;}

@@ -64,11 +64,11 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	
 	protected final void setVarianceParameters(Matrix varianceParameters) {
 		if (varianceParameters.m_iRows > 1) {
-			this.varFunctionParm1 = Math.exp(varianceParameters.m_afData[0][0]);
-			this.varFunctionParm2 = varianceParameters.m_afData[1][0];
+			this.varFunctionParm1 = Math.exp(varianceParameters.getValueAt(0, 0));
+			this.varFunctionParm2 = varianceParameters.getValueAt(1, 0);
 		} else {
 			this.varFunctionParm1 = 1d;
-			this.varFunctionParm2 = varianceParameters.m_afData[0][0];
+			this.varFunctionParm2 = varianceParameters.getValueAt(0, 0);
 		}
 	}
 	
@@ -104,10 +104,10 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	 */
 	private void setHeights(Matrix heights, EstimationMethodInDeterministicMode estimationMethod) {
 		for (int i = 0; i < heights.m_iRows; i++) {
-			heights.m_afData[i][0] = Math.round(heights.m_afData[i][0] * 1000) * 0.001;
+			heights.setValueAt(i, 0, Math.round(heights.getValueAt(i, 0) * 1000) * 0.001);
 		}
-		if (heights.m_afData[heights.m_iRows - 1][0] >= tree.getHeightM()) {
-			heights.m_afData[heights.m_iRows - 1][0] = tree.getHeightM() - 1E-4;
+		if (heights.getValueAt(heights.m_iRows - 1, 0) >= tree.getHeightM()) {
+			heights.setValueAt(heights.m_iRows - 1, 0, tree.getHeightM() - 1E-4);
 		}
 		this.heights = heights;
 		relativeHeights = heights.scalarMultiply(1d / tree.getHeightM());
@@ -149,8 +149,8 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		Matrix treeRandomEffects = getTreeRandomEffects(tree);
 		
 		Matrix sumOfRandomEffects = plotRandomEffects.add(treeRandomEffects);
-		double randomEffects0 = sumOfRandomEffects.m_afData[0][0];
-		double randomEffects1 = sumOfRandomEffects.m_afData[1][0];
+		double randomEffects0 = sumOfRandomEffects.getValueAt(0, 0);
+		double randomEffects1 = sumOfRandomEffects.getValueAt(1, 0);
 		if (!isResidualVariabilityEnabled) {
 			if (estimationMethod == EstimationMethodInDeterministicMode.SecondOrder || estimationMethod == EstimationMethodInDeterministicMode.SecondOrderMeanOnly) {
 				setCorrectionMatrix();
@@ -165,19 +165,19 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		double exponent;
 		double correctionFactor = 0;
 		for (int i = 0; i < heights.m_iRows; i++) {
-			alpha = parameters.m_afData[i][0] + randomEffects0;
-			exponent = parameters.m_afData[i][1] + randomEffects1;
+			alpha = parameters.getValueAt(i, 0) + randomEffects0;
+			exponent = parameters.getValueAt(i, 1) + randomEffects1;
 			if (!isResidualVariabilityEnabled) {
 				if (estimationMethod == EstimationMethodInDeterministicMode.SecondOrder || estimationMethod == EstimationMethodInDeterministicMode.SecondOrderMeanOnly) {
-					correctionFactor = correctionMatrix.m_afData[i][0];
+					correctionFactor = correctionMatrix.getValueAt(i, 0);
 				}
 			}
-			double crudePrediction = alpha * tree.getSquaredDbhCm() * 100 * coreExpression.m_afData[i][0] * Math.pow(heightsSectionRespectToDbh.m_afData[i][0], 2 - exponent) 
-					+ correctionFactor + residualErrors.m_afData[i][0];
+			double crudePrediction = alpha * tree.getSquaredDbhCm() * 100 * coreExpression.getValueAt(i, 0) * Math.pow(heightsSectionRespectToDbh.getValueAt(i, 0), 2 - exponent) 
+					+ correctionFactor + residualErrors.getValueAt(i, 0);
 			if (crudePrediction < 0) {
 				crudePrediction = 0;
 			}
-			pred.m_afData[i][0] = crudePrediction;
+			pred.setValueAt(i, 0, crudePrediction);
 		}
 				
 		prediction.setMean(pred);
@@ -234,7 +234,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 			MatrixUtility.elementWiseMultiply(zPrime, variances);
 			MatrixUtility.elementWiseMultiply(xPrime, getParameterEstimates().getVariance());
 			
-			correctionFactor.m_afData[i][0] = zPrime.getSumOfElements() * .5 + xPrime.getSumOfElements() * .5;
+			correctionFactor.setValueAt(i, 0, zPrime.getSumOfElements() * .5 + xPrime.getSumOfElements() * .5);
 		}
 		correctionMatrix = correctionFactor;
 	}
@@ -317,9 +317,9 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 				
 				result = zPKronzP.getSumOfElements() * .25 + xPKronxP.getSumOfElements() * .25;
 //				result = zPrimeI.getKroneckerProduct(zPrimeJ).elementWiseMultiply(isserlisCombine).getSumOfElements() + xPrimeI.getKroneckerProduct(xPrimeJ).elementWiseMultiply(isserlisOmega).getSumOfElements();
-				output.m_afData[i][j] = result;
+				output.setValueAt(i, j, result);
 				if (i != j) {
-					output.m_afData[j][i] = result;		// to ensure the symmetry and not to have to calculate again
+					output.setValueAt(j, i, result);		// to ensure the symmetry and not to have to calculate again
 				}
 			}
 		}

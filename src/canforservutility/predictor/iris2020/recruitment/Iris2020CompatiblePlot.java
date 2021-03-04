@@ -50,7 +50,7 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 				for (SoilDepth depth : SoilDepth.values()) {
 					Matrix dummy = new Matrix(1, SoilDepth.values().length - 1);
 					if (depth.ordinal() > 0) {
-						dummy.m_afData[0][depth.ordinal() - 1] = 1d;
+						dummy.setValueAt(0, depth.ordinal() - 1, 1d);
 					}
 					DummyMap.put(depth, dummy);
 				}
@@ -77,7 +77,7 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 				for (OriginType origin : OriginType.values()) {
 					Matrix dummy = new Matrix(1, OriginType.values().length - 1);
 					if (origin.ordinal() > 0) {
-						dummy.m_afData[0][origin.ordinal() - 1] = 1d;
+						dummy.setValueAt(0, origin.ordinal() - 1, 1d);
 					}
 					DummyMap.put(origin, dummy);
 				}
@@ -105,7 +105,7 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 				for (DisturbanceType disturbance : DisturbanceType.values()) {
 					Matrix dummy = new Matrix(1, DisturbanceType.values().length - 1);
 					if (disturbance.ordinal() > 0) {
-						dummy.m_afData[0][disturbance.ordinal() - 1] = 1d;
+						dummy.setValueAt(0, disturbance.ordinal() - 1, 1d);
 					}
 					DummyMap.put(disturbance, dummy);
 				}
@@ -132,7 +132,7 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 				for (SoilTexture texture : SoilTexture.values()) {
 					Matrix dummy = new Matrix(1, SoilTexture.values().length - 1);
 					if (texture.ordinal() > 0) {
-						dummy.m_afData[0][texture.ordinal() - 1] = 1d;
+						dummy.setValueAt(0, texture.ordinal() - 1, 1d);
 					}
 					DummyMap.put(texture, dummy);
 				}

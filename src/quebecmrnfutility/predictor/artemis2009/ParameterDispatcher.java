@@ -100,7 +100,7 @@ public class ParameterDispatcher {
 				speciesMatches.put(vegpotName, innerMap);
 				for (Integer speciesID : speciesIndex.keySet()) {
 					String speciesName = speciesIndex.get(speciesID);
-					int speciesGroupID = (int) pm.get(vegpotID, speciesID).m_afData[0][0];
+					int speciesGroupID = (int) pm.get(vegpotID, speciesID).getValueAt(0, 0);
 					String speciesGroupName = speciesGroupIndex.get(speciesGroupID);
 					innerMap.put(speciesName, speciesGroupName);
 					if (!speciesGroupUnique.contains(speciesGroupID)) {
@@ -118,7 +118,7 @@ public class ParameterDispatcher {
 				for (Integer speciesGroupID : speciesGroupUnique) {
 					Matrix dummy = new Matrix(1, speciesGroupUnique.size());
 					innerDummyMap.put(speciesGroupIndex.get(speciesGroupID), dummy);
-					dummy.m_afData[0][speciesGroupUnique.indexOf(speciesGroupID)] = 1d;
+					dummy.setValueAt(0, speciesGroupUnique.indexOf(speciesGroupID), 1d);
 					speciesGroups.add(speciesGroupIndex.get(speciesGroupID));
 				}
 				
@@ -213,7 +213,7 @@ public class ParameterDispatcher {
 		int pointer = 0;
 		Matrix dummyEssence = dummySpeciesGroup.get(stand.getPotentialVegetation()).get(tree.getSpeciesGroupName());
 
-		oXVector.m_afData[0][0] = 1.0;
+		oXVector.setValueAt(0, 0, 1d);
 		pointer++;
 
 		int dummyTBE = 0;
@@ -231,18 +231,19 @@ public class ParameterDispatcher {
 			// cases have been ordered from most frequent to least one based on dataset VPTest and a 10-step simulation (optimizing)
 			switch(iCase) {
 			case 31: // 38 799 occurences
-				oXVector.m_afData[0][pointer] = Math.log(stand.getGrowthStepLengthYr());
+				oXVector.setValueAt(0, pointer, Math.log(stand.getGrowthStepLengthYr()));
 				pointer ++;
 				break;
 			case 14: // 36 918 occurences
-				for (int ii = 0; ii < dummyEssence.m_iCols; ii++)
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii];
+				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii));
+				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 12: // 27 854 occurences
 				fTmp = tree.getDbhCm();
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii)*fTmp);
 				}
 				pointer += dummyEssence.m_iCols;
 				break;
@@ -255,31 +256,31 @@ public class ParameterDispatcher {
 //					}
 //				} 
 				if (stand.isGoingToBeHarvested()) {
-					oXVector.m_afData[0][pointer] = 1.0;
+					oXVector.setValueAt(0, pointer, 1d);
 				} 
 				pointer ++;
 				break;
 			case 45: // 17 833 occurences
-				oXVector.m_afData[0][pointer] = stand.getBasalAreaM2Ha();
+				oXVector.setValueAt(0, pointer, stand.getBasalAreaM2Ha());
 				pointer ++;
 				break;
 			case 11: // 14 213 occurences
-				oXVector.m_afData[0][pointer] = tree.getSquaredDbhCm();
+				oXVector.setValueAt(0, pointer, tree.getSquaredDbhCm());
 				pointer ++;
 				break;
 			case 49: // 12 283 occurences
-				oXVector.m_afData[0][pointer] = dummyTBE;
+				oXVector.setValueAt(0, pointer, dummyTBE);
 				pointer ++;
 				break;
 			case 44: // 10 557 occurences
 				fTmp = tree.getBasalAreaLargerThanSubjectM2Ha();
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
 				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 41: // 10 469 occurences
-				oXVector.m_afData[0][pointer] = stand.getMeanAnnualPrecipitationMm();
+				oXVector.setValueAt(0, pointer, stand.getMeanAnnualPrecipitationMm());
 				pointer ++;
 				break;
 			case 34: // 7436 occurences
@@ -288,69 +289,73 @@ public class ParameterDispatcher {
 					logdt_cc = Math.log(1995 - stand.getDateYr());		// changed for stand.getDate() 
 				}
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*logdt_cc;
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * logdt_cc);
 				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 33: // 6420 occurences
 				fTmp = (Math.log(stand.getGrowthStepLengthYr())*dummyTBE);
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
 				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 17: // 6016 occurences
-				oXVector.m_afData[0][pointer] = tree.getLnDbhCm();
+				oXVector.setValueAt(0, pointer, tree.getLnDbhCm());
 				pointer ++;
 				break;
 			case 18: // 5805 occurences
 				fTmp = tree.getLnDbhCm();
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
 				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 32: // 5600 occurences
-				oXVector.m_afData[0][pointer] = Math.log(stand.getGrowthStepLengthYr())*dummyTBE;
+				oXVector.setValueAt(0, pointer, Math.log(stand.getGrowthStepLengthYr()) * dummyTBE);
 				pointer ++;
 				break;
 			case 10: // 5340 occurences
-				oXVector.m_afData[0][pointer] = tree.getDbhCm();
+				oXVector.setValueAt(0, pointer, tree.getDbhCm());
 				pointer ++;
 				break;
 			case 47: // 5260 occurences
 				fTmp = stand.getBasalAreaM2Ha();
-				for (int ii = 0; ii < dummyEssence.m_iCols; ii++)
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
+				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
+				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 43: // 4889 occurences
-				oXVector.m_afData[0][pointer] = tree.getBasalAreaLargerThanSubjectM2Ha();
+				oXVector.setValueAt(0, pointer, tree.getBasalAreaLargerThanSubjectM2Ha());
 				pointer ++;
 				break;
 			case 51: // 3700 occurences
 				fTmp = stand.getMeanAnnualTemperatureC();
-				for (int ii = 0; ii < dummyEssence.m_iCols; ii++)
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
+				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
+				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 36: // 2815 occurences
-				oXVector.m_afData[0][pointer] = stand.getNumberOfStemsHa() * stand.getAreaHa();
+				oXVector.setValueAt(0, pointer, stand.getNumberOfStemsHa() * stand.getAreaHa());
 				pointer ++;
 				break;
 			case 42: // 2366 occurences
 				fTmp = stand.getMeanAnnualPrecipitationMm();
-				for (int ii = 0; ii < dummyEssence.m_iCols; ii++)
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
+				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
+				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 38: // 2150 occurences
-				for (int ii = 0; ii < dummyEssence.m_iCols; ii++)
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*stand.getNumberOfStemsBySpeciesGroup().m_afData[0][ii];
+				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * stand.getNumberOfStemsBySpeciesGroup().getValueAt(0, ii));
+				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 50: // 1650 occurences
-				oXVector.m_afData[0][pointer] = stand.getMeanAnnualTemperatureC();
+				oXVector.setValueAt(0, pointer, stand.getMeanAnnualTemperatureC());
 				pointer ++;
 				break;
 			case 13: // 1181 occurences
@@ -358,7 +363,7 @@ public class ParameterDispatcher {
 				if (tree.getSpeciesGroupName().compareTo("SAB") == 0) {
 					dummySAB = 1;
 				}
-				oXVector.m_afData[0][pointer] = dummySAB * stand.getMeanAnnualPrecipitationMm();
+				oXVector.setValueAt(0, pointer, dummySAB * stand.getMeanAnnualPrecipitationMm());
 				pointer ++;
 				break;
 			case 2: // 1006 occurences
@@ -369,7 +374,7 @@ public class ParameterDispatcher {
 //				//}
 //				pointer ++;
 				if (stand.isInterventionResult()) {	// was harvested in the previous step
-					oXVector.m_afData[0][pointer] = 1.0;
+					oXVector.setValueAt(0, pointer, 1d);
 				}
 				pointer ++;
 				break;
@@ -384,48 +389,47 @@ public class ParameterDispatcher {
 					currentCut = 1;
 				}
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii] * currentCut;
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * currentCut);
 				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 35: // 450 occurences
-				oXVector.m_afData[0][pointer] = stand.getMeanQuadraticDiameterCm();
+				oXVector.setValueAt(0, pointer, stand.getMeanQuadraticDiameterCm());
 				pointer ++;
 				break;
 			case 48: // 340 occurences
-				oXVector.m_afData[0][pointer] = (dummyEssence.multiply(stand.getNumberOfStemsBySpeciesGroup().transpose())).m_afData[0][0]*stand.getBasalAreaM2Ha();
+				oXVector.setValueAt(0, pointer, (dummyEssence.multiply(stand.getNumberOfStemsBySpeciesGroup().transpose())).getValueAt(0, 0) * stand.getBasalAreaM2Ha());
 				pointer ++;
 				break;
 			case 37: // 70 occurences
-				oXVector.m_afData[0][pointer] = dummyEssence.multiply(stand.getNumberOfStemsBySpeciesGroup().transpose()).m_afData[0][0];
+				oXVector.setValueAt(0, pointer, dummyEssence.multiply(stand.getNumberOfStemsBySpeciesGroup().transpose()).getValueAt(0, 0));
 				pointer ++;
 				break;
 			case 54:	// 60 occurences
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++)
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii] * stand.getBasalAreaBySpeciesGroup().m_afData[0][ii];
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * stand.getBasalAreaBySpeciesGroup().getValueAt(0, ii));
 				pointer += dummyEssence.m_iCols;
 				break;
-
-
 			case 39: // 0 occurence
-				oXVector.m_afData[0][pointer] = (dummyEssence.multiply(stand.getNumberOfStemsBySpeciesGroup().transpose())).m_afData[0][0]*stand.getBasalAreaM2Ha();
+				oXVector.setValueAt(0, pointer, (dummyEssence.multiply(stand.getNumberOfStemsBySpeciesGroup().transpose())).getValueAt(0, 0) * stand.getBasalAreaM2Ha());
 				pointer ++;
 				break;
 			case 52: // 0 occurence
-				oXVector.m_afData[0][pointer] = stand.getLatitudeDeg();
+				oXVector.setValueAt(0, pointer, stand.getLatitudeDeg());
 				pointer ++;
 				break;
 			case 53: // 0 occurence
 				fTmp = (stand.getLatitudeDeg());
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
 				}
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 1: // 0 occurence
 				fTmp = stand.getElevationM();
-				for (int ii = 0; ii < dummyEssence.m_iCols; ii++)
-					oXVector.m_afData[0][ii + pointer] = dummyEssence.m_afData[0][ii]*fTmp;
+				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
+					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
+				}
 				pointer += dummyEssence.m_iCols;
 				break;
 
@@ -454,13 +458,15 @@ public class ParameterDispatcher {
 		} else {
 			for (Artemis2009CompatibleTree t : trees) {
 				if (t.getNumber() > 0) {
-					int pointeur = speciesGroups.indexOf(t.getSpeciesGroupName());
+					int p = speciesGroups.indexOf(t.getSpeciesGroupName());
+					double newValue = oVector.getValueAt(0, p);
 					if (G) {
-						oVector.m_afData[0][pointeur] += t.getStemBasalAreaM2() * t.getNumber();
+						newValue += t.getStemBasalAreaM2() * t.getNumber();
 					}
 					else {
-						oVector.m_afData[0][pointeur] += t.getNumber();
+						newValue += t.getNumber();
 					}
+					oVector.setValueAt(0, p, newValue);
 				}
 			}
 			return oVector;

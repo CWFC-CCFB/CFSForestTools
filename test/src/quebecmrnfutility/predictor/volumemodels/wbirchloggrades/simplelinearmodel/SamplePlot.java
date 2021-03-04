@@ -20,7 +20,7 @@ class SamplePlot implements MonteCarloSimulationCompliantObject, Cloneable {
 	
 	protected Matrix getY() {
 		Matrix pred = new Matrix(1,1);
-		pred.m_afData[0][0] = y;
+		pred.setValueAt(0, 0, y);
 		return pred;
 	}
 	

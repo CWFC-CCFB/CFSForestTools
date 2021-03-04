@@ -82,10 +82,10 @@ class InternalStatisticalExpressions {
 			}
 			double powerExpression = Math.pow(getVariableValue(0), getParameterValue(1));
 			double basicExpression = - Math.exp(- getParameterValue(0) * powerExpression);
-			gradient.m_afData[0][0] = basicExpression * - powerExpression;							// update the value in the gradient matrix
-			gradient.m_afData[1][0] = basicExpression * - getParameterValue(0) * powerExpression * Math.log(getVariableValue(0));							// update the value in the gradient matrix
+			gradient.setValueAt(0, 0, basicExpression * - powerExpression);							// update the value in the gradient matrix
+			gradient.setValueAt(1, 0, basicExpression * - getParameterValue(0) * powerExpression * Math.log(getVariableValue(0)));							// update the value in the gradient matrix
 			for (int i = 2; i < getNumberOfParameters(); i++) {
-				gradient.m_afData[i][0] = getVariableValue(i - 1);							// update the value in the gradient matrix
+				gradient.setValueAt(i, 0, getVariableValue(i - 1));							// update the value in the gradient matrix
 			}
 			
 			return gradient;
@@ -106,10 +106,10 @@ class InternalStatisticalExpressions {
 			double d2y_d2b1 = basicExpression * - getParameterValue(0) * powerExpression * logx * logx * tmp;
 			double d2y_db0db1 = basicExpression * - powerExpression * logx * tmp;
 
-			hessian.m_afData[0][0] = d2y_d2b0;
-			hessian.m_afData[1][1] = d2y_d2b1;
-			hessian.m_afData[0][1] = d2y_db0db1;
-			hessian.m_afData[1][0] = d2y_db0db1;
+			hessian.setValueAt(0, 0, d2y_d2b0);
+			hessian.setValueAt(1, 1, d2y_d2b1);
+			hessian.setValueAt(0, 1, d2y_db0db1);
+			hessian.setValueAt(1, 0, d2y_db0db1);
 			
 			return hessian;
 		}
@@ -152,10 +152,10 @@ class InternalStatisticalExpressions {
 			double log1 = Math.log(getVariableValue(1));
 			double log2 = Math.log(getVariableValue(2));
 			
-			gradient.m_afData[0][0] = 0;							// update the value in the gradient matrix
-			gradient.m_afData[1][0] = powerExpression1 * powerExpression2 * log1;
-			gradient.m_afData[2][0] = powerExpression1 * powerExpression2 * log2;
-			gradient.m_afData[3][0] = getVariableValue(3);						
+			gradient.setValueAt(0, 0, 0d);							// update the value in the gradient matrix
+			gradient.setValueAt(1, 0, powerExpression1 * powerExpression2 * log1);
+			gradient.setValueAt(2, 0, powerExpression1 * powerExpression2 * log2);
+			gradient.setValueAt(3, 0, getVariableValue(3));						
 
 			return gradient;
 		}
@@ -171,10 +171,10 @@ class InternalStatisticalExpressions {
 			double log1 = Math.log(getVariableValue(1));
 			double log2 = Math.log(getVariableValue(2));			
 			
-			hessian.m_afData[1][1] = powerExpression1 * powerExpression2 * log1 * log1;
-			hessian.m_afData[1][2] = powerExpression1 * powerExpression2 * log1 * log2;
-			hessian.m_afData[2][1] = powerExpression1 * powerExpression2 * log2 * log1;
-			hessian.m_afData[2][2] = powerExpression1 * powerExpression2 * log2 * log2;
+			hessian.setValueAt(1, 1, powerExpression1 * powerExpression2 * log1 * log1);
+			hessian.setValueAt(1, 2, powerExpression1 * powerExpression2 * log1 * log2);
+			hessian.setValueAt(2, 1, powerExpression1 * powerExpression2 * log2 * log1);
+			hessian.setValueAt(2, 2, powerExpression1 * powerExpression2 * log2 * log2);
 			return hessian;
 		}
 
@@ -232,35 +232,35 @@ class InternalStatisticalExpressions {
 					oMap = StemTaperEquationSettings.SUBDOMAIN_DUMMY_MAP.get(currentTree.getStemTaperTreeSpecies());
 					oMat = oMap.get(subDomain);
 					for (int i = 0; i < oMat.m_iCols; i++) {
-						secondLinearTerm.setVariableValue(variableIndex++, oMat.m_afData[0][i]);
+						secondLinearTerm.setVariableValue(variableIndex++, oMat.getValueAt(0, i));
 					}
 					break;
 				case ExpSectionRelativeHeight:
-					secondLinearTerm.setVariableValue(variableIndex++, Math.exp(stemTaperPredictor.relativeHeights.m_afData[heightIndex][0]));
+					secondLinearTerm.setVariableValue(variableIndex++, Math.exp(stemTaperPredictor.relativeHeights.getValueAt(heightIndex, 0)));
 					break;
 				case CoreExpression:
-					secondLinearTerm.setVariableValue(variableIndex++, stemTaperPredictor.coreExpression.m_afData[heightIndex][0]);
+					secondLinearTerm.setVariableValue(variableIndex++, stemTaperPredictor.coreExpression.getValueAt(heightIndex, 0));
 					break;
 				case LogCoreExpression:
-					secondLinearTerm.setVariableValue(variableIndex++, Math.log(stemTaperPredictor.coreExpression.m_afData[heightIndex][0]));
+					secondLinearTerm.setVariableValue(variableIndex++, Math.log(stemTaperPredictor.coreExpression.getValueAt(heightIndex, 0)));
 					break;
 				case SectionRelativeHeight_x_CoreExpression:
-					secondLinearTerm.setVariableValue(variableIndex++, stemTaperPredictor.relativeHeights.m_afData[heightIndex][0] * stemTaperPredictor.coreExpression.m_afData[heightIndex][0]);
+					secondLinearTerm.setVariableValue(variableIndex++, stemTaperPredictor.relativeHeights.getValueAt(heightIndex, 0) * stemTaperPredictor.coreExpression.getValueAt(heightIndex, 0));
 					break;
 				case SectionRelativeHeight:
-					secondLinearTerm.setVariableValue(variableIndex++, stemTaperPredictor.relativeHeights.m_afData[heightIndex][0]);
+					secondLinearTerm.setVariableValue(variableIndex++, stemTaperPredictor.relativeHeights.getValueAt(heightIndex, 0));
 					break;
 				case LogSectionRelativeHeight:
-					secondLinearTerm.setVariableValue(variableIndex++, Math.log(stemTaperPredictor.relativeHeights.m_afData[heightIndex][0]));
+					secondLinearTerm.setVariableValue(variableIndex++, Math.log(stemTaperPredictor.relativeHeights.getValueAt(heightIndex, 0)));
 					break;
 				case OneMinusSectionRelativeHeight:
-					secondLinearTerm.setVariableValue(variableIndex++, 1 - stemTaperPredictor.relativeHeights.m_afData[heightIndex][0]);
+					secondLinearTerm.setVariableValue(variableIndex++, 1 - stemTaperPredictor.relativeHeights.getValueAt(heightIndex, 0));
 					break;
 				case Drainage:
 					Map<QcDrainageClass, Matrix> drainageDummys = StemTaperEquationSettings.DRAINAGE_GROUP_DUMMY_MAP.get(currentTree.getStemTaperTreeSpecies());
 					oMat = drainageDummys.get(currentStand.getDrainageClass());
 					for (int i = 0; i < oMat.m_iCols; i++) {
-						secondLinearTerm.setVariableValue(variableIndex++, oMat.m_afData[0][i]);
+						secondLinearTerm.setVariableValue(variableIndex++, oMat.getValueAt(0, i));
 					}
 					break;
 				case VegPot:
@@ -268,7 +268,7 @@ class InternalStatisticalExpressions {
 					oMap = StemTaperEquationSettings.POTENTIAL_VEGETATION_GROUP_DUMMY_MAP.get(currentTree.getStemTaperTreeSpecies());
 					oMat = oMap.get(potentialVegetation);
 					for (int i = 0; i < oMat.m_iCols; i++) {
-						secondLinearTerm.setVariableValue(variableIndex++, oMat.m_afData[0][i]);
+						secondLinearTerm.setVariableValue(variableIndex++, oMat.getValueAt(0, i));
 					}
 					break;
 				case DbhOB:
@@ -297,25 +297,25 @@ class InternalStatisticalExpressions {
 			} else if (!effect.isATreeConstantEffect()) {
 				switch (effect) {
 				case ExpSectionRelativeHeight:
-					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), Math.exp(stemTaperPredictor.relativeHeights.m_afData[heightIndex][0]));
+					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), Math.exp(stemTaperPredictor.relativeHeights.getValueAt(heightIndex, 0)));
 					break;
 				case CoreExpression:
-					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), stemTaperPredictor.coreExpression.m_afData[heightIndex][0]);
+					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), stemTaperPredictor.coreExpression.getValueAt(heightIndex, 0));
 					break;
 				case LogCoreExpression:
-					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), Math.log(stemTaperPredictor.coreExpression.m_afData[heightIndex][0]));
+					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), Math.log(stemTaperPredictor.coreExpression.getValueAt(heightIndex, 0)));
 					break;
 				case SectionRelativeHeight_x_CoreExpression:
-					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), stemTaperPredictor.relativeHeights.m_afData[heightIndex][0] * stemTaperPredictor.coreExpression.m_afData[heightIndex][0]);
+					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), stemTaperPredictor.relativeHeights.getValueAt(heightIndex, 0) * stemTaperPredictor.coreExpression.getValueAt(heightIndex, 0));
 					break;
 				case SectionRelativeHeight:
-					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), stemTaperPredictor.relativeHeights.m_afData[heightIndex][0]);
+					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), stemTaperPredictor.relativeHeights.getValueAt(heightIndex, 0));
 					break;
 				case LogSectionRelativeHeight:
-					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), Math.log(stemTaperPredictor.relativeHeights.m_afData[heightIndex][0]));
+					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), Math.log(stemTaperPredictor.relativeHeights.getValueAt(heightIndex, 0)));
 					break;
 				case OneMinusSectionRelativeHeight:
-					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), 1 - stemTaperPredictor.relativeHeights.m_afData[heightIndex][0]);
+					secondLinearTerm.setVariableValue(indexOfChangingEffects.get(variableIndex++), 1 - stemTaperPredictor.relativeHeights.getValueAt(heightIndex, 0));
 					break;
 				default:
 					throw new RuntimeException("No effect was caught in this switch loop"); 
@@ -328,16 +328,16 @@ class InternalStatisticalExpressions {
 		Matrix output = new Matrix(stemTaperPredictor.heights.m_iRows, 2);
 		for (int i = 0; i < stemTaperPredictor.heights.m_iRows; i++) {
 			updateSecondLinearTerm(i);
-			output.m_afData[i][0] = firstLinearTerm.getValue();
-			output.m_afData[i][1] = secondLinearTerm.getValue();
+			output.setValueAt(i, 0, firstLinearTerm.getValue());
+			output.setValueAt(i, 1, secondLinearTerm.getValue());
 		}
 		return output;
 	}
 
 	protected void setParameters(Matrix beta) {
-		firstLinearTerm.setParameterValue(0, beta.m_afData[0][0]);
+		firstLinearTerm.setParameterValue(0, beta.getValueAt(0, 0));
 		for (int i = 1; i < beta.m_iRows; i++) {
-			secondLinearTerm.setParameterValue(i - 1, beta.m_afData[i][0]);
+			secondLinearTerm.setParameterValue(i - 1, beta.getValueAt(i, 0));
 		}
 	}
 	
@@ -353,10 +353,10 @@ class InternalStatisticalExpressions {
 		double alpha;
 		double dbh2 = stemTaperPredictor.getTree().getSquaredDbhCm() * 100;
 		for (int i = 0; i < stemTaperPredictor.heights.m_iRows; i++) {
-			alpha = parameters.m_afData[i][0];
-			exponent = parameters.m_afData[i][1];
-			basicGradient.m_afData[i][0] = dbh2 * stemTaperPredictor.coreExpression.m_afData[i][0] * Math.pow(stemTaperPredictor.heightsSectionRespectToDbh.m_afData[i][0], 2 - exponent);
-			basicGradient.m_afData[i][1] = alpha * basicGradient.m_afData[i][0] * Math.log(stemTaperPredictor.heightsSectionRespectToDbh.m_afData[i][0]) * -1d;
+			alpha = parameters.getValueAt(i, 0);
+			exponent = parameters.getValueAt(i, 1);
+			basicGradient.setValueAt(i, 0, dbh2 * stemTaperPredictor.coreExpression.getValueAt(i, 0) * Math.pow(stemTaperPredictor.heightsSectionRespectToDbh.getValueAt(i, 0), 2 - exponent));
+			basicGradient.setValueAt(i, 1, alpha * basicGradient.getValueAt(i, 0) * Math.log(stemTaperPredictor.heightsSectionRespectToDbh.getValueAt(i, 0)) * -1d);
 		}
 		
 		int firstTermNumberOfParameters = firstLinearTerm.getNumberOfParameters();
@@ -365,8 +365,8 @@ class InternalStatisticalExpressions {
 		Matrix gradients = new Matrix(stemTaperPredictor.heights.m_iRows, firstTermNumberOfParameters + secondTermNumberOfParameters);
 		for (int i = 0; i < stemTaperPredictor.heights.m_iRows; i++) {
 			updateSecondLinearTerm(i);
-			gradients.setSubMatrix(firstLinearTerm.getGradient().transpose().scalarMultiply(basicGradient.m_afData[i][0]), i, 0);
-			gradients.setSubMatrix(secondLinearTerm.getGradient().transpose().scalarMultiply(basicGradient.m_afData[i][1]), i, firstTermNumberOfParameters);
+			gradients.setSubMatrix(firstLinearTerm.getGradient().transpose().scalarMultiply(basicGradient.getValueAt(i, 0)), i, 0);
+			gradients.setSubMatrix(secondLinearTerm.getGradient().transpose().scalarMultiply(basicGradient.getValueAt(i, 1)), i, firstTermNumberOfParameters);
 		}		
 		
 		return gradients;
@@ -386,12 +386,12 @@ class InternalStatisticalExpressions {
 		double alpha;
 		double dbh2 = stemTaperPredictor.getTree().getSquaredDbhCm() * 100;
 		for (int i = 0; i < stemTaperPredictor.heights.m_iRows; i++) {
-			alpha = parameters.m_afData[i][0];
-			exponent = parameters.m_afData[i][1];
-			basicHessian.m_afData[i][0] = dbh2 * stemTaperPredictor.coreExpression.m_afData[i][0] * Math.pow(stemTaperPredictor.heightsSectionRespectToDbh.m_afData[i][0], 2 - exponent);
-			basicHessian.m_afData[i][1] = basicHessian.m_afData[i][0] * Math.log(stemTaperPredictor.heightsSectionRespectToDbh.m_afData[i][0]) * -1d;
-			basicHessian.m_afData[i][2] = alpha * basicHessian.m_afData[i][1] * Math.log(stemTaperPredictor.heightsSectionRespectToDbh.m_afData[i][0]) * -1d;
-			basicHessian.m_afData[i][3] = alpha * basicHessian.m_afData[i][1];
+			alpha = parameters.getValueAt(i, 0);
+			exponent = parameters.getValueAt(i, 1);
+			basicHessian.setValueAt(i, 0, dbh2 * stemTaperPredictor.coreExpression.getValueAt(i,0) * Math.pow(stemTaperPredictor.heightsSectionRespectToDbh.getValueAt(i,0), 2 - exponent));
+			basicHessian.setValueAt(i, 1, basicHessian.getValueAt(i, 0) * Math.log(stemTaperPredictor.heightsSectionRespectToDbh.getValueAt(i, 0)) * -1d);
+			basicHessian.setValueAt(i, 2, alpha * basicHessian.getValueAt(i, 1) * Math.log(stemTaperPredictor.heightsSectionRespectToDbh.getValueAt(i, 0)) * -1d);
+			basicHessian.setValueAt(i, 3, alpha * basicHessian.getValueAt(i, 1));
 		}
 		
 		int firstTermNumberOfParameters = firstLinearTerm.getNumberOfParameters();
@@ -411,9 +411,9 @@ class InternalStatisticalExpressions {
 			gradient1 = firstLinearTerm.getGradient();
 			gradient2 = secondLinearTerm.getGradient();
 			
-			block11 = firstLinearTerm.getHessian().scalarMultiply(basicHessian.m_afData[i][0]);
-			block12 = gradient1.multiply(gradient2.transpose()).scalarMultiply(basicHessian.m_afData[i][1]);
-			block22 = gradient2.multiply(gradient2.transpose()).scalarMultiply(basicHessian.m_afData[i][2]).add(secondLinearTerm.getHessian().scalarMultiply(basicHessian.m_afData[i][2]));
+			block11 = firstLinearTerm.getHessian().scalarMultiply(basicHessian.getValueAt(i, 0));
+			block12 = gradient1.multiply(gradient2.transpose()).scalarMultiply(basicHessian.getValueAt(i, 1));
+			block22 = gradient2.multiply(gradient2.transpose()).scalarMultiply(basicHessian.getValueAt(i, 2)).add(secondLinearTerm.getHessian().scalarMultiply(basicHessian.getValueAt(i, 2)));
 			
 			tmpHessian = block11.matrixStack(block12, false).matrixStack(block12.transpose().matrixStack(block22, false), true);
 			

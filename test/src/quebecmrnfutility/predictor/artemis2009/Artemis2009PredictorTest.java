@@ -294,7 +294,7 @@ public class Artemis2009PredictorTest {
 			stand.setMonteCarloRealization(i);
 			double[] dbhPrediction = pred.predictRecruitDiameter(stand, tree);
 			realization = new Matrix(1,1);
-			realization.m_afData[0][0] = dbhPrediction[0];
+			realization.setValueAt(0, 0, dbhPrediction[0]);
 			estimate.addRealization(realization);
 		}
 		
@@ -303,8 +303,8 @@ public class Artemis2009PredictorTest {
 		double expectedMean = gammaMean *.1 + 9.1;
 		double expectedVariance = gammaMean * gammaMean / dispersion * .01;
 		
-		double actualMean = estimate.getMean().m_afData[0][0];
-		double actualVariance = estimate.getVariance().m_afData[0][0];
+		double actualMean = estimate.getMean().getValueAt(0, 0);
+		double actualVariance = estimate.getVariance().getValueAt(0, 0);
 
 		Assert.assertEquals("Comparing mean", expectedMean, actualMean, 1E-2);
 		Assert.assertEquals("Comparing variance", expectedVariance, actualVariance, 1E-2);
@@ -326,7 +326,7 @@ public class Artemis2009PredictorTest {
 			stand.setMonteCarloRealization(i);
 			double nbPrediction = pred.predictNumberOfRecruits(stand, tree);
 			realization = new Matrix(1,1);
-			realization.m_afData[0][0] = nbPrediction;
+			realization.setValueAt(0, 0, nbPrediction);
 			estimate.addRealization(realization);
 		}
 		
@@ -334,8 +334,8 @@ public class Artemis2009PredictorTest {
 		double expectedMean = 0.5172784824575968;	
 		double expectedVariance = expectedMean + expectedMean * expectedMean * dispersion;
 		expectedMean = expectedMean + 1; // because y was modelled as nb - 1
-		double actualMean = estimate.getMean().m_afData[0][0];
-		double actualVariance = estimate.getVariance().m_afData[0][0];
+		double actualMean = estimate.getMean().getValueAt(0, 0);
+		double actualVariance = estimate.getVariance().getValueAt(0, 0);
 
 		Assert.assertEquals("Comparing mean", expectedMean, actualMean, 1E-2);
 		Assert.assertEquals("Comparing variance", expectedVariance, actualVariance, 2E-2);

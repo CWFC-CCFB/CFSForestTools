@@ -78,7 +78,7 @@ public interface Heightable2014Tree extends HDRelationshipTree,
 		
 		Hd2014Species() {
 			dummy = new Matrix(1, 27);
-			dummy.m_afData[0][this.ordinal()] = 1d;								
+			dummy.setValueAt(0, ordinal(), 1d);								
 		}
 
 		public Matrix getDummy() {return this.dummy;}

@@ -65,7 +65,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		
 		DisturbanceType() {
 			dummy = new Matrix(1,3);
-			dummy.m_afData[0][this.ordinal()] = 1d;
+			dummy.setValueAt(0, ordinal(), 1d);
 		}
 		
 		public Matrix getDummy() {return this.dummy;}
@@ -76,7 +76,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	static {
 		Matrix dummy;
 		dummy = new Matrix(1,4);
-		dummy.m_afData[0][0] = 1.0;
+		dummy.setValueAt(0, 0, 1d);
 		DUMMY_ECO_REGION.put("2b", dummy);
 		DUMMY_ECO_REGION.put("2c", dummy);
 		DUMMY_ECO_REGION.put("3c", dummy);
@@ -88,7 +88,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		DUMMY_ECO_REGION.put("5f", dummy);	// region CENTRE
 		
 		dummy = new Matrix(1,4);
-		dummy.m_afData[0][1] = 1.0;
+		dummy.setValueAt(0, 1, 1d);
 		DUMMY_ECO_REGION.put("6h", dummy);
 		DUMMY_ECO_REGION.put("6i", dummy);
 		DUMMY_ECO_REGION.put("6j", dummy);
@@ -104,7 +104,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		DUMMY_ECO_REGION.put("7c", dummy);	// region N_EST
 		
 		dummy = new Matrix(1,4);
-		dummy.m_afData[0][2] = 1.0;
+		dummy.setValueAt(0, 2, 1d);
 		DUMMY_ECO_REGION.put("1a", dummy);
 		DUMMY_ECO_REGION.put("2a", dummy);
 		DUMMY_ECO_REGION.put("3a", dummy);
@@ -125,7 +125,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		DUMMY_ECO_REGION.put("6g", dummy);	// region OUEST
 		
 		dummy = new Matrix(1,4);
-		dummy.m_afData[0][3] = 1.0;
+		dummy.setValueAt(0, 3, 1d);
 		DUMMY_ECO_REGION.put("4g", dummy);
 		DUMMY_ECO_REGION.put("4h", dummy);
 		DUMMY_ECO_REGION.put("5g", dummy);
@@ -179,11 +179,11 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 			Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);
 			setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
 			Matrix sigma2 = covParms.getSubMatrix(20, 20, 0, 0);
-			double phi = covParms.m_afData[21][0];
+			double phi = covParms.getValueAt(21, 0);
 			setDefaultResidualError(SpeciesType.BroadleavedSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));
 			
 			sigma2 = covParms.getSubMatrix(22, 22, 0, 0);
-			phi = covParms.m_afData[23][0];
+			phi = covParms.getValueAt(23, 0);
 			setDefaultResidualError(SpeciesType.ConiferousSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));			
 			
 		} catch (Exception e) {
@@ -218,37 +218,37 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		}
 		
 		oXVector.resetMatrix();
-		int pointeur = 0;
+		int pointer = 0;
 		Hd2009Species species = t.getHeightableTreeSpecies();
 		double lnDbh = t.getLnDbhCmPlus1();
 		double SSI = t.getSocialStatusIndex();
 		double lnDbh2 = t.getSquaredLnDbhCmPlus1();
 		Matrix dummySpecies = species.getDummy();
 
-		oXVector.setSubMatrix(dummySpecies.scalarMultiply(lnDbh), 0, pointeur);
-		pointeur += dummySpecies.m_iCols;
-		oXVector.setSubMatrix(dummySpecies.scalarMultiply(lnDbh * basalArea), 0, pointeur);
-		pointeur += dummySpecies.m_iCols;
-		oXVector.m_afData[0][pointeur] = lnDbh * averageTemp;
-		pointeur ++;
-		oXVector.setSubMatrix(dummyDrainageClass.scalarMultiply(lnDbh), 0, pointeur);
-		pointeur += dummyDrainageClass.m_iCols;
-		oXVector.setSubMatrix(dummyEcoRegion.scalarMultiply(lnDbh), 0, pointeur);
-		pointeur += dummyEcoRegion.m_iCols;
-		oXVector.setSubMatrix(dummyDisturbance.scalarMultiply(lnDbh), 0, pointeur);
-		pointeur += dummyDisturbance.m_iCols;
-		oXVector.m_afData[0][pointeur] = lnDbh * SSI;
-		pointeur ++;
-		oXVector.m_afData[0][pointeur] = lnDbh2 * SSI;
-		pointeur ++;
+		oXVector.setSubMatrix(dummySpecies.scalarMultiply(lnDbh), 0, pointer);
+		pointer += dummySpecies.m_iCols;
+		oXVector.setSubMatrix(dummySpecies.scalarMultiply(lnDbh * basalArea), 0, pointer);
+		pointer += dummySpecies.m_iCols;
+		oXVector.setValueAt(0, pointer, lnDbh * averageTemp);
+		pointer ++;
+		oXVector.setSubMatrix(dummyDrainageClass.scalarMultiply(lnDbh), 0, pointer);
+		pointer += dummyDrainageClass.m_iCols;
+		oXVector.setSubMatrix(dummyEcoRegion.scalarMultiply(lnDbh), 0, pointer);
+		pointer += dummyEcoRegion.m_iCols;
+		oXVector.setSubMatrix(dummyDisturbance.scalarMultiply(lnDbh), 0, pointer);
+		pointer += dummyDisturbance.m_iCols;
+		oXVector.setValueAt(0, pointer, lnDbh * SSI);
+		pointer ++;
+		oXVector.setValueAt(0, pointer, lnDbh2 * SSI);
+		pointer ++;
 
 		Matrix matZ_i = dummySpecies.scalarMultiply(lnDbh2);	// design vector for the plot random effect
-		oXVector.setSubMatrix(matZ_i, 0, pointeur);
-		pointeur += dummySpecies.m_iCols;
-		oXVector.setSubMatrix(dummySpecies.scalarMultiply(lnDbh2 * basalArea), 0, pointeur);
-		pointeur += dummySpecies.m_iCols;
+		oXVector.setSubMatrix(matZ_i, 0, pointer);
+		pointer += dummySpecies.m_iCols;
+		oXVector.setSubMatrix(dummySpecies.scalarMultiply(lnDbh2 * basalArea), 0, pointer);
+		pointer += dummySpecies.m_iCols;
 
-		double fResult = 1.3 + oXVector.multiply(modelParameters).m_afData[0][0];
+		double fResult = 1.3 + oXVector.multiply(modelParameters).getValueAt(0, 0);
 		
 		RegressionElements regElements = new RegressionElements();
 		

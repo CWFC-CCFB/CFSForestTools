@@ -86,8 +86,8 @@ class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 			oXVector.setSubMatrix(dummyProduct.scalarMultiply(dbh), 0, pointer);
 			pointer += dummyProduct.m_iCols;
 			
-			double xBeta = oXVector.multiply(beta).m_afData[0][0];
-			oMat.m_afData[productType.ordinal()][0] = xBeta;
+			double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+			oMat.setValueAt(productType.ordinal(), 0, xBeta);
 		}
 		
 		if (isResidualVariabilityEnabled) {

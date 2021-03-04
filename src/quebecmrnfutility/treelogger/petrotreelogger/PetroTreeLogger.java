@@ -89,9 +89,9 @@ public class PetroTreeLogger extends TreeLogger<PetroTreeLoggerParameters, Petro
 		Matrix volumes = predictor.getPredictedGradeUnderbarkVolumes(tree);
 		PetroGradeSpecies species = tree.getPetroGradeSpecies(); 
 		for (int i = 0; i < volumes.m_iRows; i++) {
-			if (volumes.m_afData[i][0] > VERY_SMALL) {
+			if (volumes.getValueAt(i, 0) > VERY_SMALL) {
 				PetroTreeLogCategory product = getTreeLoggerParameters().getSpeciesLogCategories(species.name()).get(i);
-				PetroTreeLoggerWoodPiece piece = new PetroTreeLoggerWoodPiece(product, tree, volumes.m_afData[i][0]);
+				PetroTreeLoggerWoodPiece piece = new PetroTreeLoggerWoodPiece(product, tree, volumes.getValueAt(i, 0));
 				addWoodPiece(tree, piece);
 			}
 		}

@@ -200,12 +200,12 @@ public class GeneralHeight2009PredictorTest {
 		for (int i = 0; i < 50000; i++) {
 			((Heightable2009StandImpl) s).monteCarloRealizationID = i;
 			realization = new Matrix(1,1);
-			realization.m_afData[0][0] = stoPredictor.predictHeightM(s, tree);
+			realization.setValueAt(0, 0, stoPredictor.predictHeightM(s, tree));
 			estimate.addRealization(realization);
 		}
 		
-		double actual = estimate.getMean().m_afData[0][0];
-		double variance = estimate.getVariance().m_afData[0][0];
+		double actual = estimate.getMean().getValueAt(0, 0);
+		double variance = estimate.getVariance().getValueAt(0, 0);
 		Assert.assertEquals("Comparing deterministic and stochastic predictions", actual, detPred, 1E-2);
 		Assert.assertEquals("Testing the variance", 3.35, variance, .1);
 		System.out.println("GeneralHeight2009PredictorTests.compareStochasticPredictions - Successful comparisons!");

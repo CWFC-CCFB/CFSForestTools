@@ -128,8 +128,8 @@ public class Population {
 					Matrix totalReal = hybHTEstimate.getMean();
 					Matrix varReal = hybHTEstimate.getCorrectedVariance().getTotalVariance();
 					for (int ii = 0; ii < totalReal.m_iRows; ii++) {
-						recordStabilizer[ii*2 + 1] = totalReal.m_afData[ii][0];
-						recordStabilizer[ii*2 + 2] = varReal.m_afData[ii][ii];
+						recordStabilizer[ii*2 + 1] = totalReal.getValueAt(ii, 0);
+						recordStabilizer[ii*2 + 2] = varReal.getValueAt(ii, ii);
 					}
 					writerStabilizer.addRecord(recordStabilizer);
 				} else if (real > 0 && isWriterStabilizerOpen) {

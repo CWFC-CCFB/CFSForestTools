@@ -88,7 +88,7 @@ public interface OfficialHarvestableTree extends DbhCmProvider,
 //				pos++;
 //			}
 			Matrix dummyTmp = new Matrix(1, setEnum.size());
-			dummyTmp.m_afData[0][pos] = 1d;
+			dummyTmp.setValueAt(0, pos, 1d);
 			return dummyTmp;
 		}
 

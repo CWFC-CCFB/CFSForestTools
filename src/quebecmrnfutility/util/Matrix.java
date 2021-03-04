@@ -116,7 +116,7 @@ class Matrix implements DeprecatedObject {
 		repicea.math.Matrix newMat = new repicea.math.Matrix(m_iRows, m_iCols);
 		for (int i = 0; i < m_iRows; i++) {
 			for (int j= 0; j < m_iCols; j++) {
-				newMat.m_afData[i][j] = m_afData[i][j];
+				newMat.setValueAt(i, j, m_afData[i][j]);
 			}
 		}
 		return newMat;

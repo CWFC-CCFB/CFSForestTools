@@ -216,7 +216,7 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 			}
 			CruiseLine cruiseLine = getCruiseLineForThisSubject(cruiseLineID, stand);
 			Matrix cruiseLineRandomEffect = getRandomEffectsForThisSubject(cruiseLine);
-			double u = cruiseLineRandomEffect.m_afData[0][0];
+			double u = cruiseLineRandomEffect.getValueAt(0, 0);
 			embeddedFunction.setParameterValue(1, u);
 			survival = embeddedFunction.getValue();
 		} else {
@@ -256,8 +256,8 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 	
 	private double getBaseline(Matrix beta, double[] aac) {
 		
-		double gamma0 = beta.m_afData[9][0];
-		double gamma1 = beta.m_afData[10][0];
+		double gamma0 = beta.getValueAt(9, 0);
+		double gamma1 = beta.getValueAt(10, 0);
 		
 		double baselineResult = 0;
 		for (double v : aac) {
@@ -269,10 +269,10 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 
 	private double getProportionalPart(MeloThinnerPlot stand, Matrix beta) {
 		int index = 0;
-		oXVector.m_afData[0][index] = Math.log(stand.getBasalAreaM2Ha());
+		oXVector.setValueAt(0, index, Math.log(stand.getBasalAreaM2Ha()));
 		index++;
 		
-		oXVector.m_afData[0][index] = stand.getNumberOfStemsHa();
+		oXVector.setValueAt(0, index, stand.getNumberOfStemsHa());
 		index++;
 		
 		Matrix slopeClassDummy = getDummySlopeClass(stand.getSlopeClass());
@@ -284,7 +284,7 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 		index += dynamicTypeDummy.m_iCols;
 		
 		Matrix xBeta = oXVector.multiply(beta);
-		return Math.exp(xBeta.m_afData[0][0]);
+		return Math.exp(xBeta.getValueAt(0, 0));
 	}
 	
 	
@@ -295,7 +295,7 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 			for (QcSlopeClass sc : QcSlopeClass.values()) {
 				dummy = new Matrix(1,5);
 				if (sc.ordinal() > 0) {
-					dummy.m_afData[0][sc.ordinal() - 1] = 1d;
+					dummy.setValueAt(0, sc.ordinal() - 1, 1d);
 				}
 				slopeClassDummy.put(sc, dummy);
 			}
@@ -307,11 +307,11 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 		if (dynamicTypeDummy == null) {
 			dynamicTypeDummy = new HashMap<String, Matrix>();
 			Matrix dummy = new Matrix(1,2);
-			dummy.m_afData[0][0] = 1d;
+			dummy.setValueAt(0, 0, 1d);
 			dynamicTypeDummy.put("F", dummy);
 			
 			dummy = new Matrix(1,2);
-			dummy.m_afData[0][1] = 1d;
+			dummy.setValueAt(0, 1, 1d);
 			dynamicTypeDummy.put("M", dummy);
 			
 			dummy = new Matrix(1,2);

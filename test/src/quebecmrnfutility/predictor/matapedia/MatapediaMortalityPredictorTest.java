@@ -108,11 +108,11 @@ public class MatapediaMortalityPredictorTest {
 			for (int i = 0; i < nbReal; i++) {
 				((MatapediaStandImpl) stand).setMonteCarloRealizationId(i);
 				resultWrapper = new Matrix(1,1);
-				resultWrapper.m_afData[0][0] = stochasticPredictor.predictEventProbability(stand, tree);
+				resultWrapper.setValueAt(0, 0, stochasticPredictor.predictEventProbability(stand, tree));
 				dist.addRealization(resultWrapper);
 			}
 			double meanDeterministic = deterministicPredictor.predictEventProbability(stand, tree);
-			double meanStochastic = dist.getMean().m_afData[0][0];
+			double meanStochastic = dist.getMean().getValueAt(0, 0);
 
 			System.out.println("Deterministic : " + meanDeterministic + "; Stochastic : " + meanStochastic);			
 			assertEquals(meanDeterministic, meanStochastic, 0.003);

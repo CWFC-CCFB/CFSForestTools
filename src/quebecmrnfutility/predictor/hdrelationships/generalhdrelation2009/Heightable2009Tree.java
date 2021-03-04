@@ -74,7 +74,7 @@ public interface Heightable2009Tree extends HDRelationshipTree,
 		
 		Hd2009Species() {
 			dummy = new Matrix(1,20);
-			dummy.m_afData[0][this.ordinal()] = 1d;
+			dummy.setValueAt(0, ordinal(), 1d);
 			if (QuebecGeneralSettings.CONIFEROUS_SPECIES.contains(this.name().toUpperCase().trim())) {
 				speciesType = SpeciesType.ConiferousSpecies;
 			} else {

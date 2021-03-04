@@ -50,18 +50,18 @@ class Artemis2009RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 	
 	protected void setEffectList(Matrix effectList) {
 		for (int i = 0; i < effectList.m_iRows; i++) {
-			this.effectList.add((int) effectList.m_afData[i][0]);
+			this.effectList.add((int) effectList.getValueAt(i, 0));
 		}
 	}
 	
 	protected synchronized double predictNumberOfRecruits(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree) {
 		Matrix beta = getParametersForThisRealization(stand).getDeepClone();
 //		double dispersion = beta.m_afData[beta.m_iRows - 1][0];		// MF20190627 This line could cause a bug. In stochastic mode the dispersion could be negative 
-		double dispersion = getParameterEstimates().getMean().m_afData[beta.m_iRows - 1][0];		// MF20190627 This line could cause a bug. In stochastic mode the dispersion could be negative 
-		beta.m_afData[beta.m_iRows-1][0] = 1.0;    // last element is replaced by 1 to account for the offset variable	
+		double dispersion = getParameterEstimates().getMean().getValueAt(beta.m_iRows - 1, 0);		// MF20190627 This line could cause a bug. In stochastic mode the dispersion could be negative 
+		beta.setValueAt(beta.m_iRows - 1, 0, 1d);    // last element is replaced by 1 to account for the offset variable	
 	
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009RecruitmentNumberPredictor.ModuleName, effectList);
-		double xBeta = oXVector.multiply(beta).m_afData[0][0];
+		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		double predictedValue = Math.exp(xBeta);
 		
 		if (isResidualVariabilityEnabled) {

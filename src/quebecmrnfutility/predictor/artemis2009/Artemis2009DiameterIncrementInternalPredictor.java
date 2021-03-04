@@ -48,28 +48,28 @@ class Artemis2009DiameterIncrementInternalPredictor extends REpiceaPredictor {
 	
 	protected void setEffectList(Matrix effectList) {
 		for (int i = 0; i < effectList.m_iRows; i++) {
-			this.effectList.add((int) effectList.m_afData[i][0]);
+			this.effectList.add((int) effectList.getValueAt(i, 0));
 		}
 	}
 
 	protected synchronized double[] predictGrowth(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree) {
 		Matrix beta = getParametersForThisRealization(stand);
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009DiameterIncrementPredictor.ModuleName, effectList);
-		double xBeta = oXVector.multiply(beta).m_afData[0][0];
+		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		double pred;
 		double dVarianceUn = 0d;
 		if (isRandomEffectsVariabilityEnabled) {
-			double plotRandomEffect = getRandomEffectsForThisSubject(stand).m_afData[0][0];
+			double plotRandomEffect = getRandomEffectsForThisSubject(stand).getValueAt(0, 0);
 			IntervalNestedInPlotDefinition intervalDefinition = getIntervalNestedInPlotDefinition(stand, stand.getDateYr());
-			double stepRandomEffect = getRandomEffectsForThisSubject(intervalDefinition).m_afData[0][0];
+			double stepRandomEffect = getRandomEffectsForThisSubject(intervalDefinition).getValueAt(0, 0);
 			Matrix errorTerm = getResidualErrorForThisSubject(tree, ErrorTermGroup.Default);
 			int index = this.getGaussianErrorTerms(tree).getDistanceIndex().indexOf(tree.getErrorTermIndex());
-			double residualErrorTerm = errorTerm.m_afData[index][0];		// last element
+			double residualErrorTerm = errorTerm.getValueAt(index, 0);		// last element
 			pred = xBeta + plotRandomEffect + stepRandomEffect + residualErrorTerm;
 		} else {
-			double plotVariance = getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance().m_afData[0][0];
-			double stepVariance = getDefaultRandomEffects(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT).getVariance().m_afData[0][0];
-			double residualVariance = getDefaultResidualError(ErrorTermGroup.Default).getVariance().m_afData[0][0];
+			double plotVariance = getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance().getValueAt(0, 0);
+			double stepVariance = getDefaultRandomEffects(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT).getVariance().getValueAt(0, 0);
+			double residualVariance = getDefaultResidualError(ErrorTermGroup.Default).getVariance().getValueAt(0, 0);
 			double fVarianceLog = plotVariance + stepVariance+ residualVariance;
 			dVarianceUn = (Math.exp(fVarianceLog) - 1) * Math.exp(2d * xBeta + fVarianceLog); // variance on the log scale prior to the bias correction
 			pred = xBeta + fVarianceLog * .5;
@@ -88,7 +88,7 @@ class Artemis2009DiameterIncrementInternalPredictor extends REpiceaPredictor {
 	
 	protected void setResidualErrorCovariance(double s2_tree, double correlationParameter) {
 		Matrix variance = new Matrix(1,1);
-		variance.m_afData[0][0] = s2_tree;
+		variance.setValueAt(0, 0, s2_tree);
 		setDefaultResidualError(ErrorTermGroup.Default, new GaussianErrorTermEstimate(variance, correlationParameter, StatisticalUtility.TypeMatrixR.LINEAR_LOG));
 	}
 

@@ -97,7 +97,7 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 			Matrix omega = ParameterLoader.loadMatrixFromFile(omegaFilename);
 			corrMatrix = ParameterLoader.loadMatrixFromFile(rMatrixFilename);
 			Matrix varParms = ParameterLoader.loadVectorFromFile(varParmsFilename).get();
-			sigma2Res = varParms.m_afData[varParms.m_iRows - 1][0];
+			sigma2Res = varParms.getValueAt(varParms.m_iRows - 1, 0);
 			weightExponentCoefficients = varParms.getSubMatrix(0, varParms.m_iRows - 2, 0, 0); 
 
 			setParameterEstimates(new ModelParameterEstimates(beta, omega));
@@ -137,13 +137,13 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 		if (tree.getTreeQuality() == null) {
 			isNC = 1d;
 		}
-		double z1 = beta.m_afData[4][0];
-		double z1C = beta.m_afData[5][0];
-		double z1D = beta.m_afData[6][0];
-		double z1NC = beta.m_afData[7][0];
-		double z2 = beta.m_afData[8][0];
-		double z3 = beta.m_afData[9][0];
-		double z4 = beta.m_afData[10][0];
+		double z1 = beta.getValueAt(4, 0);
+		double z1C = beta.getValueAt(5, 0);
+		double z1D = beta.getValueAt(6, 0);
+		double z1NC = beta.getValueAt(7, 0);
+		double z2 = beta.getValueAt(8, 0);
+		double z3 = beta.getValueAt(9, 0);
+		double z4 = beta.getValueAt(10, 0);
 		
 		double b1 = z1 + z1C * isC + z1D * isD + z1NC * isNC + z4 * elevationM;
 		return b1 * Math.pow((1 - Math.exp(z2 * (dbhCm - 15d))), z3) * dbhCm;
@@ -158,10 +158,9 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 			isAB = 1d;
 		}
 		
-		double a0 = beta.m_afData[11][0];
-		double a1 = beta.m_afData[12][0];
-//		double a2 = beta.m_afData[13][0];
-		double a3 = beta.m_afData[13][0];
+		double a0 = beta.getValueAt(11, 0);
+		double a1 = beta.getValueAt(12, 0);
+		double a3 = beta.getValueAt(13, 0);
 		return a0 + a1 * (dbhCm - 9d) * h20Pred + a3 * isAB;
 	}
 	
@@ -179,26 +178,26 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 		if (tree.getTreeQuality() == null) {
 			isNC = 1d;
 		}
-		double b1 = beta.m_afData[0][0];
-		double b1C = beta.m_afData[1][0];
-		double b1D = beta.m_afData[2][0];
-		double b1NC = beta.m_afData[3][0];
-		double b2 = beta.m_afData[14][0];
+		double b1 = beta.getValueAt(0, 0);
+		double b1C = beta.getValueAt(1, 0);
+		double b1D = beta.getValueAt(2, 0);
+		double b1NC = beta.getValueAt(3, 0);
+		double b2 = beta.getValueAt(14, 0);
 		
 		return merVol / (1 + Math.exp(b1 + b1C * isC + b1D * isD + b1NC * isNC - b2 * h20Pred / dbhCm));
 	}
 	
 	private double getSawlogPrediction(WBirchLogGradesStand stand, WBirchLogGradesTree tree, Matrix beta, double merVol, double pulpVol) {
 		double dbhCm = tree.getDbhCm();
-		double c1 = beta.m_afData[15][0];
-		double c2 = beta.m_afData[16][0];
+		double c1 = beta.getValueAt(15, 0);
+		double c2 = beta.getValueAt(16, 0);
 		
 		return (merVol - pulpVol) / (1 + Math.exp(c1 - c2 * dbhCm));
 	}
 	
 	private double getLowGradeVeneerPrediction(WBirchLogGradesStand stand, WBirchLogGradesTree tree, Matrix beta, double merVol, double pulpVol, double sawlogVol) {
 		double dbhCm = tree.getDbhCm();
-		double d2 = beta.m_afData[17][0];
+		double d2 = beta.getValueAt(17, 0);
 		
 		return (merVol - pulpVol - sawlogVol) / (1 + d2 * dbhCm);
 	}
@@ -230,7 +229,7 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 			residualDeviates = getCholMatrixForThisTree(tree).multiply(StatisticalUtility.drawRandomVector(corrMatrix.m_iRows, Type.GAUSSIAN));
 		}
 
-		h20Pred += residualDeviates.m_afData[0][0];		// add the deviate
+		h20Pred += residualDeviates.getValueAt(0, 0);		// add the deviate
 
 		Version version;
 		if (isTestPurpose) { // for test purpose
@@ -247,49 +246,49 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 		}
 		
 		Matrix logGradePred = new Matrix(7,1);
-		logGradePred.m_afData[0][0] = h20Pred;
+		logGradePred.setValueAt(0, 0, h20Pred);
 		if (version == Version.Full) {
 			double sawlogVol = getSawlogPrediction(stand, tree, modelParameters, merVol, pulpVol);
 			double lowGradeVeneer = getLowGradeVeneerPrediction(stand, tree, modelParameters, merVol, pulpVol, sawlogVol);
-			merVol += residualDeviates.m_afData[1][0];
-			pulpVol += residualDeviates.m_afData[2][0];
-			sawlogVol += residualDeviates.m_afData[3][0];
-			lowGradeVeneer += residualDeviates.m_afData[4][0];
-			logGradePred.m_afData[1][0] = merVol;
-			logGradePred.m_afData[2][0] = pulpVol;
-			logGradePred.m_afData[3][0] = sawlogVol;
-			logGradePred.m_afData[4][0] = lowGradeVeneer;
+			merVol += residualDeviates.getValueAt(1, 0);
+			pulpVol += residualDeviates.getValueAt(2, 0);
+			sawlogVol += residualDeviates.getValueAt(3, 0);
+			lowGradeVeneer += residualDeviates.getValueAt(4, 0);
+			logGradePred.setValueAt(1, 0, merVol);
+			logGradePred.setValueAt(2, 0, pulpVol);
+			logGradePred.setValueAt(3, 0, sawlogVol);
+			logGradePred.setValueAt(4, 0, lowGradeVeneer);
 			double veneer = merVol - pulpVol - sawlogVol - lowGradeVeneer;
-			logGradePred.m_afData[5][0] = veneer;
+			logGradePred.setValueAt(5, 0, veneer);
 		} else {
 			if (version == Version.FullTruncated) {
 				double sawlogVol = getSawlogPrediction(stand, tree, modelParameters, merVol, pulpVol);
-				merVol += residualDeviates.m_afData[1][0];
-				sawlogVol += residualDeviates.m_afData[3][0];
-				logGradePred.m_afData[1][0] = merVol;
-				logGradePred.m_afData[2][0] = merVol - sawlogVol;
-				logGradePred.m_afData[3][0] = sawlogVol;
+				merVol += residualDeviates.getValueAt(1, 0);
+				sawlogVol += residualDeviates.getValueAt(3, 0);
+				logGradePred.setValueAt(1, 0, merVol);
+				logGradePred.setValueAt(2, 0, merVol - sawlogVol);
+				logGradePred.setValueAt(3, 0, sawlogVol);
 			} else {
-				merVol += residualDeviates.m_afData[1][0];
-				pulpVol += residualDeviates.m_afData[2][0];
+				merVol += residualDeviates.getValueAt(1, 0);
+				pulpVol += residualDeviates.getValueAt(2, 0);
 				double lastProduct = merVol - pulpVol;
-				logGradePred.m_afData[1][0] = merVol;
-				logGradePred.m_afData[2][0] = pulpVol;
+				logGradePred.setValueAt(1, 0, merVol);
+				logGradePred.setValueAt(2, 0, pulpVol);
 				if (version == Version.DClass) {
-					logGradePred.m_afData[3][0] = lastProduct;
+					logGradePred.setValueAt(3, 0, lastProduct);
 				} else {
-					logGradePred.m_afData[6][0] = lastProduct;
+					logGradePred.setValueAt(6, 0, lastProduct);
 				}
 			}
 		}
 		
 		
-		logGradePred.m_afData[1][0] *= .001;
-		logGradePred.m_afData[2][0] *= .001;
-		logGradePred.m_afData[3][0] *= .001;
-		logGradePred.m_afData[4][0] *= .001;
-		logGradePred.m_afData[5][0] *= .001;
-		logGradePred.m_afData[6][0] *= .001;
+		logGradePred.setValueAt(1, 0, logGradePred.getValueAt(1, 0) * .001);
+		logGradePred.setValueAt(2, 0, logGradePred.getValueAt(2, 0) * .001);
+		logGradePred.setValueAt(3, 0, logGradePred.getValueAt(3, 0) * .001);
+		logGradePred.setValueAt(4, 0, logGradePred.getValueAt(4, 0) * .001);
+		logGradePred.setValueAt(5, 0, logGradePred.getValueAt(5, 0) * .001);
+		logGradePred.setValueAt(6, 0, logGradePred.getValueAt(6, 0) * .001);
 		
 		return logGradePred;		// to get the result in m3 and not in dm3
 	}
@@ -330,7 +329,7 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 		setParameterEstimates(new ModelParameterEstimates(newMean, newVariance));
 		
 		ChiSquaredDistribution residualVarianceDistribution = new ChiSquaredDistribution(degreesOfFreedom, sigma2Res);
-		double newSigma2Res = residualVarianceDistribution.getRandomRealization().m_afData[0][0];
+		double newSigma2Res = residualVarianceDistribution.getRandomRealization().getValueAt(0, 0);
 		sigma2Res = newSigma2Res;
 		
 		Matrix errorWeights = StatisticalUtility.drawRandomVector(weightExponentCoefficients.m_iRows, Type.GAUSSIAN);

@@ -185,7 +185,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 			OfficialHarvestSubmodel submodel = modelParametersLibrary.get(treatment);		
 			Matrix modelParameters = submodel.getSubParametersForThisStand(stand);
 			oXVector = xVectorFactory.getFixedEffectVector(stand, tree, (TreatmentType) treatment);
-			double xBeta = oXVector.multiply(modelParameters).m_afData[0][0];
+			double xBeta = oXVector.multiply(modelParameters).getValueAt(0, 0);
 			double fExpXBeta = Math.exp(xBeta);
 			eventProbability = fExpXBeta / (1.0 + fExpXBeta);
 			

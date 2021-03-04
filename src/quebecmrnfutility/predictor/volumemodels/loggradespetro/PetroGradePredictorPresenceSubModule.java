@@ -71,19 +71,19 @@ class PetroGradePredictorPresenceSubModule extends PetroGradePredictorSubModule 
 			oXVector.setSubMatrix(dummyProduct.scalarMultiply(dbh2), 0, pointer);
 			pointer += dummyProduct.m_iCols;
 
-			double exp_xBeta = Math.exp(oXVector.multiply(beta).m_afData[0][0]);
+			double exp_xBeta = Math.exp(oXVector.multiply(beta).getValueAt(0, 0));
 			double probability = exp_xBeta / (1.0 + exp_xBeta);
 			//			int productIndex = logCategories.indexOf(product);
-			oMat.m_afData[productType.ordinal()][0] = probability;
+			oMat.setValueAt(productType.ordinal(), 0, probability);
 		}
 
 		if (isResidualVariabilityEnabled) {
 			for (int i = 0; i < oMat.m_iRows; i++) {
 				double deviate = StatisticalUtility.getRandom().nextDouble();
-				if (deviate < oMat.m_afData[i][0]) {
-					oMat.m_afData[i][0] = 1d;
+				if (deviate < oMat.getValueAt(i, 0)) {
+					oMat.setValueAt(i, 0, 1d);
 				} else {
-					oMat.m_afData[i][0] = 0d;
+					oMat.setValueAt(i, 0, 0d);
 				}
 			}
 		}

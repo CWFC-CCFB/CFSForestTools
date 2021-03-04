@@ -64,7 +64,7 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 		Treatment(String englishText, String frenchText) {
 			setText(englishText, frenchText);
 			dummy = new Matrix(1,4);
-			dummy.m_afData[0][this.ordinal()] = 1.0;
+			dummy.setValueAt(0, ordinal(), 1d);
 		}
 		
 		public Matrix getDummy() {return dummy;}
@@ -160,19 +160,19 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 		Map<Treatment, Matrix> treatmentDummyMap = speciesTreatmentDummy.get(species);
 		Matrix dummySpeciesTreatment = treatmentDummyMap.get(treatment);
 			
-		oXVector.m_afData[0][pointeur] = 1.0;
+		oXVector.setValueAt(0, pointeur, 1d);
 		pointeur++;
 
 		oXVector.setSubMatrix(dummySpecies, 0, pointeur);
 		pointeur += dummySpecies.m_iCols;
 		
-		oXVector.m_afData[0][pointeur] = basalAreaHA;
+		oXVector.setValueAt(0, pointeur, basalAreaHA);
 		pointeur++;
 		
-		oXVector.m_afData[0][pointeur] = basalAreaHA * dummy_dbh;
+		oXVector.setValueAt(0, pointeur, basalAreaHA * dummy_dbh);
 		pointeur++;
 
-		oXVector.m_afData[0][pointeur] = densityHA * dummy_dbh;
+		oXVector.setValueAt(0, pointeur, densityHA * dummy_dbh);
 		pointeur++;
 		
 		oXVector.setSubMatrix(dummySpeciesTreatment.scalarMultiply(dbh), 0, pointeur);
@@ -187,7 +187,7 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 		oXVector.setSubMatrix(dummySpecies.scalarMultiply(lndbhHD * dummy_dbh), 0, pointeur);
 		pointeur += dummySpecies.m_iCols;
 
-		double xBeta = oXVector.multiply(modelParameters).m_afData[0][0];
+		double xBeta = oXVector.multiply(modelParameters).getValueAt(0, 0);
 		
 		double fExpXBeta = Math.exp(xBeta);
 		return fExpXBeta / (1.0 + fExpXBeta);

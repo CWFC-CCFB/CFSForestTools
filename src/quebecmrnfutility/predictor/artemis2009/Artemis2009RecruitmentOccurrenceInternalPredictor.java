@@ -49,7 +49,7 @@ class Artemis2009RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEve
 	
 	protected void setEffectList(Matrix effectList) {
 		for (int i = 0; i < effectList.m_iRows; i++) {
-			this.effectList.add((int) effectList.m_afData[i][0]);
+			this.effectList.add((int) effectList.getValueAt(i, 0));
 		}
 	}
 	
@@ -57,7 +57,7 @@ class Artemis2009RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEve
 	public synchronized double predictEventProbability(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree, Map<String, Object> parms) {
 		Matrix beta = getParametersForThisRealization(stand);
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009RecruitmentOccurrencePredictor.ModuleName, effectList);
-		double xBeta = oXVector.multiply(beta).m_afData[0][0];
+		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		double recruitmentProbability = Math.exp(xBeta)/(1.0 + Math.exp(xBeta));
 		return recruitmentProbability;
 	}

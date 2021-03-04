@@ -94,7 +94,7 @@ class StemTaperEquationSettings implements Serializable {
 			oMap.put(subdomain, oMat);
 		}
 		oMat = new Matrix(1,1); 
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.remove("1ouest");
 		oMap.remove("2ouest");
 		
@@ -110,7 +110,7 @@ class StemTaperEquationSettings implements Serializable {
 			oMap.put(subdomain, oMat);
 		}
 		oMat = new Matrix(1,1);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("2ouest", oMat);
 		oMap.put("3ouest", oMat);
 		oMap.put("4ouest", oMat);
@@ -126,7 +126,7 @@ class StemTaperEquationSettings implements Serializable {
 			oMap.put(subdomain, oMat);
 		}
 		oMat = new Matrix(1,1);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.remove("1ouest");
 		oMap.remove("2est");
 		oMap.remove("2ouest");
@@ -143,13 +143,13 @@ class StemTaperEquationSettings implements Serializable {
 			oMap.put(subdomain, oMat);
 		}
 		oMat = new Matrix(1,3);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("3ouest", oMat);
 		oMat = new Matrix(1,3);
-		oMat.m_afData[0][1] = 1d;
+		oMat.setValueAt(0, 1, 1d);
 		oMap.put("4ouest", oMat);
 		oMat = new Matrix(1,3);
-		oMat.m_afData[0][2] = 1d;
+		oMat.setValueAt(0, 2, 1d);
 		oMap.put("2est", oMat);
 		oMap.put("3est", oMat);
 		oMap.put("4est", oMat);
@@ -167,7 +167,7 @@ class StemTaperEquationSettings implements Serializable {
 			oMap.put(subdomain, oMat);
 		}
 		oMat = new Matrix(1,1);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("4est", oMat);
 		oMap.put("5est", oMat);		
 		
@@ -181,12 +181,12 @@ class StemTaperEquationSettings implements Serializable {
 			oMap.put(subdomain, oMat);
 		}
 		oMat = new Matrix(1,2);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("3est", oMat);
 		oMap.put("5est", oMat);
 		oMap.put("6est", oMat);
 		oMat = new Matrix(1,2);
-		oMat.m_afData[0][1] = 1d;
+		oMat.setValueAt(0, 1, 1d);
 		oMap.put("5ouest", oMat);
 		
 		oMap.remove("1ouest");
@@ -198,11 +198,11 @@ class StemTaperEquationSettings implements Serializable {
 			oMap.put(subdomain, oMat);
 		}
 		oMat = new Matrix(1,2);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("4est", oMat);
 		oMap.put("5est", oMat);
 		oMat = new Matrix(1,2);
-		oMat.m_afData[0][1] = 1d;
+		oMat.setValueAt(0, 1, 1d);
 		oMap.put("4ouest", oMat);
 		
 		oMap.remove("1ouest");
@@ -220,7 +220,7 @@ class StemTaperEquationSettings implements Serializable {
 			oMap.put(subdomain, oMat);
 		}
 		oMat = new Matrix(1, 1);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("6ouest", oMat);
 		
 		oMap.remove("1ouest");
@@ -239,15 +239,15 @@ class StemTaperEquationSettings implements Serializable {
 		oMap.put("MS6", oMat);
 		oMap.put("RS2", oMat);				
 		oMat = new Matrix(1,3);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("MJ2", oMat);
 		oMat = new Matrix(1,3);
-		oMat.m_afData[0][1] = 1d;
+		oMat.setValueAt(0, 1, 1d);
 		oMap.put("MS1", oMat);
 		oMap.put("MS2", oMat);
 		oMap.put("RS1", oMat);
 		oMat = new Matrix(1,3);
-		oMat.m_afData[0][2] = 1d;
+		oMat.setValueAt(0, 2, 1d);
 		oMap.put("MS4", oMat);
 		POTENTIAL_VEGETATION_GROUP_DUMMY_MAP.put(StemTaperTreeSpecies.EPB, oMap);
 
@@ -261,10 +261,10 @@ class StemTaperEquationSettings implements Serializable {
 		oMap.put("RE2", oMat);
 		oMap.put("RE3", oMat);		
 		oMat = new Matrix(1,2);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("RE1", oMat);
 		oMat = new Matrix(1,2);
-		oMat.m_afData[0][1] = 1d;
+		oMat.setValueAt(0, 1, 1d);
 		oMap.put("RS2", oMat);
 		POTENTIAL_VEGETATION_GROUP_DUMMY_MAP.put(StemTaperTreeSpecies.EPN, oMap);
 
@@ -273,7 +273,7 @@ class StemTaperEquationSettings implements Serializable {
 		oMap.put("MJ2", oMat);
 		oMap.put("RS5", oMat);		
 		oMat = new Matrix(1,1);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("MS1", oMat);
 		POTENTIAL_VEGETATION_GROUP_DUMMY_MAP.put(StemTaperTreeSpecies.EPR, oMap);
 		
@@ -283,13 +283,13 @@ class StemTaperEquationSettings implements Serializable {
 		oMap.put("FE3", oMat);
 		oMap.put("ME1", oMat);		
 		oMat = new Matrix(1,2);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("MS1", oMat);
 		oMap.put("MS2", oMat);
 		oMap.put("MJ1", oMat);
 		oMap.put("MJ2", oMat);
 		oMat = new Matrix(1,2);
-		oMat.m_afData[0][1] = 1d;
+		oMat.setValueAt(0, 1, 1d);
 		oMap.put("MS6", oMat);
 		oMap.put("RS2", oMat);
 		POTENTIAL_VEGETATION_GROUP_DUMMY_MAP.put(StemTaperTreeSpecies.PET, oMap);
@@ -300,13 +300,13 @@ class StemTaperEquationSettings implements Serializable {
 		oMap.put("MJ1", oMat);		
 		oMap.put("MJ2", oMat);		
 		oMat = new Matrix(1,2);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("MS2", oMat);
 		oMap.put("MS4", oMat);
 		oMap.put("MS1", oMat);
 		oMap.put("MS6", oMat);
 		oMat = new Matrix(1,2);
-		oMat.m_afData[0][1] = 1d;
+		oMat.setValueAt(0, 1, 1d);
 		oMap.put("RE2", oMat);
 		oMap.put("RS1", oMat);
 		oMap.put("RS2", oMat);
@@ -320,7 +320,7 @@ class StemTaperEquationSettings implements Serializable {
 		oMap.put("RE2", oMat);
 		oMap.put("RS2", oMat);
 		oMat = new Matrix(1, 1);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put("RE1", oMat);
 		POTENTIAL_VEGETATION_GROUP_DUMMY_MAP.put(StemTaperTreeSpecies.PIG, oMap);
 	}
@@ -333,7 +333,7 @@ class StemTaperEquationSettings implements Serializable {
 			oMap.put(drainageClass, oMat);
 		}		
 		oMat = new Matrix(1,1);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put(QcDrainageClass.C4, oMat);
 		oMap.put(QcDrainageClass.C5, oMat);
 		
@@ -346,7 +346,7 @@ class StemTaperEquationSettings implements Serializable {
 			oMap.put(drainageClass, oMat);
 		}
 		oMat = new Matrix(1,1);
-		oMat.m_afData[0][0] = 1d;
+		oMat.setValueAt(0, 0, 1d);
 		oMap.put(QcDrainageClass.C3, oMat);
 		oMap.put(QcDrainageClass.C4, oMat);
 		

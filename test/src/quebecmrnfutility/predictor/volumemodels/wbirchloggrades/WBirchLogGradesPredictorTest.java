@@ -43,7 +43,7 @@ public class WBirchLogGradesPredictorTest {
 				Matrix predRef = tree.getRealizedValues();
 				Assert.assertEquals("Number of elements", predRef.m_iRows, pred.m_iRows);
 				for (int i = 0; i < pred.m_iRows; i++) {
-					Assert.assertEquals("Comparing tree " + tree.getSubjectId() + " in plot " + stand.getSubjectId(), predRef.m_afData[i][0], pred.m_afData[i][0], 1E-6);
+					Assert.assertEquals("Comparing tree " + tree.getSubjectId() + " in plot " + stand.getSubjectId(), predRef.getValueAt(i, 0), pred.getValueAt(i, 0), 1E-6);
 					nbMatches2++;
 				}
 				nbMatches += 5;
@@ -94,13 +94,13 @@ public class WBirchLogGradesPredictorTest {
 					standMap.put(plotID, new WBirchLogGradesStandImpl(plotID, elevation));
 				}
 				Matrix predRef = new Matrix(7,1);
-				predRef.m_afData[0][0] = h20Pred;
-				predRef.m_afData[1][0] = merVolPred;
-				predRef.m_afData[2][0] = pulpVolPred;
-				predRef.m_afData[3][0] = sawlogVolPred;
-				predRef.m_afData[4][0] = lowGradeVeneerVolPred;
-				predRef.m_afData[5][0] = veneerVolPred;
-				predRef.m_afData[6][0] = lowGradeSawlogVolPred;
+				predRef.setValueAt(0, 0, h20Pred);
+				predRef.setValueAt(1, 0, merVolPred);
+				predRef.setValueAt(2, 0, pulpVolPred);
+				predRef.setValueAt(3, 0, sawlogVolPred);
+				predRef.setValueAt(4, 0, lowGradeVeneerVolPred);
+				predRef.setValueAt(5, 0, veneerVolPred);
+				predRef.setValueAt(6, 0, lowGradeSawlogVolPred);
 
 				stand = standMap.get(plotID);
 				if (!stand.getTrees().containsKey(treeID)) {
@@ -124,22 +124,22 @@ public class WBirchLogGradesPredictorTest {
 	@Test
 	public void testMonteCarloPredictions() {
 		Matrix meanRef = new Matrix(7,1);
-		meanRef.m_afData[0][0] = 6.4262054572822125;
-		meanRef.m_afData[1][0] = 358.8726980631341 * .001;
-		meanRef.m_afData[2][0] = 212.9874983502981 * .001;
-		meanRef.m_afData[3][0] = 145.88519971283398 * .001;
-		meanRef.m_afData[4][0] = 0d;
-		meanRef.m_afData[5][0] = 0d;
-		meanRef.m_afData[6][0] = 0d;
+		meanRef.setValueAt(0, 0, 6.4262054572822125);
+		meanRef.setValueAt(1, 0, 358.8726980631341 * .001);
+		meanRef.setValueAt(2, 0, 212.9874983502981 * .001);
+		meanRef.setValueAt(3, 0, 145.88519971283398 * .001);
+		meanRef.setValueAt(4, 0, 0d);
+		meanRef.setValueAt(5, 0, 0d);
+		meanRef.setValueAt(6, 0, 0d);
 		
 		Matrix stdRef = new Matrix(7,1);
-		stdRef.m_afData[0][0] = 0.13280569488806207;
-		stdRef.m_afData[1][0] = 0.048334578844355075;
-		stdRef.m_afData[2][0] = 0.07043375186265777;
-		stdRef.m_afData[3][0] = 0.0679108872730103; 
-		stdRef.m_afData[4][0] = 0d;
-		stdRef.m_afData[5][0] = 0d;
-		stdRef.m_afData[6][0] = 0d;
+		stdRef.setValueAt(0, 0, 0.13280569488806207);
+		stdRef.setValueAt(1, 0, 0.048334578844355075);
+		stdRef.setValueAt(2, 0, 0.07043375186265777);
+		stdRef.setValueAt(3, 0, 0.0679108872730103); 
+		stdRef.setValueAt(4, 0, 0d);
+		stdRef.setValueAt(5, 0, 0d);
+		stdRef.setValueAt(6, 0, 0d);
 	
 		int nbRealizations = 100000;
 		Map<String, WBirchLogGradesStandImpl> stands = readStands();
@@ -199,7 +199,7 @@ public class WBirchLogGradesPredictorTest {
 		for (Matrix mat : estimate.getRealizations()) {
 			record = new Object[mat.m_iRows];
 			for (int i = 0; i < mat.m_iRows; i++) {
-				record[i] = mat.m_afData[i][0];
+				record[i] = mat.getValueAt(i, 0);
 			}
 			writer.addRecord(record);
 		}

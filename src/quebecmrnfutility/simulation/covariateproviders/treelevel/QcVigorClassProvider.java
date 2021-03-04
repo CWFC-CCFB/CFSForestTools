@@ -46,20 +46,20 @@ public interface QcVigorClassProvider {
 		
 		QcVigorClass() {
 			dummy = new Matrix(1,4);
-			dummy.m_afData[0][this.ordinal()] = 1d;
+			dummy.setValueAt(0, ordinal(), 1d);
 			
 			dummyVig = new Matrix(1,2);
 			if (this.ordinal() == 2 || this.ordinal() == 3) {		// non vigourous
-				dummyVig.m_afData[0][0] = 1d;
+				dummyVig.setValueAt(0, 0, 1d);
 			} else {												// vigourous
-				dummyVig.m_afData[0][1] = 1d;
+				dummyVig.setValueAt(0, 1, 1d);
 			}
 
 			dummyProd = new Matrix(1,2);
 			if (this.ordinal() == 1 || this.ordinal() == 3) {		// pulp and paper
-				dummyProd.m_afData[0][0] = 1d;
+				dummyProd.setValueAt(0, 0, 1d);
 			} else {												// sawlog potential
-				dummyProd.m_afData[0][1] = 1d;
+				dummyProd.setValueAt(0, 1, 1d);
 			}
 
 		}

@@ -89,8 +89,8 @@ public class MatapediaDbhIncrementPredictor extends REpiceaPredictor implements 
 	public double predictGrowth(MatapediaStand stand, MatapediaTree tree, Object... parms) {
 		double prediction = fixedEffectsPrediction(tree, stand);
 		double dbh = tree.getDbhCm();
-		double randomEffect = getRandomEffectsForThisSubject(tree).scalarMultiply(dbh).m_afData[0][0];
-		double residualError = getResidualError().m_afData[0][0]; 
+		double randomEffect = getRandomEffectsForThisSubject(tree).scalarMultiply(dbh).getValueAt(0, 0);
+		double residualError = getResidualError().getValueAt(0, 0); 
 		prediction += randomEffect + residualError; 
 		return prediction;
 	}
@@ -102,7 +102,7 @@ public class MatapediaDbhIncrementPredictor extends REpiceaPredictor implements 
 		
 		int pointer = 0;
 		
-		oXVector.m_afData[0][pointer] = 1d;
+		oXVector.setValueAt(0, pointer, 1d);
 		pointer++;
 		
 		MatapediaTreeSpecies species = tree.getMatapediaTreeSpecies();
@@ -110,11 +110,11 @@ public class MatapediaDbhIncrementPredictor extends REpiceaPredictor implements 
 		pointer += species.getDummy().m_iCols;
 
 		double dbh = tree.getDbhCm();
-		oXVector.m_afData[0][pointer] = dbh;
+		oXVector.setValueAt(0, pointer, dbh);
 		pointer++;
 		
 		double dbh2 = tree.getSquaredDbhCm();
-		oXVector.m_afData[0][pointer] = dbh2;
+		oXVector.setValueAt(0, pointer, dbh2);
 		pointer++;
 		
 		boolean isSBWComing = stand.isGoingToBeDefoliated();
@@ -127,7 +127,7 @@ public class MatapediaDbhIncrementPredictor extends REpiceaPredictor implements 
 		oXVector.setSubMatrix(species.getDummy().scalarMultiply(bal), 0, pointer);
 		pointer += species.getDummy().m_iCols;
 
-		double result = oXVector.multiply(beta).m_afData[0][0];
+		double result = oXVector.multiply(beta).getValueAt(0, 0);
 		return result;
 	}
 

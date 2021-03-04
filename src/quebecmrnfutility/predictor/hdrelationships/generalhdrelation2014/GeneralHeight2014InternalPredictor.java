@@ -139,16 +139,16 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 		for (Effect effect : effectList) {
 			switch (effect) {
 			case LogDbh:
-				oXVector.m_afData[0][pointeur++] = lnDbh;
+				oXVector.setValueAt(0, pointeur++, lnDbh);
 				break;
 			case LogDbh2:
-				oXVector.m_afData[0][pointeur++] = lnDbh2;
+				oXVector.setValueAt(0, pointeur++, lnDbh2);
 				break;
 			case LogDbh_basalArea:
-				oXVector.m_afData[0][pointeur++] = lnDbh * basalArea;
+				oXVector.setValueAt(0, pointeur++, lnDbh * basalArea);
 				break;
 			case LogDbh_ratioDbh:
-				oXVector.m_afData[0][pointeur++] = lnDbh * (t.getDbhCm()/averageQDiam);
+				oXVector.setValueAt(0, pointeur++, lnDbh * (t.getDbhCm()/averageQDiam));
 				break;
 //			case LogDbh_basalAreaGreaterThan:
 //				oXVector.m_afData[0][pointeur++] = lnDbh * t.getBasalAreaLargerThanSubjectM2Ha();
@@ -157,7 +157,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 //				oXVector.m_afData[0][pointeur++] = lnDbh2 * t.getBasalAreaLargerThanSubjectM2Ha();
 //				break;
 			case LogDbh2_ratioDbh:
-				oXVector.m_afData[0][pointeur++] = lnDbh2 * (t.getDbhCm()/averageQDiam);
+				oXVector.setValueAt(0, pointeur++, lnDbh2 * (t.getDbhCm()/averageQDiam));
 				break;
 			case LogDbh_SubDom:
 				oXVector.setSubMatrix(dummySubDomain.scalarMultiply(lnDbh), 0, pointeur);
@@ -168,7 +168,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 				pointeur += dummyPotVeg.m_iCols;
 				break;
 			case LogDbh_Elevation:
-				oXVector.m_afData[0][pointeur++] = lnDbh * elevation;
+				oXVector.setValueAt(0, pointeur++, lnDbh * elevation);
 				break;
 			case LogDbh_EcoType:
 				oXVector.setSubMatrix(dummyEcoType.scalarMultiply(lnDbh), 0, pointeur);
@@ -179,10 +179,10 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 				pointeur += dummyDisturbance.m_iCols;
 				break;
 			case LogDbh_meanT:
-				oXVector.m_afData[0][pointeur++] = lnDbh * averageTemp;
+				oXVector.setValueAt(0, pointeur++, lnDbh * averageTemp);
 				break;
 			case LogDbh_pTot:
-				oXVector.m_afData[0][pointeur++] = lnDbh * stand.getMeanAnnualPrecipitationMm();
+				oXVector.setValueAt(0, pointeur++, lnDbh * stand.getMeanAnnualPrecipitationMm());
 				break;
 //			case LogDbh_Dens:
 //				oXVector.m_afData[0][pointeur++] = lnDbh * stand.getNumberOfStemsHa();
@@ -193,7 +193,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 				if(!ouest.equals("OUEST")){
 					isNotOuest = 1;
 				}
-				oXVector.m_afData[0][pointeur++] = lnDbh * isNotOuest;
+				oXVector.setValueAt(0, pointeur++, lnDbh * isNotOuest);
 				break;
 //			case LogDbh_Is:
 //				oXVector.m_afData[0][pointeur++] = lnDbh * t.getSocialStatusIndex();
@@ -205,9 +205,9 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 		}
 
 		Matrix Z_i = new Matrix(1,1);
-		Z_i.m_afData[0][0] =lnDbh2;	// design vector for the plot random effect
+		Z_i.setValueAt(0, 0, lnDbh2);	// design vector for the plot random effect
 
-		double fResult = 1.3 + oXVector.multiply(beta).m_afData[0][0];
+		double fResult = 1.3 + oXVector.multiply(beta).getValueAt(0, 0);
 
 		RegressionElements regElements = new RegressionElements();
 
