@@ -207,6 +207,14 @@ public class ParameterDispatcher {
 		return speciesGroupByVegPot.get(stand.getPotentialVegetation());
 	}
 	
+	protected double getProduct(Matrix oXVector, Matrix beta) {
+		double product = 0;
+		for (int i = 0; i < beta.m_iRows; i++) {
+			product += oXVector.getValueAt(0, i) * beta.getValueAt(i, 0);
+		}
+		return product;
+	}
+	
 	protected void constructXVector(Matrix oXVector, Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree, String moduleName, List<Integer> effectList) {		
 		oXVector.resetMatrix();
 		
@@ -432,13 +440,10 @@ public class ParameterDispatcher {
 				}
 				pointer += dummyEssence.m_iCols;
 				break;
-
-
 			}
 
 		}
-
-		oXVector.m_iCols = pointer;
+//		oXVector.m_iCols = pointer;
 	}
 
 	/**

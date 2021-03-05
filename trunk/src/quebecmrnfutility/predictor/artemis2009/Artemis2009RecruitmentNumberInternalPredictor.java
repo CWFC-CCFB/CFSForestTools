@@ -61,7 +61,8 @@ class Artemis2009RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		beta.setValueAt(beta.m_iRows - 1, 0, 1d);    // last element is replaced by 1 to account for the offset variable	
 	
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009RecruitmentNumberPredictor.ModuleName, effectList);
-		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+//		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+		double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
 		double predictedValue = Math.exp(xBeta);
 		
 		if (isResidualVariabilityEnabled) {

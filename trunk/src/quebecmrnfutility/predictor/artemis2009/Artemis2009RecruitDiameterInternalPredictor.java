@@ -60,7 +60,8 @@ class Artemis2009RecruitDiameterInternalPredictor extends REpiceaPredictor {
 		beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0); 	// vector is resized to omit the last element (dispersion)
 
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009MortalityPredictor.ModuleName, effectList);
-		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+//		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+		double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
 		
 		double fGammaMean = Math.exp(xBeta);
 
