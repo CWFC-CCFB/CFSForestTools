@@ -55,7 +55,8 @@ class Artemis2009DiameterIncrementInternalPredictor extends REpiceaPredictor {
 	protected synchronized double[] predictGrowth(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree) {
 		Matrix beta = getParametersForThisRealization(stand);
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009DiameterIncrementPredictor.ModuleName, effectList);
-		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+//		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+		double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
 		double pred;
 		double dVarianceUn = 0d;
 		if (isRandomEffectsVariabilityEnabled) {

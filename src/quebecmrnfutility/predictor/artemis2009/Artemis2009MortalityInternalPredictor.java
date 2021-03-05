@@ -58,7 +58,8 @@ class Artemis2009MortalityInternalPredictor extends REpiceaBinaryEventPredictor<
 	public synchronized double predictEventProbability(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree, Map<String, Object> parms) {
 		Matrix beta = getParametersForThisRealization(stand);
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009MortalityPredictor.ModuleName, effectList);
-		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+//		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+		double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
 		double deathProbability = 1.0 - Math.exp(- Math.exp(xBeta));
 		return deathProbability;
 	}
