@@ -25,7 +25,7 @@ class PlotList extends ArrayList<Plot> {
 			for (PetroGradeTreeImpl tree : plot.getTrees()) {
 				plotTotal = plotTotal.add(tree.getRealizedValues());
 			}
-			estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(plotTotal, 1d/populationSize));
+			estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(plot.toString(), plotTotal, 1d/populationSize));
 		}
 		return estimate;
 	}
