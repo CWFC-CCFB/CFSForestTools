@@ -23,7 +23,7 @@ class PlotList extends ArrayList<WBirchLogGradesStandImpl> {
 			for (WBirchLogGradesTreeImpl tree : plot.getTrees().values()) {
 				plotTotal = plotTotal.add(tree.getRealizedValues());
 			}
-			estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(plotTotal, 1d/populationSize));
+			estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(plot.toString(), plotTotal, 1d/populationSize));
 		}
 		return estimate;
 	}

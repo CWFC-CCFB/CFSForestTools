@@ -21,7 +21,7 @@ class PlotList extends ArrayList<SamplePlot> {
 		PopulationTotalEstimate estimate = new PopulationTotalEstimate();
 		
 		for (SamplePlot plot : this) {
-			estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(plot.getY(), 1d/populationSize));
+			estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(plot.toString(), plot.getY(), 1d/populationSize));
 		}
 		return estimate;
 	}
