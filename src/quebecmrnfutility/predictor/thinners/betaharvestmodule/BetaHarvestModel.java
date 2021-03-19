@@ -35,6 +35,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
+import repicea.simulation.thinners.REpiceaTreatmentDefinition;
 import repicea.stats.StatisticalUtility;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
@@ -195,7 +196,7 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 	}
 
 	@Override
-	public Object getInformationOnThinning(BetaHarvestableStand stand) {return null;}
+	public REpiceaTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(BetaHarvestableStand stand) {return null;}
 	
 
 //	/**
