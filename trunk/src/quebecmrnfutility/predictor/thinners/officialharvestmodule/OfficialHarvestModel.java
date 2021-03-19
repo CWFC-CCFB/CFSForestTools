@@ -37,6 +37,7 @@ import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
+import repicea.simulation.thinners.REpiceaTreatmentDefinition;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -172,7 +173,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 			treatment = (Enum<?>) parms.get(DisturbanceParameter.ParmTreatment);
 			modifier = (Integer) parms.get(DisturbanceParameter.ParmModulation);
 		} else {
-			treatment = getInformationOnThinning(stand).treatmentType;
+			treatment = getTreatmentDefinitionForThisHarvestedStand(stand).getTreatmentType();
 			modifier = 0;
 		}
 
@@ -303,7 +304,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	}
 
 	@Override
-	public OfficialHarvestTreatmentDefinition getInformationOnThinning(OfficialHarvestableStand stand) {
+	public OfficialHarvestTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(OfficialHarvestableStand stand) {
 		if (selector != null) {
 			OfficialHarvestTreatmentDefinition def = selector.getMatch(stand.getPotentialVegetation());
 			return def;
@@ -312,29 +313,6 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 		}
 	}
 
-//	@Override
-//	public void clearDeviates() {
-//		for (OfficialHarvestSubmodel p : modelParametersLibrary.values()) {
-//			p.clearDeviates();
-//		}
-//	}
-
-//	/**
-//	 * For algorithm testing.
-//	 * @param args
-//	 */
-//	public static void main (String[] args) {
-//		try {
-//			@SuppressWarnings("unused")
-//			OfficialHarvestModel model = new OfficialHarvestModel();
-//			@SuppressWarnings("unused")
-//			int u = 0;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			System.out.println("Problems!!!");
-//		}
-//		System.out.println("Done.");
-//	}
 	
 	
 }

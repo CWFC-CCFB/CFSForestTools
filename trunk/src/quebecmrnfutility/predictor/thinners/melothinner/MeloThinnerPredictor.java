@@ -40,6 +40,7 @@ import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider.LandOwnership;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
+import repicea.simulation.thinners.REpiceaTreatmentDefinition;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.integral.GaussHermiteQuadrature;
 import repicea.stats.integral.GaussQuadrature.NumberOfPoints;
@@ -357,6 +358,6 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 	}
 
 	@Override
-	public Object getInformationOnThinning(MeloThinnerPlot stand) {return null;}
+	public REpiceaTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(MeloThinnerPlot stand) {return null;}
 
 }

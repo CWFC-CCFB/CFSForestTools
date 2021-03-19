@@ -36,6 +36,7 @@ import quebecmrnfutility.predictor.thinners.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
+import repicea.simulation.thinners.REpiceaTreatmentDefinition;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -197,33 +198,10 @@ public class FormerOfficialHarvestModel extends REpiceaThinner<FormerOfficialHar
 			}
 	}
 
+
 	@Override
-	public Object getInformationOnThinning(FormerOfficialHarvestableStand stand) {return null;}
+	public REpiceaTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(FormerOfficialHarvestableStand stand) {return null;}
 
-	
-//	@Override
-//	public void clearDeviates() {
-//		for (FormerOfficialHarvestSubmodel p : modelParametersLibrary.values()) {
-//			p.clearDeviates();
-//		}
-//	}
-
-//	/**
-//	 * For algorithm testing.
-//	 * @param args
-//	 */
-//	public static void main (String[] args) {
-//		try {
-//			@SuppressWarnings("unused")
-//			FormerOfficialHarvestModel model = new FormerOfficialHarvestModel();
-//			@SuppressWarnings("unused")
-//			int u = 0;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			System.out.println("Problems!!!");
-//		}
-//		System.out.println("Done.");
-//	}
 	
 	
 }
