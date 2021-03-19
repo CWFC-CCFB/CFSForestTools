@@ -27,6 +27,7 @@ import java.util.List;
 
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
 import repicea.gui.components.REpiceaMatchComplexObject;
+import repicea.simulation.thinners.REpiceaTreatmentDefinition;
 
 /**
  * An implementation of the REpiceaMatchComplexObject interface, which allows to specify a
@@ -34,7 +35,9 @@ import repicea.gui.components.REpiceaMatchComplexObject;
  * @author Mathieu Fortin - February 2021
  */
 @SuppressWarnings("serial")
-public class OfficialHarvestTreatmentDefinition implements Serializable, REpiceaMatchComplexObject<OfficialHarvestTreatmentDefinition> {
+public class OfficialHarvestTreatmentDefinition implements Serializable, 
+															REpiceaMatchComplexObject<OfficialHarvestTreatmentDefinition>,
+															REpiceaTreatmentDefinition {
 
 	protected final TreatmentType treatmentType;
 	private int delayBeforeNextTreatmentYrs;
@@ -80,7 +83,8 @@ public class OfficialHarvestTreatmentDefinition implements Serializable, REpicea
 		}
 	}
 	
-	public int getDelayBeforeNextTreatmentYrs() {return delayBeforeNextTreatmentYrs;}
+	@Override
+	public int getDelayBeforeReentryYrs() {return delayBeforeNextTreatmentYrs;}
 
 	@Override
 	public OfficialHarvestTreatmentDefinition copy() {
@@ -88,5 +92,9 @@ public class OfficialHarvestTreatmentDefinition implements Serializable, REpicea
 		copy.delayBeforeNextTreatmentYrs = delayBeforeNextTreatmentYrs;
 		return copy;
 	}
+
+	@Override
+	public TreatmentType getTreatmentType() {return treatmentType;}
+
 	
 }
