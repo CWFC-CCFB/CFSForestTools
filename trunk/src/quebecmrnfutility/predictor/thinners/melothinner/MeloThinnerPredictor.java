@@ -360,4 +360,10 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 	@Override
 	public REpiceaTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(MeloThinnerPlot stand) {return null;}
 
+	/*
+	 * This class does not make any distinction as to the treatment applied in the plots.
+	 */
+	@Override
+	public List<Enum> getTreatmentList() {return null;}
+
 }
