@@ -24,6 +24,8 @@
  */
 package quebecmrnfutility.predictor.thinners.betaharvestmodule;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -197,6 +199,11 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 
 	@Override
 	public REpiceaTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(BetaHarvestableStand stand) {return null;}
+
+	@Override
+	public List<Enum> getTreatmentList() {
+		return Arrays.asList(Treatment.values());
+	}
 	
 
 //	/**
