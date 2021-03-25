@@ -27,7 +27,10 @@ import repicea.simulation.REpiceaPredictor;
 
 /**
  * The HonerTotalVolumePredictor class implements the underbark volume model developed 
- * by Honer 1983. It provides the total tree volume underbark based on tree dbh and height.
+ * by Honer 1983. It provides the total tree volume underbark based on tree dbh and height. <br>
+ * <br>
+ * IMPORTANT: The implementation is only deterministic since the covariance matrix and the variance of
+ * the residual error terms are not provided.
  * @author Mathieu Fortin - March 2013
  */
 @SuppressWarnings("serial")
@@ -36,7 +39,7 @@ public class HonerTotalVolumePredictor extends REpiceaPredictor {
 	private final Map<HonerTotalVolumeTreeSpecies, Matrix> betaMap;
 		
 	/**
-	 * General constructor for this class.
+	 * General constructor for this class. 
 	 */
 	public HonerTotalVolumePredictor() {
 		super(false, false,false);
