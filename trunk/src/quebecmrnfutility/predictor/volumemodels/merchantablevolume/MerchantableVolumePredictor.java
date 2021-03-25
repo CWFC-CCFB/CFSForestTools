@@ -119,6 +119,9 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			double volume = fixedEffectPrediction(stand, tree);
 			volume += blupImplementation(stand, tree);
 			volume += residualImplementation(tree);
+			if (volume < 0) {
+				volume = 1d;		// at least 1 dm3 if dbh >= 9.1 Correction for negative volumes MF2021-03-25
+			}
 			return volume;
 			
 		} catch (Exception e) {
