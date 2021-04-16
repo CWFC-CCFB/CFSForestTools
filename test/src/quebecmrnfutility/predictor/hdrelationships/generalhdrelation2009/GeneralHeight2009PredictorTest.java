@@ -206,7 +206,7 @@ public class GeneralHeight2009PredictorTest {
 		
 		double actual = estimate.getMean().getValueAt(0, 0);
 		double variance = estimate.getVariance().getValueAt(0, 0);
-		Assert.assertEquals("Comparing deterministic and stochastic predictions", actual, detPred, 1E-2);
+		Assert.assertEquals("Comparing deterministic and stochastic predictions", actual, detPred, 3E-2);
 		Assert.assertEquals("Testing the variance", 3.35, variance, .1);
 		System.out.println("GeneralHeight2009PredictorTests.compareStochasticPredictions - Successful comparisons!");
 	}
