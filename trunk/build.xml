@@ -43,6 +43,13 @@
 		</fileset>
 	</path>
 
+	<path id="jaxb">
+		<fileset dir="${ext.dir}/jaxb-ri/mod">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+
 	<!-- REVISION : retrieve the head revision and stores its number in a file -->
 	<target name="revision" description="Retrieve the head revision">
 	
@@ -131,6 +138,7 @@
 				<pathelement location="${bin.dir}" />
 				<path refid="biosimclient"/>
 				<path refid="repicea"/>
+				<path refid="jaxb"/>
 				<path refid="junit"/>
 				<path refid="hamcrest"/>
 			</classpath>
@@ -167,6 +175,7 @@
 				<path refid="myJARFile"/>
 				<path refid="biosimclient"/>
 				<path refid="repicea"/>
+				<path refid="jaxb"/>
 				<path refid="junit"/>
 				<path refid="hamcrest"/>
 			</classpath>
