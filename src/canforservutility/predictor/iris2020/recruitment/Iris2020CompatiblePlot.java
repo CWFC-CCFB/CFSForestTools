@@ -22,6 +22,7 @@ package canforservutility.predictor.iris2020.recruitment;
 import java.util.HashMap;
 import java.util.Map;
 
+import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
@@ -218,5 +219,12 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	 * @return a double
 	 */
 	public double getSlopeAspect();
+	
+	/**
+	 * Return true if there is a tree of this species with dbh >= 9.1 cm in the plots within a 10-km radius.
+	 * @param species an Iris2020Species enum
+	 * @return a boolean
+	 */
+	public boolean isThereATreeOfThisSpeciesNearby(Iris2020Species species);
 	
 }
