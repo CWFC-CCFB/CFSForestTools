@@ -83,6 +83,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	private final String id;
 	private final Iris2020Species species;
 	private final Matrix gSpGrMat;
+	private final boolean speciesWithin10Km;
 		
 	Iris2020CompatibleTestPlotImpl(String id,
 			double growthStepLength,
@@ -101,7 +102,8 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 			SoilTexture soilTexture,
 			Iris2020Species species,
 			double pred, 
-			Double gSpGr) {
+			double gSpGr,
+			boolean speciesWithin10Km) {
 		if (drainageGroup == null) {
 			throw new InvalidParameterException("The drainage group cannot be null!");
 		}
@@ -124,6 +126,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 		this.pred = pred;
 		gSpGrMat = new Matrix(1, Iris2020Species.values().length);
 		gSpGrMat.setValueAt(0, species.ordinal(), gSpGr);
+		this.speciesWithin10Km = speciesWithin10Km;
 	}
 	
 	
@@ -186,5 +189,8 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 
 	@Override
 	public double getSlopeAspect() {return slopeAspect;}
+
+	@Override
+	public boolean isThereATreeOfThisSpeciesNearby(Iris2020Species species) {return speciesWithin10Km;}
 	
 }

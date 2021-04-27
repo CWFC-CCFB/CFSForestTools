@@ -95,6 +95,8 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 		double slope = plot.getSlopeInclinationPercent();
 		double aspect = plot.getSlopeAspect();
 		
+		boolean speciesWithin10Km = plot.isThereATreeOfThisSpeciesNearby(tree.getSpecies());
+		
 		int index = 0;
 		for (int effectId : effectList) {
 			switch(effectId) {
@@ -230,7 +232,7 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 				oXVector.setValueAt(0, index, g_spgr);
 				index++;
 				break;
-			case 25:
+			case 25: //hasExpo:cosExpo
 				if (slope > 3) { 
 					if (aspect != 400d && aspect != 500d) {
 						oXVector.setValueAt(0, index, Math.cos(2 * Math.PI * aspect / 360d));
@@ -274,17 +276,23 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 				oXVector.setValueAt(0, index, slope);
 				index++;
 				break;
-			case 35:
+			case 35: // speciesNear
+				if (g_spgr > 0 || speciesWithin10Km) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
+			case 36: // speciesThere
 				if (g_spgr > 0) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
-			case 36: // timeSince1970
+			case 37: // timeSince1970
 				oXVector.setValueAt(0, index, plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970);
 				index++;
 				break;
-			case 37: // TotalPrcp
+			case 38: // TotalPrcp
 				oXVector.setValueAt(0, index, meanPrecipitation);
 				index++;
 				break;

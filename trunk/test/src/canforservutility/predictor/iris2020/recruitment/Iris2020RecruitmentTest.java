@@ -60,22 +60,23 @@ public class Iris2020RecruitmentTest {
 		double basalAreaM2HaConiferous = Double.parseDouble(record[5].toString());
 		double basalAreaM2HaBroadleaved = Double.parseDouble(record[6].toString());
 		double gSpGr = Double.parseDouble(record[7].toString());
-		double dd = Double.parseDouble(record[8].toString());
-		double prcp = Double.parseDouble(record[9].toString());
-		String upcomingDistStr = record[10].toString().substring(1);
+		boolean speciesWithin10Km = Boolean.parseBoolean(record[8].toString());
+		double dd = Double.parseDouble(record[9].toString());
+		double prcp = Double.parseDouble(record[10].toString());
+		String upcomingDistStr = record[11].toString().substring(1);
 		DisturbanceType upcomingDist = DisturbanceType.valueOf(upcomingDistStr);
-		String pastDistStr = record[11].toString().substring(1);
+		String pastDistStr = record[12].toString().substring(1);
 		DisturbanceType pastDist = DisturbanceType.valueOf(pastDistStr);
-		String originStr = record[12].toString().substring(1);
+		String originStr = record[13].toString().substring(1);
 		OriginType origin = OriginType.valueOf(originStr);
-		double slopeInclination = Double.parseDouble(record[13].toString());
-		double slopeAspect = Double.parseDouble(record[14].toString());
-		String textureStr = record[15].toString().substring(1);
+		double slopeInclination = Double.parseDouble(record[14].toString());
+		double slopeAspect = Double.parseDouble(record[15].toString());
+		String textureStr = record[16].toString().substring(1);
 		SoilTexture soilTexture = SoilTexture.valueOf(textureStr);
-		String depthStr = record[16].toString().substring(1);
+		String depthStr = record[17].toString().substring(1);
 		SoilDepth soilDepth = SoilDepth.valueOf(depthStr);
-		String drainageClass = record[17].toString();
-		double pred = Double.parseDouble(record[18].toString());
+		String drainageClass = record[18].toString();
+		double pred = Double.parseDouble(record[19].toString());
 		Iris2020CompatibleTestPlotImpl plot = new Iris2020CompatibleTestPlotImpl(plotId,
 				growthStepYr,
 				basalAreaM2HaConiferous,
@@ -93,7 +94,8 @@ public class Iris2020RecruitmentTest {
 				soilTexture,
 				species,
 				pred,
-				gSpGr);
+				gSpGr,
+				speciesWithin10Km);
 		return plot;
 	}
 	

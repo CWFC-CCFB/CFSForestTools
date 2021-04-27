@@ -85,6 +85,8 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		double slope = plot.getSlopeInclinationPercent();
 		double aspect = plot.getSlopeAspect();
 		
+		boolean speciesWithin10Km = plot.isThereATreeOfThisSpeciesNearby(tree.getSpecies());
+
 		int index = 0;
 		for (int effectId : effectList) {
 			switch(effectId) {
@@ -260,17 +262,23 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				oXVector.setValueAt(0, index, slope);
 				index++;
 				break;
-			case 34: // speciesThere
+			case 34: // speciesNear
+				if (g_spgr > 0 || speciesWithin10Km) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
+			case 35: // speciesThere
 				if (g_spgr > 0) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
-			case 35: // timeSince1970
+			case 36: // timeSince1970
 				oXVector.setValueAt(0, index, plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970);
 				index++;
 				break;
-			case 36: // TotalPrcp
+			case 37: // TotalPrcp
 				oXVector.setValueAt(0, index, meanPrecipitation);
 				index++;
 				break;
