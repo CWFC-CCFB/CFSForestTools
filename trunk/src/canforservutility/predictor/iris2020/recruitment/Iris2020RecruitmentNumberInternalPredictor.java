@@ -210,19 +210,19 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				}
 				index++;
 				break;
-			case 22:
+			case 22: // G_F
 				oXVector.setValueAt(0, index, g_broadleaved);
 				index++;
 				break;
-			case 23:
+			case 23: // G_R
 				oXVector.setValueAt(0, index, g_coniferous);
 				index++;
 				break;
-			case 24:
+			case 24: // G_SpGr
 				oXVector.setValueAt(0, index, g_spgr);
 				index++;
 				break;
-			case 25:
+			case 25: // hasExpo:cosExpo
 				if (slope > 3) { 
 					if (aspect != 400d && aspect != 500d) {
 						oXVector.setValueAt(0, index, Math.cos(2 * Math.PI * aspect / 360d));
@@ -262,23 +262,29 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				oXVector.setValueAt(0, index, slope);
 				index++;
 				break;
-			case 34: // speciesNear
-				if (g_spgr > 0 || speciesWithin10Km) {
-					oXVector.setValueAt(0, index, 1d);
-				}
-				index++;
-				break;
-			case 35: // speciesThere
+			case 34: // speciesThere
 				if (g_spgr > 0) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
-			case 36: // timeSince1970
+			case 35: // speciesThere:speciesWithin10Km
+				if (g_spgr > 0 && speciesWithin10Km) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
+			case 36: // speciesWithin10Km
+				if (speciesWithin10Km) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
+			case 37: // timeSince1970
 				oXVector.setValueAt(0, index, plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970);
 				index++;
 				break;
-			case 37: // TotalPrcp
+			case 38: // TotalPrcp
 				oXVector.setValueAt(0, index, meanPrecipitation);
 				index++;
 				break;

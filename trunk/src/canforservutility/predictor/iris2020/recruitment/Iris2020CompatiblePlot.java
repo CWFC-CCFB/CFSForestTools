@@ -221,7 +221,10 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	public double getSlopeAspect();
 	
 	/**
-	 * Return true if there is a tree of this species with dbh >= 9.1 cm in the plots within a 10-km radius.
+	 * Return true if there is a tree of this species with dbh >= 9.1 cm in the plots within a 10-km radius. <br>
+	 * <br>
+	 * This function must NOT consider the presence of the tree in this plot. 
+	 * 
 	 * @param species an Iris2020Species enum
 	 * @return a boolean
 	 */
