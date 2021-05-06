@@ -220,15 +220,15 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 				}
 				index++;
 				break;
-			case 22:
+			case 22: // G_F
 				oXVector.setValueAt(0, index, g_broadleaved);
 				index++;
 				break;
-			case 23:
+			case 23: // G_R
 				oXVector.setValueAt(0, index, g_coniferous);
 				index++;
 				break;
-			case 24:
+			case 24: // G_SpGr
 				oXVector.setValueAt(0, index, g_spgr);
 				index++;
 				break;
@@ -276,23 +276,29 @@ class Iris2020RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventP
 				oXVector.setValueAt(0, index, slope);
 				index++;
 				break;
-			case 35: // speciesNear
-				if (g_spgr > 0 || speciesWithin10Km) {
-					oXVector.setValueAt(0, index, 1d);
-				}
-				index++;
-				break;
-			case 36: // speciesThere
+			case 35: // speciesThere
 				if (g_spgr > 0) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
-			case 37: // timeSince1970
+			case 36: // speciesThere:speciesWithin10km
+				if (g_spgr > 0 && speciesWithin10Km) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
+			case 37: // speciesWithin10km
+				if (speciesWithin10Km) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
+			case 38: // timeSince1970
 				oXVector.setValueAt(0, index, plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970);
 				index++;
 				break;
-			case 38: // TotalPrcp
+			case 39: // TotalPrcp
 				oXVector.setValueAt(0, index, meanPrecipitation);
 				index++;
 				break;
