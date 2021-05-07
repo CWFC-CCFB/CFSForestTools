@@ -74,9 +74,9 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		SoilDepth depth = plot.getSoilDepth();
 		SoilTexture texture = plot.getSoilTexture();
 		DrainageGroup drainage = plot.getDrainageGroup();
-		OriginType origin = plot.getOrigin();
-		DisturbanceType pastDist = plot.getPastDisturbance();
-		DisturbanceType upcomingDist = plot.getUpcomingDisturbance();
+		OriginType origin = plot.getUpcomingStandReplacementDisturbance();
+		DisturbanceType pastDist = plot.getPastPartialDisturbance();
+		DisturbanceType upcomingDist = plot.getUpcomingPartialDisturbance();
 
 		double g_broadleaved = plot.getBasalAreaOfBroadleavedSpecies();
 		double g_coniferous = plot.getBasalAreaOfConiferousSpecies();
