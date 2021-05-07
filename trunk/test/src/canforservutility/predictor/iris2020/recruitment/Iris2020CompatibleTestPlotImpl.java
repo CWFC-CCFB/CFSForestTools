@@ -159,13 +159,13 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	public DrainageGroup getDrainageGroup() {return drainageGroup;}
 
 	@Override
-	public DisturbanceType getPastDisturbance() {return pastDist;}
+	public DisturbanceType getPastPartialDisturbance() {return pastDist;}
 
 	@Override
-	public DisturbanceType getUpcomingDisturbance() {return upcomingDist;}
+	public DisturbanceType getUpcomingPartialDisturbance() {return upcomingDist;}
 
 	@Override
-	public OriginType getOrigin() {return origin;}
+	public OriginType getUpcomingStandReplacementDisturbance() {return origin;}
 
 	@Override
 	public SoilTexture getSoilTexture() {return soilTexture;}

@@ -173,19 +173,19 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	 * Returns the disturbance that have occurred recently (e.g. in the last 15 years or so)
 	 * @return a DisturbanceType enum variable
 	 */
-	public DisturbanceType getPastDisturbance();
+	public DisturbanceType getPastPartialDisturbance();
 	
 	/**
 	 * Returns the disturbance that will occurred in the upcoming growth interval.
 	 * @return a DisturbanceType enum variable
 	 */
-	public DisturbanceType getUpcomingDisturbance();
+	public DisturbanceType getUpcomingPartialDisturbance();
 	
 	/**
-	 * Returns the origin of the stand 
+	 * Returns the stand-replacement disturbance that is going to occur during the interval.
 	 * @return a OriginType enum variable
 	 */
-	public OriginType getOrigin();
+	public OriginType getUpcomingStandReplacementDisturbance();
 
 	
 	/**
