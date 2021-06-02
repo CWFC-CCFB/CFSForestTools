@@ -152,40 +152,58 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 	
 	/**
-	 * Returns the mean degree-days over the period.
+	 * Return the mean degree-days over the period.
 	 * @return a double
 	 */
 	public double getMeanDegreeDaysOverThePeriod(); 
 
 	/**
-	 * Returns the mean precipitation (mm) over the period.
+	 * Return the mean precipitation (mm) over the period.
 	 * @return a double
 	 */
 	public double getMeanPrecipitationOverThePeriod(); 
 
 	/**
-	 * Returns the soil depth.
+	 * Return the average annual number of frost days over the period.
+	 * @return a double
+	 */
+	public double getMeanNumberFrostDaysOverThePeriod();
+	
+	/**
+	 * Return the average lowest annual temperature over the period.
+	 * @return a double
+	 */
+	public double getMeanLowestTemperatureOverThePeriod();
+
+	/**
+	 * Return the soil depth.
 	 * @return a SoilDepth enum variable
 	 */
 	public SoilDepth getSoilDepth();
 	
 	/**
-	 * Returns the disturbance that have occurred recently (e.g. in the last 15 years or so)
+	 * Return the disturbance that have occurred in the previous interval
 	 * @return a DisturbanceType enum variable
 	 */
 	public DisturbanceType getPastPartialDisturbance();
 	
 	/**
-	 * Returns the disturbance that will occurred in the upcoming growth interval.
+	 * Return the disturbance that is going to occur in the upcoming interval.
 	 * @return a DisturbanceType enum variable
 	 */
 	public DisturbanceType getUpcomingPartialDisturbance();
 	
 	/**
-	 * Returns the stand-replacement disturbance that is going to occur during the interval.
+	 * Return the stand-replacement disturbance that is going to occur in the upcoming interval.
 	 * @return a OriginType enum variable
 	 */
 	public OriginType getUpcomingStandReplacementDisturbance();
+
+	/**
+	 * Returns the stand-replacement disturbance that occurred is the previous interval.
+	 * @return a OriginType enum variable
+	 */
+	public OriginType getPastStandReplacementDisturbance();
 
 	
 	/**
@@ -221,13 +239,12 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	public double getSlopeAspect();
 	
 	/**
-	 * Return true if there is a tree of this species with dbh >= 9.1 cm in the plots within a 10-km radius. <br>
+	 * Return the distance to the nearest conspecific (e.g. tree from the same species) in the neighbouring plots
+	 * over the last 10 years.
 	 * <br>
-	 * This function must NOT consider the presence of the tree in this plot. 
-	 * 
 	 * @param species an Iris2020Species enum
-	 * @return a boolean
+	 * @return a double the distance in km
 	 */
-	public boolean isThereATreeOfThisSpeciesNearby(Iris2020Species species);
+	public double getDistanceToConspecificKm(Iris2020Species species);
 	
 }

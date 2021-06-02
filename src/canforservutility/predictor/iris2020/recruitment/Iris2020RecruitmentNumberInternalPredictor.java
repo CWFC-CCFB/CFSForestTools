@@ -70,13 +70,16 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		
 		double meanDegreeDays = plot.getMeanDegreeDaysOverThePeriod();
 		double meanPrecipitation = plot.getMeanPrecipitationOverThePeriod();
+		double meanFrostDays = plot.getMeanNumberFrostDaysOverThePeriod();
+		double meanLowestTmin = plot.getMeanLowestTemperatureOverThePeriod();
 		
 		SoilDepth depth = plot.getSoilDepth();
 		SoilTexture texture = plot.getSoilTexture();
 		DrainageGroup drainage = plot.getDrainageGroup();
-		OriginType origin = plot.getUpcomingStandReplacementDisturbance();
-		DisturbanceType pastDist = plot.getPastPartialDisturbance();
+		OriginType upcomingOrigin = plot.getUpcomingStandReplacementDisturbance();
+		OriginType pastOrigin = plot.getPastStandReplacementDisturbance();
 		DisturbanceType upcomingDist = plot.getUpcomingPartialDisturbance();
+		DisturbanceType pastDist = plot.getPastPartialDisturbance();
 
 		double g_broadleaved = plot.getBasalAreaOfBroadleavedSpecies();
 		double g_coniferous = plot.getBasalAreaOfConiferousSpecies();
@@ -85,7 +88,7 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		double slope = plot.getSlopeInclinationPercent();
 		double aspect = plot.getSlopeAspect();
 		
-		boolean speciesWithin10Km = plot.isThereATreeOfThisSpeciesNearby(tree.getSpecies());
+		double distanceToConspecific = plot.getDistanceToConspecificKm(tree.getSpecies());
 
 		int index = 0;
 		for (int effectId : effectList) {
@@ -98,90 +101,88 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				oXVector.setValueAt(0, index, meanDegreeDays);
 				index++;
 				break;
-			case 3: // dt
+			case 3: // distanceToConspecific
+				oXVector.setValueAt(0, index, distanceToConspecific);
+				index++;
+				break;
+			case 4: // dt
 				oXVector.setValueAt(0, index, plot.getGrowthStepLengthYr());
 				index++;
 				break;
-			case 4: // 
-				if (depth == SoilDepth.Average) {
-					oXVector.setValueAt(0, index, 1d);
-				}
-				index++;
-				break;
 			case 5: // 
-				if (depth == SoilDepth.Shallow) {
+				if (depth == SoilDepth.Thick) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 6: // 
-				if (depth == SoilDepth.VeryShallow) {
+				if (depth == SoilDepth.Shallow) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 7: // 
-				if (drainage == DrainageGroup.Mesic) {
+				if (depth == SoilDepth.VeryShallow) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 8: // 
-				if (drainage == DrainageGroup.Subhydric) {
+				if (drainage == DrainageGroup.Xeric) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 9: // 
-				if (drainage == DrainageGroup.Hydric) {
+				if (drainage == DrainageGroup.Subhydric) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 10: // 
-				if (origin == OriginType.Fire) {
+				if (drainage == DrainageGroup.Hydric) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 11: // 
-				if (origin == OriginType.OtherNatural) {
-					oXVector.setValueAt(0, index, 1d);
-				}
-				index++;
-				break;
-			case 12: // 
-				if (origin == OriginType.Harvest) {
-					oXVector.setValueAt(0, index, 1d);
-				}
-				index++;
-				break;
-			case 13: // 
 				if (pastDist == DisturbanceType.Fire) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
-			case 14: // 
+			case 12: // 
 				if (pastDist == DisturbanceType.OtherNatural) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
-			case 15: // 
+			case 13: // 
 				if (pastDist == DisturbanceType.Harvest) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
+			case 14: // 
+				if (pastOrigin == OriginType.Fire) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
+			case 15: // 
+				if (pastOrigin == OriginType.OtherNatural) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
 			case 16: // 
-				if (texture == SoilTexture.Crude) {
+				if (pastOrigin == OriginType.Harvest) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
 				break;
 			case 17: // 
-				if (texture == SoilTexture.Mixed) {
+				if (texture == SoilTexture.Crude) {
 					oXVector.setValueAt(0, index, 1d);
 				}
 				index++;
@@ -210,19 +211,41 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				}
 				index++;
 				break;
-			case 22: // G_F
+			case 22: // 
+				if (upcomingOrigin == OriginType.Fire) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
+			case 23: // 
+				if (upcomingOrigin == OriginType.OtherNatural) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
+			case 24: // 
+				if (upcomingOrigin == OriginType.Harvest) {
+					oXVector.setValueAt(0, index, 1d);
+				}
+				index++;
+				break;
+			case 25: // FrostDay
+				oXVector.setValueAt(0, index, meanFrostDays);
+				index++;
+				break;
+			case 26: // G_F
 				oXVector.setValueAt(0, index, g_broadleaved);
 				index++;
 				break;
-			case 23: // G_R
+			case 27: // G_R
 				oXVector.setValueAt(0, index, g_coniferous);
 				index++;
 				break;
-			case 24: // G_SpGr
+			case 28: // G_SpGr
 				oXVector.setValueAt(0, index, g_spgr);
 				index++;
 				break;
-			case 25: // hasExpo:cosExpo
+			case 29: // hasExpo:cosExpo
 				if (slope > 3) { 
 					if (aspect != 400d && aspect != 500d) {
 						oXVector.setValueAt(0, index, Math.cos(2 * Math.PI * aspect / 360d));
@@ -230,61 +253,47 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 				}
 				index++;
 				break;
-			case 26: // lnDt
+			case 30: // lnDt
 				oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 				index++;
 				break;
-			case 27: // lnG_F
+			case 31: // lnG_F
 				oXVector.setValueAt(0, index, Math.log(1d + g_broadleaved));
 				index++;
 				break;
-			case 28: // lnG_R
-				oXVector.setValueAt(0, index, Math.log(1d + g_coniferous));
-				index++;
-				break;
-			case 29: // lnG_SpGr
+			case 32: // lnG_SpGr
 				oXVector.setValueAt(0, index, Math.log(1d + g_spgr));
 				index++;
 				break;
-			case 30: // lnPente
+			case 33: // lnPente
 				oXVector.setValueAt(0, index, Math.log(1d + slope));
 				index++;
 				break;
-			case 31: // logDD
+			case 34: // logDD
 				oXVector.setValueAt(0, index, Math.log(meanDegreeDays));
 				index++;
 				break;
-			case 32: // logPrcp
+			case 35: // LOGdistanceToConspecific
+				oXVector.setValueAt(0, index, Math.log(1 + distanceToConspecific));
+				index++;
+				break;
+			case 36: // logPrcp
 				oXVector.setValueAt(0, index, Math.log(meanPrecipitation));
 				index++;
 				break;
-			case 33: // pentePerc
+			case 37: // LowestTmin
+				oXVector.setValueAt(0, index, meanLowestTmin);
+				index++;
+				break;
+			case 38: // pentePerc
 				oXVector.setValueAt(0, index, slope);
 				index++;
 				break;
-			case 34: // speciesThere
-				if (g_spgr > 0) {
-					oXVector.setValueAt(0, index, 1d);
-				}
-				index++;
-				break;
-			case 35: // speciesThere:speciesWithin10Km
-				if (g_spgr > 0 && speciesWithin10Km) {
-					oXVector.setValueAt(0, index, 1d);
-				}
-				index++;
-				break;
-			case 36: // speciesWithin10Km
-				if (speciesWithin10Km) {
-					oXVector.setValueAt(0, index, 1d);
-				}
-				index++;
-				break;
-			case 37: // timeSince1970
+			case 39: // timeSince1970
 				oXVector.setValueAt(0, index, plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970);
 				index++;
 				break;
-			case 38: // TotalPrcp
+			case 40: // TotalPrcp
 				oXVector.setValueAt(0, index, meanPrecipitation);
 				index++;
 				break;

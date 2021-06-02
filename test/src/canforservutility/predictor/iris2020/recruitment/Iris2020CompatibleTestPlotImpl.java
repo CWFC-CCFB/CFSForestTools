@@ -76,14 +76,17 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	private final SoilDepth soilDepth;
 	private final DisturbanceType pastDist;
 	private final DisturbanceType upcomingDist;
-	private final OriginType origin;
+	private final OriginType upcomingOrigin;
+	private final OriginType pastOrigin;
 	private final DrainageGroup drainageGroup;
 	private final SoilTexture soilTexture;
 	private final double pred;
 	private final String id;
 	private final Iris2020Species species;
 	private final Matrix gSpGrMat;
-	private final boolean speciesWithin10Km;
+	private final double distanceToConspecific;
+	private final double frostDays;
+	private final double lowestTmin;
 		
 	Iris2020CompatibleTestPlotImpl(String id,
 			double growthStepLength,
@@ -94,16 +97,19 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 			int dateYr,
 			double dd,
 			double prcp,
+			double frostDays,
+			double lowestTmin,
 			SoilDepth soilDepth,
-			DisturbanceType pastDist,
+			OriginType upcomingOrigin,
+			OriginType pastOrigin,
 			DisturbanceType upcomingDist,
-			OriginType origin,
+			DisturbanceType pastDist,
 			DrainageGroup drainageGroup,
 			SoilTexture soilTexture,
 			Iris2020Species species,
 			double pred, 
 			double gSpGr,
-			boolean speciesWithin10Km) {
+			double distanceToConspecific) {
 		if (drainageGroup == null) {
 			throw new InvalidParameterException("The drainage group cannot be null!");
 		}
@@ -116,17 +122,20 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 		this.dateYr = dateYr;
 		this.dd = dd;
 		this.prcp = prcp;
+		this.frostDays = frostDays;
+		this.lowestTmin = lowestTmin;
 		this.soilDepth = soilDepth;
 		this.pastDist = pastDist;
 		this.upcomingDist = upcomingDist;
-		this.origin = origin;
+		this.upcomingOrigin = upcomingOrigin;
+		this.pastOrigin = pastOrigin;
 		this.drainageGroup = drainageGroup;
 		this.soilTexture = soilTexture;
 		this.species = species;
 		this.pred = pred;
 		gSpGrMat = new Matrix(1, Iris2020Species.values().length);
 		gSpGrMat.setValueAt(0, species.ordinal(), gSpGr);
-		this.speciesWithin10Km = speciesWithin10Km;
+		this.distanceToConspecific = distanceToConspecific;
 	}
 	
 	
@@ -165,7 +174,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	public DisturbanceType getUpcomingPartialDisturbance() {return upcomingDist;}
 
 	@Override
-	public OriginType getUpcomingStandReplacementDisturbance() {return origin;}
+	public OriginType getUpcomingStandReplacementDisturbance() {return upcomingOrigin;}
 
 	@Override
 	public SoilTexture getSoilTexture() {return soilTexture;}
@@ -190,7 +199,17 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	@Override
 	public double getSlopeAspect() {return slopeAspect;}
 
+
 	@Override
-	public boolean isThereATreeOfThisSpeciesNearby(Iris2020Species species) {return speciesWithin10Km;}
+	public double getMeanNumberFrostDaysOverThePeriod() {return frostDays;}
+
+	@Override
+	public double getMeanLowestTemperatureOverThePeriod() {return lowestTmin;}
+
+	@Override
+	public OriginType getPastStandReplacementDisturbance() {return pastOrigin;}
+
+	@Override
+	public double getDistanceToConspecificKm(Iris2020Species species) {return distanceToConspecific;}
 	
 }
