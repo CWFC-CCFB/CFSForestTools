@@ -13,24 +13,24 @@
 
 
 	<path id="myJARFile">
-		<fileset dir="${ext.dir}">
-			<include name="${project.name}.jar" />
+		<fileset dir="${ext.dir}/${project.name}">
+			<include name="*.jar" />
 		</fileset>
 	</path>
 
 	<path id="repicea">
-		<fileset dir="${ext.dir}">
-			<include name="repicea.jar" />
+		<fileset dir="${ext.dir}/repicea">
+			<include name="*.jar" />
 		</fileset>
 	</path>
 
 	<path id="biosimclient">
-		<fileset dir="${ext.dir}">
+		<fileset dir="${ext.dir}/biosimclient">
 			<include name="biosimclient.jar" />
 		</fileset>
 	</path>
 
-	
+	<!--
 	<path id="junit">
 		<fileset dir="${ext.dir}">
 			<include name="junit.jar" />
@@ -54,7 +54,7 @@
 			<include name="json-io-4.12.0.jar" />
 		</fileset>
 	</path>
-
+	-->
 
 	<!-- REVISION : retrieve the head revision and stores its number in a file -->
 	<target name="revision" description="Retrieve the head revision">
@@ -83,7 +83,6 @@
 			<classpath>
 				<path refid="repicea"/>
 				<path refid="biosimclient"/>
-				<path refid="json-io"/>
 			</classpath>
 		</javac>
 		
@@ -100,8 +99,7 @@
         <javac srcdir="${test.dir}" destdir="${bin.dir}">
 			<classpath>
 				<path refid="repicea"/>
-				<path refid="junit"/>
-				<path refid="json-io"/>
+				<path refid="biosimclient"/>
 			</classpath>
 		</javac>
 		
@@ -120,8 +118,6 @@
 			<classpath>
 				<path refid="myJARFile"/>
 				<path refid="repicea"/>
-				<path refid="junit"/>
-				<path refid="json-io"/>
 			</classpath>
 		</javac>
 		
@@ -147,10 +143,6 @@
 				<pathelement location="${bin.dir}" />
 				<path refid="biosimclient"/>
 				<path refid="repicea"/>
-				<path refid="jaxb"/>
-				<path refid="junit"/>
-				<path refid="hamcrest"/>
-				<path refid="json-io"/>
 			</classpath>
 			
 			<formatter type="xml"/>
@@ -183,12 +175,7 @@
 			<classpath>
 				<pathelement location="${bin.dir}" />
 				<path refid="myJARFile"/>
-				<path refid="biosimclient"/>
 				<path refid="repicea"/>
-				<path refid="jaxb"/>
-				<path refid="junit"/>
-				<path refid="hamcrest"/>
-				<path refid="json-io"/>
 			</classpath>
 			
 			<formatter type="xml"/>
@@ -223,7 +210,14 @@
 
 	<!-- CREATE JAR FILE -->
     <target name="jar" depends="compile, revision">
-        <jar destfile="${ext.dir}/${project.name}.jar">
+        <delete dir="${ext.dir}/${project.name}"/>
+        <mkdir dir="${ext.dir}/${project.name}"/>
+    	
+		<copy todir="${ext.dir}/${project.name}">
+			<fileset dir="${ext.dir}/biosimclient"/>
+		</copy>
+
+        <jar destfile="${ext.dir}/${project.name}/${project.name}.jar">
 			<fileset dir="${bin.dir}"/>
 			<fileset dir="${src.dir}" includes="**/*.java"/>
 			<fileset dir="." includes="COPYING.LESSER.txt"/>
