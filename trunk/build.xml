@@ -48,6 +48,12 @@
 			<include name="*.jar" />
 		</fileset>
 	</path>
+	
+	<path id="json-io">
+		<fileset dir="${ext.dir}/">
+			<include name="json-io-4.12.0.jar" />
+		</fileset>
+	</path>
 
 
 	<!-- REVISION : retrieve the head revision and stores its number in a file -->
@@ -77,6 +83,7 @@
 			<classpath>
 				<path refid="repicea"/>
 				<path refid="biosimclient"/>
+				<path refid="json-io"/>
 			</classpath>
 		</javac>
 		
@@ -94,6 +101,7 @@
 			<classpath>
 				<path refid="repicea"/>
 				<path refid="junit"/>
+				<path refid="json-io"/>
 			</classpath>
 		</javac>
 		
@@ -113,6 +121,7 @@
 				<path refid="myJARFile"/>
 				<path refid="repicea"/>
 				<path refid="junit"/>
+				<path refid="json-io"/>
 			</classpath>
 		</javac>
 		
@@ -141,6 +150,7 @@
 				<path refid="jaxb"/>
 				<path refid="junit"/>
 				<path refid="hamcrest"/>
+				<path refid="json-io"/>
 			</classpath>
 			
 			<formatter type="xml"/>
@@ -178,6 +188,7 @@
 				<path refid="jaxb"/>
 				<path refid="junit"/>
 				<path refid="hamcrest"/>
+				<path refid="json-io"/>
 			</classpath>
 			
 			<formatter type="xml"/>
