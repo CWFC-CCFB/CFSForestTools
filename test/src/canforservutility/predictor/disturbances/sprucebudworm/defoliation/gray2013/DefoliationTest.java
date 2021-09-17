@@ -1,6 +1,7 @@
 package canforservutility.predictor.disturbances.sprucebudworm.defoliation.gray2013;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import repicea.math.Matrix;
@@ -25,6 +26,8 @@ public class DefoliationTest {
 		Assert.assertEquals("Testing severity (%)", 5.866373971170846, severity, 1E-8);
 	}
 	
+	// This GrayDefoliator class must be improved. It is simply too long.
+	@Ignore 
 	@Test
 	public void simpleTestWithBioSIM() {
 		DefoliationPredictor pred = new DefoliationPredictor(4);
