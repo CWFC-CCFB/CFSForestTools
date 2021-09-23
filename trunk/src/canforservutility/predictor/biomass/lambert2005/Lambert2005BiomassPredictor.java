@@ -1,3 +1,24 @@
+/*
+ * This file is part of the mrnf-foresttools library
+ *
+ * Copyright (C) 2021 Her Majesty the Queen in right of Canada
+ * Author: Jean-Francois Lavoie
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package canforservutility.predictor.biomass.lambert2005;
 
 import java.util.ArrayList;
@@ -11,9 +32,17 @@ import repicea.math.Matrix;
 import repicea.simulation.REpiceaPredictor;
 import repicea.util.ObjectUtility;
 
+/**
+ * Implement the biomass models in Lambert et al. (2005).
+ * @author Jean-Francois Lavoie 2021
+ * @see <a href=https://doi.org/10.1139/x05-112> Lambert, M.-C., C.-H. Ung, and F. Raulier. 2005. Canadian
+ * national tree aboveground biomass equations. Canadian Journal of Forest Research 35(8): 1996-2018 
+ * </a>
+ */
+@SuppressWarnings("serial")
 public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 	
-	public enum FileImportParameterColumns {
+	protected enum FileImportParameterColumns {
 		ESTTYPE,
 		PARAMETER,
 		ESTIMATE,
@@ -25,7 +54,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		ESSLAT
 	}
 	
-	public enum FileImportCovarianceColumns {
+	protected enum FileImportCovarianceColumns {
 		ESTTYPE,
 		PARAMETER,
 		AWOOD,
@@ -44,7 +73,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		ESSLAT
 	}
 	
-	public enum FileImportEstimatedWeightColumns {
+	protected enum FileImportEstimatedWeightColumns {
 		DEPENDENT,
 		ESTIMATE,
 		PROBT,
@@ -52,7 +81,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		ESSLAT
 	}
 	
-	public enum EstimatedWeightDependent {
+	protected enum EstimatedWeightDependent {
 		wood2,
 		bark2,
 		stem2,
@@ -62,7 +91,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		total2
 	}
 	
-	public enum FileImportErrorCovarianceColumns {
+	protected enum FileImportErrorCovarianceColumns {
 		EQUATION,
 		S1,
 		S2,
@@ -75,7 +104,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		ESSLAT
 	}
 	
-	public enum ErrorCovarianceEquation {
+	protected enum ErrorCovarianceEquation {
 		wood,
 		bark,
 		stem,
@@ -87,7 +116,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		static final int errorCovarianceEquationSize = ErrorCovarianceEquation.values().length;
 	}
 	
-	public enum FileImportSURMSEColumns {
+	protected enum FileImportSURMSEColumns {
 		SUR_MSE,
 		ESS,
 		ESSLAT
@@ -120,13 +149,13 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		}		
 	}
 	
-	public enum BiomassParameter {
+	protected enum BiomassParameter {
 		BETA1,
 		BETA2, 
 		BETA3
 	}
 	
-	public enum FileImportParameter {
+	protected enum FileImportParameter {
 		awood(BiomassCompartment.WOOD, BiomassParameter.BETA1),
 		bwood(BiomassCompartment.WOOD, BiomassParameter.BETA2),
 		cwood(BiomassCompartment.WOOD, BiomassParameter.BETA3),
