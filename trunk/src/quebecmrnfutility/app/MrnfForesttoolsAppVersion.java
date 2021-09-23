@@ -21,25 +21,19 @@
  */
 package quebecmrnfutility.app;
 
-import repicea.app.AbstractAppVersion;
-import repicea.util.ObjectUtility;
+import repicea.app.REpiceaAppVersion;
 
 /**
  * The MrnfForesttoolsJAVSVNAppVersion class reads the file that 
  * contains the revision of the project.
  * @author Mathieu Fortin  - February 2021
  */
-public class MrnfForesttoolsJARSVNAppVersion extends AbstractAppVersion {
+public class MrnfForesttoolsAppVersion extends REpiceaAppVersion {
 
-	private static MrnfForesttoolsJARSVNAppVersion SINGLETON;
+	private static MrnfForesttoolsAppVersion SINGLETON;
 
-	private static final String AppName = "mrnf_foresttools";
-
-	protected static final String ShortFilename = AppName + "_revision.csv";
-	protected static final String CompleteFilename = ObjectUtility.getRelativePackagePath(MrnfForesttoolsJARSVNAppVersion.class) + ShortFilename;
-
-	private MrnfForesttoolsJARSVNAppVersion() {
-		super(AppName, CompleteFilename);
+	private MrnfForesttoolsAppVersion() {
+		super();
 	}
 
 	/**
@@ -47,17 +41,11 @@ public class MrnfForesttoolsJARSVNAppVersion extends AbstractAppVersion {
 	 * to return the revision number of this version.
 	 * @return the singleton instance of the REpiceaJARSVNAppVersion class
 	 */
-	public static MrnfForesttoolsJARSVNAppVersion getInstance() {
+	public static MrnfForesttoolsAppVersion getInstance() {
 		if (SINGLETON == null) {
-			SINGLETON = new MrnfForesttoolsJARSVNAppVersion();
+			SINGLETON = new MrnfForesttoolsAppVersion();
 		}
 		return SINGLETON;
-	}
-
-
-	public static void main(String[] args) {
-		String version = MrnfForesttoolsJARSVNAppVersion.getInstance().getRevision();
-		System.out.println(version);
 	}
 
 }

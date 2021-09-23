@@ -21,26 +21,25 @@
  */
 package quebecmrnfutility.app;
 
-import repicea.app.AbstractAppVersionCompiler;
-import repicea.util.ObjectUtility;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class MrnfForesttoolsJARSVNAppVersionCompiler extends AbstractAppVersionCompiler {
+import repicea.util.JarUtility;
 
-	private static final String APP_URL = "http://svn.code.sf.net/p/mrnfforesttools/code/trunk";
-	private static String Version_Filename_Bin = ObjectUtility.getPackagePath(MrnfForesttoolsJARSVNAppVersionCompiler.class) + MrnfForesttoolsJARSVNAppVersion.ShortFilename;
-	
-	public MrnfForesttoolsJARSVNAppVersionCompiler() {
-		super();
-	}
-	
-	public static void main(String args[]) {
-		MrnfForesttoolsJARSVNAppVersionCompiler compiler = new MrnfForesttoolsJARSVNAppVersionCompiler();
-		try {
-			compiler.createRevisionFile(APP_URL, Version_Filename_Bin);
-			System.out.println("Revision file in binaries successfully updated!");
-		} catch (Exception e) {
-			System.out.println("Error while updating revision file!");
+public class MrnfForesttoolsAppVersionTest {
+
+	@Test
+	public void compileAndRetrieveRevision() {
+		String build = MrnfForesttoolsAppVersion.getInstance().getBuild();
+		System.out.println("Build is: " + build);
+		if (JarUtility.isEmbeddedInJar(MrnfForesttoolsAppVersion.class)) {
+			try {
+				Integer.parseInt(build);
+			} catch (NumberFormatException e) {
+				Assert.fail("The revision cannot be parsed to an integer!");
+			}
+		} else {
+			Assert.assertEquals("Unknown", build);
 		}
 	}
-
 }
