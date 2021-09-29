@@ -118,7 +118,7 @@ jar {
         		   "Specification-Title": "Growth Models for Eastern Canada",
         		   "Specification-Version": archiveVersion,                   
                    "Specification-Vendor": "Canadian Wood Fibre Centre",
-                   "Implementation-Title": "mrnf-foresttools",
+                   "Implementation-Title": "mrnfforesttools",
                    "Implementation-Version": project.ext.build,
                    "Implementation-Vendor": "Canadian Wood Fibre Centre",
                    )
