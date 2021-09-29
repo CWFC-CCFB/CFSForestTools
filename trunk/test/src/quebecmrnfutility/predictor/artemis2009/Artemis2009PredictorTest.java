@@ -338,7 +338,7 @@ public class Artemis2009PredictorTest {
 		double actualVariance = estimate.getVariance().getValueAt(0, 0);
 
 		Assert.assertEquals("Comparing mean", expectedMean, actualMean, 1E-2);
-		Assert.assertEquals("Comparing variance", expectedVariance, actualVariance, 2E-2);
+		Assert.assertEquals("Comparing variance", expectedVariance, actualVariance, 0.03);
 	}
 
 }
