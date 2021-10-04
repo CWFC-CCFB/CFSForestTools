@@ -84,9 +84,9 @@ public class Lambert2005BiomassPredictorTest {
 			
 			Matrix prediction = predictor.predictBiomass(tree);
 											
-			System.out.println("Species : " + species); 
-			System.out.println("Ground Truth : " + groundtruth.toString());
-			System.out.println("Prediction : " + prediction.toString());
+//			System.out.println("Species : " + species); 
+//			System.out.println("Ground Truth : " + groundtruth.toString());
+//			System.out.println("Prediction : " + prediction.toString());
 			
 			// now compare prediction with ground truth
 			FileImportPrediction[] columns = FileImportPrediction.values();			
