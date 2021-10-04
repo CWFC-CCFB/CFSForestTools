@@ -160,10 +160,10 @@ public class Lambert2005BiomassPredictorTest {
 			
 			Matrix m1 = om.subtract(prediction).elementWiseDivide(w);
 			
-			System.out.println("Processing line " + csvLine);
-			System.out.println("Species : " + species); 
-			System.out.println("Ground Truth : " + res.toString());
-			System.out.println("Residual  : " + m1.toString());
+//			System.out.println("Processing line " + csvLine);
+//			System.out.println("Species : " + species); 
+//			System.out.println("Ground Truth : " + res.toString());
+//			System.out.println("Residual  : " + m1.toString());
 			
 			// now compare prediction with ground truth
 			FileImportPrediction[] columns = FileImportPrediction.values();	
