@@ -32,12 +32,20 @@ public class MrnfForesttoolsAppVersionTest {
 	public void compileAndRetrieveRevision() {
 		String build = MrnfForesttoolsAppVersion.getInstance().getBuild();
 		System.out.println("Build is: " + build);
+		String version = MrnfForesttoolsAppVersion.getInstance().getVersion();
+		System.out.println("Version is: " + version);
 		if (JarUtility.isEmbeddedInJar(MrnfForesttoolsAppVersion.class)) {
 			try {
 				Integer.parseInt(build);
 			} catch (NumberFormatException e) {
 				Assert.fail("The revision cannot be parsed to an integer!");
+			}		
+			try {
+				Double.parseDouble(version);
+			} catch (NumberFormatException e) {
+				Assert.fail("The version cannot be parsed to a double!");
 			}
+
 		} else {
 			Assert.assertEquals("Unknown", build);
 		}
