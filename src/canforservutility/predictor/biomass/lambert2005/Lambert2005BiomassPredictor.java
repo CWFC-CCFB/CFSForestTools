@@ -405,7 +405,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		}
 	}
 		
-	public synchronized Matrix predictBiomass(Lambert2005Tree tree) {
+	public synchronized Matrix predictBiomassKg(Lambert2005Tree tree) {
 		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(tree.getLambert2005Species());
 		return predictor.predictBiomass(tree);
 	}
