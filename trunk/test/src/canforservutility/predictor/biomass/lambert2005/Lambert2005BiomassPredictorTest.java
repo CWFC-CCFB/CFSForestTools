@@ -82,7 +82,7 @@ public class Lambert2005BiomassPredictorTest {
 					dbhcm, 
 					hm);
 			
-			Matrix prediction = predictor.predictBiomass(tree);
+			Matrix prediction = predictor.predictBiomassKg(tree);
 											
 //			System.out.println("Species : " + species); 
 //			System.out.println("Ground Truth : " + groundtruth.toString());
@@ -154,7 +154,7 @@ public class Lambert2005BiomassPredictorTest {
 					dbhcm, 
 					hm); 					
 			
-			Matrix prediction = predictor.predictBiomass(tree);
+			Matrix prediction = predictor.predictBiomassKg(tree);
 			
 			Matrix w = predictor.getWeight(tree);					
 			
