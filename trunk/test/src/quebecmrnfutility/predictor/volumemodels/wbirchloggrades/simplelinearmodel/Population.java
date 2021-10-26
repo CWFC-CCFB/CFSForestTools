@@ -12,8 +12,8 @@ import repicea.io.javacsv.CSVField;
 import repicea.io.javacsv.CSVWriter;
 import repicea.math.Matrix;
 import repicea.stats.estimates.BootstrapHybridPointEstimate;
+import repicea.stats.estimates.BootstrapHybridPointEstimate.VarianceEstimatorImplementation;
 import repicea.stats.estimates.PopulationTotalEstimate;
-import repicea.stats.estimates.BootstrapHybridPointEstimate.VariancePointEstimate;
 import repicea.util.ObjectUtility;
 
 public class Population {
@@ -141,24 +141,26 @@ public class Population {
 				if (!SimpleLinearModel.R2_95Version && real == 0 && internalReal >= 1) {
 					recordStabilizer[0] = internalReal;
 					recordStabilizer[1] = hybHTEstimate.getMean().getValueAt(0, 0);
-					recordStabilizer[2] = hybHTEstimate.getCorrectedVariance().getTotalVariance().getValueAt(0, 0);
+					recordStabilizer[2] = hybHTEstimate.getVariance().getValueAt(0, 0);
 					writerStabilizer.addRecord(recordStabilizer);
 				} else if (real > 0 && isWriterStabilizerOpen) {
 					writerStabilizer.close();
 					isWriterStabilizerOpen = false;
 				}
 			}
-			VariancePointEstimate correctedVarEstimate = hybHTEstimate.getCorrectedVariance();
-			double uncorrectedVariance = hybHTEstimate.getUncorrectedVariance().getTotalVariance().getValueAt(0, 0);
+			Matrix correctedVarEstimate = hybHTEstimate.getVariance();
+			hybHTEstimate.setVarianceEstimatorImplementation(VarianceEstimatorImplementation.RegularMultipleImputation);
+			double uncorrectedVariance = hybHTEstimate.getVariance().getValueAt(0, 0);
 			if (isCompleteBootstrap) {
-				uncorrectedVariance = hybHTEstimate.getUncorrectedVariance().getModelRelatedVariance().getValueAt(0, 0);  // onmy the variance of the point estimates for the complete bootstrap
+				uncorrectedVariance = hybHTEstimate.getModelRelatedVariance().getValueAt(0, 0);  // only the variance of the point estimates for the complete bootstrap
 			}
+			hybHTEstimate.setVarianceEstimatorImplementation(VarianceEstimatorImplementation.Corrected);
 			Realization thisRealization = new Realization(total.getValueAt(0, 0), 
 					hybHTEstimate.getMean().getValueAt(0, 0), 
 					uncorrectedVariance, 
-					correctedVarEstimate.getTotalVariance().getValueAt(0, 0), 
-					correctedVarEstimate.getSamplingRelatedVariance().getValueAt(0, 0), 
-					correctedVarEstimate.getModelRelatedVariance().getValueAt(0, 0));
+					correctedVarEstimate.getValueAt(0, 0), 
+					hybHTEstimate.getSamplingRelatedVariance().getValueAt(0, 0), 
+					hybHTEstimate.getModelRelatedVariance().getValueAt(0, 0));
 			realizations.add(thisRealization);
 			writer.addRecord(thisRealization.getRecord());
 			timeDiff = System.currentTimeMillis() - start;

@@ -12,8 +12,8 @@ import repicea.io.javacsv.CSVField;
 import repicea.io.javacsv.CSVWriter;
 import repicea.math.Matrix;
 import repicea.stats.estimates.BootstrapHybridPointEstimate;
+import repicea.stats.estimates.BootstrapHybridPointEstimate.VarianceEstimatorImplementation;
 import repicea.stats.estimates.PopulationTotalEstimate;
-import repicea.stats.estimates.BootstrapHybridPointEstimate.VariancePointEstimate;
 import repicea.util.ObjectUtility;
 
 public class Population {
@@ -159,7 +159,7 @@ public class Population {
 				if (real == 0 && internalReal >= 1) {
 					recordStabilizer[0] = internalReal;
 					Matrix totalReal = hybHTEstimate.getMean();
-					Matrix varReal = hybHTEstimate.getCorrectedVariance().getTotalVariance();
+					Matrix varReal = hybHTEstimate.getVariance();		// corrected variance by default
 					for (int ii = 0; ii < totalReal.m_iRows; ii++) {
 						recordStabilizer[ii*2 + 1] = totalReal.getValueAt(ii, 0);
 						recordStabilizer[ii*2 + 2] = varReal.getValueAt(ii, ii);
@@ -170,13 +170,16 @@ public class Population {
 					isWriterStabilizerOpen = false;
 				}
 			}
-			VariancePointEstimate correctedVarEstimate = hybHTEstimate.getCorrectedVariance();
+			Matrix correctedVarEstimate = hybHTEstimate.getVariance();
+			hybHTEstimate.setVarianceEstimatorImplementation(VarianceEstimatorImplementation.RegularMultipleImputation);
+			Matrix uncorrectedVarEstimate = hybHTEstimate.getVariance();
+			hybHTEstimate.setVarianceEstimatorImplementation(VarianceEstimatorImplementation.Corrected);
 			Realization thisRealization = new Realization(total, 
 					hybHTEstimate.getMean(), 
-					hybHTEstimate.getUncorrectedVariance().getTotalVariance(), 
-					correctedVarEstimate.getTotalVariance(), 
-					correctedVarEstimate.getSamplingRelatedVariance(), 
-					correctedVarEstimate.getModelRelatedVariance());
+					uncorrectedVarEstimate, 
+					correctedVarEstimate, 
+					hybHTEstimate.getSamplingRelatedVariance(), 
+					hybHTEstimate.getModelRelatedVariance());
 			realizations.add(thisRealization);
 			writer.addRecord(thisRealization.getRecord());
 			timeDiff = System.currentTimeMillis() - start;
