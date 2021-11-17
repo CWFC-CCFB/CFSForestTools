@@ -39,7 +39,6 @@ import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
-import repicea.simulation.thinners.REpiceaTreatmentDefinition;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -318,7 +317,18 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	@Override
 	public List<Enum> getTreatmentList() {return Arrays.asList(TreatmentType.values());}
 
-	
+	/**
+	 * Return the maximum annual area proportion for this treatment.
+	 * 
+	 * @param treatment
+	 * @return a double if the treatment is listed. Otherwise, it must return 1d, which means there is no maximum.
+	 */
+	public double getMaxAnnualAreaProportionForThisTreatment(TreatmentType treatment) {
+		Double maxProp = selector.getAreaLimitations().areaLimitationMap.get(treatment);
+		if (maxProp == null) 
+			return 1d;
+		else return maxProp;
+	}
 	
 }
 

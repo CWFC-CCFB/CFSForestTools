@@ -1,5 +1,6 @@
 package quebecmrnfutility.predictor.thinners.officialharvestmodule;
 
+import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -89,8 +90,7 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 		uniqueTreatmentComboBox.removeItemListener(this);
 	}
 
-	@Override
-	protected JPanel getMainPanel() {
+	private JPanel getLeftPanel() {
 		JPanel pane = new JPanel();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 
@@ -104,6 +104,20 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 		JScrollPane scrollPane = new JScrollPane(getTable());
 		pane.add(createSimplePanel(scrollPane, 20));
 		pane.add(Box.createVerticalStrut(10));
+		return pane;
+	}
+
+
+	private JPanel getRightPanel() {
+		return getCaller().getAreaLimitations().getUI(this);
+	}
+
+	@Override
+	protected JPanel getMainPanel() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new FlowLayout(FlowLayout.CENTER));
+		pane.add(getLeftPanel());
+		pane.add(getRightPanel());
 		return pane;
 	}
 

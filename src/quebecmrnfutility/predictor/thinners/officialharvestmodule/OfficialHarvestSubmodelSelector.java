@@ -31,12 +31,14 @@ import java.io.InputStream;
 import java.util.List;
 
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
+import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
 import repicea.gui.components.REpiceaMatchSelector;
 import repicea.serial.MemorizerPackage;
 import repicea.serial.xml.XmlDeserializer;
 import repicea.serial.xml.XmlMarshallException;
 import repicea.serial.xml.XmlSerializerChangeMonitor;
 import repicea.util.REpiceaTranslator;
+import repicea.util.REpiceaTranslator.Language;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
 public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<OfficialHarvestTreatmentDefinition> {
@@ -92,6 +94,7 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 	
 	protected Mode mode;
 	protected OfficialHarvestTreatmentDefinition singleTreatment;
+	protected OfficialHarvestSubmodelAreaLimitation areaLimitations;
 
 	/**
 	 * Official constructor.
@@ -109,6 +112,14 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 			}
 		}
 	}
+	
+	protected OfficialHarvestSubmodelAreaLimitation getAreaLimitations() {
+		if (areaLimitations == null) {
+			areaLimitations = new OfficialHarvestSubmodelAreaLimitation(TreatmentType.values());
+		}
+		return areaLimitations;
+	}
+	
 	
 	protected Mode getMode() {return mode;}
 
@@ -186,6 +197,7 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 	
 	
 	public static void main(String[] args) {
+		REpiceaTranslator.setCurrentLanguage(Language.French);
 		OfficialHarvestSubmodelSelector selector = new OfficialHarvestSubmodelSelector();
 		selector.showUI(null);
 		boolean cancelled = selector.getUI(null).hasBeenCancelled();
