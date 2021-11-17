@@ -186,8 +186,8 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 			singleTreatment = def;
 		}
 		if (wasMemorized.size() >= 5) {
-			areaLimitations.areaLimitationMap.clear();
-			areaLimitations.areaLimitationMap.putAll(((OfficialHarvestSubmodelAreaLimitation) wasMemorized.get(4)).areaLimitationMap);
+			getAreaLimitations().areaLimitationMap.clear();
+			getAreaLimitations().areaLimitationMap.putAll(((OfficialHarvestSubmodelAreaLimitation) wasMemorized.get(4)).areaLimitationMap);
 		}
 	}
 
