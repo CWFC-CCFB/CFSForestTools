@@ -170,6 +170,7 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 		MemorizerPackage mp = super.getMemorizerPackage();
 		mp.add(mode);
 		mp.add(singleTreatment);
+		mp.add(areaLimitations);
 		return mp;
 	}
 
@@ -183,6 +184,10 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 			singleTreatment = def.copy();	
 		} else {
 			singleTreatment = def;
+		}
+		if (wasMemorized.size() >= 5) {
+			areaLimitations.areaLimitationMap.clear();
+			areaLimitations.areaLimitationMap.putAll(((OfficialHarvestSubmodelAreaLimitation) wasMemorized.get(4)).areaLimitationMap);
 		}
 	}
 

@@ -19,15 +19,14 @@
  */
 package quebecmrnfutility.predictor.thinners.officialharvestmodule;
 
-import java.awt.Component;
 import java.awt.Container;
-import java.util.List;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
 import repicea.gui.REpiceaUIObjectWithParent;
 
-public class OfficialHarvestSubmodelAreaLimitation implements REpiceaUIObjectWithParent {
+public class OfficialHarvestSubmodelAreaLimitation implements REpiceaUIObjectWithParent, Serializable {
 	
 	protected final Map<Enum, Double> areaLimitationMap;
 	private transient OfficialHarvestSubmodelAreaLimitationPanel guiInterface;
