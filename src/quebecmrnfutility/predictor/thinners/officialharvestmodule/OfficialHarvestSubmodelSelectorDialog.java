@@ -31,6 +31,7 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 	private JRadioButton singleTreatmentButton;
 	private JRadioButton treatmentByPotentialVegetationButton;
 	private JComboBox<OfficialHarvestTreatmentDefinition> uniqueTreatmentComboBox;
+	private OfficialHarvestSubmodelAreaLimitationPanel areaLimitationsPanel;
 	
 	protected OfficialHarvestSubmodelSelectorDialog(OfficialHarvestSubmodelSelector caller, Window parent, Object[] columnNames) {
 		super(caller, parent, columnNames);
@@ -54,6 +55,8 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 		singleTreatmentButton.setSelected(getCaller().getMode() == Mode.SingleTreatment);
 		treatmentByPotentialVegetationButton.setSelected(getCaller().getMode() == Mode.TreatmentByPotentialVegetation);
 		uniqueTreatmentComboBox.setSelectedItem(getCaller().singleTreatment);
+		if (areaLimitationsPanel != null)
+			areaLimitationsPanel.refreshInterface();
 		super.refreshInterface();
 		checkFeaturesToEnable();
 	}
@@ -109,7 +112,8 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 
 
 	private JPanel getRightPanel() {
-		return getCaller().getAreaLimitations().getUI(this);
+		areaLimitationsPanel = getCaller().getAreaLimitations().getUI(this);
+		return areaLimitationsPanel;
 	}
 
 	@Override
@@ -137,6 +141,8 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 		}
 	}
 
+	
+	
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getSource().equals(uniqueTreatmentComboBox)) {

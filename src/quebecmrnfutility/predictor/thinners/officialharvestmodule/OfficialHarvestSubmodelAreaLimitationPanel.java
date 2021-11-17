@@ -68,6 +68,7 @@ public class OfficialHarvestSubmodelAreaLimitationPanel extends REpiceaPanel imp
 	
 	private REpiceaTable table;
 	private REpiceaTableModel tableModel;
+	private boolean updateCaller;
 	
 	OfficialHarvestSubmodelAreaLimitationPanel(OfficialHarvestSubmodelAreaLimitation caller) {
 		this.caller = caller;
@@ -104,10 +105,14 @@ public class OfficialHarvestSubmodelAreaLimitationPanel extends REpiceaPanel imp
 	
 	@Override
 	public void refreshInterface() {
+		updateCaller = false;
+		doNotListenToAnymore();
 		tableModel.removeAll();
 		for (Enum treatment : caller.areaLimitationMap.keySet()) {
 			tableModel.addRow(new Object[]{treatment, caller.areaLimitationMap.get(treatment)});
 		}
+		listenTo();
+		updateCaller = true;
 	}
 
 	@Override
@@ -123,9 +128,11 @@ public class OfficialHarvestSubmodelAreaLimitationPanel extends REpiceaPanel imp
 
 	@Override
 	public void tableChanged(TableModelEvent e) {
-		TreatmentType trt = (TreatmentType) tableModel.getValueAt(e.getFirstRow(), 0);
-		double value = Double.parseDouble(tableModel.getValueAt(e.getFirstRow(), e.getColumn()).toString());
-		caller.areaLimitationMap.put(trt, value);
+		if (updateCaller) {
+			TreatmentType trt = (TreatmentType) tableModel.getValueAt(e.getFirstRow(), 0);
+			double value = Double.parseDouble(tableModel.getValueAt(e.getFirstRow(), e.getColumn()).toString());
+			caller.areaLimitationMap.put(trt, value);
+		}
 	}
 
 	
