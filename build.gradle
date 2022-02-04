@@ -71,7 +71,9 @@ sourceSets {
 }
 
 dependencies {
-    implementation name: 'biosimclient'
+    implementation name: 'biosimclient-1.1'
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.13.1"		// biosimclient depends on this
+    
     implementation group: 'org', name: 'repicea', version: '1+'    
 	    
     testImplementation "junit:junit:4.12"    

@@ -4,12 +4,13 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import biosimclient.BioSimException;
 import repicea.math.Matrix;
 
 public class DefoliationTest {
 
 	@Test
-	public void simpleTestWithoutBioSIM() {
+	public void simpleTestWithoutBioSIM() throws BioSimException {
 		DefoliationPredictor pred = new DefoliationPredictor(4);
 		pred.testPurposes = true;
 		DefoliationPlot plot = new DefoliationPlotImpl(48d, -70d, 200d, 15, 70, 1d, 1986);
@@ -29,7 +30,7 @@ public class DefoliationTest {
 	// This GrayDefoliator class must be improved. It is simply too long.
 	@Ignore 
 	@Test
-	public void simpleTestWithBioSIM() {
+	public void simpleTestWithBioSIM() throws BioSimException {
 		DefoliationPredictor pred = new DefoliationPredictor(4);
 		DefoliationPlot plot = new DefoliationPlotImpl(48d, -70d, 350d, 15, 70, 1d, 1986);
 		Matrix resultingEstimate = pred.getDurationAndSeverityEstimate(plot);

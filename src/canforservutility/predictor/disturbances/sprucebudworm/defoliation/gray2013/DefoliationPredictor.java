@@ -21,6 +21,7 @@
 package canforservutility.predictor.disturbances.sprucebudworm.defoliation.gray2013;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import biosimclient.BioSimClientException;
 import biosimclient.BioSimDataSet;
 import biosimclient.BioSimEnums.ClimateModel;
 import biosimclient.BioSimEnums.RCP;
+import biosimclient.BioSimException;
 import biosimclient.BioSimParameterMap;
 import biosimclient.BioSimPlot;
 import biosimclient.BioSimServerException;
@@ -159,7 +161,7 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 
 	
 	
-	protected Matrix getClimateForThisInterval(DefoliationPlot plot, IntervalNestedInPlotDefinition subject) {
+	protected Matrix getClimateForThisInterval(DefoliationPlot plot, IntervalNestedInPlotDefinition subject) throws BioSimException {
 		if (testPurposes) {
 			Matrix mat = new Matrix(4,1);
 			mat.setValueAt(0, 0, MeanExplanatoryVariables.getValueAt(0, 1));
@@ -176,14 +178,18 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 			try {
 				double yearFactor = 1d / (finalYear - initYear);
 
-				Map<BioSimPlot, BioSimDataSet> dataSets = BioSimClient.getModelOutput(initYear, 
+				String modelStr = "Climatic_Monthly";
+				Map<BioSimPlot, Object> dataSets = (Map) BioSimClient.generateWeather(initYear, 
 						finalYear,
 						plots, 
 						rcp,
 						climModel,
-						"Climatic_Monthly",
-						null);
-				BioSimDataSet dataSet = dataSets.get(plot);
+						Arrays.asList(new String[] {modelStr}),
+						null).get(modelStr);
+				Object returnType = dataSets.get(plot);
+				if (returnType instanceof BioSimException) 
+					throw (BioSimException) returnType;
+				BioSimDataSet dataSet = (BioSimDataSet) returnType;
 				int indexTMin = dataSet.getFieldNames().indexOf("LowestTmin");
 				int indexTMax = dataSet.getFieldNames().indexOf("HighestTmax");
 				int indexMonth = dataSet.getFieldNames().indexOf("Month");
@@ -203,15 +209,18 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 					}
 				}
 
-				
-				dataSets = BioSimClient.getModelOutput(initYear, 
+				modelStr = "DegreeDay_Monthly";
+				dataSets = (Map) BioSimClient.generateWeather(initYear, 
 						finalYear,
 						plots, 
 						rcp,
 						climModel,
-						"DegreeDay_Monthly",
-						ddParms);
-				dataSet = dataSets.get(plot);
+						Arrays.asList(new String[] {modelStr}),
+						Arrays.asList(new BioSimParameterMap[] {ddParms})).get(modelStr);
+				returnType = dataSets.get(plot);
+				if (returnType instanceof BioSimException) 
+					throw (BioSimException) returnType;
+				dataSet = (BioSimDataSet) returnType;
 				double sp_dd = 0;
 				indexMonth = dataSet.getFieldNames().indexOf("Month");
 				int indexDD = dataSet.getFieldNames().indexOf("DD");
@@ -246,7 +255,7 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 	 * @param plot
 	 * @return
 	 */
-	public synchronized Matrix getDurationAndSeverityEstimate(DefoliationPlot plot) {
+	public synchronized Matrix getDurationAndSeverityEstimate(DefoliationPlot plot) throws BioSimException {
 		IntervalNestedInPlotDefinition interval = getIntervalNestedInPlotDefinition(plot, plot.getDateYr());
 		Matrix climate = getClimateForThisInterval(plot, interval);
 		
@@ -292,7 +301,12 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 				return 0d;
 			}
 		} 
-		Matrix estimate = getDurationAndSeverityEstimate(plot);
+		Matrix estimate = null;
+		try {
+			estimate = getDurationAndSeverityEstimate(plot);
+		} catch (BioSimException e) {
+			throw new UnsupportedOperationException(e);
+		}
 		double durationResult = estimate.getValueAt(0, 0);
 		double severityResult = estimate.getValueAt(1, 0);
 		if (durationResult >= nbYearsWithModerateToSevereDefoliation) {
