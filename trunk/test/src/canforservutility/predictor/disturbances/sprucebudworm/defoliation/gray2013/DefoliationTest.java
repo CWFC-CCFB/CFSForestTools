@@ -14,12 +14,12 @@ public class DefoliationTest {
 
 	@BeforeClass
 	public static void initializeTest() {
-		BioSimClient.isLocal = true;
+		BioSimClient.setLocalConnectionEnabled(true);
 	}
 	
 	@AfterClass
 	public static void finalizeTest() {
-		BioSimClient.isLocal = false;
+		BioSimClient.setLocalConnectionEnabled(false);
 	}
 	
 	@Test
