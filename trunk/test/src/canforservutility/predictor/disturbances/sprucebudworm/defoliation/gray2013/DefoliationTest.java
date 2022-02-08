@@ -33,15 +33,15 @@ import repicea.math.Matrix;
 
 public class DefoliationTest {
 
-//	@BeforeClass
-//	public static void initializeTest() {
-//		BioSimClient.setLocalConnectionEnabled(true);
-//	}
-//	
-//	@AfterClass
-//	public static void finalizeTest() {
-//		BioSimClient.setLocalConnectionEnabled(false);
-//	}
+	@BeforeClass
+	public static void initializeTest() {
+		BioSimClient.setTestModeEnabled(true);
+	}
+	
+	@AfterClass
+	public static void finalizeTest() {
+		BioSimClient.setTestModeEnabled(false);
+	}
 	
 	@Test
 	public void simpleTestWithoutBioSIM() throws BioSimException {
