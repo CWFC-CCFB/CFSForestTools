@@ -21,32 +21,23 @@
  */
 package quebecmrnfutility.app;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import repicea.app.REpiceaAppVersion;
+import repicea.util.JarUtility;
 
-/**
- * The MrnfForesttoolsJAVSVNAppVersion class reads the file that 
- * contains the revision of the project.
- * @author Mathieu Fortin  - February 2021
- */
-public class MrnfForesttoolsAppVersion extends REpiceaAppVersion {
+public class CFSForesttoolsAppVersionTest {
 
-	private static MrnfForesttoolsAppVersion SINGLETON;
-
-	private MrnfForesttoolsAppVersion() {
-		super();
-	}
-
-	/**
-	 * This method returns the singleton instance of this class which can be requested
-	 * to return the revision number of this version.
-	 * @return the singleton instance of the REpiceaJARSVNAppVersion class
-	 */
-	public static MrnfForesttoolsAppVersion getInstance() {
-		if (SINGLETON == null) {
-			SINGLETON = new MrnfForesttoolsAppVersion();
+	@Test
+	public void compileAndRetrieveRevision() {		
+		String version = REpiceaAppVersion.getInstance().getVersion();
+		System.out.println("Version is: " + version);
+		if (JarUtility.isEmbeddedInJar(REpiceaAppVersion.class)) {
+			String[] split = version.split("\\.");
+			Assert.assertTrue(split.length > 1);			
+		} else {
+			Assert.assertEquals("Unknown", version);
 		}
-		return SINGLETON;
 	}
-
 }
-

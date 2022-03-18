@@ -2,10 +2,12 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-import org.tmatesoft.svn.core.wc.*
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(8))
+  }
+}
 
-sourceCompatibility = 1.8
-//targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -20,25 +22,8 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath group: 'org.tmatesoft.svnkit', name: 'svnkit', version: '1.10.3'
-    }
 }
 
-def getSvnRevision(){
-    ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
-    SVNClientManager clientManager = SVNClientManager.newInstance(options);
-    // here we force updating to the HEAD SVN version so that the local working copy is up to date with the repo
-    // (the local SVN revision is behind the HEAD even if the current user himself just commited to the HEAD)
-	// the "install" target depends on the "integrationTest" target to make sure we publish a tested version
-    // i.e. user A commits, then user B commits something else, then A publishes -> user B updates and retests before publishing
-    SVNUpdateClient updateClient = clientManager.getUpdateClient();
-    updateClient.doUpdate(projectDir, SVNRevision.HEAD, false);
-    SVNStatusClient statusClient = clientManager.getStatusClient();
-    SVNStatus status = statusClient.doStatus(projectDir, false);
-    SVNRevision revision = status.getRevision();
-    return revision.getNumber();
-}
 
 println "Using java version " + JavaVersion.current()
 
@@ -72,23 +57,16 @@ sourceSets {
 
 dependencies {
     implementation name: 'biosimclient-1.1'
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.13.1"		// biosimclient depends on this
+	implementation 'com.cedarsoftware:json-io:4.13.0'		// dependence of biosimclient
     
     implementation group: 'org', name: 'repicea', version: '1+'    
 	    
     testImplementation "junit:junit:4.12"    
 }
 
-task updateRevision(type: WriteProperties) {
-	project.ext.build = getSvnRevision()
-	outputFile = file("$buildDir/classes/java/main/quebecmrnfutility/app/revision")	
-	property "Revision", project.ext.build
-	property "Version", mrnfForestToolsVersion
-}
-
 
 compileJava {
-	project.version=mrnfForestToolsVersion
+	project.version=CfsForestToolsVersion
 //	project.ext.build = getSvnRevision()
 	println "Building " + rootProject.name + " v" + project.version
 }
@@ -123,20 +101,19 @@ task integrationTest(type: Test) {
 check.dependsOn integrationTest
 
 jar {
-	dependsOn updateRevision
 	manifest {
         attributes("Built-By": "Mathieu Fortin",
         		   "Specification-Title": "Growth Models for Eastern Canada",
         		   "Specification-Version": archiveVersion,                   
                    "Specification-Vendor": "Canadian Wood Fibre Centre",
                    "Implementation-Title": "mrnfforesttools",
-  //                 "Implementation-Version": project.ext.build,
+	               "Implementation-Version": archiveVersion,
                    "Implementation-Vendor": "Canadian Wood Fibre Centre",
                    )
     }
     
 	into ('/') {
-		from files(['./README.txt', './COPYING.LESSER.txt'])			
+		from files(['./README.md', './COPYING.LESSER.txt'])			
 	}
 	
 	// include all java files from main sourceset into the jar file (resources are already included)
