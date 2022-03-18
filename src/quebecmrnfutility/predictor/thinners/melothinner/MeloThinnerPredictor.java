@@ -296,7 +296,10 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 			for (QcSlopeClass sc : QcSlopeClass.values()) {
 				dummy = new Matrix(1,5);
 				if (sc.ordinal() > 0) {
-					dummy.setValueAt(0, sc.ordinal() - 1, 1d);
+					if (sc == QcSlopeClass.S) 
+						dummy.setValueAt(0, QcSlopeClass.F.ordinal() - 1, 1d);	// Class S is given the same dummy as Class F
+					else
+						dummy.setValueAt(0, sc.ordinal() - 1, 1d);
 				}
 				slopeClassDummy.put(sc, dummy);
 			}

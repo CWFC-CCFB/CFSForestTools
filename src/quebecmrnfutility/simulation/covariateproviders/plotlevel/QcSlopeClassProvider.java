@@ -40,7 +40,8 @@ public interface QcSlopeClassProvider {
 		C("9-15%"),
 		D("16-30%"),
 		E("31-40%"),
-		F(">40%");
+		F(">40%"),
+		S("Sommet");
 		
 		private static List<String> AvailableSlopeClasses;
 		
