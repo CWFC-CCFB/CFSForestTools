@@ -19,7 +19,6 @@
  */
 package quebecmrnfutility.predictor.thinners.melothinner;
 
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Window;
 import java.security.InvalidParameterException;
@@ -42,8 +41,9 @@ import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
 import repicea.simulation.thinners.REpiceaTreatmentDefinition;
 import repicea.stats.estimates.GaussianEstimate;
+import repicea.stats.integral.AbstractGaussQuadrature.NumberOfPoints;
 import repicea.stats.integral.GaussHermiteQuadrature;
-import repicea.stats.integral.GaussQuadrature.NumberOfPoints;
+import repicea.stats.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.util.ObjectUtility;
 
 /**
@@ -58,8 +58,10 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("serial")
 public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, Object> implements REpiceaShowableUIWithParent {
 
-	
-	class EmbeddedFunction extends AbstractMathematicalFunction {
+	class EmbeddedFunction extends AbstractMathematicalFunction implements GaussHermiteQuadratureCompatibleFunction<Double> {
+		
+		Double sqrtTwiceVariance;
+		
 		@Override
 		public Double getValue() {
 			double conditionalSurvival = getParameterValue(0) * getVariableValue(0);
@@ -72,12 +74,27 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 
 		@Override
 		public Matrix getHessian() {return null;}
+
+		private double getSqrtTwiceVariance() {
+			if (sqrtTwiceVariance == null) {
+				Matrix variance = getDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE).getVariance();
+				sqrtTwiceVariance = Math.sqrt(variance.getValueAt(0, 0) * 2d);
+			}
+			return sqrtTwiceVariance;
+		}
+		
+		@Override
+		public double convertFromGaussToOriginal(double x, double mu, int covarianceIndexI, int covarianceIndexJ) {
+			return getSqrtTwiceVariance() * x + mu;
+		}
+
+		@Override
+		public double getIntegralAdjustment(int dimensions) {
+			return Math.pow(Math.PI, -dimensions/2d);
+		}
 	}
 	
-	private static final List<Integer> ParametersToIntegrate = new ArrayList<Integer>();
-	static {
-		ParametersToIntegrate.add(1);
-	}
+	private static final int IndexParameterToBeIntegrated = 1;
 	
 	private boolean quadratureEnabled = true;
 	
@@ -222,8 +239,9 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 			survival = embeddedFunction.getValue();
 		} else {
 			if (quadratureEnabled) {
-				Matrix lowerCholeskyTriangle = getDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE).getVariance().getLowerCholTriangle();
-				survival = ghq.getIntegralApproximation(embeddedFunction, ParametersToIntegrate, lowerCholeskyTriangle);
+//				Matrix lowerCholeskyTriangle = getDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE).getVariance().getLowerCholTriangle();
+//				survival = ghq.getIntegralApproximation(embeddedFunction, ParametersToIntegrate, lowerCholeskyTriangle);
+				survival = ghq.getIntegralApproximation(embeddedFunction, IndexParameterToBeIntegrated, true);
 			} else {
 				embeddedFunction.setParameterValue(1, 0);
 				survival = embeddedFunction.getValue();

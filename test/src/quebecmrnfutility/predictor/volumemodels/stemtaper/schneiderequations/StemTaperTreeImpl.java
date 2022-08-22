@@ -7,8 +7,8 @@ import repicea.math.Matrix;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
+import repicea.stats.integral.AbstractGaussQuadrature.NumberOfPoints;
 import repicea.stats.integral.GaussLegendreQuadrature;
-import repicea.stats.integral.GaussQuadrature.NumberOfPoints;
 import repicea.stats.integral.TrapezoidalRule;
 
 class StemTaperTreeImpl implements StemTaperTree {

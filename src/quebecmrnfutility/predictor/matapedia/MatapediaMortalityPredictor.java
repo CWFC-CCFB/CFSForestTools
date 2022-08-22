@@ -19,7 +19,6 @@
 package quebecmrnfutility.predictor.matapedia;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +31,9 @@ import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.stats.estimates.GaussianEstimate;
+import repicea.stats.integral.AbstractGaussQuadrature.NumberOfPoints;
+import repicea.stats.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.stats.integral.GaussHermiteQuadrature;
-import repicea.stats.integral.GaussQuadrature.NumberOfPoints;
 import repicea.stats.model.glm.LinkFunction;
 import repicea.stats.model.glm.LinkFunction.Type;
 import repicea.util.ObjectUtility;
@@ -62,11 +62,33 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 	private static final long serialVersionUID = 20120912L;
 
 	private final static double offset5Years = Math.log(5d);		
-
+	private final static int IndexParameterToBeIntegrated = 0;
 	
-	private final LinkFunction linkFunction;
+	private final EmbeddedLinkFunction linkFunction;
 	private final GaussHermiteQuadrature ghq;
-	private final List<Integer> indicesForGaussianQuad;
+//	private final List<Integer> indicesForGaussianQuad;
+	
+	class EmbeddedLinkFunction extends LinkFunction implements GaussHermiteQuadratureCompatibleFunction<Double> {
+
+		final double standardDeviation;
+		
+		EmbeddedLinkFunction(Type linkFunctionType, double randomEffectVariance) {
+			super(linkFunctionType);
+			standardDeviation = Math.sqrt(randomEffectVariance);
+		}
+		
+		@Override
+		public double convertFromGaussToOriginal(double x, double mu, int covarianceIndexI, int covarianceIndexJ) {
+			return mu + Math.sqrt(2d) * x * standardDeviation;
+		}
+
+		@Override
+		public double getIntegralAdjustment(int dimensions) {
+			return Math.pow(Math.PI, -dimensions/2d);
+		}
+		
+	}
+	
 	
 	/**
 	 * Constructor.
@@ -80,13 +102,15 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 	MatapediaMortalityPredictor(boolean isParameterVariabilityEnabled, boolean isRandomEffectVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, isRandomEffectVariabilityEnabled, isResidualVariabilityEnabled);
 		init();
-		linkFunction = new LinkFunction(Type.CLogLog);
+		Matrix variance = getDefaultRandomEffects(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT).getDistribution().getVariance();
+
+		linkFunction = new EmbeddedLinkFunction(Type.CLogLog, variance.getValueAt(0, 0));
 		linkFunction.setParameterValue(0, 0d);		// random parameter
 		linkFunction.setVariableValue(0, 1d);		// variable that multiplies the random parameter
 		linkFunction.setParameterValue(1, 1d);		// parameter that multiplies the xBeta
 		ghq = new GaussHermiteQuadrature(NumberOfPoints.N15);
-		indicesForGaussianQuad = new ArrayList<Integer>();
-		indicesForGaussianQuad.add(0);
+//		indicesForGaussianQuad = new ArrayList<Integer>();
+//		indicesForGaussianQuad.add(0);
 	}
 	
 	protected void init() {
@@ -134,8 +158,8 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 		} else {
 			linkFunction.setParameterValue(0, 0d);
 			prob = ghq.getIntegralApproximation(linkFunction, 
-					indicesForGaussianQuad, 
-					getDefaultRandomEffects(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT).getDistribution().getStandardDeviation());
+					IndexParameterToBeIntegrated, 
+					true);
 		}
 		
 		if (parms != null && parms.containsKey(DisturbanceParameter.ParmTimeStep)) {

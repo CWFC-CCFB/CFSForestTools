@@ -8,7 +8,7 @@ import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.Ste
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.SchneiderStemTaperEstimate;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
-import repicea.math.MatrixUtility;
+import repicea.math.utility.MatrixUtility;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
