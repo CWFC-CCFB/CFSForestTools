@@ -31,7 +31,9 @@ import java.util.Map;
 
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
+import repicea.math.DiagonalMatrix;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
@@ -171,18 +173,19 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 			String covparmsFilename = path + "0_HDRelationCovParms.csv";
 
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
+			SymmetricMatrix defaultBetaVariance = SymmetricMatrix.convertToSymmetricIfPossible(
+					ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym());
 			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance));
 			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
 			
-			Matrix matrixG = covParms.getSubMatrix(0, 19, 0, 0).matrixDiagonal();
+			DiagonalMatrix matrixG = covParms.getSubMatrix(0, 19, 0, 0).matrixDiagonal();
 			Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);
 			setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
-			Matrix sigma2 = covParms.getSubMatrix(20, 20, 0, 0);
+			SymmetricMatrix sigma2 = SymmetricMatrix.convertToSymmetricIfPossible(covParms.getSubMatrix(20, 20, 0, 0));
 			double phi = covParms.getValueAt(21, 0);
 			setDefaultResidualError(SpeciesType.BroadleavedSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));
 			
-			sigma2 = covParms.getSubMatrix(22, 22, 0, 0);
+			sigma2 = SymmetricMatrix.convertToSymmetricIfPossible(covParms.getSubMatrix(22, 22, 0, 0));
 			phi = covParms.getValueAt(23, 0);
 			setDefaultResidualError(SpeciesType.ConiferousSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));			
 			

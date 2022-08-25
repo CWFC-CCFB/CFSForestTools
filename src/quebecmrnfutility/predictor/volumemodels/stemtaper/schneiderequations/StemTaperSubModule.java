@@ -8,6 +8,7 @@ import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.Ste
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.SchneiderStemTaperEstimate;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.math.utility.MatrixUtility;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
@@ -22,7 +23,7 @@ import repicea.stats.estimates.Estimate;
 final class StemTaperSubModule extends AbstractStemTaperPredictor {
 
 	private static final Matrix FakeMatrixForMissingRandomEffects = new Matrix(2,1);
-	private static final Matrix FakeVarianceMatrixForMissingRandomEffects = new Matrix(2,2);
+	private static final SymmetricMatrix FakeVarianceMatrixForMissingRandomEffects = new SymmetricMatrix(2);
 	
 	protected final StemTaperTreeSpecies species;
 	
@@ -38,7 +39,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 
 	private Matrix residualErrors;
 	
-	private Matrix rMatrix;
+	private SymmetricMatrix rMatrix;
 	private Matrix rMatrixChol;
 	private double rho;
 	private double varFunctionParm1;
@@ -91,7 +92,8 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		Matrix l = heights.scalarMultiply(-1d).scalarAdd(tree.getHeightM());
 		Matrix stdDevMatrix = l.elementWiseMultiply(x).elementWiseMultiply(x.scalarMultiply(-1d).scalarAdd(1d).elementWisePower(3d)).getAbsoluteValue()
 				.elementWisePower(varFunctionParm2).scalarAdd(varFunctionParm1).matrixDiagonal();
-		rMatrix = stdDevMatrix.multiply(correlations).multiply(stdDevMatrix).scalarMultiply(residualStdDev * residualStdDev);
+		rMatrix = SymmetricMatrix.convertToSymmetricIfPossible(
+				stdDevMatrix.multiply(correlations).multiply(stdDevMatrix).scalarMultiply(residualStdDev * residualStdDev));
 		rMatrixChol = rMatrix.getLowerCholTriangle();
 	}
 	
@@ -113,8 +115,9 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		relativeHeights = heights.scalarMultiply(1d / tree.getHeightM());
 		Matrix treeHeightMatrix = new Matrix(heights.m_iRows, 1, tree.getHeightM(), 0d);
 
-		MatrixUtility.subtract(treeHeightMatrix, heights);
-		MatrixUtility.scalarMultiply(treeHeightMatrix, 1d / (tree.getHeightM() - 1.3));
+		treeHeightMatrix = treeHeightMatrix.subtract(heights); //  MatrixUtility.subtract(treeHeightMatrix, heights);
+//		MatrixUtility.scalarMultiply(treeHeightMatrix, 1d / (tree.getHeightM() - 1.3));
+		treeHeightMatrix = treeHeightMatrix.scalarMultiply(1d / (tree.getHeightM() - 1.3));
 		coreExpression =  treeHeightMatrix;
 
 		heightsSectionRespectToDbh = heights.scalarMultiply(1d / 1.3);
@@ -231,15 +234,15 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 			xPrime = hessians.getSubMatrix(i, i, 0, hessians.m_iCols - 1).transpose().squareSym();
 			zPrime = xPrime.getSubMatrix(indices, indices);
 			
-			MatrixUtility.elementWiseMultiply(zPrime, variances);
-			MatrixUtility.elementWiseMultiply(xPrime, getParameterEstimates().getVariance());
+			zPrime = zPrime.elementWiseMultiply(variances); //  MatrixUtility.elementWiseMultiply(zPrime, variances);
+			xPrime = xPrime.elementWiseMultiply(getParameterEstimates().getVariance()); // MatrixUtility.elementWiseMultiply(xPrime, getParameterEstimates().getVariance());
 			
 			correctionFactor.setValueAt(i, 0, zPrime.getSumOfElements() * .5 + xPrime.getSumOfElements() * .5);
 		}
 		correctionMatrix = correctionFactor;
 	}
 
-	private Matrix getRandomEffectVariance(HierarchicalLevel level) {
+	private SymmetricMatrix getRandomEffectVariance(HierarchicalLevel level) {
 		if (getDefaultRandomEffects(level) != null) {
 			return getDefaultRandomEffects(level).getVariance();
 		} else {
@@ -251,7 +254,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	 * This method computes the analytical variance according to the analytical estimator.
 	 * @return a Matrix instance
 	 */
-	private Matrix getStemTaperVariance(EstimationMethodInDeterministicMode estimationMethod) {
+	private SymmetricMatrix getStemTaperVariance(EstimationMethodInDeterministicMode estimationMethod) {
 		Matrix gradients = linearExpressions.getGradients(); 
 		Matrix gPlot = getRandomEffectVariance(HierarchicalLevel.PLOT);
 		Matrix gTree = getRandomEffectVariance(HierarchicalLevel.TREE);
@@ -261,23 +264,24 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		Matrix zGPlotzT = z.multiply(gPlot).multiply(z.transpose());
 		Matrix zGTreezT = z.multiply(gTree).multiply(z.transpose());
 		Matrix v = zGPlotzT;
-		MatrixUtility.add(v, zGTreezT);
-		MatrixUtility.add(v, rMatrix);
-		MatrixUtility.add(v, fixedEffectParameterPart);
+		v = v.add(zGTreezT); 	// MatrixUtility.add(v, zGTreezT);
+		v = v.add(rMatrix); 	// MatrixUtility.add(v, rMatrix);
+		v = v.add(fixedEffectParameterPart); // MatrixUtility.add(v, fixedEffectParameterPart);
 		Matrix w = v;
 		
 		if (estimationMethod == EstimationMethodInDeterministicMode.SecondOrder) {
-			MatrixUtility.subtract(w, correctionMatrix.multiply(correctionMatrix.transpose()));		// c*cT
+//			MatrixUtility.subtract(w, correctionMatrix.multiply(correctionMatrix.transpose()));		// c*cT
+			w = w.subtract(correctionMatrix.multiply(correctionMatrix.transpose()));
 			Matrix isserlisComponent;
 			try {
 				isserlisComponent = getIsserlisVarianceComponents();
-				MatrixUtility.add(w, isserlisComponent);
+				w = w.add(isserlisComponent); //  MatrixUtility.add(w, isserlisComponent);
 			} catch (Exception e) {
 				System.out.println("StemTaperEquation.getVolumeVariance(): Unable to calculate the isserlisComponent Matrix, will assume this matrix is null!");
 				e.printStackTrace();
 			}
 		}
-		return w;
+		return SymmetricMatrix.convertToSymmetricIfPossible(w);
 	}
 
 	
@@ -297,7 +301,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		double result;
 		Matrix isserlisPlot = getRandomEffectVariance(HierarchicalLevel.PLOT).getIsserlisMatrix();
 		Matrix isserlisTree = getRandomEffectVariance(HierarchicalLevel.TREE).getIsserlisMatrix();
-		MatrixUtility.add(isserlisPlot, isserlisTree);
+		isserlisPlot = isserlisPlot.add(isserlisTree);	//	MatrixUtility.add(isserlisPlot, isserlisTree);
 		Matrix isserlisCombine = isserlisPlot;
 		Matrix isserlisOmega = getParameterEstimates().getVariance().getIsserlisMatrix();
 		for (int i = 0; i < heights.m_iRows; i++) {
@@ -310,10 +314,10 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 				// the second order term is always multiplied by .5 and consequently the product of
 				// two second order term is always affected by a .25 constant.
 				Matrix zPKronzP = zPrimeI.getKroneckerProduct(zPrimeJ);
-				MatrixUtility.elementWiseMultiply(zPKronzP, isserlisCombine);
+				zPKronzP = zPKronzP.elementWiseMultiply(isserlisCombine); //  MatrixUtility.elementWiseMultiply(zPKronzP, isserlisCombine);
 				
 				Matrix xPKronxP = xPrimeI.getKroneckerProduct(xPrimeJ);
-				MatrixUtility.elementWiseMultiply(xPKronxP, isserlisOmega);
+				xPKronxP = xPKronxP.elementWiseMultiply(isserlisOmega);  //  MatrixUtility.elementWiseMultiply(xPKronxP, isserlisOmega);
 				
 				result = zPKronzP.getSumOfElements() * .25 + xPKronxP.getSumOfElements() * .25;
 //				result = zPrimeI.getKroneckerProduct(zPrimeJ).elementWiseMultiply(isserlisCombine).getSumOfElements() + xPrimeI.getKroneckerProduct(xPrimeJ).elementWiseMultiply(isserlisOmega).getSumOfElements();

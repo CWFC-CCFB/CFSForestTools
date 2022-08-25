@@ -22,6 +22,7 @@ import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradePredict
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeSpecies;
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
@@ -118,16 +119,16 @@ class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 		int residualDegreesOfFreedom = totalDegreesOfFreedom - numberParameters;
 //		Matrix currentMean = getParameterEstimates().getMean();
 		Matrix newMean = getParameterEstimates().getRandomDeviate();
-		Matrix variance = getParameterEstimates().getVariance();
+		SymmetricMatrix variance = getParameterEstimates().getVariance();
 		if (distributionForVCovRandomDeviates == null) {
 			distributionForVCovRandomDeviates = new ChiSquaredDistribution(residualDegreesOfFreedom, variance);
 		}
-		Matrix newVariance = distributionForVCovRandomDeviates.getRandomRealization();
+		SymmetricMatrix newVariance = distributionForVCovRandomDeviates.getRandomRealization();
 		setParameterEstimates(new SASParameterEstimates(newMean, newVariance));
 		
-		Matrix currentResidualVariance = getDefaultResidualError(ErrorTermGroup.Default).getVariance();
+		SymmetricMatrix currentResidualVariance = getDefaultResidualError(ErrorTermGroup.Default).getVariance();
 		ChiSquaredDistribution residualVarianceDistribution = new ChiSquaredDistribution(residualDegreesOfFreedom, currentResidualVariance);
-		Matrix newResidualVariance = residualVarianceDistribution.getRandomRealization();
+		SymmetricMatrix newResidualVariance = residualVarianceDistribution.getRandomRealization();
 		setDefaultResidualError(new GaussianErrorTermEstimate(newResidualVariance));
 	}
 

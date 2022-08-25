@@ -1,6 +1,7 @@
 package quebecmrnfutility.predictor.volumemodels.wbirchloggrades.simplelinearmodel;
 
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.stats.distributions.ChiSquaredDistribution;
@@ -23,13 +24,12 @@ class SimpleLinearModel extends REpiceaPredictor {
 		Matrix beta = new Matrix(2,1);
 		beta.setValueAt(0, 0, 4d);
 		beta.setValueAt(1, 0, 3d);
-		Matrix omega = new Matrix(2,2);
+		SymmetricMatrix omega = new SymmetricMatrix(2);
 		omega.setValueAt(0, 0, 0.025);
 		omega.setValueAt(1, 1, 0.0005);
 		omega.setValueAt(0, 1, Math.sqrt(omega.getValueAt(0, 0) * omega.getValueAt(1, 1)) * .1);
-		omega.setValueAt(1, 0, omega.getValueAt(0, 1));
 		setParameterEstimates(new ModelParameterEstimates(beta, omega));
-		Matrix residualVariance = new Matrix(1,1);
+		SymmetricMatrix residualVariance = new SymmetricMatrix(1);
 		if (R2_95Version) {
 			residualVariance.setValueAt(0, 0, .284);			// to ensure a R2 of 0.95
 		} else {
@@ -56,16 +56,16 @@ class SimpleLinearModel extends REpiceaPredictor {
 	void replaceModelParameters() {
 		int degreesOfFreedom = 98;		// assumption of 100 observations - 2 parameters
 		Matrix newMean = getParameterEstimates().getRandomDeviate();
-		Matrix variance = getParameterEstimates().getVariance();
+		SymmetricMatrix variance = getParameterEstimates().getVariance();
 		if (distributionForVCovRandomDeviates == null) {
 			distributionForVCovRandomDeviates = new ChiSquaredDistribution(degreesOfFreedom, variance);
 		}
-		Matrix newVariance = distributionForVCovRandomDeviates.getRandomRealization();
+		SymmetricMatrix newVariance = distributionForVCovRandomDeviates.getRandomRealization();
 		setParameterEstimates(new ModelParameterEstimates(newMean, newVariance));
 		
-		Matrix residualVariance = this.getDefaultResidualError(ErrorTermGroup.Default).getVariance();
+		SymmetricMatrix residualVariance = this.getDefaultResidualError(ErrorTermGroup.Default).getVariance();
 		ChiSquaredDistribution residualVarianceDistribution = new ChiSquaredDistribution(degreesOfFreedom, residualVariance);
-		Matrix newResidualVariance = residualVarianceDistribution.getRandomRealization();
+		SymmetricMatrix newResidualVariance = residualVarianceDistribution.getRandomRealization();
 		setDefaultResidualError(ErrorTermGroup.Default, new GaussianErrorTermEstimate(newResidualVariance));
 	}
 	
@@ -89,8 +89,8 @@ class SimpleLinearModel extends REpiceaPredictor {
 		Matrix newResidualVariance = res.transpose().multiply(invW).multiply(res).scalarMultiply(1d/(degreesOfFreedom));
 		Matrix newVariance = invXWX.scalarMultiply(newResidualVariance.getValueAt(0, 0));
 		
-		setParameterEstimates(new ModelParameterEstimates(newMean, newVariance));
-		setDefaultResidualError(ErrorTermGroup.Default, new GaussianErrorTermEstimate(newResidualVariance));
+		setParameterEstimates(new ModelParameterEstimates(newMean, SymmetricMatrix.convertToSymmetricIfPossible(newVariance)));
+		setDefaultResidualError(ErrorTermGroup.Default, new GaussianErrorTermEstimate(SymmetricMatrix.convertToSymmetricIfPossible(newResidualVariance)));
 	}
 
 

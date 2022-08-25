@@ -34,6 +34,7 @@ import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.Ste
 import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcDrainageClassProvider.QcDrainageClass;
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.stats.LinearStatisticalExpression;
 
 /**
@@ -60,7 +61,7 @@ class InternalStatisticalExpressions {
 	static class CustomizedNonlinearStatisticalExpression extends AbstractMathematicalFunction {
 		
 		protected Matrix gradient;
-		protected Matrix hessian;
+		protected SymmetricMatrix hessian;
 		
 		@Override
 		public Double getValue() {
@@ -92,9 +93,9 @@ class InternalStatisticalExpressions {
 		}
 
 		@Override
-		public Matrix getHessian() {
+		public SymmetricMatrix getHessian() {
 			if (hessian == null || hessian.m_iCols != getNumberOfParameters()) {				// create a hessian matrix only once or only if the number of variables in x changes
-				hessian = new Matrix(getNumberOfParameters(), getNumberOfParameters());
+				hessian = new SymmetricMatrix(getNumberOfParameters());
 			}
 //			hessian.resetMatrix();	// all values are reset to 0
 			double powerExpression = Math.pow(getVariableValue(0), getParameterValue(1));
@@ -126,8 +127,8 @@ class InternalStatisticalExpressions {
 	@SuppressWarnings("serial")
 	static class CustomizedNonlinearPibStatisticalExpression extends AbstractMathematicalFunction {
 
-		protected Matrix	gradient;
-		protected Matrix	hessian;
+		protected Matrix gradient;
+		protected SymmetricMatrix hessian;
 
 		@Override
 		public Double getValue() {
@@ -161,9 +162,9 @@ class InternalStatisticalExpressions {
 		}
 
 		@Override
-		public Matrix getHessian() {
+		public SymmetricMatrix getHessian() {
 			if (hessian == null || hessian.m_iCols != getNumberOfParameters()) {				// create a hessian matrix only once or only if the number of variables in x changes
-				hessian = new Matrix(getNumberOfParameters(), getNumberOfParameters());
+				hessian = new SymmetricMatrix(getNumberOfParameters());
 			}
 //			hessian.resetMatrix();	// all values are reset to 0
 			double powerExpression1 = Math.pow(getVariableValue(1), getParameterValue(1));
@@ -173,7 +174,7 @@ class InternalStatisticalExpressions {
 			
 			hessian.setValueAt(1, 1, powerExpression1 * powerExpression2 * log1 * log1);
 			hessian.setValueAt(1, 2, powerExpression1 * powerExpression2 * log1 * log2);
-			hessian.setValueAt(2, 1, powerExpression1 * powerExpression2 * log2 * log1);
+//			hessian.setValueAt(2, 1, powerExpression1 * powerExpression2 * log2 * log1);
 			hessian.setValueAt(2, 2, powerExpression1 * powerExpression2 * log2 * log2);
 			return hessian;
 		}
@@ -399,7 +400,7 @@ class InternalStatisticalExpressions {
 		int totalNumberOfParameters = firstTermNumberOfParameters + secondTermNumberOfParameters;
 
 		Matrix hessians = new Matrix(stemTaperPredictor.heights.m_iRows, (totalNumberOfParameters + 1) * totalNumberOfParameters / 2);
-		Matrix tmpHessian;
+		SymmetricMatrix tmpHessian;
 		Matrix gradient1;
 		Matrix gradient2;
 		
@@ -415,7 +416,8 @@ class InternalStatisticalExpressions {
 			block12 = gradient1.multiply(gradient2.transpose()).scalarMultiply(basicHessian.getValueAt(i, 1));
 			block22 = gradient2.multiply(gradient2.transpose()).scalarMultiply(basicHessian.getValueAt(i, 2)).add(secondLinearTerm.getHessian().scalarMultiply(basicHessian.getValueAt(i, 2)));
 			
-			tmpHessian = block11.matrixStack(block12, false).matrixStack(block12.transpose().matrixStack(block22, false), true);
+			tmpHessian = SymmetricMatrix.convertToSymmetricIfPossible(
+					block11.matrixStack(block12, false).matrixStack(block12.transpose().matrixStack(block22, false), true));
 			
 			hessians.setSubMatrix(tmpHessian.symSquare().transpose(), i, 0);
 		}		

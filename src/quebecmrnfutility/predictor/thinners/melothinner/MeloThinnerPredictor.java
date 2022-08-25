@@ -22,7 +22,6 @@ package quebecmrnfutility.predictor.thinners.melothinner;
 import java.awt.Container;
 import java.awt.Window;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,7 @@ import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassPro
 import repicea.gui.REpiceaShowableUIWithParent;
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
@@ -73,7 +73,7 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 		public Matrix getGradient() {return null;}
 
 		@Override
-		public Matrix getHessian() {return null;}
+		public SymmetricMatrix getHessian() {return null;}
 
 		private double getSqrtTwiceVariance() {
 			if (sqrtTwiceVariance == null) {
@@ -140,11 +140,12 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 			String omegaFilename = path + "0_HarvestOmega.csv";
 			
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			Matrix randomEffectVariance = defaultBetaMean.getSubMatrix(11, 11, 0, 0);
+			SymmetricMatrix randomEffectVariance = SymmetricMatrix.convertToSymmetricIfPossible(
+					defaultBetaMean.getSubMatrix(11, 11, 0, 0));
 			defaultBetaMean = defaultBetaMean.getSubMatrix(0, 10, 0, 0);
 			
-			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
-			defaultBetaVariance = defaultBetaVariance.getSubMatrix(0, 10, 0, 10);
+			SymmetricMatrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
+			defaultBetaVariance = SymmetricMatrix.convertToSymmetricIfPossible(defaultBetaVariance.getSubMatrix(0, 10, 0, 10));
 			Matrix meanRandomEffect = new Matrix(1,1);
 			setDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE, new GaussianEstimate(meanRandomEffect, randomEffectVariance));
 			ModelParameterEstimates estimate = new SASParameterEstimates(defaultBetaMean, defaultBetaVariance);

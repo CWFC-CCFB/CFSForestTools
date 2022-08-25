@@ -25,6 +25,7 @@ import java.util.Map;
 
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
@@ -73,7 +74,7 @@ public class Iris2020RecruitmentNumberPredictor extends REpiceaPredictor {
 			ParameterMap speciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
 			for (Iris2020Species sp : Iris2020Species.values()) {
 				Matrix beta = betaMap.get(sp.ordinal() + 1);
-				Matrix omega = omegaMap.get(sp.ordinal() + 1).squareSym();
+				SymmetricMatrix omega = omegaMap.get(sp.ordinal() + 1).squareSym();
 				Matrix thetaMat = thetaMap.get(sp.ordinal() + 1);
 				Matrix speciesEffectMatches = speciesEffectMatchesMap.get(sp.ordinal() + 1);
 				Iris2020RecruitmentNumberInternalPredictor subPredictor = new Iris2020RecruitmentNumberInternalPredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled, thetaMat.getValueAt(0, 0));

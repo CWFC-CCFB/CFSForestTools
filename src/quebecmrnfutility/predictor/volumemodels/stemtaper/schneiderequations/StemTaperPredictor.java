@@ -34,6 +34,7 @@ import java.util.Map;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.serial.xml.XmlSerializerChangeMonitor;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
@@ -85,7 +86,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 		}
 
 		@Override
-		protected Matrix getVarianceOfSquaredDiameter(Matrix variancePredictedDiameters) {
+		protected SymmetricMatrix getVarianceOfSquaredDiameter(SymmetricMatrix variancePredictedDiameters) {
 			return variancePredictedDiameters; // already squared
 		}
 
@@ -166,18 +167,21 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 						String residStdDevFilename = path + prefix + "residualStdDev".concat(suffix);
 
 						Matrix beta = ParameterLoader.loadVectorFromFile(parameterFilename).get();
-						Matrix omega = ParameterLoader.loadMatrixFromFile(omegaFilename);
+						SymmetricMatrix omega = SymmetricMatrix.convertToSymmetricIfPossible(
+								ParameterLoader.loadMatrixFromFile(omegaFilename));
 						
 						currentSubModule.setParameterEstimates(new ModelParameterEstimates(beta, omega));
 
-						Matrix g = ParameterLoader.loadMatrixFromFile(plotRandomEffectsFilename);
+						SymmetricMatrix g = SymmetricMatrix.convertToSymmetricIfPossible(
+								ParameterLoader.loadMatrixFromFile(plotRandomEffectsFilename));
 						if (g.anyElementDifferentFrom(0d)) {
 							currentSubModule.setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
 						} else { // means there is no random effect at this level
 //							System.out.println("Schneider stem taper predictor : No random effect at " + HierarchicalLevel.PLOT.toString() + " level for species " + species.name() + " for version " + modelType.name());
 						}
 
-						g = ParameterLoader.loadMatrixFromFile(treeRandomEffectsFilename);
+						g = SymmetricMatrix.convertToSymmetricIfPossible(
+								ParameterLoader.loadMatrixFromFile(treeRandomEffectsFilename));
 						if (g.anyElementDifferentFrom(0d)) {
 							currentSubModule.setDefaultRandomEffects(HierarchicalLevel.TREE, new GaussianEstimate(new Matrix(g.m_iRows, 1), g));
 						} else { // means there is no random effect at this level

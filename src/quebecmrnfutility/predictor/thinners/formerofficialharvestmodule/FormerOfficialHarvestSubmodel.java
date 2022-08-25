@@ -25,6 +25,7 @@
 package quebecmrnfutility.predictor.thinners.formerofficialharvestmodule;
 
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
@@ -57,7 +58,7 @@ class FormerOfficialHarvestSubmodel extends REpiceaPredictor {
 		this(false, false);
 	}
 
-	protected void setDefaultBeta(Matrix beta, Matrix variance) {
+	protected void setDefaultBeta(Matrix beta, SymmetricMatrix variance) {
 		setParameterEstimates(new SASParameterEstimates(beta, variance));		
 	}
 	

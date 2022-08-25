@@ -26,6 +26,7 @@ package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
 
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree.VolSpecies;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaPredictor;
@@ -77,14 +78,14 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			String covparmsFilename = path + "0_MerchVolumeCovParms.csv";
 
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
+			SymmetricMatrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
 			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance));
 			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
 
-			Matrix matrixGPlotLevel =  covParms.getSubMatrix(0, 2, 0, 0).squareSym();
+			SymmetricMatrix matrixGPlotLevel =  covParms.getSubMatrix(0, 2, 0, 0).squareSym();
 			Matrix defaultRandomEffectsPlotLevel = new Matrix(matrixGPlotLevel.m_iRows, 1);
 
-			Matrix matrixGCruiseLineLevel = covParms.getSubMatrix(3, 5, 0, 0).squareSym();
+			SymmetricMatrix matrixGCruiseLineLevel = covParms.getSubMatrix(3, 5, 0, 0).squareSym();
 			Matrix defaultRandomEffectsCruiseLineLevel = new Matrix(matrixGCruiseLineLevel.m_iRows, 1);
 			
 			sigma2 = covParms.getSubMatrix(6, covParms.m_iRows - 1, 0, 0);

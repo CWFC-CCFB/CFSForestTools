@@ -37,6 +37,7 @@ import java.util.Vector;
 
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
 import repicea.util.ObjectUtility;
@@ -155,7 +156,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 			for (TreatmentType treatment : TreatmentType.values()) {
 				if (betas.containsKey(treatment) && variances.containsKey(treatment)) {
 					OfficialHarvestSubmodel calculatorForThisTreatment = new OfficialHarvestSubmodel(isParametersVariabilityEnabled, isResidualVariabilityEnabled);
-					calculatorForThisTreatment.setParameterEstimates(betas.get(treatment), variances.get(treatment));
+					calculatorForThisTreatment.setParameterEstimates(betas.get(treatment), SymmetricMatrix.convertToSymmetricIfPossible(variances.get(treatment)));
 					modelParametersLibrary.put(treatment, calculatorForThisTreatment);
 				}
 			}

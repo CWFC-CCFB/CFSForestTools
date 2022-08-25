@@ -33,6 +33,7 @@ import java.util.Vector;
 import quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestableTree.BetaHarvestableSpecies;
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.disturbances.DisturbanceParameter;
@@ -123,7 +124,7 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 			String omegaFilename = path + "0_HarvestGenericOmega.csv";
 			
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
+			SymmetricMatrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
 			
 			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance)); 
 			

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaBinaryEventPredictor;
@@ -50,7 +51,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 
 	static class InternalParameterEstimates extends ModelParameterEstimates {
 
-		InternalParameterEstimates(Matrix mean, Matrix variance) {
+		InternalParameterEstimates(Matrix mean, SymmetricMatrix variance) {
 			super(mean, variance);
 		}
 
@@ -95,7 +96,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 			String omegaFilename = path + "0_omega_wei.csv";
 			
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
+			SymmetricMatrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
 
 			setParameterEstimates(new InternalParameterEstimates(defaultBetaMean, defaultBetaVariance));
 		} catch (Exception e) {

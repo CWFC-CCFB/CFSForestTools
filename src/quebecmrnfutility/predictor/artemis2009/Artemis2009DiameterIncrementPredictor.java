@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.REpiceaPredictor;
 import repicea.util.Index;
@@ -59,8 +60,10 @@ public class Artemis2009DiameterIncrementPredictor extends REpiceaPredictor {
 				internalPredictor.setBeta(beta, omegaVectorForm.squareSym());
 				internalPredictor.setEffectList(effectList);
 				
-				internalPredictor.setRandomEffect(HierarchicalLevel.PLOT, covparms.getSubMatrix(0, 0, 0, 0));
-				internalPredictor.setRandomEffect(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT, covparms.getSubMatrix(1, 1, 0, 0));
+				internalPredictor.setRandomEffect(HierarchicalLevel.PLOT, 
+						SymmetricMatrix.convertToSymmetricIfPossible(covparms.getSubMatrix(0, 0, 0, 0)));
+				internalPredictor.setRandomEffect(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT, 
+						SymmetricMatrix.convertToSymmetricIfPossible(covparms.getSubMatrix(1, 1, 0, 0)));
 				internalPredictor.setResidualErrorCovariance(covparms.getValueAt(3, 0), covparms.getValueAt(2, 0));
 			}
 		}
