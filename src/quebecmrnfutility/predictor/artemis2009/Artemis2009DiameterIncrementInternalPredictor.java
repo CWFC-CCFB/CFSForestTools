@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
@@ -40,7 +41,7 @@ class Artemis2009DiameterIncrementInternalPredictor extends REpiceaPredictor {
 		effectList = new ArrayList<Integer>();
 	}
 
-	protected void setBeta(Matrix beta, Matrix omega) {
+	protected void setBeta(Matrix beta, SymmetricMatrix omega) {
 		ModelParameterEstimates estimate = new SASParameterEstimates(beta, omega);
 		setParameterEstimates(estimate);
 		oXVector = new Matrix(1, estimate.getMean().m_iRows);
@@ -81,14 +82,14 @@ class Artemis2009DiameterIncrementInternalPredictor extends REpiceaPredictor {
 		return output;
 	}
 
-	protected void setRandomEffect(HierarchicalLevel level, Matrix randomEffectVariance) {
+	protected void setRandomEffect(HierarchicalLevel level, SymmetricMatrix randomEffectVariance) {
 		Matrix mean = new Matrix(randomEffectVariance.m_iRows, 1);
 		setDefaultRandomEffects(level, new GaussianEstimate(mean, randomEffectVariance));
 	}
 
 	
 	protected void setResidualErrorCovariance(double s2_tree, double correlationParameter) {
-		Matrix variance = new Matrix(1,1);
+		SymmetricMatrix variance = new SymmetricMatrix(1);
 		variance.setValueAt(0, 0, s2_tree);
 		setDefaultResidualError(ErrorTermGroup.Default, new GaussianErrorTermEstimate(variance, correlationParameter, StatisticalUtility.TypeMatrixR.LINEAR_LOG));
 	}

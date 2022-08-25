@@ -20,6 +20,7 @@ package quebecmrnfutility.predictor.matapedia;
 
 import quebecmrnfutility.predictor.matapedia.MatapediaTree.MatapediaTreeSpecies;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.GrowthModel;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
@@ -62,16 +63,16 @@ public class MatapediaDbhIncrementPredictor extends REpiceaPredictor implements 
 			String covparmsFilename = path + "0_AccroissementCovParms.csv";
 			
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
+			SymmetricMatrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
 			
 			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance)); 
 			
 			Matrix covParms =  ParameterLoader.loadVectorFromFile(covparmsFilename).get();
-			Matrix plotRandomEffectVariance = covParms.getSubMatrix(0, 0, 0, 0);
+			SymmetricMatrix plotRandomEffectVariance = SymmetricMatrix.convertToSymmetricIfPossible(covParms.getSubMatrix(0, 0, 0, 0));
 			GaussianEstimate defRandomEffect = new GaussianEstimate(new Matrix(plotRandomEffectVariance.m_iRows,1), plotRandomEffectVariance);
 			setDefaultRandomEffects(HierarchicalLevel.TREE, defRandomEffect);
 
-			Matrix residualErrorVariance = covParms.getSubMatrix(1, 1, 0, 0);
+			SymmetricMatrix residualErrorVariance = SymmetricMatrix.convertToSymmetricIfPossible(covParms.getSubMatrix(1, 1, 0, 0));
 			setDefaultResidualError(ErrorTermGroup.Default, new GaussianErrorTermEstimate(residualErrorVariance));
 		} catch (Exception e) {
 			System.out.println("MatapediaDbhIncrementPredictor.init() : Unable to initialize the diameter increment module!");

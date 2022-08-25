@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
@@ -42,7 +43,7 @@ class Artemis2009MortalityInternalPredictor extends REpiceaBinaryEventPredictor<
 	}
 
 	
-	protected void setBeta(Matrix beta, Matrix omega) {
+	protected void setBeta(Matrix beta, SymmetricMatrix omega) {
 		ModelParameterEstimates estimate = new SASParameterEstimates(beta, omega);
 		setParameterEstimates(estimate);
 		oXVector = new Matrix(1, estimate.getMean().m_iRows);

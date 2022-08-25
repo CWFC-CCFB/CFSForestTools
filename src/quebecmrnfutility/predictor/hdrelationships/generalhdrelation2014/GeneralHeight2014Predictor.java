@@ -7,6 +7,7 @@ import java.util.Map;
 
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.Heightable2014Tree.Hd2014Species;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaPredictor;
@@ -160,7 +161,7 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 				String listDisturbFileName = path + "listePerturb".concat(suffix);
 
 				Matrix beta = ParameterLoaderExt.loadVectorFromFile(parameterFilename).get();
-				Matrix omega = ParameterLoaderExt.loadMatrixFromFile(omegaFilename, 6);				
+				SymmetricMatrix omega = SymmetricMatrix.convertToSymmetricIfPossible(ParameterLoaderExt.loadMatrixFromFile(omegaFilename, 6));				
 				try {
 					omega.getLowerCholTriangle();
 				} catch (Exception e) {
@@ -171,11 +172,11 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 				internalPredictor.setParameterEstimates(defaultBeta);
 
 				Matrix randomEffects = ParameterLoaderExt.loadVectorFromFile(plotRandomEffectsFilename).get();
-				Matrix matrixG = randomEffects.getSubMatrix(0, 0, 0, 0);
+				SymmetricMatrix matrixG = SymmetricMatrix.convertToSymmetricIfPossible(randomEffects.getSubMatrix(0, 0, 0, 0));
 				Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);
 				internalPredictor.setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
 				
-				Matrix sigma2 = randomEffects.getSubMatrix(2, 2, 0, 0);
+				SymmetricMatrix sigma2 = SymmetricMatrix.convertToSymmetricIfPossible(randomEffects.getSubMatrix(2, 2, 0, 0));
 				double phi = randomEffects.getValueAt(1, 0);//tree
 				GaussianErrorTermEstimate estimate = new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.POWER);
 				setDefaultResidualError(ErrorTermGroup.Default, estimate);

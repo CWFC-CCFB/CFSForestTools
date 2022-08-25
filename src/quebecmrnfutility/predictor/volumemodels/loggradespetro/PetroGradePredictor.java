@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
@@ -101,8 +102,8 @@ public class PetroGradePredictor extends REpiceaPredictor {
 			}
 			
 			Matrix beta;
-			Matrix omega;
-			Matrix errorCovariance;
+			SymmetricMatrix omega;
+			SymmetricMatrix errorCovariance;
 			for (PetroGradePredictorVersion version : PetroGradePredictorVersion.values()) {
 				beta = betaPres.get(version.getId());
 				omega = omegaPres.get(version.getId()).squareSym(); 

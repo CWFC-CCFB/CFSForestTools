@@ -18,12 +18,11 @@
  */
 package quebecmrnfutility.predictor.matapedia;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import quebecmrnfutility.predictor.matapedia.MatapediaTree.MatapediaTreeSpecies;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
@@ -32,8 +31,8 @@ import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.integral.AbstractGaussQuadrature.NumberOfPoints;
-import repicea.stats.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.stats.integral.GaussHermiteQuadrature;
+import repicea.stats.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.stats.model.glm.LinkFunction;
 import repicea.stats.model.glm.LinkFunction.Type;
 import repicea.util.ObjectUtility;
@@ -121,8 +120,9 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 			String covParmsFilename = path + "0_MortCovParms.csv";
 			
 			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			Matrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
-			Matrix randomEffectVariance = ParameterLoader.loadVectorFromFile(covParmsFilename).get();
+			SymmetricMatrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
+			SymmetricMatrix randomEffectVariance = SymmetricMatrix.convertToSymmetricIfPossible(
+					ParameterLoader.loadVectorFromFile(covParmsFilename).get());
 			
 			Matrix meanRandomEffect = new Matrix(1,1);
 			setDefaultRandomEffects(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT, new GaussianEstimate(meanRandomEffect, randomEffectVariance));

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaBinaryEventPredictor;
@@ -63,7 +64,7 @@ public class Iris2020RecruitmentOccurrencePredictor extends REpiceaBinaryEventPr
 			ParameterMap offsetListMap = ParameterLoader.loadVectorFromFile(1, offsetList);
 			for (Iris2020Species sp : Iris2020Species.values()) {
 				Matrix beta = betaMap.get(sp.ordinal() + 1);
-				Matrix omega = omegaMap.get(sp.ordinal() + 1).squareSym();
+				SymmetricMatrix omega = omegaMap.get(sp.ordinal() + 1).squareSym();
 				Matrix speciesEffectMatches = speciesEffectMatchesMap.get(sp.ordinal() + 1);
 				Matrix offset = offsetListMap.get(sp.ordinal() + 1);
 				boolean isOffsetEnabled = offset.getValueAt(0, 0) == 1d;

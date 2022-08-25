@@ -28,6 +28,7 @@ import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.O
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.SoilDepth;
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatiblePlot.SoilTexture;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
@@ -51,7 +52,7 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		effectList = new ArrayList<Integer>();
 	}
 	
-	protected void setBeta(Matrix beta, Matrix omega) {
+	protected void setBeta(Matrix beta, SymmetricMatrix omega) {
 		ModelParameterEstimates estimate = new ModelParameterEstimates(beta, omega);
 		setParameterEstimates(estimate);
 		oXVector = new Matrix(1, estimate.getMean().m_iRows);

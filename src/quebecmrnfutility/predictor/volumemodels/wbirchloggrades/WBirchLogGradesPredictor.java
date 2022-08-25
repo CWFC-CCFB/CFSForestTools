@@ -23,11 +23,12 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaPredictor;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
 import repicea.stats.Distribution.Type;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.ChiSquaredDistribution;
@@ -94,7 +95,7 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 //			String varCorrCoefFilename = path + "0_varianceCorrCoef.csv";
 
 			Matrix beta = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			Matrix omega = ParameterLoader.loadMatrixFromFile(omegaFilename);
+			SymmetricMatrix omega = SymmetricMatrix.convertToSymmetricIfPossible(ParameterLoader.loadMatrixFromFile(omegaFilename));
 			corrMatrix = ParameterLoader.loadMatrixFromFile(rMatrixFilename);
 			Matrix varParms = ParameterLoader.loadVectorFromFile(varParmsFilename).get();
 			sigma2Res = varParms.getValueAt(varParms.m_iRows - 1, 0);
@@ -115,7 +116,8 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 
 		if (!cholMatrices.containsKey(dbhCm)) {
 			Matrix weightMat = weightExponentCoefficients.powMatrix(dbhCm).matrixDiagonal();  
-			Matrix vMat = weightMat.multiply(corrMatrix).multiply(weightMat).scalarMultiply(sigma2Res);
+			SymmetricMatrix vMat = SymmetricMatrix.convertToSymmetricIfPossible(
+					weightMat.multiply(corrMatrix).multiply(weightMat).scalarMultiply(sigma2Res));
 			cholMatrices.put(dbhCm, vMat.getLowerCholTriangle());
 		}
 
@@ -321,11 +323,11 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 	void replaceModelParameters() {
 		int degreesOfFreedom = 607;		// according to simul.gnls.3 in the file resolution-simultanee-v8-mathieu
 		Matrix newMean = getParameterEstimates().getRandomDeviate();
-		Matrix variance = getParameterEstimates().getVariance();
+		SymmetricMatrix variance = getParameterEstimates().getVariance();
 		if (distributionForVCovRandomDeviates == null) {
 			distributionForVCovRandomDeviates = new ChiSquaredDistribution(degreesOfFreedom, variance);
 		}
-		Matrix newVariance = distributionForVCovRandomDeviates.getRandomRealization();
+		SymmetricMatrix newVariance = distributionForVCovRandomDeviates.getRandomRealization();
 		setParameterEstimates(new ModelParameterEstimates(newMean, newVariance));
 		
 		ChiSquaredDistribution residualVarianceDistribution = new ChiSquaredDistribution(degreesOfFreedom, sigma2Res);

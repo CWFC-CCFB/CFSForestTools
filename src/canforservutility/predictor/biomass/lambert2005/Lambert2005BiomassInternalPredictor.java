@@ -30,6 +30,7 @@ import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredict
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.EstimatedWeightDependent;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.FileImportParameter;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.stats.Distribution;
@@ -39,7 +40,7 @@ public class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	Matrix parameterEstimates;
 	Matrix parameterCovariance;	
 	
-	Matrix errorCovariance;	
+	SymmetricMatrix errorCovariance;	
 	Matrix c;	// column vector
 	Matrix cholesky; 	
 	
@@ -48,7 +49,7 @@ public class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 				
 		parameterEstimates = new Matrix(FileImportParameter.fileImportParameterSize, 1);
 		parameterCovariance = new Matrix(FileImportParameter.fileImportParameterSize, FileImportParameter.fileImportParameterSize);
-		errorCovariance = new Matrix(ErrorCovarianceEquation.errorCovarianceEquationSize, ErrorCovarianceEquation.errorCovarianceEquationSize);
+		errorCovariance = new SymmetricMatrix(ErrorCovarianceEquation.errorCovarianceEquationSize);
 		c = new Matrix(EstimatedWeightDependent.values().length, 1);		
 	}
 	
@@ -72,8 +73,7 @@ public class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 		
 	@Override
 	protected void init() {
-		// TODO Auto-generated method stub
-		
+
 		// here we need to provide a covariance matrix that doesn't present any row or column for 0.0 parameters
 		List<Integer> validIndices = new ArrayList<Integer>();
 		for (int i = 0; i < parameterEstimates.m_iRows; i++) {
@@ -81,8 +81,10 @@ public class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 				validIndices.add(i);
 			}
 		}
-		
-		this.setParameterEstimates(new SASParameterEstimates(parameterEstimates, parameterCovariance.getSubMatrix(validIndices, validIndices)));
+
+		SymmetricMatrix variance = SymmetricMatrix.convertToSymmetricIfPossible(
+				parameterCovariance.getSubMatrix(validIndices, validIndices));
+		setParameterEstimates(new SASParameterEstimates(parameterEstimates, variance));
 		
 		//this.setDefaultResidualError(ErrorTermGroup.Default, new GaussianErrorTermEstimate(errorCovariance, 0.0, null));
 	}	

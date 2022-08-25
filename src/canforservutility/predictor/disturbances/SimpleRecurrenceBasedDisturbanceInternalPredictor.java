@@ -26,6 +26,7 @@ import java.util.Map;
 
 import canforservutility.predictor.disturbances.SimpleRecurrenceBasedDisturbancePredictor.SimpleRecurrenceBasedDisturbanceParameters;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaBinaryEventPredictor;
@@ -51,7 +52,7 @@ class SimpleRecurrenceBasedDisturbanceInternalPredictor extends REpiceaBinaryEve
 		
 		Matrix mean = new Matrix(1,1);
 		mean.setValueAt(0, 0, recurrenceParameters.getEstimatedRecurrence());
-		Matrix variance = new Matrix(1,1);
+		SymmetricMatrix variance = new SymmetricMatrix(1);
 		variance.setValueAt(0, 0, recurrenceParameters.getVariance());
 		
 		ModelParameterEstimates meanRecurrence = new ModelParameterEstimates(mean, variance);
