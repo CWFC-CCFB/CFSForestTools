@@ -186,7 +186,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	}
 
 	@Override
-	public Matrix getBasalAreaM2HaBySpecies() {return gSpGrMat;}
+	public double getBasalAreaM2HaForThisSpecies(Iris2020Species species) {return gSpGrMat.getValueAt(0, species.ordinal());}
 
 
 

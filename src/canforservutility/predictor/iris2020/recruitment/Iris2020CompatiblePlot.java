@@ -213,12 +213,12 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	public SoilTexture getSoilTexture();
 	
 	/**
-	 * Return a Matrix with the basal area (m2/ha) for each species or species group. 
-	 * The index of the group corresponds to the ordinal of the Iris2020Species enum
-	 * variable.
-	 * @return a 1x33 Matrix
+	 * Return the basal area (m2/ha) for this species or species group. 
+	 * 
+	 * @param species a Iris2020Species enum
+	 * @return a double
 	 */
-	public Matrix getBasalAreaM2HaBySpecies();
+	public double getBasalAreaM2HaForThisSpecies(Iris2020Species species);
 	
 	/**
 	 * Return the basal area (m2/ha) of coniferous species.
