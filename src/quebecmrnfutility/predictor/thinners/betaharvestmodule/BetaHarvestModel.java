@@ -34,12 +34,12 @@ import quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestableTre
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.math.utility.MatrixUtility;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
 import repicea.simulation.thinners.REpiceaTreatmentDefinition;
-import repicea.stats.StatisticalUtility;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -134,7 +134,7 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 				Matrix spDummy = species.getDummy();
 				Map<Treatment, Matrix> oMap = new TreeMap<Treatment, Matrix>();
 				for (Treatment trt : Treatment.values()) {
-					Matrix spTrtDummy = StatisticalUtility.combineMatrices(spDummy, trt.getDummy()).removeElements(index);
+					Matrix spTrtDummy = MatrixUtility.combineMatrices(spDummy, trt.getDummy()).removeElements(index);
 					oMap.put(trt, spTrtDummy);
 				}
 				speciesTreatmentDummy.put(species, oMap);

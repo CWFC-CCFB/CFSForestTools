@@ -23,9 +23,9 @@ import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.Pe
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeType;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.math.utility.MatrixUtility;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.SASParameterEstimates;
-import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.ChiSquaredDistribution;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 
@@ -80,7 +80,7 @@ class PetroGradePredictorVolumeSubModule extends PetroGradePredictorSubModule {
 				pointer += dummyVersion.m_iCols;
 			}
 
-			Matrix dummyProductSpecies = StatisticalUtility.combineMatrices(dummyProduct, dummySpecies);
+			Matrix dummyProductSpecies = MatrixUtility.combineMatrices(dummyProduct, dummySpecies);
 			oXVector.setSubMatrix(dummyProductSpecies, 0, pointer);
 			pointer += dummyProductSpecies.m_iCols;
 			

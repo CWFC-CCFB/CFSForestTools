@@ -21,14 +21,14 @@ package quebecmrnfutility.predictor.volumemodels.loggradespetro;
 import java.security.InvalidParameterException;
 
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradePredictor.PetroGradePredictorVersion;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcHarvestPriorityProvider.QcHarvestPriority;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcVigorClassProvider.QcVigorClass;
 import repicea.math.Matrix;
+import repicea.math.utility.MatrixUtility;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
-import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.ChiSquaredDistribution;
 
 @SuppressWarnings("serial")
@@ -72,16 +72,16 @@ abstract class PetroGradePredictorSubModule extends REpiceaPredictor {
 			Matrix dummyVig = vigour1234.geDummyVig();
 			Matrix dummyProd = vigour1234.geDummyProd();
 			oMat = new Matrix(1,dummyProduct.m_iCols*(dummyVig.m_iCols + dummyProd.m_iCols));
-			oMat.setSubMatrix(StatisticalUtility.combineMatrices(dummyProduct, dummyVig), 0, 0);
-			oMat.setSubMatrix(StatisticalUtility.combineMatrices(dummyProduct, dummyProd), 0, dummyProduct.m_iCols * dummyVig.m_iCols);
+			oMat.setSubMatrix(MatrixUtility.combineMatrices(dummyProduct, dummyVig), 0, 0);
+			oMat.setSubMatrix(MatrixUtility.combineMatrices(dummyProduct, dummyProd), 0, dummyProduct.m_iCols * dummyVig.m_iCols);
 			break;
 		case WITH_HARV_PRIOR_MSCR: 
 			QcHarvestPriority priorityMSCR = tree.getHarvestPriority();
-			oMat = StatisticalUtility.combineMatrices(dummyProduct, priorityMSCR.getDummy());
+			oMat = MatrixUtility.combineMatrices(dummyProduct, priorityMSCR.getDummy());
 			break;
 		case WITH_QUALITY_ABCD:
 			QcTreeQuality qualityABCD = tree.getTreeQuality();
-			oMat = StatisticalUtility.combineMatrices(dummyProduct, qualityABCD.getDummy());
+			oMat = MatrixUtility.combineMatrices(dummyProduct, qualityABCD.getDummy());
 			break;
 		}
 		return oMat;
