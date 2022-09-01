@@ -28,19 +28,22 @@ public class Iris2020ProtoPlotImpl implements Iris2020ProtoPlot {
 	private final double longitudeDeg;
 	private final double weight;
 	private final int dateYr;
+	private final double baHaSpecies;
+	double distanceKm;
 	
 	public Iris2020ProtoPlotImpl(String id, 
 			double latitudeDeg, 
 			double longitudeDeg,
 			double weight,
-			int dateYr) {
+			int dateYr,
+			double baHaSpecies) {
 		this.id = id;
 		this.latitudeDeg = latitudeDeg;
 		this.longitudeDeg = longitudeDeg; 
 		this.weight = weight;
 		this.dateYr = dateYr;
+		this.baHaSpecies = baHaSpecies;
 	}
-	
 	
 	@Override
 	public String getSubjectId() {return id;}
@@ -71,9 +74,6 @@ public class Iris2020ProtoPlotImpl implements Iris2020ProtoPlot {
 	public double getWeight() {return weight;}
 	
 	@Override
-	public double getBasalAreaM2HaForThisSpecies(Iris2020Species species) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public double getBasalAreaM2HaForThisSpecies(Iris2020Species species) {return baHaSpecies;}
 
 }
