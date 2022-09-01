@@ -24,18 +24,14 @@ import java.util.Map;
 
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
 import repicea.math.Matrix;
-import repicea.simulation.HierarchicalLevel;
-import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.SlopeInclinationPercentProvider;
 
-public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantObject,
-													GrowthStepLengthYrProvider,
+public interface Iris2020CompatiblePlot extends 	GrowthStepLengthYrProvider,
 													SlopeInclinationPercentProvider,
 													DrainageGroupProvider,
-													DateYrProvider {
+													Iris2020ProtoPlot {
 	
 	
 	public static enum SoilDepth {
@@ -148,8 +144,6 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 
 	}
 	
-	@Override
-	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 	
 	/**
 	 * Return the mean degree-days over the period.
@@ -212,13 +206,6 @@ public interface Iris2020CompatiblePlot extends 	MonteCarloSimulationCompliantOb
 	 */
 	public SoilTexture getSoilTexture();
 	
-	/**
-	 * Return a Matrix with the basal area (m2/ha) for each species or species group. 
-	 * The index of the group corresponds to the ordinal of the Iris2020Species enum
-	 * variable.
-	 * @return a 1x33 Matrix
-	 */
-	public Matrix getBasalAreaM2HaBySpecies();
 	
 	/**
 	 * Return the basal area (m2/ha) of coniferous species.

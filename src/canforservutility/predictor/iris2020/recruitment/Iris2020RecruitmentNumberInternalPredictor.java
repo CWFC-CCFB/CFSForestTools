@@ -84,7 +84,7 @@ class Iris2020RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 
 		double g_broadleaved = plot.getBasalAreaOfBroadleavedSpecies();
 		double g_coniferous = plot.getBasalAreaOfConiferousSpecies();
-		double g_spgr = plot.getBasalAreaM2HaBySpecies().getValueAt(0, tree.getSpecies().ordinal());
+		double g_spgr = plot.getBasalAreaM2HaForThisSpecies(tree.getSpecies());
 		
 		double slope = plot.getSlopeInclinationPercent();
 		double aspect = plot.getSlopeAspect();

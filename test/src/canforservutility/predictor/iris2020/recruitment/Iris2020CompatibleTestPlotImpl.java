@@ -186,7 +186,7 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	}
 
 	@Override
-	public Matrix getBasalAreaM2HaBySpecies() {return gSpGrMat;}
+	public double getBasalAreaM2HaForThisSpecies(Iris2020Species species) {return gSpGrMat.getValueAt(0, species.ordinal());}
 
 
 
@@ -211,5 +211,20 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 
 	@Override
 	public double getDistanceToConspecificKm(Iris2020Species species) {return distanceToConspecific;}
+
+	@Override
+	public double getLatitudeDeg() {return 0;}
+
+	@Override
+	public double getLongitudeDeg() {return 0;}
+
+	@Override
+	public double getElevationM() {return 0;}
+
+	@Override
+	public void setWeight(double weight) {}
+
+	@Override
+	public double getAreaHa() {return 0.04;}
 	
 }
