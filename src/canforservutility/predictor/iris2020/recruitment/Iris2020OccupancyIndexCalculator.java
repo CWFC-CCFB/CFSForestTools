@@ -21,6 +21,7 @@ package canforservutility.predictor.iris2020.recruitment;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -32,11 +33,14 @@ import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.I
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.geographic.GeographicDistanceCalculator;
-import repicea.stats.QuantileUtility;
 import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.SimpleEstimate;
 
-public class Iris2020ProximityIndexCalculator {
+/**
+ * A class to calculate the occupancy index required by the recruitment module.
+ * @author Mathieu Fortin - Sept 2020
+ */
+public class Iris2020OccupancyIndexCalculator {
 
 	class InternalWorker extends Thread {
 		
@@ -45,30 +49,32 @@ public class Iris2020ProximityIndexCalculator {
 		final List<Iris2020ProtoPlot> plots;
 		final Iris2020Species species;
 		final int id;
+		final Map<Integer, List<Iris2020ProtoPlot>> dataCache;
 		
 		InternalWorker(int id, 
 				BlockingQueue<Integer> queue, 
 				Map<Integer, Estimate<?>> estimateMap, 
 				List<Iris2020ProtoPlot> plots, 
 				Iris2020Species species,
-				Iris2020ProximityIndexCalculator caller) {
+				Map<Integer, List<Iris2020ProtoPlot>> dateFilteredPlots) {
 			super("Proximity index calculator thread " + id);
 			this.id = id;
 			this.queue = queue;
 			this.estimateMap = estimateMap;
 			this.plots = plots;
 			this.species = species;
+			this.dataCache = dateFilteredPlots;
 		}
 		
 		@Override
 		public void run() {
 			int order;
 			try {
-				while(!this.isInterrupted()) {
+				while(!isInterrupted()) {
 					order = queue.take();
 					if (order == FinalToken) 
 						break;
-					Estimate<?> estimate = getProximityIndex(plots, plots.get(order), species);
+					Estimate<?> estimate = getProximityIndex(plots, plots.get(order), species, dataCache);
 					estimateMap.put(order, estimate);
 				}
 			} catch (InterruptedException e) {
@@ -76,15 +82,12 @@ public class Iris2020ProximityIndexCalculator {
 			}
 		}
 	}
-	
-	
+		
 	final SymmetricMatrix distances;
-	private final double maximumDistance;
-	final List<String> plotsId;
+	private final double maximumDistanceKm;
+	final Map<String, Integer> plotsId;
 	private final int minYearDiff = 0;
 	private final int maxYearDiff = 10;
-	private final int bootstrapRealizations;
-	private final double quantile;
 	
 	private static final int FinalToken = -999;
 	
@@ -100,22 +103,14 @@ public class Iris2020ProximityIndexCalculator {
 	 * @param quantile the quantile the index is based upon (between 0 and 1).
 	 * @param bootstrapRealizations the number of bootstrap realizations for the variance of the index
 	 */
-	public Iris2020ProximityIndexCalculator(List<Iris2020ProtoPlot> plots, double quantile, int bootstrapRealizations) {
-		if (quantile <= 0 || quantile >= 1) {
-			throw new InvalidParameterException("The quantile argument must be a double within the range ]0, 1[ !");
-		}
-		this.quantile = quantile;
-		if (bootstrapRealizations < 1 || bootstrapRealizations > 1000) {
-			throw new InvalidParameterException("The bootstrapRealizations argument must be an integer within the range [1, 1000] !");
-		}
-		this.bootstrapRealizations = bootstrapRealizations;
-		plotsId = new ArrayList<String>();
+	public Iris2020OccupancyIndexCalculator(List<Iris2020ProtoPlot> plots, double maxDistanceKm) {
+		plotsId = new HashMap<String, Integer>();
 		// first screen for the first entry plots
 		List<Iris2020ProtoPlot> firstEntryPlots = new ArrayList<Iris2020ProtoPlot>();
 		for (int i = 0; i < plots.size(); i++) {
 			Iris2020ProtoPlot p = plots.get(i);
-			if (!plotsId.contains(p.getSubjectId())) {
-				plotsId.add(p.getSubjectId());
+			if (!plotsId.containsKey(p.getSubjectId())) {
+				plotsId.put(p.getSubjectId(), firstEntryPlots.size());
 				firstEntryPlots.add(p);
 			} 
 		}		
@@ -129,15 +124,7 @@ public class Iris2020ProximityIndexCalculator {
 		}
 		// calculate the distance matrix
 		distances = GeographicDistanceCalculator.getDistanceBetweenTheseCoordinates(latitudes, longitudes);
-		double maxDist = Double.NEGATIVE_INFINITY;
-		for (int i = 0; i < distances.m_iRows; i++) {
-			for (int j = i; j < distances.m_iRows; j++) {
-				if (distances.getValueAt(i, j) > maxDist) {
-					maxDist = distances.getValueAt(i, j);
-				}
-			}
-		}
-		maximumDistance = maxDist;
+		maximumDistanceKm = maxDistanceKm;
 	}
 
 	/**
@@ -148,21 +135,23 @@ public class Iris2020ProximityIndexCalculator {
 	 * @return the distance (km)
 	 */
 	protected double getDistanceKmBetweenThesePlots(Iris2020ProtoPlot plot1, Iris2020ProtoPlot plot2) {
-		int index1 = plotsId.indexOf(plot1.getSubjectId());
+		int index1 = plotsId.get(plot1.getSubjectId());
 		if (index1 == -1) {
 			throw new InvalidParameterException("The plot1 argument is not found in the plot list!");
 		}
-		int index2 = plotsId.indexOf(plot2.getSubjectId());
+		int index2 = plotsId.get(plot2.getSubjectId());
 		if (index2 == -1) {
 			throw new InvalidParameterException("The plot2 argument is not found in the plot list!");
 		}
 		double distanceKm = distances.getValueAt(index1, index2);
-		if (plot2 instanceof Iris2020ProtoPlotImpl) {
-			((Iris2020ProtoPlotImpl) plot2).distanceKm = distanceKm;
-		}
 		return distanceKm;
 	}
-		
+
+	int getOccurrence(Iris2020ProtoPlot plot, Iris2020Species species) {
+		boolean occurred = plot.getBasalAreaM2HaForThisSpecies(species) > 0;
+		return occurred ? 1 : 0;
+	}
+	
 	/**
 	 * Provide an estimate of the proximity index. <br>
 	 * <br>
@@ -173,29 +162,59 @@ public class Iris2020ProximityIndexCalculator {
 	 * @param species the species of interest
 	 * @return an Estimate instance
 	 */
-	protected Estimate<?> getProximityIndex(List<Iris2020ProtoPlot> plots, Iris2020ProtoPlot thisPlot, Iris2020Species species) {
-		List<Iris2020ProtoPlot> plotsWithConspecific = plots.stream().
-				filter(p -> p.getBasalAreaM2HaForThisSpecies(species) > 0d).
+	protected Estimate<?> getProximityIndex(List<Iris2020ProtoPlot> plots, 
+			Iris2020ProtoPlot thisPlot, 
+			Iris2020Species species,
+			Map<Integer, List<Iris2020ProtoPlot>> dateCache) {
+		if (!dateCache.containsKey(thisPlot.getDateYr())) {
+			dateCache.put(thisPlot.getDateYr(), plots.stream().
+					filter(p -> thisPlot.getDateYr() - p.getDateYr() >= minYearDiff && thisPlot.getDateYr() - p.getDateYr() <= maxYearDiff).
+					collect(Collectors.toList()));
+		} 
+		List<Iris2020ProtoPlot> plotsWithinLast10Yrs = new ArrayList<Iris2020ProtoPlot>(dateCache.get(thisPlot.getDateYr()));
+		List<Iris2020ProtoPlot> plotsWithinDistanceWithinLast10Yrs = plotsWithinLast10Yrs.stream().
+				filter(p -> getDistanceKmBetweenThesePlots(thisPlot, p) < maximumDistanceKm).
 				collect(Collectors.toList());
-		List<Iris2020ProtoPlot> plotsWithConspecificWithinLast10Yrs = plotsWithConspecific.stream().
-				filter(p -> thisPlot.getDateYr() - p.getDateYr() >= minYearDiff && thisPlot.getDateYr() - p.getDateYr() <= maxYearDiff).
-				collect(Collectors.toList());
-		if (plotsWithConspecificWithinLast10Yrs.isEmpty()) {
-			Matrix mean = new Matrix(1,1, maximumDistance + 1, 0);
+		if (plotsWithinDistanceWithinLast10Yrs.size() == 1) {
+			Matrix mean = new Matrix(1,
+					1, 
+					getOccurrence(plotsWithinDistanceWithinLast10Yrs.get(0), species),
+					0);
 			SymmetricMatrix variance = new SymmetricMatrix(1);
+			variance.setValueAt(0, 0, Double.NaN);
 			return new SimpleEstimate(mean, variance);
 		} else {
-			List<Double> distances = plotsWithConspecificWithinLast10Yrs.stream().
-					map(p -> getDistanceKmBetweenThesePlots(thisPlot, p)).
+			double N = (maximumDistanceKm * maximumDistanceKm * Math.PI * 100) / thisPlot.getAreaHa();
+			double prob_gen = 1d / N;
+			List<Integer> occurrences = plotsWithinDistanceWithinLast10Yrs.stream().
+					map(p -> getOccurrence(p, species)).
 					collect(Collectors.toList());
-			List<Double> weights = plotsWithConspecificWithinLast10Yrs.stream().
-					map(p -> p.getWeight()).
+			int n = occurrences.size();
+			List<Double> weights = plotsWithinDistanceWithinLast10Yrs.stream().
+					map(p -> 1d / (prob_gen / p.getWeight() * n)).
 					collect(Collectors.toList());
-			return QuantileUtility.getQuantileEstimateFromSample(distances, quantile, weights, bootstrapRealizations); 
+			
+			double sum_wy = 0d;
+			for (int i = 0; i < n; i++) {
+				sum_wy += occurrences.get(i) * weights.get(i);
+			}
+			double mean_wy = sum_wy / n;
+			double var = 0d;
+			double wy;
+			for (int i = 0; i < n; i++) {
+				wy = occurrences.get(i) * weights.get(i);
+				var += (wy - mean_wy) * (wy - mean_wy);
+			}
+			var *= ((double) n) / (n-1);
+			Matrix mean = new Matrix(1,1);
+			mean.setValueAt(0, 0, sum_wy / N);
+			SymmetricMatrix variance = new SymmetricMatrix(1);
+			variance.setValueAt(0, 0, var / (N *N));
+			return new SimpleEstimate(mean, variance);
 		}
 	}
-	
 
+	
 	/**
 	 * Provide estimates of the proximity index for all the plots in the list. <br>
 	 * <br>
@@ -218,6 +237,7 @@ public class Iris2020ProximityIndexCalculator {
 			nbThreads = availableCores - 1;
 		
 		ConcurrentHashMap<Integer, Estimate<?>> estimateMap = new ConcurrentHashMap<Integer, Estimate<?>>();
+		ConcurrentHashMap<Integer, List<Iris2020ProtoPlot>> dateCache = new ConcurrentHashMap<Integer, List<Iris2020ProtoPlot>>();
 		BlockingQueue<Integer> queue = new LinkedBlockingQueue<Integer>();
 
 		for (int i = 0; i < plots.size(); i++) {
@@ -226,7 +246,7 @@ public class Iris2020ProximityIndexCalculator {
 
 		List<InternalWorker> workers = new ArrayList<InternalWorker>();
 		for (int i = 0; i < nbThreads; i++) {
-			workers.add(new InternalWorker(i, queue, estimateMap, plots, species, this));
+			workers.add(new InternalWorker(i, queue, estimateMap, plots, species, dateCache));
 			queue.add(FinalToken);
 		}
 		

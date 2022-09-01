@@ -223,5 +223,8 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 
 	@Override
 	public void setWeight(double weight) {}
+
+	@Override
+	public double getAreaHa() {return 0.04;}
 	
 }

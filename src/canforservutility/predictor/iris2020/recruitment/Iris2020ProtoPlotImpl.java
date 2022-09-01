@@ -76,4 +76,6 @@ public class Iris2020ProtoPlotImpl implements Iris2020ProtoPlot {
 	@Override
 	public double getBasalAreaM2HaForThisSpecies(Iris2020Species species) {return baHaSpecies;}
 
+	@Override 
+	public double getAreaHa() {return 0.04;}
 }

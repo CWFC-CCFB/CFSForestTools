@@ -22,6 +22,7 @@ package canforservutility.predictor.iris2020.recruitment;
 import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.covariateproviders.plotlevel.AreaHaProvider;
 import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.GeographicalCoordinatesProvider;
 import repicea.simulation.covariateproviders.plotlevel.PlotWeightProvider;
@@ -29,7 +30,8 @@ import repicea.simulation.covariateproviders.plotlevel.PlotWeightProvider;
 interface Iris2020ProtoPlot extends MonteCarloSimulationCompliantObject,
 									GeographicalCoordinatesProvider,
 									DateYrProvider,
-									PlotWeightProvider {
+									PlotWeightProvider,
+									AreaHaProvider {
 
 	/**
 	 * Return the basal area (m2/ha) for this species or species group. 

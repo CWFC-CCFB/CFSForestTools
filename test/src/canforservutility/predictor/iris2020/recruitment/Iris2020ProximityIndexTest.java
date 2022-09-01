@@ -22,6 +22,7 @@ package canforservutility.predictor.iris2020.recruitment;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -58,16 +59,15 @@ public class Iris2020ProximityIndexTest {
 	@Test
 	public void proximityIndexTest1() throws IOException {
 		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
-		
-		Iris2020ProximityIndexCalculator calculator = new Iris2020ProximityIndexCalculator(plots, 0.01, 100);
+		Iris2020OccupancyIndexCalculator calculator = new Iris2020OccupancyIndexCalculator(plots, 15);
 		Assert.assertEquals("Testing the size of the id list", 12267, calculator.plotsId.size());
 		Assert.assertEquals("Testing the size of the distance matrix", 12267, calculator.distances.m_iRows);
-
-		Estimate<?> proximityIndexEstimate = calculator.getProximityIndex(plots, plots.get(0), Iris2020Species.ERS);
+		ConcurrentHashMap<Integer, List<Iris2020ProtoPlot>> dateFilteredPlots = new ConcurrentHashMap<Integer, List<Iris2020ProtoPlot>>();
+		Estimate<?> proximityIndexEstimate = calculator.getProximityIndex(plots, plots.get(0), Iris2020Species.ERS, dateFilteredPlots);
 		double proximityIndexMean = proximityIndexEstimate.getMean().getValueAt(0, 0);
 		double proximityIndexVariance = proximityIndexEstimate.getVariance().getValueAt(0, 0);
-		Assert.assertEquals("Testing the mean of the estimate", 36.45524139719369, proximityIndexMean, 1);
-		Assert.assertEquals("Testing the size of the distance matrix", 21.80247232955474, proximityIndexVariance, 7);
+		Assert.assertEquals("Testing the mean of the estimate", 0.5, proximityIndexMean, 1E-8);
+		Assert.assertEquals("Testing the size of the distance matrix", 0.05, proximityIndexVariance, 1E-8);
 	}
 	
 	@AfterClass
@@ -80,13 +80,13 @@ public class Iris2020ProximityIndexTest {
 	public static void main(String[] args) throws Exception {
 		initialize();
 		List<Iris2020ProtoPlot> mySelectedPlots = new ArrayList<Iris2020ProtoPlot>();
-		for (int i = 0; i < 3000; i++)
+		for (int i = 0; i < plots.size(); i++)
 			mySelectedPlots.add(plots.get(i));
 		
-		Iris2020ProximityIndexCalculator calculator = new Iris2020ProximityIndexCalculator(mySelectedPlots, 0.01, 100);
+		Iris2020OccupancyIndexCalculator calculator = new Iris2020OccupancyIndexCalculator(mySelectedPlots, 15);
 
 		long startTime = System.currentTimeMillis();
-		List<Estimate<?>> estimates = calculator.getProximityIndexForThesePlots(mySelectedPlots, Iris2020Species.ERS, 4);
+		List<Estimate<?>> estimates = calculator.getProximityIndexForThesePlots(mySelectedPlots, Iris2020Species.ERS, 3);
 		System.out.println("Time to get " + estimates.size() + " estimates = " + (System.currentTimeMillis() - startTime) * 0.001 + " sec.");
 	}
 
