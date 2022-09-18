@@ -34,14 +34,23 @@ import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.geographic.GeographicDistanceCalculator;
 import repicea.stats.estimates.Estimate;
+import repicea.stats.estimates.PopulationMeanEstimate;
+import repicea.stats.estimates.PopulationTotalEstimate;
 import repicea.stats.estimates.SimpleEstimate;
+import repicea.stats.sampling.PopulationUnitWithEqualInclusionProbability;
+import repicea.stats.sampling.PopulationUnitWithUnequalInclusionProbability;
 
 /**
- * A class to calculate the occupancy index required by the recruitment module.
- * @author Mathieu Fortin - Sept 2020
+ * A class to calculate the occupancy index required by the recruitment module. <br>
+ * <br>
+ * The occupancy index is actually an estimate of the occupancy within a particular radius
+ * around each plot. 
+ * @author Mathieu Fortin - Sept 2022
  */
 public class Iris2020OccupancyIndexCalculator {
 
+//	static double[] CaseCount = new double[3];
+	
 	class InternalWorker extends Thread {
 		
 		final BlockingQueue<Integer> queue;
@@ -74,7 +83,7 @@ public class Iris2020OccupancyIndexCalculator {
 					order = queue.take();
 					if (order == FinalToken) 
 						break;
-					Estimate<?> estimate = getProximityIndex(plots, plots.get(order), species, dataCache);
+					Estimate<?> estimate = getOccupancyIndex(plots, plots.get(order), species, dataCache);
 					estimateMap.put(order, estimate);
 				}
 			} catch (InterruptedException e) {
@@ -100,7 +109,7 @@ public class Iris2020OccupancyIndexCalculator {
 	 * is considered in the calculation of the distance matrix.
 	 * 
 	 * @param plots a List of Iris2020ProtoPlot instances
-	 * @param quantile the quantile the index is based upon (between 0 and 1).
+	 * @param maxDistanceKm the radius around the plot of interest for estimating the occupancy index (e.g. 15 km)
 	 * @param bootstrapRealizations the number of bootstrap realizations for the variance of the index
 	 */
 	public Iris2020OccupancyIndexCalculator(List<Iris2020ProtoPlot> plots, double maxDistanceKm) {
@@ -160,9 +169,10 @@ public class Iris2020OccupancyIndexCalculator {
 	 * @param plots the list of plots
 	 * @param thisPlot the plot of interest
 	 * @param species the species of interest
+	 * @param dateCache a Map in which the subsets of the sample are stored
 	 * @return an Estimate instance
 	 */
-	protected Estimate<?> getProximityIndex(List<Iris2020ProtoPlot> plots, 
+	protected Estimate<?> getOccupancyIndex(List<Iris2020ProtoPlot> plots, 
 			Iris2020ProtoPlot thisPlot, 
 			Iris2020Species species,
 			Map<Integer, List<Iris2020ProtoPlot>> dateCache) {
@@ -175,7 +185,25 @@ public class Iris2020OccupancyIndexCalculator {
 		List<Iris2020ProtoPlot> plotsWithinDistanceWithinLast10Yrs = plotsWithinLast10Yrs.stream().
 				filter(p -> getDistanceKmBetweenThesePlots(thisPlot, p) < maximumDistanceKm).
 				collect(Collectors.toList());
+		
+		Map<String, Iris2020ProtoPlot> singletonMap = new HashMap<String, Iris2020ProtoPlot>();
+		// if we have two measurements of the same plot, we keep that with the conspecific.
+		for (Iris2020ProtoPlot p : plotsWithinDistanceWithinLast10Yrs) {
+			if (!singletonMap.containsKey(p.getSubjectId())) {
+				singletonMap.put(p.getSubjectId(), p);
+			} else {
+				if (singletonMap.get(p.getSubjectId()).getBasalAreaM2HaForThisSpecies(species) == 0d &&
+						p.getBasalAreaM2HaForThisSpecies(species) > 0d) {
+					singletonMap.put(p.getSubjectId(), p);
+				}
+			}
+		}
+
+		plotsWithinDistanceWithinLast10Yrs.clear();
+		plotsWithinDistanceWithinLast10Yrs.addAll(singletonMap.values());
+		
 		if (plotsWithinDistanceWithinLast10Yrs.size() == 1) {
+//			CaseCount[0]++;
 			Matrix mean = new Matrix(1,
 					1, 
 					getOccurrence(plotsWithinDistanceWithinLast10Yrs.get(0), species),
@@ -184,33 +212,36 @@ public class Iris2020OccupancyIndexCalculator {
 			variance.setValueAt(0, 0, Double.NaN);
 			return new SimpleEstimate(mean, variance);
 		} else {
-			double N = (maximumDistanceKm * maximumDistanceKm * Math.PI * 100) / thisPlot.getAreaHa();
-			double prob_gen = 1d / N;
-			List<Integer> occurrences = plotsWithinDistanceWithinLast10Yrs.stream().
-					map(p -> getOccurrence(p, species)).
-					collect(Collectors.toList());
-			int n = occurrences.size();
-			List<Double> weights = plotsWithinDistanceWithinLast10Yrs.stream().
-					map(p -> 1d / (prob_gen / p.getWeight() * n)).
-					collect(Collectors.toList());
+			int n = plotsWithinDistanceWithinLast10Yrs.size();
+			boolean allWeightsEqual = plotsWithinDistanceWithinLast10Yrs.stream().
+					allMatch(p -> p.getWeight() == plotsWithinDistanceWithinLast10Yrs.get(0).getWeight());
 			
-			double sum_wy = 0d;
-			for (int i = 0; i < n; i++) {
-				sum_wy += occurrences.get(i) * weights.get(i);
+			if (allWeightsEqual) {	// Then we assume random sampling without replacement
+//				CaseCount[1]++;
+				PopulationMeanEstimate estimate = new PopulationMeanEstimate();
+				Matrix obs;
+				for (int i = 0; i < n; i++) {
+					obs = new Matrix(1, 1, getOccurrence(plotsWithinDistanceWithinLast10Yrs.get(i), species), 0);
+					estimate.addObservation(new PopulationUnitWithEqualInclusionProbability(i + "", obs));
+				}
+				return new SimpleEstimate(estimate.getMean(), estimate.getVariance());
+			} else {	// Otherwise we use a HT estimator. We aksi assume the area for each weight is estimated as (n_k * w_k) / (sum_k n_k w_k)
+//				CaseCount[2]++;
+				double N = (maximumDistanceKm * maximumDistanceKm * Math.PI * 100) / thisPlot.getAreaHa();
+				PopulationTotalEstimate estimate = new PopulationTotalEstimate();
+				double sumWeight = 0d;
+				for (int i = 0; i < n; i++) {
+					sumWeight += plotsWithinDistanceWithinLast10Yrs.get(i).getWeight();
+				}
+				Matrix obs;
+				for (int i = 0; i < n; i++) {
+					Iris2020ProtoPlot p = plotsWithinDistanceWithinLast10Yrs.get(i);
+					double newWeight = sumWeight / (p.getWeight() * N);	// this is the simplification of n_k / N_k with N_k = n_k * w_k / (sum_k n_k w_k) * N
+					obs = new Matrix(1, 1, getOccurrence(p, species), 0);
+					estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(i + "", obs, newWeight));
+				}
+				return new SimpleEstimate(estimate.getMean().scalarMultiply(1d/N), estimate.getVariance().scalarMultiply(1d/(N*N)));
 			}
-			double mean_wy = sum_wy / n;
-			double var = 0d;
-			double wy;
-			for (int i = 0; i < n; i++) {
-				wy = occurrences.get(i) * weights.get(i);
-				var += (wy - mean_wy) * (wy - mean_wy);
-			}
-			var *= ((double) n) / (n-1);
-			Matrix mean = new Matrix(1,1);
-			mean.setValueAt(0, 0, sum_wy / N);
-			SymmetricMatrix variance = new SymmetricMatrix(1);
-			variance.setValueAt(0, 0, var / (N *N));
-			return new SimpleEstimate(mean, variance);
 		}
 	}
 
@@ -228,7 +259,7 @@ public class Iris2020OccupancyIndexCalculator {
 	 * the number of cores minus 1.
 	 * @return an Estimate instance
 	 */
-	public List<Estimate<?>> getProximityIndexForThesePlots(List<Iris2020ProtoPlot> plots, Iris2020Species species, int nbThreads) throws Exception {
+	public List<Estimate<?>> getOccupancyIndexForThesePlots(List<Iris2020ProtoPlot> plots, Iris2020Species species, int nbThreads) throws Exception {
 		if (nbThreads < 1 || nbThreads > 4) {
 			throw new InvalidParameterException("The nbThreads argument must be an integer between 1 and 4!");
 		}
@@ -273,5 +304,30 @@ public class Iris2020OccupancyIndexCalculator {
 		return interrupted ? null : estimateList;
 	}
 
-	
+	/**
+	 * A static method to extract the means from the estimate list.
+	 * @param estimates a List of Estimate instance
+	 * @return a List of doubles
+	 */
+	public static List<Double> getMeansFromEstimates(List<Estimate<?>> estimates) {
+		List<Double> means = new ArrayList<Double>();
+		for (Estimate<?> e : estimates) {
+			means.add(e.getMean().getValueAt(0, 0));
+		}
+		return means;
+ 	}
+
+	/**
+	 * A static method to extract the variances from the estimate list.
+	 * @param estimates a List of Estimate instance
+	 * @return a List of doubles
+	 */
+	public static List<Double> getVariancesFromEstimates(List<Estimate<?>> estimates) {
+		List<Double> variances = new ArrayList<Double>();
+		for (Estimate<?> e : estimates) {
+			variances.add(e.getVariance().getValueAt(0, 0));
+		}
+		return variances;
+ 	}
+
 }

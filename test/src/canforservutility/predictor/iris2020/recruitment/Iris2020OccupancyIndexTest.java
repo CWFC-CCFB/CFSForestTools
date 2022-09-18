@@ -34,13 +34,13 @@ import repicea.io.javacsv.CSVReader;
 import repicea.stats.estimates.Estimate;
 import repicea.util.ObjectUtility;
 
-public class Iris2020ProximityIndexTest {
+public class Iris2020OccupancyIndexTest {
 
 	private static List<Iris2020ProtoPlot> plots;
 	
 	@BeforeClass
 	public static void initialize() throws IOException {
-		String filename = ObjectUtility.getPackagePath(Iris2020ProximityIndexTest.class) + "datasetERSForProximityIndex.csv";
+		String filename = ObjectUtility.getPackagePath(Iris2020OccupancyIndexTest.class) + "datasetERSForProximityIndex.csv";
 		CSVReader r = new CSVReader(filename);
 		plots = new ArrayList<Iris2020ProtoPlot>();
 		Object[] record;
@@ -57,13 +57,13 @@ public class Iris2020ProximityIndexTest {
 	}
 	
 	@Test
-	public void proximityIndexTest1() throws IOException {
+	public void occupancyIndexTest1() throws IOException {
 		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
 		Iris2020OccupancyIndexCalculator calculator = new Iris2020OccupancyIndexCalculator(plots, 15);
 		Assert.assertEquals("Testing the size of the id list", 12267, calculator.plotsId.size());
 		Assert.assertEquals("Testing the size of the distance matrix", 12267, calculator.distances.m_iRows);
 		ConcurrentHashMap<Integer, List<Iris2020ProtoPlot>> dateFilteredPlots = new ConcurrentHashMap<Integer, List<Iris2020ProtoPlot>>();
-		Estimate<?> proximityIndexEstimate = calculator.getProximityIndex(plots, plots.get(0), Iris2020Species.ERS, dateFilteredPlots);
+		Estimate<?> proximityIndexEstimate = calculator.getOccupancyIndex(plots, plots.get(0), Iris2020Species.ERS, dateFilteredPlots);
 		double proximityIndexMean = proximityIndexEstimate.getMean().getValueAt(0, 0);
 		double proximityIndexVariance = proximityIndexEstimate.getVariance().getValueAt(0, 0);
 		Assert.assertEquals("Testing the mean of the estimate", 0.5, proximityIndexMean, 1E-8);
@@ -83,10 +83,18 @@ public class Iris2020ProximityIndexTest {
 		for (int i = 0; i < plots.size(); i++)
 			mySelectedPlots.add(plots.get(i));
 		
-		Iris2020OccupancyIndexCalculator calculator = new Iris2020OccupancyIndexCalculator(mySelectedPlots, 15);
+		Iris2020OccupancyIndexCalculator calculator = new Iris2020OccupancyIndexCalculator(mySelectedPlots, 10);
 
 		long startTime = System.currentTimeMillis();
-		List<Estimate<?>> estimates = calculator.getProximityIndexForThesePlots(mySelectedPlots, Iris2020Species.ERS, 3);
+		List<Estimate<?>> estimates = calculator.getOccupancyIndexForThesePlots(mySelectedPlots, Iris2020Species.ERS, 1);
+		int ok = 0;
+		for (int i = 0; i < estimates.size(); i++) {
+			if (!Double.isNaN(estimates.get(i).getVariance().getValueAt(0, 0))) {
+				ok++;
+			}
+		}
+		System.out.println("Non missing estimates = " + ok + " / " + estimates.size());
+//		System.out.println("Case count = " + Arrays.toString(Iris2020OccupancyIndexCalculator.CaseCount));
 		System.out.println("Time to get " + estimates.size() + " estimates = " + (System.currentTimeMillis() - startTime) * 0.001 + " sec.");
 	}
 
