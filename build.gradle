@@ -59,7 +59,7 @@ dependencies {
     implementation name: 'biosimclient-1.1'
 	implementation 'com.cedarsoftware:json-io:4.13.0'		// dependence of biosimclient
     
-    implementation group: 'org', name: 'repicea', version: '1.5+'    
+    implementation group: 'org', name: 'repicea', version: '1+'    
 	    
     testImplementation "junit:junit:4.12"    
 }
