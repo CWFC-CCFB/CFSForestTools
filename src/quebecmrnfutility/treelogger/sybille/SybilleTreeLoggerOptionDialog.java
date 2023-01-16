@@ -46,6 +46,7 @@ import javax.swing.JRadioButton;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
 import repicea.gui.OwnedWindow;
 import repicea.gui.REpiceaDialog;
+import repicea.gui.REpiceaMemorizerHandler;
 import repicea.gui.UIControlManager;
 import repicea.gui.UIControlManager.CommonControlID;
 import repicea.gui.components.NumberFormatFieldFactory;
@@ -55,7 +56,6 @@ import repicea.gui.components.NumberFormatFieldFactory.NumberFieldListener;
 import repicea.gui.components.NumberFormatFieldFactory.Range;
 import repicea.serial.Memorizable;
 import repicea.serial.MemorizerPackage;
-import repicea.serial.REpiceaMemorizerHandler;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
