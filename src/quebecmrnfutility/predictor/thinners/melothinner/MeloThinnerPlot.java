@@ -18,18 +18,23 @@
  */
 package quebecmrnfutility.predictor.thinners.melothinner;
 
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcForestRegionProvider;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassProvider;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.CruiseLineProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcForestRegionProvider;
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassProvider;
+import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider;
+import repicea.simulation.covariateproviders.plotlevel.LandUseProvider;
 import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 
 /**
- * The MeloThinnerPlot interface ensures that the plot instance is compatible with the MeloThinnerPredictor. The plot
- * may optionally implement the LandOwnership interface. If not, the land ownership is assumed to be public.
+ * The MeloThinnerPlot interface ensures that the plot instance is compatible 
+ * with the MeloThinnerPredictor model. <br>
+ * <br>
+ * A plot can be harvested only if its land use is set to WoodProduction.
+ * @see LandUseProvider 
  * @author Mathieu Fortin - May 2017
  */
 public interface MeloThinnerPlot extends MonteCarloSimulationCompliantObject, 
@@ -38,7 +43,9 @@ public interface MeloThinnerPlot extends MonteCarloSimulationCompliantObject,
 											QcSlopeClassProvider,
 											EcologicalTypeProvider,
 											QcForestRegionProvider,
-											CruiseLineProvider {
+											CruiseLineProvider,
+											LandUseProvider,
+											LandOwnershipProvider {
 
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}

@@ -19,7 +19,7 @@ class MeloThinnerPlotImpl implements MeloThinnerPlot, LandOwnershipProvider {
 	private final QcForestRegion region;
 	private final LandOwnership ownership;
 	
-		MeloThinnerPlotImpl(String subjectId, 
+	MeloThinnerPlotImpl(String subjectId, 
 			double plotBasalAreaM2Ha, 
 			double stemDensityHa, 
 			String ecologicalType, 
@@ -80,4 +80,7 @@ class MeloThinnerPlotImpl implements MeloThinnerPlot, LandOwnershipProvider {
 
 	@Override
 	public LandOwnership getLandOwnership() {return ownership;}
+
+	@Override
+	public LandUse getLandUse() {return LandUse.WoodProduction;}
 }

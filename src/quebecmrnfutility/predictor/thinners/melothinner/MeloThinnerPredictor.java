@@ -37,6 +37,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider.LandOwnership;
+import repicea.simulation.covariateproviders.plotlevel.LandUseProvider.LandUse;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
 import repicea.simulation.thinners.REpiceaTreatmentDefinition;
@@ -47,7 +48,12 @@ import repicea.stats.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompa
 import repicea.util.ObjectUtility;
 
 /**
- * This class implements the thinning model designed and fitted by Lara Melo in her thesis. 
+ * This class implements the thinning model designed and fitted by Lara Melo in her thesis. <br>
+ * <br>
+ * The MeloThinnerPlot interface ensures that the plot can provide its land use (wood production,
+ * unproductive, or conservation) and its ownership (public or private). The harvesting is allowed
+ * only on the wood production land use. The ownership allows to retrieve the proper AAC estimates,
+ * which in turn impact the harvest probability.
  * 
  * @author Mathieu Fortin - March 2019
  * @see <a href=https://doi.org/10.1139/cjfr-2016-0498> Melo, L.C., R. Schneider, R. Manso, J.-P.
@@ -185,71 +191,69 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 	 */
 	@Override
 	public synchronized double predictEventProbability(MeloThinnerPlot stand, Object tree, Map<String, Object> parms) {
-		oXVector.resetMatrix();
-		Matrix beta = getParametersForThisRealization(stand);
-		double proportionalPart = getProportionalPart(stand, beta);
-		double[] aac;
-		double modulationFactor = 0d;
-		if (parms.containsKey(DisturbanceParameter.ParmAAC)) {
-			aac = (double[]) parms.get(DisturbanceParameter.ParmAAC);
-		} else {
-			int year0 = (Integer) parms.get(DisturbanceParameter.ParmYear0);
-			int year1 = (Integer) parms.get(DisturbanceParameter.ParmYear1);
+		if (stand.getLandUse() == LandUse.WoodProduction) {
+			oXVector.resetMatrix();
+			Matrix beta = getParametersForThisRealization(stand);
+			double proportionalPart = getProportionalPart(stand, beta);
+			double[] aac;
+			double modulationFactor = 0d;
+			if (parms.containsKey(DisturbanceParameter.ParmAAC)) {
+				aac = (double[]) parms.get(DisturbanceParameter.ParmAAC);
+			} else {
+				int year0 = (Integer) parms.get(DisturbanceParameter.ParmYear0);
+				int year1 = (Integer) parms.get(DisturbanceParameter.ParmYear1);
 
-			if (parms.containsKey(DisturbanceParameter.ParmModulation)) {
-				modulationFactor = (Double) parms.get(DisturbanceParameter.ParmModulation);
-				if (modulationFactor <= -1d || modulationFactor > 1d) {
-					modulationFactor = 0;
+				if (parms.containsKey(DisturbanceParameter.ParmModulation)) {
+					modulationFactor = (Double) parms.get(DisturbanceParameter.ParmModulation);
+					if (modulationFactor <= -1d || modulationFactor > 1d) {
+						modulationFactor = 0;
+					}
+				}
+				
+				LandOwnership ownership= stand.getLandOwnership();
+				if (this.targetAACPerHa != null) {
+					aac = new double[year1 - year0];
+					for (int i = 0; i < aac.length; i++) {
+						aac[i] = targetAACPerHa;		// modulation factor should not be taken into account here 
+					}
+				} else {
+					aac = MeloThinnerAACProvider.getInstance().getAACValues(stand.getQuebecForestRegion(),
+							ownership, 
+							year0,
+							year1,
+							modulationFactor);
 				}
 			}
+			double baseline = getBaseline(beta, aac);
+			double conditionalSurvival = Math.exp(-proportionalPart * baseline);
+			embeddedFunction.setParameterValue(0, conditionalSurvival);
 			
-			LandOwnership ownership;
-			if (stand instanceof LandOwnershipProvider) {
-				ownership = ((LandOwnershipProvider) stand).getLandOwnership();
-			} else {
-				ownership = LandOwnership.Public;
-			}
-			if (this.targetAACPerHa != null) {
-				aac = new double[year1 - year0];
-				for (int i = 0; i < aac.length; i++) {
-					aac[i] = targetAACPerHa;		// modulation factor should not be taken into account here 
+			double survival;
+			if (isRandomEffectsVariabilityEnabled) {
+				String cruiseLineID = stand.getCruiseLineID();
+				if (cruiseLineID == null) {
+					cruiseLineID = stand.getSubjectId();
 				}
-			} else {
-				aac = MeloThinnerAACProvider.getInstance().getAACValues(stand.getQuebecForestRegion(),
-						ownership, 
-						year0,
-						year1,
-						modulationFactor);
-			}
-		}
-		double baseline = getBaseline(beta, aac);
-
-		double conditionalSurvival = Math.exp(-proportionalPart * baseline);
-		embeddedFunction.setParameterValue(0, conditionalSurvival);
-		
-		double survival;
-		if (isRandomEffectsVariabilityEnabled) {
-			String cruiseLineID = stand.getCruiseLineID();
-			if (cruiseLineID == null) {
-				cruiseLineID = stand.getSubjectId();
-			}
-			CruiseLine cruiseLine = getCruiseLineForThisSubject(cruiseLineID, stand);
-			Matrix cruiseLineRandomEffect = getRandomEffectsForThisSubject(cruiseLine);
-			double u = cruiseLineRandomEffect.getValueAt(0, 0);
-			embeddedFunction.setParameterValue(1, u);
-			survival = embeddedFunction.getValue();
-		} else {
-			if (quadratureEnabled) {
-//				Matrix lowerCholeskyTriangle = getDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE).getVariance().getLowerCholTriangle();
-//				survival = ghq.getIntegralApproximation(embeddedFunction, ParametersToIntegrate, lowerCholeskyTriangle);
-				survival = ghq.getIntegralApproximation(embeddedFunction, IndexParameterToBeIntegrated, true);
-			} else {
-				embeddedFunction.setParameterValue(1, 0);
+				CruiseLine cruiseLine = getCruiseLineForThisSubject(cruiseLineID, stand);
+				Matrix cruiseLineRandomEffect = getRandomEffectsForThisSubject(cruiseLine);
+				double u = cruiseLineRandomEffect.getValueAt(0, 0);
+				embeddedFunction.setParameterValue(1, u);
 				survival = embeddedFunction.getValue();
+			} else {
+				if (quadratureEnabled) {
+//					Matrix lowerCholeskyTriangle = getDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE).getVariance().getLowerCholTriangle();
+//					survival = ghq.getIntegralApproximation(embeddedFunction, ParametersToIntegrate, lowerCholeskyTriangle);
+					survival = ghq.getIntegralApproximation(embeddedFunction, IndexParameterToBeIntegrated, true);
+				} else {
+					embeddedFunction.setParameterValue(1, 0);
+					survival = embeddedFunction.getValue();
+				}
 			}
+			double harvestProb = 1 - survival;
+			return harvestProb;
+		} else {
+			return 0d;		// plots located on unproductive sites or in conservation areas are not harvested 
 		}
-		double harvestProb = 1 - survival;
-		return harvestProb;
 	}
 
 	
