@@ -1,6 +1,17 @@
+/*
+ *  Build file for gradle
+ */
+
+
+plugins {
+    id 'com.palantir.git-version' version '3.0.0'
+}
+
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+
 
 java {
   toolchain {
@@ -8,20 +19,11 @@ java {
   }
 }
 
-
 repositories {
+	maven {		// sonatype repository
+		url "https://repo1.maven.org/maven2/"
+	}
     mavenCentral()
-    mavenLocal()
-    
-    flatDir {
-        dirs "$bioSimClientDir"        
-    }
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
 }
 
 
@@ -55,44 +57,27 @@ sourceSets {
     }               
 }
 
+configurations {
+	cfsForesttoolsImplementation {
+		extendsFrom implementation
+		description = 'Main implementation'
+		canBeResolved = true
+	}
+}
+
 dependencies {
-    implementation name: 'biosimclient-1.1'
-	implementation 'com.cedarsoftware:json-io:4.13.0'		// dependence of biosimclient
-    
-    implementation group: 'org', name: 'repicea', version: '[1.9.4,)'    
-    implementation group: 'org', name: 'repicea-mathstats', version: '[1.1.1,)'    
-    implementation group: 'org', name: 'repicea-simulation', version: '[1.0.2,)'    
+    implementation group: 'io.github.cwfc-ccfb', name: 'repicea', version: '[1.9.5,)'    
+    implementation group: 'io.github.cwfc-ccfb', name: 'repicea-mathstats', version: '[1.1.4,)'    
+    implementation group: 'io.github.cwfc-ccfb', name: 'repicea-simulation', version: '[1.0.2,)'    
+    implementation group: 'io.github.cwfc-ccfb', name: 'biosimclient', version: '[1.1.2,)'    
 	    
     testImplementation "junit:junit:4.12"    
 }
 
-def getSemVersion = { ->
-
-	def versionStdOut = new ByteArrayOutputStream()
-
-	def cmd = ['gitversion', '/showvariable', 'SemVer']
-	
-	    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-	        def oscmd = ['cmd', '/c'] + cmd
-	        exec {
-	        	commandLine oscmd
-	        	standardOutput = versionStdOut
-        	}
-	    
-	    } else {
-	        def oscmd = ['sh'] + cmd
-	        exec {
-	        	commandLine oscmd
-	    		standardOutput = versionStdOut
-    		}
-    	}
-    
-    return versionStdOut.toString().trim()        	
-}
-
 compileJava {
-	project.version=getSemVersion()
-	println "Building " + rootProject.name + " v" + project.version
+	project.version= gitVersion() 
+	println "Building " + rootProject.name + " " + project.version
+	println "Installation directory " + "../externallibraries/" + rootProject.name
 }
 
 test {
@@ -103,6 +88,26 @@ test {
     maxHeapSize = "2048m"
     
     exclude '**/ProductionEnvironmentTest.class'
+}
+
+jar {
+	manifest {
+        attributes("Built-By": "Mathieu Fortin",
+        		   "Specification-Title": "Growth Models for Eastern Canada",
+        		   "Specification-Version": archiveVersion,                   
+                   "Specification-Vendor": "Canadian Wood Fibre Centre",
+                   "Implementation-Title": "mrnfforesttools",
+	               "Implementation-Version": archiveVersion,
+                   "Implementation-Vendor": "Canadian Wood Fibre Centre",
+                   )
+    }
+    
+	into ('/') {
+		from files(['./README.md', './LICENSE.md'])			
+	}
+	
+	// include all java files from main sourceset into the jar file (resources are already included)
+	from sourceSets.main.allJava		
 }
 
 task integrationTest(type: Test) {
@@ -124,35 +129,15 @@ task integrationTest(type: Test) {
 
 check.dependsOn integrationTest
 
-jar {
-	manifest {
-        attributes("Built-By": "Mathieu Fortin",
-        		   "Specification-Title": "Growth Models for Eastern Canada",
-        		   "Specification-Version": archiveVersion,                   
-                   "Specification-Vendor": "Canadian Wood Fibre Centre",
-                   "Implementation-Title": "mrnfforesttools",
-	               "Implementation-Version": archiveVersion,
-                   "Implementation-Vendor": "Canadian Wood Fibre Centre",
-                   )
-    }
-    
-	into ('/') {
-		from files(['./README.md', './COPYING.LESSER.txt'])			
-	}
-	
-	// include all java files from main sourceset into the jar file (resources are already included)
-	from sourceSets.main.allJava		
-}
-
 task deleteInstallFolder(type: Delete) {
-  delete "${installDir}"  
+  delete "../externallibraries/" + rootProject.name
 }
 
 task install(type: Copy) {
 	description = 'Copies the output jar to installation folder.'
 	group = 'build'
-	dependsOn jar,deleteInstallFolder,integrationTest
-	from configurations.default
+	dependsOn deleteInstallFolder,integrationTest
+	from configurations.cfsForesttoolsImplementation
 	from jar
-	into "${installDir}"
+	into "../externallibraries/" + rootProject.name
 }

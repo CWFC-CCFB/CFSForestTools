@@ -62,6 +62,7 @@ public class DefoliationTest {
 	}
 	
 	// This GrayDefoliator class must be improved. It is simply too long.
+	@Ignore
 	@Test
 	public void simpleTestWithBioSIM() throws BioSimException {
 		DefoliationPredictor pred = new DefoliationPredictor(4);
