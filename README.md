@@ -1,6 +1,10 @@
 The cfsforesttools library
 ===========================
 
+<!-- badges: start -->
+[![Java CI](https://github.com/CWFC-CCFB/CFSForestTools/actions/workflows/gradle.yml/badge.svg)](https://github.com/CWFC-CCFB/CFSForestTools/actions/workflows/gradle.yml)
+<!-- badges: end -->
+
 
 Copyright (C) 2009-2019 Mathieu Fortin for Rouge Epicea.
 
