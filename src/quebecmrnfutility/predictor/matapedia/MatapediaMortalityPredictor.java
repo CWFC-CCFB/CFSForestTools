@@ -80,11 +80,6 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 		public double convertFromGaussToOriginal(double x, double mu, int covarianceIndexI, int covarianceIndexJ) {
 			return mu + Math.sqrt(2d) * x * standardDeviation;
 		}
-
-		@Override
-		public double getIntegralAdjustment(int dimensions) {
-			return Math.pow(Math.PI, -dimensions/2d);
-		}
 		
 	}
 	

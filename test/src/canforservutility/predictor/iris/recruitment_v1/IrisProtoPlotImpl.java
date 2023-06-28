@@ -1,8 +1,8 @@
 /*
- * This file is part of the mrnf-foresttools library.
+ * This file is part of the cfsforesttools library.
  *
- * Copyright (C) 2020-2022 Her Majesty the Queen in right of Canada
- * author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
+ * Copyright (C) 2020-2023 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,11 +17,11 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris2020.recruitment;
+package canforservutility.predictor.iris.recruitment_v1;
 
-import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
+import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 
-public class Iris2020ProtoPlotImpl implements Iris2020ProtoPlot {
+public class IrisProtoPlotImpl implements IrisProtoPlot {
 
 	private final String id;
 	private final double latitudeDeg;
@@ -31,7 +31,7 @@ public class Iris2020ProtoPlotImpl implements Iris2020ProtoPlot {
 	private final double baHaSpecies;
 	double distanceKm;
 	
-	public Iris2020ProtoPlotImpl(String id, 
+	public IrisProtoPlotImpl(String id, 
 			double latitudeDeg, 
 			double longitudeDeg,
 			double weight,
@@ -74,7 +74,7 @@ public class Iris2020ProtoPlotImpl implements Iris2020ProtoPlot {
 	public double getWeight() {return weight;}
 	
 	@Override
-	public double getBasalAreaM2HaForThisSpecies(Iris2020Species species) {return baHaSpecies;}
+	public double getBasalAreaM2HaForThisSpecies(IrisSpecies species) {return baHaSpecies;}
 
 	@Override 
 	public double getAreaHa() {return 0.04;}

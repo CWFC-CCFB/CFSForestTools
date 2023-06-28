@@ -1,8 +1,8 @@
 /*
- * This file is part of the mrnf-foresttools library.
+ * This file is part of the cfsforesttools library.
  *
- * Copyright (C) 2020-2022 Her Majesty the Queen in right of Canada
- * author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
+ * Copyright (C) 2020-2023 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,9 +17,9 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris2020.recruitment;
+package canforservutility.predictor.iris.recruitment_v1;
 
-import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
+import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.plotlevel.AreaHaProvider;
@@ -27,19 +27,26 @@ import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.GeographicalCoordinatesProvider;
 import repicea.simulation.covariateproviders.plotlevel.PlotWeightProvider;
 
-interface Iris2020ProtoPlot extends MonteCarloSimulationCompliantObject,
+/**
+ * This interface ensures the plot can provide the basic information for the calculation
+ * of the occupancy index in the IrisOccupancyIndexCalculator class. <p>
+ * 
+ * This interface is internal. It is extended in the IrisCompatiblePlot interface.
+ * @author Mathieu Fortin - June 2023
+ */
+interface IrisProtoPlot extends MonteCarloSimulationCompliantObject,
 									GeographicalCoordinatesProvider,
 									DateYrProvider,
 									PlotWeightProvider,
 									AreaHaProvider {
 
 	/**
-	 * Return the basal area (m2/ha) for this species or species group. 
+	 * Provide the basal area (m2/ha) for this species or species group. 
 	 * 
-	 * @param species a Iris2020Species enum
+	 * @param species a IrisSpecies enum
 	 * @return a double
 	 */
-	public double getBasalAreaM2HaForThisSpecies(Iris2020Species species);
+	public double getBasalAreaM2HaForThisSpecies(IrisSpecies species);
 
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}

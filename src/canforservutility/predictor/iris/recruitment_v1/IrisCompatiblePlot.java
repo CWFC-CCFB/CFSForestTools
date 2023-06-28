@@ -1,8 +1,8 @@
 /*
- * This file is part of the mrnf-foresttools library.
+ * This file is part of the cfsforesttools library.
  *
- * Copyright (C) 2020-2021 Her Majesty the Queen in right of Canada
- * author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
+ * Copyright (C) 2020-2023 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,21 +17,25 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris2020.recruitment;
+package canforservutility.predictor.iris.recruitment_v1;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.SlopeInclinationPercentProvider;
 
-public interface Iris2020CompatiblePlot extends 	GrowthStepLengthYrProvider,
-													SlopeInclinationPercentProvider,
-													DrainageGroupProvider,
-													Iris2020ProtoPlot {
+/**
+ * An interface that ensures the Tree instance is compatible with Iris modules.
+ * @author Mathieu Fortin - June 2023
+ */
+public interface IrisCompatiblePlot extends GrowthStepLengthYrProvider,
+											SlopeInclinationPercentProvider,
+											DrainageGroupProvider,
+											IrisProtoPlot {
 	
 	
 	public static enum SoilDepth {
@@ -61,36 +65,8 @@ public interface Iris2020CompatiblePlot extends 	GrowthStepLengthYrProvider,
 		}
 	}
 	
-	public static enum OriginType {
-		Unknown,
-		Fire,
-		OtherNatural,
-		Harvest;
-		
-		private static Map<OriginType, Matrix> DummyMap;
-		
-		private static Map<OriginType, Matrix> getDummyMap() {
-			if (DummyMap == null) {
-				DummyMap = new HashMap<OriginType, Matrix>();
-				for (OriginType origin : OriginType.values()) {
-					Matrix dummy = new Matrix(1, OriginType.values().length - 1);
-					if (origin.ordinal() > 0) {
-						dummy.setValueAt(0, origin.ordinal() - 1, 1d);
-					}
-					DummyMap.put(origin, dummy);
-				}
-			}
-			return DummyMap;
-		}
-
-		public Matrix getDummyMatrix() {
-			return (getDummyMap().get(this));
-		}
-
-	}
-
 	public static enum DisturbanceType {
-		None,
+		Unknown,
 		Fire,
 		OtherNatural,
 		Harvest;
@@ -144,7 +120,6 @@ public interface Iris2020CompatiblePlot extends 	GrowthStepLengthYrProvider,
 
 	}
 	
-	
 	/**
 	 * Return the mean degree-days over the period.
 	 * @return a double
@@ -179,34 +154,20 @@ public interface Iris2020CompatiblePlot extends 	GrowthStepLengthYrProvider,
 	 * Return the disturbance that have occurred in the previous interval
 	 * @return a DisturbanceType enum variable
 	 */
-	public DisturbanceType getPastPartialDisturbance();
+	public DisturbanceType getPastDisturbance();
 	
 	/**
 	 * Return the disturbance that is going to occur in the upcoming interval.
 	 * @return a DisturbanceType enum variable
 	 */
-	public DisturbanceType getUpcomingPartialDisturbance();
-	
-	/**
-	 * Return the stand-replacement disturbance that is going to occur in the upcoming interval.
-	 * @return a OriginType enum variable
-	 */
-	public OriginType getUpcomingStandReplacementDisturbance();
-
-	/**
-	 * Returns the stand-replacement disturbance that occurred is the previous interval.
-	 * @return a OriginType enum variable
-	 */
-	public OriginType getPastStandReplacementDisturbance();
-
-	
+	public DisturbanceType getUpcomingDisturbance();
+		
 	/**
 	 * Returns the soil texture
 	 * @return a SoilTexture enum variable
 	 */
 	public SoilTexture getSoilTexture();
-	
-	
+		
 	/**
 	 * Return the basal area (m2/ha) of coniferous species.
 	 * @return a double
@@ -224,14 +185,10 @@ public interface Iris2020CompatiblePlot extends 	GrowthStepLengthYrProvider,
 	 * @return a double
 	 */
 	public double getSlopeAspect();
-	
+
 	/**
-	 * Return the distance to the nearest conspecific (e.g. tree from the same species) in the neighbouring plots
-	 * over the last 10 years.
-	 * <br>
-	 * @param species an Iris2020Species enum
-	 * @return a double the distance in km
+	 * Return the list of plots to use to calculate the occupancy index.
+	 * @return a List of IrisProtoPlot instances
 	 */
-	public double getDistanceToConspecificKm(Iris2020Species species);
-	
+	public List<IrisProtoPlot> getPlotsForOccupancyIndexCalculation();
 }
