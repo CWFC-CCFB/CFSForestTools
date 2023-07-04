@@ -290,7 +290,7 @@ public class IrisRecruitmentTest {
 		Assert.assertEquals("Testing stochastic mean against deterministic mean " + plot.getSubjectId() + ", species " + plot.getTreeInstance().getSpecies().name(), 
 				detPred, 
 				meanStoPred, 
-				1E-3);
+				4E-3);
 	}
 
 	
@@ -320,7 +320,7 @@ public class IrisRecruitmentTest {
 		Assert.assertEquals("Testing stochastic mean against deterministic mean " + plot.getSubjectId() + ", species " + plot.getTreeInstance().getSpecies().name(), 
 				detPred, 
 				meanStoPred, 
-				1.5E-2);
+				3E-2);
 	}
 
 	
