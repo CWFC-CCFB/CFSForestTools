@@ -1,8 +1,8 @@
 /*
- * This file is part of the mrnf-foresttools library.
+ * This file is part of the cfsforesttools library.
  *
- * Copyright (C) 2020-2021 Her Majesty the Queen in right of Canada
- * author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
+ * Copyright (C) 2020-2023 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,20 +17,21 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris2020.recruitment;
+package canforservutility.predictor.iris.recruitment_v1;
 
 import java.security.InvalidParameterException;
+import java.util.List;
 
-import canforservutility.predictor.iris2020.recruitment.Iris2020CompatibleTree.Iris2020Species;
+import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 import repicea.math.Matrix;
 
-public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
+final class IrisCompatiblePlotImpl implements IrisCompatiblePlot {
 
-	class Iris2020CompatibleTestTreeImpl implements Iris2020CompatibleTree {
+	class Iris2020CompatibleTestTreeImpl implements IrisCompatibleTree {
 		
-		final Iris2020Species species;
+		final IrisSpecies species;
 		
-		Iris2020CompatibleTestTreeImpl(Iris2020Species species) {
+		Iris2020CompatibleTestTreeImpl(IrisSpecies species) {
 			this.species = species;
 		}
 		
@@ -59,12 +60,10 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 		public int getErrorTermIndex() {return 0;}
 
 		@Override
-		public Iris2020Species getSpecies() {return species;}
+		public IrisSpecies getSpecies() {return species;}
 		
 	}
-	
-	
-	
+		
 	private final double growthStepLength;
 	private final double basalAreaM2HaConiferous;
 	private final double basalAreaM2HaBroadleaved;
@@ -76,19 +75,21 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	private final SoilDepth soilDepth;
 	private final DisturbanceType pastDist;
 	private final DisturbanceType upcomingDist;
-	private final OriginType upcomingOrigin;
-	private final OriginType pastOrigin;
 	private final DrainageGroup drainageGroup;
 	private final SoilTexture soilTexture;
-	private final double pred;
 	private final String id;
-	private final Iris2020Species species;
+	private final IrisSpecies species;
 	private final Matrix gSpGrMat;
-	private final double distanceToConspecific;
 	private final double frostDays;
 	private final double lowestTmin;
+	private final List<IrisProtoPlot> plots;
+	private final double latitudeDeg;
+	private final double longitudeDeg;
+	private int monteCarloRealizationId = 0;
 		
-	Iris2020CompatibleTestPlotImpl(String id,
+	IrisCompatiblePlotImpl(String id,
+			double latitudeDeg,
+			double longitudeDeg,
 			double growthStepLength,
 			double basalAreaM2HaConiferous,
 			double basalAreaM2HaBroadleaved,
@@ -100,20 +101,19 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 			double frostDays,
 			double lowestTmin,
 			SoilDepth soilDepth,
-			OriginType upcomingOrigin,
-			OriginType pastOrigin,
 			DisturbanceType upcomingDist,
 			DisturbanceType pastDist,
 			DrainageGroup drainageGroup,
 			SoilTexture soilTexture,
-			Iris2020Species species,
-			double pred, 
+			IrisSpecies species,
 			double gSpGr,
-			double distanceToConspecific) {
+			List<IrisProtoPlot> plots) {
 		if (drainageGroup == null) {
 			throw new InvalidParameterException("The drainage group cannot be null!");
 		}
 		this.id = id;
+		this.latitudeDeg = latitudeDeg;
+		this.longitudeDeg = longitudeDeg;
 		this.growthStepLength = growthStepLength;
 		this.basalAreaM2HaConiferous = basalAreaM2HaConiferous;
 		this.basalAreaM2HaBroadleaved = basalAreaM2HaBroadleaved;
@@ -127,15 +127,12 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 		this.soilDepth = soilDepth;
 		this.pastDist = pastDist;
 		this.upcomingDist = upcomingDist;
-		this.upcomingOrigin = upcomingOrigin;
-		this.pastOrigin = pastOrigin;
 		this.drainageGroup = drainageGroup;
 		this.soilTexture = soilTexture;
 		this.species = species;
-		this.pred = pred;
-		gSpGrMat = new Matrix(1, Iris2020Species.values().length);
+		gSpGrMat = new Matrix(1, IrisSpecies.values().length);
 		gSpGrMat.setValueAt(0, species.ordinal(), gSpGr);
-		this.distanceToConspecific = distanceToConspecific;
+		this.plots = plots;
 	}
 	
 	
@@ -144,7 +141,11 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	public String getSubjectId() {return id;}
 
 	@Override
-	public int getMonteCarloRealizationId() {return 0;}
+	public int getMonteCarloRealizationId() {return this.monteCarloRealizationId;}
+	
+	void setMonteCarloRealizationId(int id) {
+		this.monteCarloRealizationId = id;
+	}
 
 	@Override
 	public double getGrowthStepLengthYr() {return growthStepLength;}
@@ -168,27 +169,20 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	public DrainageGroup getDrainageGroup() {return drainageGroup;}
 
 	@Override
-	public DisturbanceType getPastPartialDisturbance() {return pastDist;}
+	public DisturbanceType getPastDisturbance() {return pastDist;}
 
 	@Override
-	public DisturbanceType getUpcomingPartialDisturbance() {return upcomingDist;}
-
-	@Override
-	public OriginType getUpcomingStandReplacementDisturbance() {return upcomingOrigin;}
+	public DisturbanceType getUpcomingDisturbance() {return upcomingDist;}
 
 	@Override
 	public SoilTexture getSoilTexture() {return soilTexture;}
 	
-	double getPredProb() {return pred;}
-
-	Iris2020CompatibleTree getTreeInstance() {
+	IrisCompatibleTree getTreeInstance() {
 		return new Iris2020CompatibleTestTreeImpl(species); 
 	}
 
 	@Override
-	public double getBasalAreaM2HaForThisSpecies(Iris2020Species species) {return gSpGrMat.getValueAt(0, species.ordinal());}
-
-
+	public double getBasalAreaM2HaForThisSpecies(IrisSpecies species) {return gSpGrMat.getValueAt(0, species.ordinal());}
 
 	@Override
 	public double getBasalAreaOfConiferousSpecies() {return basalAreaM2HaConiferous;}
@@ -207,16 +201,10 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 	public double getMeanLowestTemperatureOverThePeriod() {return lowestTmin;}
 
 	@Override
-	public OriginType getPastStandReplacementDisturbance() {return pastOrigin;}
+	public double getLatitudeDeg() {return latitudeDeg;}
 
 	@Override
-	public double getDistanceToConspecificKm(Iris2020Species species) {return distanceToConspecific;}
-
-	@Override
-	public double getLatitudeDeg() {return 0;}
-
-	@Override
-	public double getLongitudeDeg() {return 0;}
+	public double getLongitudeDeg() {return longitudeDeg;}
 
 	@Override
 	public double getElevationM() {return 0;}
@@ -226,5 +214,10 @@ public class Iris2020CompatibleTestPlotImpl implements Iris2020CompatiblePlot {
 
 	@Override
 	public double getAreaHa() {return 0.04;}
+
+	@Override
+	public List<IrisProtoPlot> getPlotsForOccupancyIndexCalculation() {
+		return plots;
+	}
 	
 }

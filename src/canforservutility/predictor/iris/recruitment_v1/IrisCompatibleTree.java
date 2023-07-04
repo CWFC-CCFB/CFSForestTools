@@ -1,8 +1,8 @@
 /*
- * This file is part of the mrnf-foresttools library.
+ * This file is part of the cfsforesttools library.
  *
- * Copyright (C) 2020-2021 Her Majesty the Queen in right of Canada
- * author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
+ * Copyright (C) 2020-2023 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris2020.recruitment;
+package canforservutility.predictor.iris.recruitment_v1;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
@@ -26,13 +26,13 @@ import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjec
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmProvider;
 import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
 
-public interface Iris2020CompatibleTree extends BasalAreaLargerThanSubjectM2Provider,
+public interface IrisCompatibleTree extends BasalAreaLargerThanSubjectM2Provider,
 													LightAllometryCalculableTree,
 													LnDbhCmProvider,
 													MonteCarloSimulationCompliantObject,
 													IndexableErrorTerm {
 
-	public static enum Iris2020Species {
+	public static enum IrisSpecies {
 		BOG,
 		BOJ,
 		BOP,
@@ -79,6 +79,6 @@ public interface Iris2020CompatibleTree extends BasalAreaLargerThanSubjectM2Prov
 	 * This method returns the species.
 	 * @return a Iris2020Species enum
 	 */
-	public Iris2020Species getSpecies(); 
+	public IrisSpecies getSpecies(); 
 
 }
