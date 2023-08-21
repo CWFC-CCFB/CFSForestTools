@@ -28,14 +28,14 @@ import java.io.IOException;
 import java.util.List;
 
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor;
+import repicea.math.integral.CompositeSimpsonRule;
+import repicea.math.integral.TrapezoidalRule;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
-import repicea.stats.integral.CompositeSimpsonRule;
-import repicea.stats.integral.TrapezoidalRule;
 
 /**
  * The SybilleTreeLogger class is a TreeLogger extended class that relies on Schneider et al.'s taper

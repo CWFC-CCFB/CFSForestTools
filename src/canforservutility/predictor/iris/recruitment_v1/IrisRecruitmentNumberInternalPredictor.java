@@ -30,14 +30,14 @@ import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSp
 import repicea.math.AbstractMathematicalFunctionWrapper;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.math.integral.GaussHermiteQuadrature;
+import repicea.math.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.stats.LinearStatisticalExpression;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.estimates.GaussianEstimate;
-import repicea.stats.integral.GaussHermiteQuadrature;
-import repicea.stats.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.stats.model.glm.LinkFunction;
 import repicea.stats.model.glm.LinkFunction.Type;
 

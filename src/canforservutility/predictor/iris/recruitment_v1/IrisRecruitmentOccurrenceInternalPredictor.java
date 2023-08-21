@@ -32,14 +32,13 @@ import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSp
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.math.integral.AbstractGaussQuadrature.NumberOfPoints;
+import repicea.math.integral.GaussLegendreQuadrature;
+import repicea.math.utility.GaussianUtility;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
-import repicea.stats.distributions.utility.GaussianUtility;
 import repicea.stats.estimates.GaussianEstimate;
-import repicea.stats.integral.AbstractGaussQuadrature.NumberOfPoints;
-import repicea.stats.integral.GaussLegendreQuadrature;
-import repicea.stats.integral.TrapezoidalRule;
 import repicea.stats.model.glm.LinkFunction;
 
 @SuppressWarnings("serial")

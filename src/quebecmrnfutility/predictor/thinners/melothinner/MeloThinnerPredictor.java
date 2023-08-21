@@ -31,20 +31,19 @@ import repicea.gui.REpiceaShowableUIWithParent;
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.math.integral.AbstractGaussQuadrature.NumberOfPoints;
+import repicea.math.integral.GaussHermiteQuadrature;
+import repicea.math.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
-import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider.LandOwnership;
 import repicea.simulation.covariateproviders.plotlevel.LandUseProvider.LandUse;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
 import repicea.simulation.thinners.REpiceaTreatmentDefinition;
 import repicea.stats.estimates.GaussianEstimate;
-import repicea.stats.integral.AbstractGaussQuadrature.NumberOfPoints;
-import repicea.stats.integral.GaussHermiteQuadrature;
-import repicea.stats.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.util.ObjectUtility;
 
 /**

@@ -4,12 +4,12 @@ package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
 import java.util.List;
 
 import repicea.math.Matrix;
+import repicea.math.integral.AbstractGaussQuadrature.NumberOfPoints;
+import repicea.math.integral.GaussLegendreQuadrature;
+import repicea.math.integral.TrapezoidalRule;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
-import repicea.stats.integral.AbstractGaussQuadrature.NumberOfPoints;
-import repicea.stats.integral.GaussLegendreQuadrature;
-import repicea.stats.integral.TrapezoidalRule;
 
 class StemTaperTreeImpl implements StemTaperTree {
 
