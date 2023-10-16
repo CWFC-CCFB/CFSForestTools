@@ -36,7 +36,15 @@ import repicea.simulation.SASParameterEstimates;
 import repicea.stats.Distribution;
 import repicea.stats.StatisticalUtility;
 
-public class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
+/**
+ * Implement the biomass models in Lambert et al. (2005) for each individual species.
+ * @author Jean-Francois Lavoie 2021
+ * @see <a href=https://doi.org/10.1139/x05-112> Lambert, M.-C., C.-H. Ung, and F. Raulier. 2005. Canadian
+ * national tree aboveground biomass equations. Canadian Journal of Forest Research 35(8): 1996-2018 
+ * </a>
+ */
+@SuppressWarnings("serial")
+class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	Matrix parameterEstimates;
 	Matrix parameterCovariance;	
 	

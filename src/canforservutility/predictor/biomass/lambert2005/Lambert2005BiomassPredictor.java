@@ -123,12 +123,33 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 	}
 	
 	public enum BiomassCompartment {
+		/**
+		 * Wood between 0.30 cm in height and minimum diameter of 9 cm.
+		 */
 		WOOD(0),
+		/**
+		 * Bark between 0.30 cm in height and minimum diameter of 9 cm.
+		 */
 		BARK(1),
+		/**
+		 * Wood and bark between 0.30 cm in height and minimum diameter of 9 cm.
+		 */
 		STEM(-1),
-		BRANCHES(2),		
+		/**
+		 * Wood and bark of tree top and branches with a large-end diameter of 9 cm or less.
+		 */
+		BRANCHES(2),
+		/**
+		 * Foliage.
+		 */
 		FOLIAGE(3),
+		/**
+		 * Sum of the foliage and branches.
+		 */
 		CROWN(-1),
+		/**
+		 * Sum of foliage, branches, bark and wood.
+		 */
 		TOTAL(-1);
 		
 		final int rank;
@@ -236,7 +257,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 			
 			Lambert2005BiomassInternalPredictor currentInternalPredictor = null; 
 			
-			FileImportParameter[] importColumns = FileImportParameter.values();
+//			FileImportParameter[] importColumns = FileImportParameter.values();
 								
 			while ((record = reader.nextRecord()) != null) {
 				// here we create one internal predictor per species encountered
@@ -278,7 +299,6 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		try {
 			reader = new CSVReader(filename);
 			Object[] record;
-			double value;
 			String paramName;								 		
 			
 			while ((record = reader.nextRecord()) != null) {
@@ -369,8 +389,6 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		try {
 			reader = new CSVReader(filename);
 			Object[] record;
-			double value;
-			String paramName;								 		
 			
 			while ((record = reader.nextRecord()) != null) {
 				// here we create one internal predictor per species encountered
