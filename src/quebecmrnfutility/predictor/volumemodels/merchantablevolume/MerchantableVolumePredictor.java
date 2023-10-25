@@ -113,7 +113,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 				return 0d;
 			}
 			
-			if (tree.getHeightM() == -1) {	// means the height has not been calculated
+			if (tree.getHeightM() < 1.3) {	// means the height has not been calculated
 				return -1d;
 			}
 			
