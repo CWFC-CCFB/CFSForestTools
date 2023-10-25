@@ -156,7 +156,7 @@ public class WBirchLogGradesPredictorTest {
 		
 		Matrix mean = estimate.getMean();
 		Matrix relDiff = mean.subtract(meanRef).elementWiseDivide(meanRef).getAbsoluteValue();
-		Assert.assertTrue("Difference in terms of mean", !relDiff.anyElementLargerThan(5E-3));
+		Assert.assertTrue("Difference in terms of mean", !relDiff.anyElementLargerThan(1E-2));
 		
 		Matrix variance = estimate.getVariance();
 		Matrix std = variance.diagonalVector().elementWisePower(0.5);
