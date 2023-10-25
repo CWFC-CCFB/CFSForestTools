@@ -49,8 +49,12 @@ public class MerchantableVolumePredictorTest {
 		VolumableStand p = new VolumableStandImpl();
 		VolumableTree t = new VolumableTreeImpl("BOJ", 10d, -1d);
 		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
-		double volumeDM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t);
-		Assert.assertEquals("Testing volume", -1d, volumeDM3, 1E-8);
+		try {
+			double volumeDM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t);
+			Assert.fail("Should have thrown an exception!");
+		} catch (Exception e) {
+			
+		}
 	}
 
 	@Test
@@ -58,8 +62,12 @@ public class MerchantableVolumePredictorTest {
 		VolumableStand p = new VolumableStandImpl();
 		VolumableTree t = new VolumableTreeImpl("BOJ", 10d, 1d);
 		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
-		double volumeDM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t);
-		Assert.assertEquals("Testing volume", -1d, volumeDM3, 1E-8);
+		try {
+			double volumeDM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t);
+			Assert.fail("Should have thrown an exception!");
+		} catch (Exception e) {
+			
+		}
 	}
 
 }

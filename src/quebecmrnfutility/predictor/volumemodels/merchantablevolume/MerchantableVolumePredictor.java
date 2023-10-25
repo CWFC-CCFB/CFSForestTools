@@ -24,6 +24,8 @@
  */
 package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
 
+import java.security.InvalidParameterException;
+
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree.VolSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -107,29 +109,21 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	 * @return the commercial underbark volume (dm3)
 	 */
 	public double predictTreeCommercialUnderbarkVolumeDm3(VolumableStand stand, VolumableTree tree) {
-		try {
-
-			if (tree.getDbhCm() < 9.1) {	// means this is a sapling
-				return 0d;
-			}
-			
-			if (tree.getHeightM() < 1.3) {	// means the height has not been calculated
-				return -1d;
-			}
-			
-			double volume = fixedEffectPrediction(stand, tree);
-			volume += blupImplementation(stand, tree);
-			volume += residualImplementation(tree);
-			if (volume < 0) {
-				volume = 1d;		// at least 1 dm3 if dbh >= 9.1 Correction for negative volumes MF2021-03-25
-			}
-			return volume;
-			
-		} catch (Exception e) {
-			System.out.println("Error while estimating tree volume for tree " + tree.toString());
-			e.printStackTrace();
-			return -1d;
+		if (tree.getDbhCm() < 9.1) {	// means this is a sapling
+			return 0d;
 		}
+
+		if (tree.getHeightM() < 1.3) {	// means the height has not been calculated
+			throw new InvalidParameterException("Volume cannot be calculated if the tree is not at least 1.3 m in height!");
+		}
+
+		double volume = fixedEffectPrediction(stand, tree);
+		volume += blupImplementation(stand, tree);
+		volume += residualImplementation(tree);
+		if (volume < 0d) {
+			volume = 1d;		// at least 1 dm3 if dbh >= 9.1 Correction for negative volumes MF2021-03-25
+		}
+		return volume;
 	}
 
 	/**
@@ -139,7 +133,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	 * @return the fixed effect prediction (double)
 	 * @throws Exception
 	 */
-	private synchronized double fixedEffectPrediction(VolumableStand stand, VolumableTree t) throws Exception {
+	private synchronized double fixedEffectPrediction(VolumableStand stand, VolumableTree t) {
 		Matrix modelParameters = getParametersForThisRealization(stand);
 		this.oXVector.resetMatrix();
 		int pointeur = 0;
