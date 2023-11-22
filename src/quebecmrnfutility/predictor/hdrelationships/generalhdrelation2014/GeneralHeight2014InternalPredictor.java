@@ -11,6 +11,7 @@ import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.General
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.GeneralHeight2014Predictor.Effect;
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.Heightable2014Tree.Hd2014Species;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.hdrelationships.HDRelationshipPredictor;
@@ -41,7 +42,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 	 * For extended visibility
 	 */
 	@Override
-	protected void setDefaultRandomEffects(HierarchicalLevel level, Estimate<? extends StandardGaussianDistribution> estimate) {
+	protected void setDefaultRandomEffects(HierarchicalLevel level, Estimate<Matrix, SymmetricMatrix, ? extends StandardGaussianDistribution> estimate) {
 		super.setDefaultRandomEffects(level, estimate);
 	}
 	

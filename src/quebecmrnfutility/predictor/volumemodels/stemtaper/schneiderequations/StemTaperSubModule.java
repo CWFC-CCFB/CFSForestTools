@@ -345,7 +345,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	 * @see repicea.simulation.REpiceaPredictor#setParameterEstimates(repicea.stats.estimates.GaussianEstimate)
 	 */
 	@Override
-	protected final void setDefaultRandomEffects(HierarchicalLevel level, Estimate<? extends StandardGaussianDistribution> newEstimate) {
+	protected final void setDefaultRandomEffects(HierarchicalLevel level, Estimate<Matrix, SymmetricMatrix, ? extends StandardGaussianDistribution> newEstimate) {
 		super.setDefaultRandomEffects(level, newEstimate);
 	}
 

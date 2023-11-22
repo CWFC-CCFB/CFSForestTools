@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 import repicea.io.javacsv.CSVReader;
-import repicea.stats.estimates.Estimate;
+import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
 
 public class IrisOccupancyIndexTest {
@@ -63,7 +63,7 @@ public class IrisOccupancyIndexTest {
 		Assert.assertEquals("Testing the size of the id list", 12267, calculator.plotsId.size());
 		Assert.assertEquals("Testing the size of the distance matrix", 12267, calculator.distances.m_iRows);
 		ConcurrentHashMap<Integer, List<IrisProtoPlot>> dateFilteredPlots = new ConcurrentHashMap<Integer, List<IrisProtoPlot>>();
-		Estimate<?> proximityIndexEstimate = calculator.getOccupancyIndex(plots, plots.get(0), IrisSpecies.ERS, dateFilteredPlots);
+		GaussianEstimate proximityIndexEstimate = calculator.getOccupancyIndex(plots, plots.get(0), IrisSpecies.ERS, dateFilteredPlots);
 		double proximityIndexMean = proximityIndexEstimate.getMean().getValueAt(0, 0);
 		double proximityIndexVariance = proximityIndexEstimate.getVariance().getValueAt(0, 0);
 		Assert.assertEquals("Testing the mean of the estimate", 0.5, proximityIndexMean, 1E-8);

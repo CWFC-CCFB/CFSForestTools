@@ -13,6 +13,7 @@ import org.junit.Test;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.serial.xml.XmlDeserializer;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
@@ -144,7 +145,7 @@ public class StemTaperPredictorTest {
 		
 		Map<String, Double> outputMap = new HashMap<String, Double>();
 		AbstractStemTaperEstimate taperEstimate;
-		Estimate<?> volumeEstimate;
+		Estimate<Matrix, SymmetricMatrix, ?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			volumeEstimate = taperEstimate.getVolumeEstimate();
@@ -185,7 +186,7 @@ public class StemTaperPredictorTest {
 
 		Map<String, Double> outputMap = new HashMap<String, Double>();
 		AbstractStemTaperEstimate taperEstimate;
-		Estimate<?> volumeEstimate;
+		Estimate<Matrix, SymmetricMatrix, ?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			volumeEstimate = taperEstimate.getVolumeEstimate();
@@ -305,7 +306,7 @@ public class StemTaperPredictorTest {
 		
 		Map<String, Double> outputMap = new HashMap<String, Double>();
 		AbstractStemTaperEstimate taperEstimate;
-		Estimate<?> volumeEstimate;
+		Estimate<Matrix, SymmetricMatrix, ?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			volumeEstimate = taperEstimate.getVolumeEstimate();
@@ -346,7 +347,7 @@ public class StemTaperPredictorTest {
 
 		Map<String, Double> outputMap = new HashMap<String, Double>();
 		AbstractStemTaperEstimate taperEstimate;
-		Estimate<?> volumeEstimate;
+		Estimate<Matrix, SymmetricMatrix, ?> volumeEstimate;
 		for (StemTaperTreeSpecies species : tmpMap.keySet()) {
 			taperEstimate = tmpMap.get(species);
 			volumeEstimate = taperEstimate.getVolumeEstimate();
@@ -392,7 +393,7 @@ public class StemTaperPredictorTest {
 		StemTaperSegmentList segments = tree.getGaussLegendreBottomSegments();
 		AbstractStemTaperEstimate taperEstimate = ste.getPredictedTaperForTheseSegments(tree, segments, EstimationMethodInDeterministicMode.SecondOrder);
 			
-		Estimate<?> volumeEstimate = taperEstimate.getVolumeEstimate(segments);
+		Estimate<Matrix, SymmetricMatrix, ?> volumeEstimate = taperEstimate.getVolumeEstimate(segments);
 		double volume = volumeEstimate.getMean().getSumOfElements();
 		double variance = volumeEstimate.getVariance().getSumOfElements();
 		NumberFormat nf = NumberFormat.getInstance();

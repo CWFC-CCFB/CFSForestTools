@@ -30,6 +30,7 @@ import java.util.List;
 
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
@@ -210,7 +211,7 @@ public class SybilleTreeLogCategory extends LogCategory {
 				endIndex = findCloserCeilingCrossSectionIndex(crossSectionHeights, height + getLogLengthM());
 			}
 			double trueLengthM = crossSectionHeights.get(endIndex) - crossSectionHeights.get(startIndex); 
-			Estimate<?> volumeEstimateForThisSection;
+			Estimate<Matrix, SymmetricMatrix, ?> volumeEstimateForThisSection;
 			double estimatedD2 = estimate.getMean().getValueAt(endIndex, 0);
 			if (estimatedD2 * .01 >= smallEndDiameterCm * smallEndDiameterCm) {	// .01 required to shift from mm2 to cm2
 				List<Double> heightsForTheseSegments = new ArrayList<Double>();
