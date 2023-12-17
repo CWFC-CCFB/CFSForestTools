@@ -1,22 +1,22 @@
 package quebecmrnfutility.predictor.volumemodels.loggradespetro;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeSpecies;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcHarvestPriorityProvider.QcHarvestPriority;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcVigorClassProvider.QcVigorClass;
 import repicea.math.Matrix;
-import repicea.serial.xml.XmlMarshallException;
 import repicea.stats.estimates.MonteCarloEstimate;
 
 public class PetroGradePredictorTest {
 
 	@Test
-	public void testWithBasicVersion() throws FileNotFoundException, XmlMarshallException {
+	public void testWithBasicVersion() throws FileNotFoundException, IOException {
 		
 		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50);
 		
@@ -44,7 +44,7 @@ public class PetroGradePredictorTest {
 	
 	
 	@Test
-	public void testWithMSCR() throws FileNotFoundException, XmlMarshallException {
+	public void testWithMSCR() throws FileNotFoundException, IOException {
 			
 		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, QcHarvestPriority.C);
 		
@@ -70,7 +70,7 @@ public class PetroGradePredictorTest {
 
 	
 	@Test
-	public void testWithABCD() throws FileNotFoundException, XmlMarshallException {
+	public void testWithABCD() throws FileNotFoundException, IOException {
 		
 		
 		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, QcTreeQuality.B);
@@ -98,7 +98,7 @@ public class PetroGradePredictorTest {
 
 	
 	@Test
-	public void testWithVigor() throws FileNotFoundException, XmlMarshallException {
+	public void testWithVigor() throws FileNotFoundException, IOException {
 		
 		PetroGradeTreeImpl tree = new PetroGradeTreeImpl(PetroGradeSpecies.ERS, 50, QcVigorClass.V2);
 		

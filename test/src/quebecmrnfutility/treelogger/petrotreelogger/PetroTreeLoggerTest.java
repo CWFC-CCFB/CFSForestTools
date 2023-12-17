@@ -1,6 +1,7 @@
 package quebecmrnfutility.treelogger.petrotreelogger;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,11 +12,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree.PetroGradeSpecies;
-import repicea.serial.xml.XmlDeserializer;
-import repicea.serial.xml.XmlMarshallException;
-import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcHarvestPriorityProvider.QcHarvestPriority;
+import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcVigorClassProvider.QcVigorClass;
+import repicea.serial.xml.XmlDeserializer;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
@@ -24,7 +24,7 @@ public class PetroTreeLoggerTest {
 
 	@SuppressWarnings("rawtypes")
 	@Test
-	public void testWithBasicVersion() throws FileNotFoundException, XmlMarshallException {
+	public void testWithBasicVersion() throws FileNotFoundException, IOException {
 		
 		String refMapPath = ObjectUtility.getPackagePath(getClass()) + "refMapPetroBasicVersion.ser";
 		
@@ -71,7 +71,7 @@ public class PetroTreeLoggerTest {
 	
 	@SuppressWarnings("rawtypes")
 	@Test
-	public void testWithMSCR() throws FileNotFoundException, XmlMarshallException {
+	public void testWithMSCR() throws FileNotFoundException, IOException {
 		
 		String refMapPath = ObjectUtility.getPackagePath(getClass()) + "refMapPetroMSCRVersion.ser";
 		
@@ -118,7 +118,7 @@ public class PetroTreeLoggerTest {
 	
 	@SuppressWarnings("rawtypes")
 	@Test
-	public void testWithABCD() throws FileNotFoundException, XmlMarshallException {
+	public void testWithABCD() throws FileNotFoundException, IOException {
 		
 		String refMapPath = ObjectUtility.getPackagePath(getClass()) + "refMapPetroQualityVersion.ser";
 		
@@ -165,7 +165,7 @@ public class PetroTreeLoggerTest {
 	
 	@SuppressWarnings("rawtypes")
 	@Test
-	public void testWithVigor() throws FileNotFoundException, XmlMarshallException {
+	public void testWithVigor() throws FileNotFoundException, IOException {
 		
 		String refMapPath = ObjectUtility.getPackagePath(getClass()) + "refMapPetroVigorVersion.ser";
 		

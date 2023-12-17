@@ -34,9 +34,8 @@ import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
 import repicea.gui.components.REpiceaMatchSelector;
 import repicea.serial.MemorizerPackage;
+import repicea.serial.SerializerChangeMonitor;
 import repicea.serial.xml.XmlDeserializer;
-import repicea.serial.xml.XmlMarshallException;
-import repicea.serial.xml.XmlSerializerChangeMonitor;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.Language;
 import repicea.util.REpiceaTranslator.TextableEnum;
@@ -44,13 +43,13 @@ import repicea.util.REpiceaTranslator.TextableEnum;
 public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<OfficialHarvestTreatmentDefinition> {
 		
 	static {
-		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector",
+		SerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector",
 				"quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestSubmodelSelector");
-		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector$Mode",
+		SerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector$Mode",
 				"quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestSubmodelSelector$Mode");
-		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestModel$TreatmentType",
+		SerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestModel$TreatmentType",
 				"quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel$TreatmentType");
-		XmlSerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector$ColumnID",
+		SerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.officialharvestmodule.OfficialHarvestSubmodelSelector$ColumnID",
 				"quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestSubmodelSelector$ColumnID");
 	}
 	
@@ -133,6 +132,7 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 	}
 	
 		
+	@SuppressWarnings("unchecked")
 	@Override
 	public OfficialHarvestSubmodelSelectorDialog getUI(Container parent) {
 		if (guiInterface == null) {
@@ -155,13 +155,9 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 			}
 		}
 		OfficialHarvestSubmodelSelector newloadedInstance;
-		try {
-			newloadedInstance = (OfficialHarvestSubmodelSelector) deserializer.readObject();
-			unpackMemorizerPackage(newloadedInstance.getMemorizerPackage());
-			setFilename(filename);
-		} catch (XmlMarshallException e) {
-			throw new IOException("A XmlMarshallException occurred while loading the file!");
-		}
+		newloadedInstance = (OfficialHarvestSubmodelSelector) deserializer.readObject();
+		unpackMemorizerPackage(newloadedInstance.getMemorizerPackage());
+		setFilename(filename);
 	}
 
 
