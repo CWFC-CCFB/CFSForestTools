@@ -1,26 +1,20 @@
 /*
- * English version follows
- * 
- * Ce fichier fait partie de la biblioth�que mrnf-foresttools.
- * Il est prot�g� par la loi sur le droit d'auteur (L.R.C.,cC-42) et par les
- * conventions internationales. Toute reproduction de ce fichier sans l'accord 
- * du minist�re des Ressources naturelles et de la Faune du Gouvernement du 
- * Qu�bec est strictement interdite.
- * 
- * Copyright (C) 2009-2012 Gouvernement du Qu�bec - Rouge-Epicea
- * 	Pour information, contactez Jean-Pierre Saucier, 
- * 			Minist�re des Ressources naturelles et de la Faune du Qu�bec
- * 			jean-pierre.saucier@mrnf.gouv.qc.ca
+ * This file is part of the CFSForesttools library.
  *
- * This file is part of the mrnf-foresttools library. It is 
- * protected by copyright law (L.R.C., cC-42) and by international agreements. 
- * Any reproduction of this file without the agreement of Qu�bec Ministry of 
- * Natural Resources and Wildlife is strictly prohibited.
+ * Copyright (C) 2009-2012 Gouvernement du Quebec - Rouge-Epicea
  *
- * Copyright (C) 2009-2012 Gouvernement du Qu�bec 
- * 	For further information, please contact Jean-Pierre Saucier,
- * 			Minist�re des Ressources naturelles et de la Faune du Qu�bec
- * 			jean-pierre.saucier@mrnf.gouv.qc.ca
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
 package quebecmrnfutility.predictor.thinners.betaharvestmodule;
 
@@ -201,6 +195,7 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 	@Override
 	public REpiceaTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(BetaHarvestableStand stand) {return null;}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List<Enum> getTreatmentList() {
 		return Arrays.asList(Treatment.values());

@@ -1,5 +1,5 @@
 /*
- * This file is part of the mrnf-foresttools library.
+ * This file is part of the CFSForesttools library.
  *
  * Copyright (C) 2009-2014 Mathieu Fortin for Rouge-Epicea
  *
@@ -67,6 +67,7 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 	private final GaussHermiteQuadrature ghq;
 //	private final List<Integer> indicesForGaussianQuad;
 	
+	@SuppressWarnings("serial")
 	class EmbeddedLinkFunction extends LinkFunction implements GaussHermiteQuadratureCompatibleFunction<Double> {
 
 		final double standardDeviation;

@@ -7,18 +7,18 @@ The cfsforesttools library
 <!-- badges: end -->
 
 
-Copyright (C) 2009-2019 Mathieu Fortin for Rouge Epicea.
-
+Copyright (C) 2009-2019 Gouvernement du Quebec - Rouge Epicea
 Copyright (C) 2019-2022 Her Majesty the Queen in right of Canada
+Copyright (C) 2023- His Majesty the King in right of Canada
 
-Authors: Mathieu Fortin, Jean-Francois Lavoie, Canadian Wood Fibre Centre
+Authors: Mathieu Fortin (Rouge Epicea, UMR LERFoB, Canadian Forest Service), Jean-Francois Lavoie (Canadian Wood Fibre Centre)
 
 Email: mathieu.fortin.re@gmail.com
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+version 3 of the License, or (at your option) any later version.
 
 This library is distributed with the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied
@@ -38,8 +38,8 @@ Tickets can be created at https://github.com/CWFC-CCFB/CFSForestTools/issues.
 
 
 This library depends on:
-- repicea-simulation (licensed LGPL 2.1)
-- biosimclient (licensed LGPL 2.1) 
+- repicea-simulation (licensed LGPL 3)
+- biosimclient (licensed LGPL 3) 
 
 It might also require the jabx library version 2.3.2 (Copyright (c) 2017 Oracle and/or its affiliates, 
 https://eclipse-ee4j.github.io/jaxb-ri/) if the JVM is running under Java 11 or 13. The jabx library is 

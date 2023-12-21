@@ -1,3 +1,21 @@
+/*
+ * This file is part of the CFSForesttools library.
+ *
+ * Copyright (C) 2009-2017 Gouvernement du Quebec - Rouge-Epicea
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
+ */
 package quebecmrnfutility.predictor.thinners.officialharvestmodule;
 
 import java.awt.FlowLayout;
@@ -20,7 +38,7 @@ import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarves
 import repicea.gui.UIControlManager;
 import repicea.gui.components.REpiceaMatchSelectorDialog;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "rawtypes" })
 public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorDialog implements ItemListener, ActionListener {
 	
 	static {
@@ -33,6 +51,7 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 	private JComboBox<OfficialHarvestTreatmentDefinition> uniqueTreatmentComboBox;
 	private OfficialHarvestSubmodelAreaLimitationPanel areaLimitationsPanel;
 	
+	@SuppressWarnings("unchecked")
 	protected OfficialHarvestSubmodelSelectorDialog(OfficialHarvestSubmodelSelector caller, Window parent, Object[] columnNames) {
 		super(caller, parent, columnNames);
 	}

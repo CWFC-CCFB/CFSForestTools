@@ -1,5 +1,5 @@
 /*
- * This file is part of the cfsforesttools library.
+ * This file is part of the CFSForesttools library.
  *
  * Copyright (C) 2020-2023 His Majesty the King in right of Canada
  * Author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service

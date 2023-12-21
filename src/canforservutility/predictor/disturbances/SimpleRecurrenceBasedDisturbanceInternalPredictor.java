@@ -1,7 +1,8 @@
 /*
- * This file is part of the mrnf-foresttools library
+ * This file is part of the CFSForesttools library
  *
- * Copyright (C) 2019 Mathieu Fortin - Canadian Forest Service
+ * Copyright (C) 2019 Her Majesty the Queen in Right of Canada
+ * Author: Mathieu Fortin - Canadian Forest Service
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

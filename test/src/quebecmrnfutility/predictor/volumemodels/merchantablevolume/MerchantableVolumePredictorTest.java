@@ -1,5 +1,5 @@
 /*
- * This file is part of the cfsforesttools library
+ * This file is part of the CFSForesttools library
  *
  * Copyright (C) 2023 His Majesty the King in Right of Canada
  * Author: Mathieu Fortin, Canadian Forest Service

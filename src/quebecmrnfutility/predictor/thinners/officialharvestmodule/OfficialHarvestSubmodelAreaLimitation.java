@@ -1,8 +1,8 @@
 /*
- * This file is part of the mrnfforestools library.
+ * This file is part of the CFSForesttools library.
  *
  * Copyright (C) 2019-2021 Her Majesty the Queen in right of Canada
- * author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service.
+ * Author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

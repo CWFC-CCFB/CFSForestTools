@@ -1,5 +1,5 @@
 /*
- * This file is part of the mrnf-foresttools library
+ * This file is part of the CFSForesttools library
  *
  * Copyright (C) 2021 Her Majesty the Queen in right of Canada
  * Author: Jean-Francois Lavoie
@@ -7,7 +7,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * version 3 of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied

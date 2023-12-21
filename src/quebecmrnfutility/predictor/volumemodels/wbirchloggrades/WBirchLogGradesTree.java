@@ -1,5 +1,5 @@
 /*
- * This file is part of the mrnf-foresttools library.
+ * This file is part of the CFSForesttools library.
  *
  * Copyright (C) 2009-2014 Mathieu Fortin (LERFoB), Robert Schneider (UQAR) 
  *

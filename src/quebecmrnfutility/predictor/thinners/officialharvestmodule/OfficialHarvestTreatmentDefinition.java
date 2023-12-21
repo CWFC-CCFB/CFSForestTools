@@ -1,5 +1,5 @@
 /*
- * This file is part of the mrnf-foresttools library
+ * This file is part of the CFSForesttools library
  * 
  * Author: Mathieu Fortin - Canadian Forest Service
  * Copyright (C) 2021 Her Majestry the Queen in right of Canada

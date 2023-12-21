@@ -1,5 +1,5 @@
 /*
- * This file is part of the mrnf-foresttools library.
+ * This file is part of the CFSForesttools library.
  *
  * Copyright (C) 2009-2014 Mathieu Fortin for Rouge-Epicea
  *
@@ -28,6 +28,7 @@ import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
 
+@SuppressWarnings("serial")
 class Artemis2009RecruitDiameterInternalPredictor extends REpiceaPredictor {
 
 	private List<Integer> effectList;

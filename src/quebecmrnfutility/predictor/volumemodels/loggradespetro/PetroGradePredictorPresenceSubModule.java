@@ -1,5 +1,5 @@
 /*
- * This file is part of the mrnf-foresttool- library.
+ * This file is part of the CFSForesttools library.
  *
  * Copyright (C) 2009-2016 Mathieu Fortin for Rouge-Epicea
  *

@@ -1,8 +1,7 @@
 /*
- * This file is part of the mrnf-foresttools library.
+ * This file is part of the CFSForesttools library.
  *
  * Copyright (C) 2009-2017 Mathieu Fortin for Rouge-Epicea
- * Copyright (C) 2019 Mathieu Fortin for Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
