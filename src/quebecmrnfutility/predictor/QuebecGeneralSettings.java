@@ -288,6 +288,7 @@ public class QuebecGeneralSettings {
 		ECO_REGION_MAP.put("6p","6est");
 		ECO_REGION_MAP.put("6q","6est");
 		ECO_REGION_MAP.put("6r","6est");
+		ECO_REGION_MAP.put("6s","6est");
 	}
 
 //	public static final Map<String, DrainageGroup> DRAINAGE_CLASS_LIST = new HashMap<String, DrainageGroup>();
