@@ -422,7 +422,14 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 			System.out.println("Lambert2005BiomassPredictor.readErrorCovarianceFile() : Unable to read " + filename + ".  Details : " + e.getMessage());
 		}
 	}
-		
+	
+	/**
+	 * Provide the biomass in different compartments of a particular tree. <p>
+	 * The output is a Matrix instance whose elements represent the biomass (kg) of the different compartment calculated for a single tree (NO EXPANSION FACTOR). 
+	 * The values of the different compartments can be accessed using the BiomassCompartment enum (e.g., myBiomass.getValueAt(BiomassCompartment.WOOD, 0);).
+	 * @param tree a Lambert2005Tree instance
+	 * @return a Matrix instance that is a column vector 
+	 */
 	public synchronized Matrix predictBiomassKg(Lambert2005Tree tree) {
 		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(tree.getLambert2005Species());
 		return predictor.predictBiomass(tree);
