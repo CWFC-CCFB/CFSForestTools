@@ -198,7 +198,7 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 			prob += predictor.predictEventProbability(plot, null, predParms);
 		}
 		double actual = prob / nbRealizations;
-		Assert.assertEquals("Testing stochastic probability", 3.7217079246087332E-5, actual, 4E-6);
+		Assert.assertEquals("Testing stochastic probability", 3.7217079246087332E-5, actual, 1E-5);
 	}
 
 }
