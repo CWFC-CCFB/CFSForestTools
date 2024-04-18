@@ -26,12 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
+import quebecmrnfutility.predictor.volumemodels.merchantablevolume.MerchantableVolumePredictor;
+import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableStand;
+import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableStandImpl;
+import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTreeImpl;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.species.REpiceaSpecies;
 import repicea.util.ObjectUtility;
 
 public class Lambert2005BiomassPredictorTest {
@@ -210,4 +216,47 @@ public class Lambert2005BiomassPredictorTest {
 		
 		reader.close();		
 	}
+	
+	
+	static class Tree extends VolumableTreeImpl implements Lambert2005Tree {
+
+		final Lambert2005Species lambertSpecies;
+		
+		public Tree(String speciesName, Lambert2005Species lambertSpecies, double dbhCm, double heightM) {
+			super(speciesName, dbhCm, heightM);
+			this.lambertSpecies = lambertSpecies;
+		}
+
+		@Override
+		public Lambert2005Species getLambert2005Species() {return lambertSpecies;}
+
+		@Override
+		public String getSubjectId() {return null;}
+
+		@Override
+		public HierarchicalLevel getHierarchicalLevel() {return null;}
+
+		@Override
+		public int getMonteCarloRealizationId() {return 0;}
+		
+	}
+	
+	
+	public static void main(String[] args) {
+		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Lambert2005BiomassPredictor bioPred = new Lambert2005BiomassPredictor();
+		Lambert2005Species species = Lambert2005Species.PopulusTremuloides;
+		REpiceaSpecies.Species repiceaSpecies = REpiceaSpecies.Species.Populus_spp;
+		VolumableStand p = new VolumableStandImpl();
+		Tree t = new Tree("PET", species, 20, 15);
+		double volumeM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t) * 0.001;
+		double overbarkCommercialVolumeM3 = volumeM3 * (1 + repiceaSpecies.getBarkProportionOfWoodVolume());
+		double totalAbovegroundbiomassMg = bioPred.predictBiomassKg(t).getValueAt(BiomassCompartment.TOTAL.ordinal(), 0) * 0.001;
+		double basicWoodDensity = repiceaSpecies.getBasicWoodDensity();
+		double totalAbovegroundVolumeM3 = totalAbovegroundbiomassMg / basicWoodDensity;
+		double possibleExpansionFactor = totalAbovegroundVolumeM3 / overbarkCommercialVolumeM3;
+		System.out.println("DBH = " + t.getDbhCm() + "; Height = " + t.getHeightM() + "; BEF = " + possibleExpansionFactor);
+		int u = 0;
+	}
+	
 }

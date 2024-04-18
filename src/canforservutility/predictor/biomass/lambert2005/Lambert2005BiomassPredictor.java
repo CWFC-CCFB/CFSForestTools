@@ -205,7 +205,18 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 	}
 
 	private final Map<Lambert2005Species, Lambert2005BiomassInternalPredictor> internalPredictors;
-	
+
+	/**
+	 * Default constructor for deterministic simulations.
+	 */
+	public Lambert2005BiomassPredictor() {
+		this(false);
+	}
+
+	/**
+	 * Constructor.
+	 * @param isVariabilityEnabled true to enable the stochastic mode.
+	 */
 	public Lambert2005BiomassPredictor(boolean isVariabilityEnabled) {
 		this(isVariabilityEnabled, isVariabilityEnabled);
 	}
@@ -426,7 +437,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 	/**
 	 * Provide the biomass in different compartments of a particular tree. <p>
 	 * The output is a Matrix instance whose elements represent the biomass (kg) of the different compartment calculated for a single tree (NO EXPANSION FACTOR). 
-	 * The values of the different compartments can be accessed using the BiomassCompartment enum (e.g., myBiomass.getValueAt(BiomassCompartment.WOOD, 0);).
+	 * The values of the different compartments can be accessed using the BiomassCompartment enum (e.g., myBiomass.getValueAt(BiomassCompartment.WOOD.ordinal(), 0);).
 	 * @param tree a Lambert2005Tree instance
 	 * @return a Matrix instance that is a column vector 
 	 */

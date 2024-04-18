@@ -25,7 +25,7 @@ import java.security.InvalidParameterException;
  * A class to facilitate the use of the deterministic version of the model in R.
  * @author Mathieu Fortin - August 2021
  */
-public final class VolumableTreeImpl implements VolumableTree {
+public class VolumableTreeImpl implements VolumableTree {
 
 	private final double dbhCm;
 	private final double heightM;
