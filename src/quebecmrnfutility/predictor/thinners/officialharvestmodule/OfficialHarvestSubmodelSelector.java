@@ -137,17 +137,7 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 
 	@Override
 	public void load(String filename) throws IOException {
-		XmlDeserializer deserializer;
-		try {
-			deserializer = new XmlDeserializer(filename);
-		} catch (Exception e) {
-			InputStream is = getClass().getResourceAsStream("/" + filename);
-			if (is == null) {
-				throw new IOException("The filename is not a file and cannot be converted into a stream!");
-			} else {
-				deserializer = new XmlDeserializer(is);
-			}
-		}
+		XmlDeserializer deserializer = new XmlDeserializer(filename);
 		OfficialHarvestSubmodelSelector newloadedInstance;
 		newloadedInstance = (OfficialHarvestSubmodelSelector) deserializer.readObject();
 		unpackMemorizerPackage(newloadedInstance.getMemorizerPackage());
