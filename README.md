@@ -8,8 +8,8 @@ The cfsforesttools library
 
 
 Copyright (C) 2009-2019 Gouvernement du Quebec - Rouge Epicea
-Copyright (C) 2019-2022 Her Majesty the Queen in right of Canada
-Copyright (C) 2023- His Majesty the King in right of Canada
+
+Copyright (C) 2019-2024 His Majesty the King in right of Canada
 
 Authors: Mathieu Fortin (Rouge Epicea, UMR LERFoB, Canadian Forest Service), Jean-Francois Lavoie (Canadian Wood Fibre Centre)
 
