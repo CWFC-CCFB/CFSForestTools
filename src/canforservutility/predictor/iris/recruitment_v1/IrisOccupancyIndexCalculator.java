@@ -44,46 +44,6 @@ import repicea.stats.sampling.PopulationUnitWithUnequalInclusionProbability;
  */
 public class IrisOccupancyIndexCalculator {
 
-//	class InternalWorker extends Thread {
-//		
-//		final BlockingQueue<Integer> queue;
-//		final Map<Integer, Estimate<?>> estimateMap;
-//		final List<IrisProtoPlot> plots;
-//		final IrisSpecies species;
-//		final int id;
-//		final Map<Integer, List<IrisProtoPlot>> dataCache;
-//		
-//		InternalWorker(int id, 
-//				BlockingQueue<Integer> queue, 
-//				Map<Integer, Estimate<?>> estimateMap, 
-//				List<IrisProtoPlot> plots, 
-//				IrisSpecies species,
-//				Map<Integer, List<IrisProtoPlot>> dateFilteredPlots) {
-//			super("Proximity index calculator thread " + id);
-//			this.id = id;
-//			this.queue = queue;
-//			this.estimateMap = estimateMap;
-//			this.plots = plots;
-//			this.species = species;
-//			this.dataCache = dateFilteredPlots;
-//		}
-//		
-//		@Override
-//		public void run() {
-//			int order;
-//			try {
-//				while(!isInterrupted()) {
-//					order = queue.take();
-//					if (order == FinalToken) 
-//						break;
-//					Estimate<?> estimate = getOccupancyIndex(plots, plots.get(order), species, dataCache);
-//					estimateMap.put(order, estimate);
-//				}
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
 		
 	final SymmetricMatrix distances;
 	private final double maximumDistanceKm;
@@ -91,7 +51,6 @@ public class IrisOccupancyIndexCalculator {
 	private final int minYearDiff = 0;
 	private final int maxYearDiff = 10;
 	
-//	private static final int FinalToken = -999;
 	
 	/**
 	 * Constructor. <p>
@@ -102,7 +61,6 @@ public class IrisOccupancyIndexCalculator {
 	 * 
 	 * @param plots a List of Iris2020ProtoPlot instances
 	 * @param maxDistanceKm the radius around the plot of interest for estimating the occupancy index (e.g. 15 km)
-	 * @param bootstrapRealizations the number of bootstrap realizations for the variance of the index
 	 */
 	public IrisOccupancyIndexCalculator(List<IrisProtoPlot> plots, double maxDistanceKm) {
 		plotsId = new HashMap<String, Integer>();

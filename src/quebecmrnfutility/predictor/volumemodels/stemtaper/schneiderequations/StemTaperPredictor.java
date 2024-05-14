@@ -45,14 +45,15 @@ import repicea.util.ObjectUtility;
  * The StemTaperEquation class predicts the taper and the volume of different height section in trees.
  * The taper equation returns the underbark diameter and consequently, the volume estimated from the 
  * diameter is the underbark volume.
- * The class must be used as follows
- * </br>
- * </br>
- * {@code StemTaperPredictor ste = new StemTaperPredictor();} </br>
- * {@code ste.setTree(}<i>{@code myTree}</i>{@code );}</br>
- * {@code StemTaperEstimate te = ste.predictTaperForTheseHeights(}<i>{@code myRowMatrixThatContainsTheHeightSections}</i>{@code );} </br>
- * {@code Estimate volumeEstimate = te.getVolumeEstimate()} </br>
- * </br>
+ * The class must be used as follows:
+ * <pre>
+ * {@code 
+ * StemTaperPredictor ste = new StemTaperPredictor();
+ * ste.setTree(myTree);
+ * StemTaperEstimate te = ste.predictTaperForTheseHeights(myRowMatrixThatContainsTheHeightSections);
+ * Estimate volumeEstimate = te.getVolumeEstimate()
+ * }
+ * </pre>
  * 
  * NOTE: this method is not synchronized!
  * 

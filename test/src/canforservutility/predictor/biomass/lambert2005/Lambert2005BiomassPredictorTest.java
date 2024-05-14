@@ -203,9 +203,9 @@ public class Lambert2005BiomassPredictorTest {
 			csvLine++;
 		}
 		
-		for (Integer i : differentLines) {
-			System.out.println("Found differences at CSV line " + i);
-		}
+//		for (Integer i : differentLines) {
+//			System.out.println("Found differences at CSV line " + i);
+//		}
 					
 		System.out.println("Total of " + differentLines.size() + " lines different on " + csvLine);
 		

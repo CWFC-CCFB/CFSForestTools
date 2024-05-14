@@ -53,6 +53,7 @@ public class IrisRecruitmentNumberPredictor extends REpiceaPredictor {
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled true to enable the stochastic mode
+	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */
 	public IrisRecruitmentNumberPredictor(boolean isVariabilityEnabled, IrisRecruitmentOccurrencePredictor occurrencePredictor) {
 		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled, occurrencePredictor);		
@@ -60,8 +61,10 @@ public class IrisRecruitmentNumberPredictor extends REpiceaPredictor {
 
 	/**
 	 * Protected constructor for test purposes.
-	 * @param isParameterVariabilityEnabled 
-	 * @param isResidualVariabilityEnabled
+	 * @param isParameterVariabilityEnabled true to enable the variability in the parameter estimates
+	 * @param isRandomEffectsVariabilityEnabled true to enable the random effect variability
+	 * @param isResidualVariabilityEnabled true to enable the residual variability
+	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */
 	protected IrisRecruitmentNumberPredictor(boolean isParameterVariabilityEnabled, 
 			boolean isRandomEffectsVariabilityEnabled,
@@ -112,8 +115,8 @@ public class IrisRecruitmentNumberPredictor extends REpiceaPredictor {
 	 * @param species an IrisSpecies enum
 	 * @return a double that is the number of recruits in the plot
 	 */
-	public double predictNumberOfRecruits(IrisCompatiblePlot stand, IrisSpecies species) {
-		return internalPredictors.get(species).predictNumberOfRecruits(stand, species);
+	public double predictNumberOfRecruits(IrisCompatiblePlot plot, IrisSpecies species) {
+		return internalPredictors.get(species).predictNumberOfRecruits(plot, species);
 	}
 	
 

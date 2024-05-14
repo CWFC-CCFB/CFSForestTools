@@ -44,10 +44,12 @@ import repicea.util.ObjectUtility;
 /**
  * This class implements the general height-diameter relationship published in Fortin et al. (2009)
  * @author Mathieu Fortin - October 2009
- * @see Fortin, M., Bernier, S., Saucier, J.-P., and Labbe, F. 2009. Une relation hauteur-diametre tenant 
+ * @see <a href=https://mffp.gouv.qc.ca/nos-publications/relation-hauteur-diametre-especes-commerciales>  
+ * Fortin, M., Bernier, S., Saucier, J.-P., and Labbe, F. 2009. Une relation hauteur-diametre tenant 
  * compte de l'influence de la station et du climat pour 20 especes commerciales du Quebec. 
  * Gouvernement du Quebec, Ministere des Ressources naturelles et de la Faune, Direction de 
  * la recherche forestiere. Memoire de recherche forestiere no 153. 22 p.
+ * </a>
  */
 public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<Heightable2009Stand, Heightable2009Tree> {
 	
@@ -272,7 +274,8 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	
 	/**
 	 * For testing only
-	 * @param stand
+	 * @param stand a Heightable2009Stand instance
+	 * @return a Matrix instance
 	 */
 	public Matrix getBlups(Heightable2009Stand stand) {
 		if (doBlupsExistForThisSubject(stand)) {

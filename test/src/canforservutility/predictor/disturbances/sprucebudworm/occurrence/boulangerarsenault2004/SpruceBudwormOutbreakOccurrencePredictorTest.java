@@ -54,10 +54,10 @@ public class SpruceBudwormOutbreakOccurrencePredictorTest {
 			double expected = predictor.getSurvivorFunctionResult(plot.getTimeSinceLastDisturbanceYrs(DisturbanceType.SpruceBudwormOutbreak, 0) + .5, 1d / parms.get(0), parms.get(1));
 			Assert.assertEquals("Testing time = " + plot.getTimeSinceLastDisturbanceYrs(DisturbanceType.SpruceBudwormOutbreak, 0), expected, probSurv, 1E-8);
 			
-			System.out.println("Time since last outbreak " + plot.getTimeSinceLastDisturbanceYrs(DisturbanceType.SpruceBudwormOutbreak, 0) +
-					" prob = " + prob + 
-					" prob surv = " + probSurv +
-					" theoretical prob = " + (predictor.getSurvivorFunctionResult(plot.getTimeSinceLastDisturbanceYrs(DisturbanceType.SpruceBudwormOutbreak, 0) + .5, 1d / parms.get(0), parms.get(1))));
+//			System.out.println("Time since last outbreak " + plot.getTimeSinceLastDisturbanceYrs(DisturbanceType.SpruceBudwormOutbreak, 0) +
+//					" prob = " + prob + 
+//					" prob surv = " + probSurv +
+//					" theoretical prob = " + (predictor.getSurvivorFunctionResult(plot.getTimeSinceLastDisturbanceYrs(DisturbanceType.SpruceBudwormOutbreak, 0) + .5, 1d / parms.get(0), parms.get(1))));
 		}
 	}
 

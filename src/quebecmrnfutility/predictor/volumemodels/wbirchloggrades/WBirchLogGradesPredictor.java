@@ -41,15 +41,15 @@ public class WBirchLogGradesPredictor extends REpiceaPredictor {
 	
 	protected static enum Version {
 		/**
-		 * For A,B,C qualities with dbh > 29 and h20Pred >= 5
+		 * For A,B,C qualities with dbh &#62; 29 and h20Pred &#62;= 5
 		 */
 		Full, 
 		/**
-		 * For A and B qualities whose dbh <= 29 or h20Pred < 5
+		 * For A and B qualities whose dbh &#60;= 29 or h20Pred &#60; 5
 		 */
 		FullTruncated,
 		/**
-		 * For C quality whose dbh <= 29 or h20Pred < 5 and D quality
+		 * For C quality whose dbh &#60;= 29 or h20Pred &#60; 5 and D quality
 		 */
 		DClass, 
 		/**

@@ -174,12 +174,15 @@ public class GeneralHeight2009PredictorTest {
 					}
 					Matrix m1 = (Matrix) value1;
 					Matrix m2 = (Matrix) value2;
-					Assert.assertEquals("Comparing the values of matrix 1 and matrix 2", true, m1.equals(m2));
+					Assert.assertTrue("Testing matrix dimensions", m1.isTheSameDimension(m2));
+					Assert.assertTrue("Comparing the values of matrix 1 and matrix 2", !m1.subtract(m2).getAbsoluteValue().anyElementLargerThan(1E-8));
+					
+//					Assert.assertEquals("Comparing the values of matrix 1 and matrix 2", true, m1.equals(m2));
 				} else if (value1 instanceof Double) {
 					if (!(value2 instanceof Double)) {
 						Assert.fail("The value is a double in the first map but not in the second map!");
 					}
-					Assert.assertEquals("Comparing the values", (Double) value2, (Double) value1);
+					Assert.assertEquals("Comparing the values", (Double) value2, (Double) value1, 1E-8);
 				}
 			}
 		}

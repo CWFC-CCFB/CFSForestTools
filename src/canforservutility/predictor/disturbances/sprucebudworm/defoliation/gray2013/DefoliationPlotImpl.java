@@ -28,6 +28,7 @@ import repicea.simulation.HierarchicalLevel;
  * for punctual call to the DefoliationPredictor class.
  * @author Mathieu Fortin - May 2019
  */
+@SuppressWarnings("serial")
 public class DefoliationPlotImpl implements DefoliationPlot {
 
 	private final double latitudeDeg;
@@ -37,9 +38,16 @@ public class DefoliationPlotImpl implements DefoliationPlot {
 	private final double volM3HaFirOtherSpruces;
 	private final double propForestedArea;
 	private int dateYr;
-	
+
 	/**
 	 * Constructor.
+	 * @param latitudeDeg the latitude in degrees
+	 * @param longitudeDeg the longitude in degrees
+	 * @param elevationM the elevation (m)
+	 * @param volM3HaBlackSpruce the volume (m3/ha) of black spruce
+	 * @param volM3HaFirOtherSpruces the volume (m3/ha) of fir and other spruce species
+	 * @param propForestedArea the proportion of forested area
+	 * @param dateYr the date (yr)
 	 */
 	public DefoliationPlotImpl(double latitudeDeg, 
 			double longitudeDeg, 

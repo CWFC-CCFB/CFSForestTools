@@ -61,7 +61,7 @@ public class HonerTotalVolumeTest {
 		for (HonerTotalVolumeTreeImpl tree : trees) {
 			volume = pred.predictTreeTotalUnderbarkVolume(tree);
 			predictions.add(volume);
-			System.out.println("Species " + tree.getHonerSpecies().toString() + "; dbh2 " + tree.getSquaredDbhCm() + "; height " + tree.getHeightM() + "; volume " + volume);
+//			System.out.println("Species " + tree.getHonerSpecies().toString() + "; dbh2 " + tree.getSquaredDbhCm() + "; height " + tree.getHeightM() + "; volume " + volume);
 		}
 		
 //		UNCOMMENT THIS PART TO SAVE A NEW REFERENCE MAP
