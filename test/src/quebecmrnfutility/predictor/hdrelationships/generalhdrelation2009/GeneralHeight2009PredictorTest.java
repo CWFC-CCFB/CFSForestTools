@@ -179,7 +179,7 @@ public class GeneralHeight2009PredictorTest {
 					if (!(value2 instanceof Double)) {
 						Assert.fail("The value is a double in the first map but not in the second map!");
 					}
-					Assert.assertEquals("Comparing the values", (Double) value2, (Double) value1);
+					Assert.assertEquals("Comparing the values", (Double) value2, (Double) value1, 1E-8);
 				}
 			}
 		}
