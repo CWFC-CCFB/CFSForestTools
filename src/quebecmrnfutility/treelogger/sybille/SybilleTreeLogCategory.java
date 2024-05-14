@@ -128,7 +128,7 @@ public class SybilleTreeLogCategory extends LogCategory {
 
 	/**
 	 * This method sets the length of the log category.
-	 * double lengthID a LengthID enum 	
+	 * @param lengthID a LengthID enum 	
 	 */	
 	protected void setLogLengthM(LengthID lengthID) {this.lengthID = lengthID;}
 	

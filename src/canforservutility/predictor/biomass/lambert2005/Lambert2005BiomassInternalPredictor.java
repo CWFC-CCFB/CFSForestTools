@@ -29,6 +29,7 @@ import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredict
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ErrorCovarianceEquation;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.EstimatedWeightDependent;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.FileImportParameter;
+import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.REpiceaPredictor;
@@ -44,17 +45,19 @@ import repicea.stats.StatisticalUtility;
  * </a>
  */
 @SuppressWarnings("serial")
-class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
-	Matrix parameterEstimates;
-	Matrix parameterCovariance;	
+final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	
-	SymmetricMatrix errorCovariance;	
-	Matrix c;	// column vector
+	final Matrix parameterEstimates;
+	final Matrix parameterCovariance;	
+	
+	final SymmetricMatrix errorCovariance;	
+	final Matrix c;	// column vector
+	final Lambert2005Species species;
 	Matrix cholesky; 	
 	
-	Lambert2005BiomassInternalPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled){
+	Lambert2005BiomassInternalPredictor(Lambert2005Species species, boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled){
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
-				
+		this.species = species;
 		parameterEstimates = new Matrix(FileImportParameter.fileImportParameterSize, 1);
 		parameterCovariance = new Matrix(FileImportParameter.fileImportParameterSize, FileImportParameter.fileImportParameterSize);
 		errorCovariance = new SymmetricMatrix(ErrorCovarianceEquation.errorCovarianceEquationSize);
@@ -81,7 +84,6 @@ class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 		
 	@Override
 	protected void init() {
-
 		// here we need to provide a covariance matrix that doesn't present any row or column for 0.0 parameters
 		List<Integer> validIndices = new ArrayList<Integer>();
 		for (int i = 0; i < parameterEstimates.m_iRows; i++) {
@@ -90,11 +92,9 @@ class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 			}
 		}
 
-		SymmetricMatrix variance = SymmetricMatrix.convertToSymmetricIfPossible(
-				parameterCovariance.getSubMatrix(validIndices, validIndices));
+		SymmetricMatrix variance = SymmetricMatrix.convertToSymmetricIfPossible(parameterCovariance.getSubMatrix(validIndices, validIndices));
 		setParameterEstimates(new SASParameterEstimates(parameterEstimates, variance));
-		
-		//this.setDefaultResidualError(ErrorTermGroup.Default, new GaussianErrorTermEstimate(errorCovariance, 0.0, null));
+		cholesky = errorCovariance.getLowerCholTriangle();
 	}	
 	
 	Matrix getWeight(Lambert2005Tree tree) {
@@ -104,10 +104,6 @@ class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	}
 	
 	Matrix getCholesky() {
-		if (cholesky == null) {
-			cholesky = errorCovariance.getLowerCholTriangle();
-		}
-		
 		return cholesky;
 	}
 	

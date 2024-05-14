@@ -61,6 +61,7 @@ public class SybilleTreeLogCategoryPanel extends LogCategoryPanel<SybilleTreeLog
 	
 	/**	
 	 * Default constructor.
+	 * @param logCategory a SybilleTreeLogCategory instance
 	 */
 	protected SybilleTreeLogCategoryPanel(SybilleTreeLogCategory logCategory) {
 		super(logCategory);

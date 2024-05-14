@@ -85,9 +85,12 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 	private final ClimateModel climModel;
 	private final BioSimParameterMap ddParms;
 	
-	
+
 	/**
-	 * Constructor. 
+	 * Constructor.
+	 * @param nbYearsWithModerateToSevereDefoliation number of consecutive seasons with moderate to severe defoliation to call this an outbreak. 
+	 * @param rcp an RCP enum
+	 * @param climModel a ClimateModel enum
 	 */
 	public DefoliationPredictor(double nbYearsWithModerateToSevereDefoliation, RCP rcp, ClimateModel climModel) {
 		super(false, false, true);	// residual variability must be set to true to ensure that predictEvent returns a boolean
@@ -252,9 +255,10 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 	}
 
 	/**
-	 * Returns the 
-	 * @param plot
-	 * @return
+	 * Provide the estimates of outbreak duration and severity.
+	 * @param plot a DefoliationPlot instance
+	 * @return a Matrix instance
+	 * @throws BioSimException if the climate variables cannot be retrieved from BioSIM Web API
 	 */
 	public synchronized Matrix getDurationAndSeverityEstimate(DefoliationPlot plot) throws BioSimException {
 		IntervalNestedInPlotDefinition interval = getIntervalNestedInPlotDefinition(plot, plot.getDateYr());

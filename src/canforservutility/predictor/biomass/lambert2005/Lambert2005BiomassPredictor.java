@@ -251,8 +251,10 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 			
 			readErrorCovarianceFile(covFilename);					
 			
-		} catch (Exception e)
-		{
+			for (Lambert2005BiomassInternalPredictor predictorValue : internalPredictors.values()) {
+				predictorValue.init();
+			}
+		} catch (Exception e) {
 			System.out.println("Lambert2005BiomassPredictor.init() : Unable to initialize the predictor module!  Details : " + e.getMessage());			
 		}		
 	}
@@ -272,18 +274,18 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 								
 			while ((record = reader.nextRecord()) != null) {
 				// here we create one internal predictor per species encountered
-				String species = record[FileImportParameterColumns.ESSLAT.ordinal()].toString();
+				String speciesStr = record[FileImportParameterColumns.ESSLAT.ordinal()].toString();
 				
-				Lambert2005Species currentSpecies = Lambert2005Species.valueOf(species);
+				Lambert2005Species currentSpecies = Lambert2005Species.valueOf(speciesStr);
 				
 				paramName = record[FileImportParameterColumns.PARAMETER.ordinal()].toString();
 												
 				value = Double.parseDouble(record[FileImportParameterColumns.ESTIMATE.ordinal()].toString());
 				
-				if (!internalPredictors.containsKey(currentSpecies))
-				{	// create the internalPredictor
-					internalPredictors.put(Lambert2005Species.valueOf(species), new Lambert2005BiomassInternalPredictor(this.isParametersVariabilityEnabled, this.isResidualVariabilityEnabled));
-					currentInternalPredictor = internalPredictors.get(Lambert2005Species.valueOf(species));					
+				if (!internalPredictors.containsKey(currentSpecies)) {	// create the internalPredictor
+					Lambert2005Species species = Lambert2005Species.valueOf(speciesStr); 
+					internalPredictors.put(species, new Lambert2005BiomassInternalPredictor(species, this.isParametersVariabilityEnabled, this.isResidualVariabilityEnabled));
+					currentInternalPredictor = internalPredictors.get(Lambert2005Species.valueOf(speciesStr));					
 				}
 				
 				// populate the internalPredictor
@@ -304,6 +306,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	private void readParameterCovarianceFile(String filename)	{
 		CSVReader reader = null;
 		
@@ -345,12 +348,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 			}
 			
 			reader.close();
-			
-			for (Lambert2005BiomassInternalPredictor predictorValue : internalPredictors.values()) {
-				predictorValue.init();
-			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			if (reader != null) {
 				reader.close();
 			}
@@ -381,12 +379,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 			}
 			
 			reader.close();
-			
-			for (Lambert2005BiomassInternalPredictor predictorValue : internalPredictors.values()) {
-				predictorValue.init();
-			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			if (reader != null) {
 				reader.close();
 			}
@@ -421,12 +414,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 			}
 			
 			reader.close();
-			
-			for (Lambert2005BiomassInternalPredictor predictorValue : internalPredictors.values()) {
-				predictorValue.init();
-			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			if (reader != null) {
 				reader.close();
 			}
