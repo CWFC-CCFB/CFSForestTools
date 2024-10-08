@@ -2,6 +2,7 @@
  * This file is part of the CFSForesttools library.
  *
  * Copyright (C) 2009-2012 Gouvernement du Quebec - Rouge-Epicea
+ * Copyright (C) 2021-2024 His Majestry the King in Right of Canada
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -99,7 +100,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	private FixedEffectVectorFactory xVectorFactory;
 	private Map<TreatmentType, OfficialHarvestSubmodel> modelParametersLibrary;
 	protected static Map<TreatmentType, Map<String, String>> speciesMap;
-	private OfficialHarvestSubmodelSelector selector;
+	private final OfficialHarvestSubmodelSelector selector;
 	
 	
 	/**
@@ -111,6 +112,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 		modelParametersLibrary = new HashMap<TreatmentType, OfficialHarvestSubmodel>();
 		init();
 		xVectorFactory = new FixedEffectVectorFactory();
+		selector = new OfficialHarvestSubmodelSelector();
 	}
 	
 	/**
@@ -120,16 +122,16 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 		this(false);
 	}
 	
-	/**
-	 * This method sets a selector for the different treatments.
-	 * @param selector an OfficialHarvestSubmodelSelector instance
-	 */
-	public void setOfficialHarvestSubmodelSelector(OfficialHarvestSubmodelSelector selector) {
-		this.selector = selector;
-	}
+//	/**
+//	 * This method sets a selector for the different treatments.
+//	 * @param selector an OfficialHarvestSubmodelSelector instance
+//	 */
+//	public void setOfficialHarvestSubmodelSelector(OfficialHarvestSubmodelSelector selector) {
+//		this.selector = selector;
+//	}
 	
 	/**
-	 * This method provides access to the selector of treatments.
+	 * Provide access to the treatment selector.
 	 * @return an OfficialHarvestSubmodelSelector instance
 	 */
 	public OfficialHarvestSubmodelSelector getSelector() {return selector;}
@@ -165,9 +167,11 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	public synchronized double predictEventProbability(OfficialHarvestableStand stand, OfficialHarvestableTree tree, Map<String, Object> parms) {
 		Enum<?> treatment;
 		int modifier;
-		if (selector == null) {
+		if (parms != null && parms.containsKey(DisturbanceParameter.ParmTreatment)) {
 			treatment = (Enum<?>) parms.get(DisturbanceParameter.ParmTreatment);
-			modifier = (Integer) parms.get(DisturbanceParameter.ParmModulation);
+			modifier = parms.containsKey(DisturbanceParameter.ParmModulation) ? 
+				(Integer) parms.get(DisturbanceParameter.ParmModulation) :
+					0;
 		} else {
 			treatment = getTreatmentDefinitionForThisHarvestedStand(stand).getTreatmentType();
 			modifier = 0;
@@ -301,14 +305,10 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 
 	@Override
 	public OfficialHarvestTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(OfficialHarvestableStand stand) {
-		if (selector != null) {
-			OfficialHarvestTreatmentDefinition def = selector.getMatch(stand.getPotentialVegetation());
-			return def;
-		} else {
-			return null;
-		}
+		return selector.getMatch(stand.getPotentialVegetation());
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List<Enum> getTreatmentList() {return Arrays.asList(TreatmentType.values());}
 
@@ -320,9 +320,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	 */
 	public double getMaxAnnualAreaProportionForThisTreatment(TreatmentType treatment) {
 		Double maxProp = selector.getAreaLimitations().areaLimitationMap.get(treatment);
-		if (maxProp == null) 
-			return 1d;
-		else return maxProp;
+		return maxProp == null ? 1d : maxProp;
 	}
 	
 }
