@@ -48,7 +48,6 @@ public class OfficialHarvestModelTest {
 		Map<String, Object> parms = new HashMap<String, Object>();
 		for (OfficialHarvestableStand stand : stands) {
 			for (OfficialHarvestableTree tree : ((OfficialHarvestableStandImpl) stand).getTrees()) {
-//				System.out.println("Treatment = " + ((OfficialHarvestableStandImpl) stand).getTreatment().toString() + ", Species = " + tree.getOfficialHarvestableTreeSpecies(((OfficialHarvestableStandImpl) stand).getTreatment()).toString());
 				parms.put(DisturbanceParameter.ParmTreatment, ((OfficialHarvestableStandImpl) stand).getTreatment());
 				parms.put(DisturbanceParameter.ParmModulation, 0);
 				double actual = (Double) harvester.predictEvent(stand, tree, parms);
@@ -57,8 +56,20 @@ public class OfficialHarvestModelTest {
 
 			}
 		}
-		
-		
+	}
+
+	@Test
+    public void PredictedProbabilitiesTestWithClearCut() throws Exception {
+		Collection<OfficialHarvestableStand> stands = readData();
+		OfficialHarvestModel harvester = new OfficialHarvestModel();
+		Map<String, Object> parms = new HashMap<String, Object>();
+		for (OfficialHarvestableStand stand : stands) {
+			for (OfficialHarvestableTree tree : ((OfficialHarvestableStandImpl) stand).getTrees()) {
+				double actual = (Double) harvester.predictEvent(stand, tree, parms);
+				double expected = 1d;
+				assertEquals(expected, actual, 1E-5);
+			}
+		}
 	}
 
 	
