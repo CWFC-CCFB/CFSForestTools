@@ -116,11 +116,11 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 //		Matrix modelParameters = getParametersForThisRealization(new BetaHeightableStandMonteCarlo(stand, t.getBetaHeightableTreeSpecies()));
 
 		double basalArea = stand.getBasalAreaM2Ha();
-		if (basalArea <= 0d) {
+		if (basalArea < 0d) {
 			System.out.println("Error in HD relationship: The basal area of the plot has not been calculated yet!");
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
-		double averageTemp = stand.getMeanAnnualTemperatureC();	
+		double averageTemp = stand.getMeanAnnualTemperatureCelsius();	
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();
 		boolean isDefoliated = stand.isSBWDefoliated();

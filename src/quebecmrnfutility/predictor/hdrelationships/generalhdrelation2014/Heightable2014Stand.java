@@ -26,14 +26,14 @@ import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
 import repicea.simulation.covariateproviders.plotlevel.ElevationMProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
 import repicea.simulation.covariateproviders.plotlevel.MeanAnnualPrecipitationMmProvider;
-import repicea.simulation.covariateproviders.plotlevel.MeanAnnualTemperatureCProvider;
+import repicea.simulation.covariateproviders.plotlevel.MeanAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.SpruceBudwormDefoliatedProvider;
 import repicea.simulation.hdrelationships.HDRelationshipStand;
 
 
 public interface Heightable2014Stand extends HDRelationshipStand,
 										BasalAreaM2HaProvider,
-										MeanAnnualTemperatureCProvider, 
+										MeanAnnualTemperatureCelsiusProvider, 
 										EcologicalRegionProvider,
 										EcologicalTypeProvider,										
 										InterventionResultProvider,

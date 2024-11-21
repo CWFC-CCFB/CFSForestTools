@@ -237,6 +237,7 @@ public class GeneralHeight2009PredictorTest {
 	 * This test is the follow up of a bug. In stochastic mode, the observed height was reproduced only 
 	 * for the first realization. 
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void testStochasticPredictionsForTreeWithKnownHeight() {
 		if (standMap == null) {
@@ -267,5 +268,22 @@ public class GeneralHeight2009PredictorTest {
 
 	}
 	
+	@Test
+	public void aDeadTreeOnly() {
+		Heightable2009StandImpl stand = new Heightable2009StandImpl("PlotWithASingleDeadTree",
+				0d,
+				0d,
+				"3a",
+				"FE32",
+				200,
+				2d,
+				1000d);
+		Heightable2009TreeImpl tree = new Heightable2009TreeImpl(stand, 25d, 1, "BOJ", 0d);
+		
+		GeneralHeight2009Predictor predictor = new GeneralHeight2009Predictor();
+		double heightM = predictor.predictHeightM(stand, tree);
+		Assert.assertEquals("Testing height of a dead tree", 15.129429409429527, heightM, 1E-8);
+	}
+
 	
 }

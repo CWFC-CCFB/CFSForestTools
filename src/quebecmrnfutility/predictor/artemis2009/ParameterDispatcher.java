@@ -339,7 +339,7 @@ public class ParameterDispatcher {
 				pointer ++;
 				break;
 			case 51: // 3700 occurences
-				fTmp = stand.getMeanAnnualTemperatureC();
+				fTmp = stand.getMeanAnnualTemperatureCelsius();
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
 					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
 				}
@@ -363,7 +363,7 @@ public class ParameterDispatcher {
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 50: // 1650 occurences
-				oXVector.setValueAt(0, pointer, stand.getMeanAnnualTemperatureC());
+				oXVector.setValueAt(0, pointer, stand.getMeanAnnualTemperatureCelsius());
 				pointer ++;
 				break;
 			case 13: // 1181 occurences
