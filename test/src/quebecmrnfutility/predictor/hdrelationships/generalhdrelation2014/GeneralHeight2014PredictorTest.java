@@ -77,10 +77,6 @@ public class GeneralHeight2014PredictorTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
-		
 	}
 	
 
@@ -114,6 +110,23 @@ public class GeneralHeight2014PredictorTest {
 			}
 		}
 		System.out.println("Generalhdrelation2014.comparePredictionsWithSAS - Successful comparisons " + goodMatches);
+	}
+	
+	@Test
+	public void aDeadTreeOnly() {
+		Heightable2014StandImpl stand = new Heightable2014StandImpl("PlotWithASingleDeadTree",
+				0d,
+				0d,
+				"3a",
+				"FE32",
+				200,
+				2d,
+				1000d);
+		Heightable2014TreeImpl tree = new Heightable2014TreeImpl(stand, 25d, 0d, 1, "BOJ");
+		
+		GeneralHeight2014Predictor predictor = new GeneralHeight2014Predictor();
+		double heightM = predictor.predictHeightM(stand, tree);
+		Assert.assertEquals("Testing dead tree height", 3d, heightM, 1E-8);
 	}
 	
 }

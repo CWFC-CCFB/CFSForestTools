@@ -116,7 +116,7 @@ class Artemis2009CompatibleStandImpl implements Artemis2009CompatibleStand {
 	public double getMeanAnnualPrecipitationMm() {return meanAnnualPrecipitationMm;}
 
 	@Override
-	public double getMeanAnnualTemperatureC() {return meanAnnualTemperatureC;}
+	public double getMeanAnnualTemperatureCelsius() {return meanAnnualTemperatureC;}
 
 	@Override
 	public double getElevationM() {return elevationM;}

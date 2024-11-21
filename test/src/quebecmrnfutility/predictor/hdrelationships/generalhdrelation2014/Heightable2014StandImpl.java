@@ -70,7 +70,7 @@ public class Heightable2014StandImpl implements Heightable2014Stand {
 	}
 
 	@Override
-	public double getMeanAnnualTemperatureC() {
+	public double getMeanAnnualTemperatureCelsius() {
 		return meanAnnualTemperatureC;
 	}
 

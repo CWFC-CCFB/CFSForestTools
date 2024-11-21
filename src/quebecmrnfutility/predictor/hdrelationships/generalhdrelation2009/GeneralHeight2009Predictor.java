@@ -195,11 +195,11 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 //		Matrix modelParameters = getParametersForThisRealization(stand);
 		Matrix modelParameters = beta;
 		double basalArea = stand.getBasalAreaM2Ha();
-		if (basalArea <= 0d) {
+		if (basalArea < 0d) {
 			System.out.println("Error in HD relationship: The basal area of the plot has not been calculated yet!");
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
-		double averageTemp = stand.getMeanAnnualTemperatureC();
+		double averageTemp = stand.getMeanAnnualTemperatureCelsius();
 		DrainageGroup drainageGroup = getDrainageGroup(stand);
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();
