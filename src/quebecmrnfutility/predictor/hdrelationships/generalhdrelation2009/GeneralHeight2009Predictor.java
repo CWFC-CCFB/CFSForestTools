@@ -97,6 +97,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		DUMMY_ECO_REGION.put("6p", dummy);
 		DUMMY_ECO_REGION.put("6q", dummy);
 		DUMMY_ECO_REGION.put("6r", dummy);
+		DUMMY_ECO_REGION.put("6s", dummy);
 		DUMMY_ECO_REGION.put("7a", dummy);
 		DUMMY_ECO_REGION.put("7b", dummy);
 		DUMMY_ECO_REGION.put("7c", dummy);	// region N_EST
