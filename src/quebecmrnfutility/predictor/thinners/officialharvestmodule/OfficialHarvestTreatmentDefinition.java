@@ -64,6 +64,10 @@ public class OfficialHarvestTreatmentDefinition implements Serializable,
 		return treatmentType == TreatmentType.CPRS;
 	}
 
+	protected boolean isNoHarvest() {
+		return treatmentType == TreatmentType.PROTECTION;
+	}
+	
 	@Override
 	public int getNbAdditionalFields() {
 		return 1;
@@ -87,7 +91,7 @@ public class OfficialHarvestTreatmentDefinition implements Serializable,
 	public int getDelayBeforeReentryYrs() {return delayBeforeNextTreatmentYrs;}
 
 	@Override
-	public OfficialHarvestTreatmentDefinition copy() {
+	public OfficialHarvestTreatmentDefinition getDeepClone() {
 		OfficialHarvestTreatmentDefinition copy = new OfficialHarvestTreatmentDefinition(this.treatmentType);
 		copy.delayBeforeNextTreatmentYrs = delayBeforeNextTreatmentYrs;
 		return copy;

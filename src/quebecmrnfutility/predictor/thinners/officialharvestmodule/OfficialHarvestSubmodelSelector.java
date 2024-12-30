@@ -100,7 +100,7 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 		mode = Mode.SingleTreatment;
 		for (OfficialHarvestTreatmentDefinition def : getPotentialMatches()) {
 			if (def.isTotalHarvest()) {
-				singleTreatment = def.copy();
+				singleTreatment = def.getDeepClone();
 				break;
 			}
 		}
@@ -161,7 +161,7 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 		mode = (Mode) wasMemorized.get(2);
 		OfficialHarvestTreatmentDefinition def = (OfficialHarvestTreatmentDefinition) wasMemorized.get(3);
 		if (this.potentialMatches.contains(def)) {	// need to adjust to ensure backward compatibility here
-			singleTreatment = def.copy();	
+			singleTreatment = def.getDeepClone();	
 		} else {
 			singleTreatment = def;
 		}
