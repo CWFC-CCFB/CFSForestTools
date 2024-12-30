@@ -21,8 +21,8 @@ package quebecmrnfutility.predictor.thinners.officialharvestmodule;
 import java.awt.Container;
 import java.awt.Window;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
@@ -183,6 +183,13 @@ public class OfficialHarvestSubmodelSelector extends REpiceaMatchSelector<Offici
 		}
 	}
 	
+	/**
+	 * For extended visibility in the test.
+	 * @return
+	 */
+	final Map<Object, OfficialHarvestTreatmentDefinition> getMatchMap() {
+		return matchMap;
+	}
 	
 	public static void main(String[] args) {
 		REpiceaTranslator.setCurrentLanguage(Language.French);

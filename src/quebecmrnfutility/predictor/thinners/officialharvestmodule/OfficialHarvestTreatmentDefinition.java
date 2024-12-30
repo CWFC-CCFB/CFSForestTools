@@ -96,5 +96,16 @@ public class OfficialHarvestTreatmentDefinition implements Serializable,
 	@Override
 	public TreatmentType getTreatmentType() {return treatmentType;}
 
-	
+	public boolean equals(Object o) {
+		if (o instanceof OfficialHarvestTreatmentDefinition) {
+			OfficialHarvestTreatmentDefinition def = (OfficialHarvestTreatmentDefinition) o;
+			if (def.treatmentType == this.treatmentType && def.delayBeforeNextTreatmentYrs == this.delayBeforeNextTreatmentYrs) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return super.equals(o);
+		}
+	}
 }
