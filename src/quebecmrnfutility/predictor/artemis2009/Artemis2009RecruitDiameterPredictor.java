@@ -71,8 +71,9 @@ public class Artemis2009RecruitDiameterPredictor extends REpiceaPredictor {
 
 	/**
 	 * This method predicts the diameter of a recruit.
-	 * @param stand
-	 * @param tree
+	 * @param stand an Artemis2009CompatibleStand instance
+	 * @param tree an Artemis2009CompatibleTree instance
+	 * @param parms additional parameters (unnecessary for this class)
 	 * @return an array of two doubles, the first one being the predicted diameter and the second one being its variance
 	 */
 	public double[] predictRecruitDiameter(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree, Object... parms) {

@@ -38,9 +38,11 @@ import repicea.util.ObjectUtility;
  * NOTE: merchantability is defined as trees with diameter equal to or greater than 9.1 cm 
  * at breast height. The volume was calculated UNDER bark.
  * @author Mathieu Fortin - October 2009
- * @see Fortin, M., DeBlois, J., Bernier, S., and Blais, G. 2007. Mise au point d'un tarif de cubage general 
+ * @see <a href=https://doi.org/10.5558/tfc83754-5>  
+ * Fortin, M., DeBlois, J., Bernier, S., and Blais, G. 2007. Mise au point d'un tarif de cubage general 
  * pour les forets quebecoises: une approche pour mieux evaluer l'incertitude associee aux previsions. 
  * The Forestry Chronicle 83(5) 754-765.
+ * </a> 
  */
 public final class MerchantableVolumePredictor extends REpiceaPredictor {
 

@@ -171,6 +171,7 @@ public class ParameterDispatcher {
 	
 	/**
 	 * Get the initial priori grouping for oak, pine, spruce and poplar species
+	 * @param iniSpeciesName the original species code (e.g. CHR, PET)
 	 * @return the initial priori grouping for oak, pine, spruce and poplar species
 	 */
 	protected String getInitPrioriSpeciesGrouping(String iniSpeciesName){
@@ -479,14 +480,14 @@ public class ParameterDispatcher {
 	}
 
 	
-	/**
-	 * For testing
-	 * @param args
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws IOException {
-		ParameterDispatcher.getInstance();
-	}
+//	/**
+//	 * For testing
+//	 * @param args
+//	 * @throws IOException
+//	 */
+//	public static void main(String[] args) throws IOException {
+//		ParameterDispatcher.getInstance();
+//	}
 	
 	
 	

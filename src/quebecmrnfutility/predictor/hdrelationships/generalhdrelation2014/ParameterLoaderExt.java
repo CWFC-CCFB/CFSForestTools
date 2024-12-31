@@ -65,8 +65,10 @@ public class ParameterLoaderExt extends ParameterLoader {
 	/**
 	 * This method reads a file and retrieve a vector of parameters.
 	 * 
+	 * @param <T> the type of object to be returned in the list
 	 * @param filename the path of the file to be read (*.csv)
 	 * @param indexCol index of the column you want to read
+	 * @param type the class of the instance in the returned list
 	 * @return a List of Double or String
 	 * @throws IOException if something goes wrong while reading the file.
 	 */

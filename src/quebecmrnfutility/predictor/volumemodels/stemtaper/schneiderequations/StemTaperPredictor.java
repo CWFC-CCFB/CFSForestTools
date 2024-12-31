@@ -117,7 +117,6 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	
 	/**
 	 * Simple constructor with no variability.
-	 * @throws Exception
 	 */
 	public StemTaperPredictor() {
 		this(false);
@@ -125,7 +124,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	
 	/**
 	 * General constructor.
-	 * @throws Exception
+	 * @param isVariabilityEnabled a boolean true to enable the stochastic mode
 	 */
 	public StemTaperPredictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
@@ -217,7 +216,6 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 			throw new InvalidParameterException("The StemTaperPredictor class is designed to work with StemTaperTree instances only!"); 
 		}
 		StemTaperTree tree = (StemTaperTree) t;
-//		ModelType mType = StemTaperEquationSettings.getModelTypeEquation(tree, additionalParameters);
 		ModelType mType = StemTaperEquationSettings.getModelTypeEquation(tree);
 		
 		Map<StemTaperTreeSpecies, StemTaperSubModule> innerMap = subModules.get(mType);
@@ -240,8 +238,10 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	
 	
 	/**
-	 * This method computes the underbark stem taper in mm2. 
+	 * Compute the underbark stem taper in mm2. 
+	 * @param tree a StemTaperTree instance
 	 * @param stemTaperSegments a List of StemTaperSegment instances
+	 * @param method a EstimationMethodInDeterministicMode enum
 	 * @return a StemTaperEstimate instance with the cross section diameter in mm2
 	 */
 	public AbstractStemTaperEstimate getPredictedTaperForTheseSegments(StemTaperTree tree, StemTaperSegmentList stemTaperSegments, EstimationMethodInDeterministicMode method) {		

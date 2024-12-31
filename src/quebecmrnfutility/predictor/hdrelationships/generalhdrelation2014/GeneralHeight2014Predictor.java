@@ -37,15 +37,16 @@ import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
 
 /**
- * This class implements the beta height-diameter relationship published in
- * Fortin et al. (2009)
+ * An implementation of the model of height-diameter relationships
+ * published in Auger (2016).
  * 
  * @author Hache Denis - Fev 2014
- * @see Fortin, M., Bernier, S., Saucier, J.-P., and Labbé, F. 2009, Auger, I. Une
- *      relation hauteur-diamètre tenant compte de l'influence de la station et
- *      du climat pour 20 espèces commerciales du Québec. Gouvernement du
- *      Québec, Ministère des Ressources naturelles et de la Faune, Direction de
- *      la recherche forestière. Mémoire de recherche forestière no 153. 22 p.
+ * @see <a href=https://mffp.gouv.qc.ca/nos-publications/nouvelle-relation-hauteur-diametre>  
+ * Auger, I. 2016. Une nouvelle relation hauteur-diametre tenant compte de l’influence de la 
+ * station et du climat pour 27 essences commerciales du Quebec. Gouvernement du Quebec, 
+ * Ministere des Forets, de la Faune et des Parcs, Direction de 
+ * la recherche forestiere. Note de recherche forestiere no 146. 31 p.
+ * </a>
  */
 public class GeneralHeight2014Predictor extends REpiceaPredictor implements HeightPredictor<Heightable2014Stand, Heightable2014Tree> {
 

@@ -73,5 +73,10 @@ public class OfficialHarvestableStandImpl implements OfficialHarvestableStand {
 	public String getPotentialVegetation() {
 		return null;
 	}
+
+	@Override
+	public LandUse getLandUse() {
+		return LandUse.WoodProduction;
+	}
 	
 }
