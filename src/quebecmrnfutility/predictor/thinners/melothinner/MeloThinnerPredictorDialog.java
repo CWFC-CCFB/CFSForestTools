@@ -39,6 +39,7 @@ import repicea.gui.components.NumberFormatFieldFactory.JFormattedNumericField;
 import repicea.gui.components.NumberFormatFieldFactory.NumberFieldDocument.NumberFieldEvent;
 import repicea.gui.components.NumberFormatFieldFactory.NumberFieldListener;
 import repicea.util.REpiceaTranslator;
+import repicea.util.REpiceaTranslator.Language;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
 @SuppressWarnings("serial")
@@ -46,9 +47,14 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 
 	private enum MessageID implements TextableEnum {
 		Title("Melo et al.'s thinner options", "Options du module de r\u00E9colte de Melo et al."),
-		DefaultAAC("Use annual allowance cut volume based on past observations", "Utiliser une possibilit\u00E9 foresti\u00E8re bas\u00E9e sur les observations pass\u00E9es"),
-		UserSpecifiedAAC("Use user specified annual allowance cut volume:", "Sp\u00E9cifier une possibilit\u00E9 foresti\u00E8re :"),
-		Units("m3/ha/yr", "m3/ha/ann\u00E9e");
+		DefaultAAC("Use annual allowance cut (AAC) volume based on past observations", "Utiliser une possibilit\u00E9 foresti\u00E8re bas\u00E9e sur les observations pass\u00E9es"),
+		UserSpecifiedAAC("Use user specified annual allowance cut (AAC) volume:", "Sp\u00E9cifier une possibilit\u00E9 foresti\u00E8re :"),
+		Units("m3/ha/yr", "m3/ha/ann\u00E9e"),
+		UserSpecifiedAACToolTip("<html>The AAC per hectare must be calculated as the total <br> "
+				+ "AAC divided by the area designated for wood production.</html>", 
+				"<html>La possibilit\u00E9 foresti\u00E8re par hectare est la possibilit\u00E9 totale <br>"
+				+ "divis\u00E9e par la surface d\u00E9di\u00E9e \u00E0 la production ligneuse. </html>"),
+		;
 
 		MessageID(String englishText, String frenchText) {
 			setText(englishText, frenchText);
@@ -80,6 +86,7 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 		this.caller = caller;
 		defaultAACButton = new JRadioButton(MessageID.DefaultAAC.toString());
 		userSpecifiedAACButton = new JRadioButton(MessageID.UserSpecifiedAAC.toString());
+		userSpecifiedAACButton.setToolTipText(MessageID.UserSpecifiedAACToolTip.toString());
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(defaultAACButton);
 		bg.add(userSpecifiedAACButton);
@@ -181,6 +188,7 @@ public final class MeloThinnerPredictorDialog extends REpiceaDialog implements I
 	}
 
 	public static void main(String[] args) {
+		REpiceaTranslator.setCurrentLanguage(Language.French);
 		MeloThinnerPredictor pred = new MeloThinnerPredictor(true);
 		pred.showUI(null);
 		System.out.println("Dialog has been cancelled: " + pred.getUI(null).hasBeenCancelled());

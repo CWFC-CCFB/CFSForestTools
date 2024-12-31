@@ -64,6 +64,10 @@ public class OfficialHarvestTreatmentDefinition implements Serializable,
 		return treatmentType == TreatmentType.CPRS;
 	}
 
+	protected boolean isNoHarvest() {
+		return treatmentType == TreatmentType.PROTECTION;
+	}
+	
 	@Override
 	public int getNbAdditionalFields() {
 		return 1;
@@ -87,7 +91,7 @@ public class OfficialHarvestTreatmentDefinition implements Serializable,
 	public int getDelayBeforeReentryYrs() {return delayBeforeNextTreatmentYrs;}
 
 	@Override
-	public OfficialHarvestTreatmentDefinition copy() {
+	public OfficialHarvestTreatmentDefinition getDeepClone() {
 		OfficialHarvestTreatmentDefinition copy = new OfficialHarvestTreatmentDefinition(this.treatmentType);
 		copy.delayBeforeNextTreatmentYrs = delayBeforeNextTreatmentYrs;
 		return copy;
@@ -96,5 +100,16 @@ public class OfficialHarvestTreatmentDefinition implements Serializable,
 	@Override
 	public TreatmentType getTreatmentType() {return treatmentType;}
 
-	
+	public boolean equals(Object o) {
+		if (o instanceof OfficialHarvestTreatmentDefinition) {
+			OfficialHarvestTreatmentDefinition def = (OfficialHarvestTreatmentDefinition) o;
+			if (def.treatmentType == this.treatmentType && def.delayBeforeNextTreatmentYrs == this.delayBeforeNextTreatmentYrs) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return super.equals(o);
+		}
+	}
 }

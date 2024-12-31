@@ -38,7 +38,6 @@ import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider.LandOwnership;
-import repicea.simulation.covariateproviders.plotlevel.LandUseProvider.LandUse;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
 import repicea.simulation.thinners.REpiceaTreatmentDefinition;
@@ -189,7 +188,7 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 	 */
 	@Override
 	public synchronized double predictEventProbability(MeloThinnerPlot stand, Object tree, Map<String, Object> parms) {
-		if (stand.getLandUse() == LandUse.WoodProduction) {
+		if (stand.getLandUse().isHarvestingAllowed()) {
 			oXVector.resetMatrix();
 			Matrix beta = getParametersForThisRealization(stand);
 			double proportionalPart = getProportionalPart(stand, beta);
@@ -239,8 +238,6 @@ public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, 
 				survival = embeddedFunction.getValue();
 			} else {
 				if (quadratureEnabled) {
-//					Matrix lowerCholeskyTriangle = getDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE).getVariance().getLowerCholTriangle();
-//					survival = ghq.getIntegralApproximation(embeddedFunction, ParametersToIntegrate, lowerCholeskyTriangle);
 					survival = ghq.getIntegralApproximation(embeddedFunction, IndexParameterToBeIntegrated, true);
 				} else {
 					embeddedFunction.setParameterValue(1, 0);

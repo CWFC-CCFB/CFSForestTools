@@ -26,14 +26,15 @@ import java.util.TreeMap;
 
 import repicea.gui.REpiceaUIObjectWithParent;
 
+@SuppressWarnings("serial")
 public class OfficialHarvestSubmodelAreaLimitation implements REpiceaUIObjectWithParent, Serializable {
 	
-	protected final Map<Enum, Double> areaLimitationMap;
+	protected final Map<Enum<?>, Double> areaLimitationMap;
 	private transient OfficialHarvestSubmodelAreaLimitationPanel guiInterface;
 	
-	OfficialHarvestSubmodelAreaLimitation(Enum[] treatments) {
-		areaLimitationMap = new TreeMap<Enum, Double>();
-		for (Enum treatment : treatments) {
+	OfficialHarvestSubmodelAreaLimitation(Enum<?>[] treatments) {
+		areaLimitationMap = new TreeMap<Enum<?>, Double>();
+		for (Enum<?> treatment : treatments) {
 			areaLimitationMap.put(treatment, 1d);
 		}
 	}

@@ -305,7 +305,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 
 	@Override
 	public OfficialHarvestTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(OfficialHarvestableStand stand) {
-		return selector.getMatch(stand.getPotentialVegetation());
+		return selector.getMatch(stand.getLandUse(), stand.getPotentialVegetation());
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -315,7 +315,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	/**
 	 * Return the maximum annual area proportion for this treatment.
 	 * 
-	 * @param treatment
+	 * @param treatment a TreatmentType enum
 	 * @return a double if the treatment is listed. Otherwise, it must return 1d, which means there is no maximum.
 	 */
 	public double getMaxAnnualAreaProportionForThisTreatment(TreatmentType treatment) {

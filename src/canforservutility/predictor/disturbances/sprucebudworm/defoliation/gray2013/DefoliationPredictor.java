@@ -106,7 +106,8 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 
 	/**
 	 * Constructor with default RCP (RCP 4.5) and climate model (RCM4). 
-	 * @param nbYearsWithModerateToSevereDefoliation
+	 * @param nbYearsWithModerateToSevereDefoliation the number of years affected by
+	 * moderate to severe defoliation
 	 */
 	public DefoliationPredictor(double nbYearsWithModerateToSevereDefoliation) {
 		this(nbYearsWithModerateToSevereDefoliation, RCP.RCP45, ClimateModel.RCM4);
@@ -165,6 +166,7 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 
 	
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected Matrix getClimateForThisInterval(DefoliationPlot plot, IntervalNestedInPlotDefinition subject) throws BioSimException {
 		if (testPurposes) {
 			Matrix mat = new Matrix(4,1);
@@ -243,7 +245,7 @@ public class DefoliationPredictor extends REpiceaBinaryEventPredictor<Defoliatio
 				mat.setValueAt(2, 0, sm_emin);
 				mat.setValueAt(3, 0, sm_emax);
 				
-
+				// TODO FP fix the climate map issue. MF2024-12-31
 				
 				return mat;
 			} catch (BioSimClientException | BioSimServerException e) {

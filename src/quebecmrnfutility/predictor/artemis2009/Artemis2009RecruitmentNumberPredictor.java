@@ -70,11 +70,11 @@ public class Artemis2009RecruitmentNumberPredictor extends REpiceaPredictor {
 	}
 
 	/**
-	 * This method predicts the number of recruits to be observed given that recruitment occurs.
-	 * @param stand
-	 * @param tree
-	 * @param parms
-	 * @return a double
+	 * Predict the number of recruits to be observed given that recruitment occurred.
+	 * @param stand an Artemis2009CompatibleStand instance
+	 * @param tree an Artemis2009CompatibleTree instance
+	 * @param parms additional parameters (unnecessary for this class)
+	 * @return a double the number of recruits
 	 */
 	public double predictNumberOfRecruits(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree, Object... parms) {
 		String potentialVegetationCode = stand.getPotentialVegetation();

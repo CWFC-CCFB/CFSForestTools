@@ -35,7 +35,8 @@ public class PetroTreeLogCategory extends LogCategory {
 	
 	/**
 	 * Constructor.
-	 * @param productType
+	 * @param productType a PetroGradeType enum
+	 * @param species the species name or code
 	 */
 	protected PetroTreeLogCategory(PetroGradeType productType, String species) {
 		super(productType.getName(), false);

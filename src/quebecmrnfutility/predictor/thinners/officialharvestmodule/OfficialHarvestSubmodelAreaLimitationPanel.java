@@ -49,7 +49,7 @@ public class OfficialHarvestSubmodelAreaLimitationPanel extends REpiceaPanel imp
 		Treatment("Treatment", "Traitment"),
 		MaxAnnualAreaProp("Annual proportion", "Proportion annuelle"),
 		Title("Maximum annual proportion of area by treatment", "Proportion annuelle maximale de la surface par traitement"),
-		Footnote("Values greater than or equal to 1 mean no limit", "Les valeurs \u00E9gales ou sup\u00E9rieurs \u00E0 1 signifient qu'il n'y a pas de maximum.");
+		Footnote("Values greater than or equal to 1 mean no limit", "Les valeurs \u00E9gales ou sup\u00E9rieures \u00E0 1 signifient qu'il n'y a pas de maximum.");
 
 		MessageID(String englishText, String frenchText) {
 			setText(englishText, frenchText);

@@ -24,11 +24,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -36,22 +39,24 @@ import javax.swing.table.TableCellEditor;
 
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestSubmodelSelector.Mode;
 import repicea.gui.UIControlManager;
-import repicea.gui.components.REpiceaMatchSelectorDialog;
+import repicea.gui.components.REpiceaEnhancedMatchSelectorDialog;
+import repicea.simulation.covariateproviders.plotlevel.LandUseProvider.LandUse;
 
 @SuppressWarnings({ "serial", "rawtypes" })
-public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorDialog implements ItemListener, ActionListener {
+public class OfficialHarvestSubmodelSelectorDialog extends REpiceaEnhancedMatchSelectorDialog<OfficialHarvestTreatmentDefinition>
+													implements ItemListener, ActionListener {
 	
 	static {
 		UIControlManager.setTitle(OfficialHarvestSubmodelSelectorDialog.class, "Treatments to be applied in each potential vegetation", "Traitement \u00E0 appliquer dans chaque v\u00E9g\u00E9tation potentielle");
 	}
 
 
-	private JRadioButton singleTreatmentButton;
-	private JRadioButton treatmentByPotentialVegetationButton;
-	private JComboBox<OfficialHarvestTreatmentDefinition> uniqueTreatmentComboBox;
+	private Map<Enum<?>, JRadioButton> singleTreatmentButtons;
+	private Map<Enum<?>, JRadioButton> treatmentByPotentialVegetationButtons;
+	private Map<Enum<?>, JComboBox<OfficialHarvestTreatmentDefinition>> singleTreatmentComboBoxes;
+	
 	private OfficialHarvestSubmodelAreaLimitationPanel areaLimitationsPanel;
 	
-	@SuppressWarnings("unchecked")
 	protected OfficialHarvestSubmodelSelectorDialog(OfficialHarvestSubmodelSelector caller, Window parent, Object[] columnNames) {
 		super(caller, parent, columnNames);
 	}
@@ -59,23 +64,42 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 	@Override
 	protected void init() {
 		super.init();
-		singleTreatmentButton = new JRadioButton(Mode.SingleTreatment.toString());
-		uniqueTreatmentComboBox = new JComboBox<OfficialHarvestTreatmentDefinition>(getCaller().getPotentialMatches().toArray(new OfficialHarvestTreatmentDefinition[]{}));
-		treatmentByPotentialVegetationButton = new JRadioButton(Mode.TreatmentByPotentialVegetation.toString());
-		ButtonGroup bg = new ButtonGroup();
-		bg.add(singleTreatmentButton);
-		bg.add(treatmentByPotentialVegetationButton);
+		singleTreatmentButtons = new HashMap<Enum<?>, JRadioButton>();
+		treatmentByPotentialVegetationButtons = new HashMap<Enum<?>, JRadioButton>();
+		for (Enum<?> landUse : getCaller().modes.keySet()) {
+			JRadioButton singleTreatmentButton = new JRadioButton(Mode.SingleTreatment.toString());
+			singleTreatmentButton.setName("singleTreatmentButton_"+ landUse.name());
+			singleTreatmentButtons.put(landUse, singleTreatmentButton);
+			
+			JRadioButton treatmentByPotentialVegetationButton = new JRadioButton(Mode.TreatmentByPotentialVegetation.toString());
+			treatmentByPotentialVegetationButton.setName("treatmentByPotentialVegetationButton_" + landUse.name());
+			treatmentByPotentialVegetationButtons.put(landUse, treatmentByPotentialVegetationButton);
+
+			ButtonGroup bg = new ButtonGroup();
+			bg.add(singleTreatmentButton);
+			bg.add(treatmentByPotentialVegetationButton);
+		}
+
+		singleTreatmentComboBoxes = new HashMap<Enum<?>, JComboBox<OfficialHarvestTreatmentDefinition>>();
+		for (Enum<?> landUse : getCaller().modes.keySet()) {
+			JComboBox<OfficialHarvestTreatmentDefinition> singleTreatmentComboBox = new JComboBox<OfficialHarvestTreatmentDefinition>(getCaller().getPotentialMatches(landUse).toArray(new OfficialHarvestTreatmentDefinition[]{}));
+			singleTreatmentComboBox.setName("singleTreatmentComboBox_" + landUse.name());
+			singleTreatmentComboBoxes.put(landUse, singleTreatmentComboBox);
+		}		
 	}
 	
 	
 	
 	@Override
 	public void refreshInterface() {
-		singleTreatmentButton.setSelected(getCaller().getMode() == Mode.SingleTreatment);
-		treatmentByPotentialVegetationButton.setSelected(getCaller().getMode() == Mode.TreatmentByPotentialVegetation);
-		uniqueTreatmentComboBox.setSelectedItem(getCaller().singleTreatment);
-		if (areaLimitationsPanel != null)
+		for (Enum<?> landUse : getCaller().modes.keySet()) {
+			singleTreatmentButtons.get(landUse).setSelected(getCaller().getMode(landUse) == Mode.SingleTreatment);
+			treatmentByPotentialVegetationButtons.get(landUse).setSelected(getCaller().getMode(landUse) == Mode.TreatmentByPotentialVegetation);
+			singleTreatmentComboBoxes.get(landUse).setSelectedItem(getCaller().getSingleTreatment(landUse));
+		}
+		if (areaLimitationsPanel != null) {
 			areaLimitationsPanel.refreshInterface();
+		}
 		super.refreshInterface();
 		checkFeaturesToEnable();
 	}
@@ -86,49 +110,60 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 	}
 	
 	protected void checkFeaturesToEnable() {
-		uniqueTreatmentComboBox.setEnabled(singleTreatmentButton.isSelected());
-		if (!treatmentByPotentialVegetationButton.isSelected()) {
-			TableCellEditor editor = getTable().getCellEditor();
-			if (editor != null) {
-				editor.cancelCellEditing();
+		for (Enum<?> landUse : getCaller().modes.keySet()) {
+			singleTreatmentComboBoxes.get(landUse).setEnabled(singleTreatmentButtons.get(landUse).isSelected());
+			if (!treatmentByPotentialVegetationButtons.get(landUse).isSelected()) {
+				TableCellEditor editor = getTable(landUse).getCellEditor();
+				if (editor != null) {
+					editor.cancelCellEditing();
+				}
 			}
+			getTable(landUse).setEnabled(treatmentByPotentialVegetationButtons.get(landUse).isSelected());
 		}
-		getTable().setEnabled(treatmentByPotentialVegetationButton.isSelected());
 	}
 
 	@Override
 	public void listenTo() {
 		super.listenTo();
-		singleTreatmentButton.addActionListener(this);
-		treatmentByPotentialVegetationButton.addActionListener(this);
-		uniqueTreatmentComboBox.addItemListener(this);
+		for (Enum<?> landUse : getCaller().modes.keySet()) {
+			singleTreatmentButtons.get(landUse).addActionListener(this);
+			treatmentByPotentialVegetationButtons.get(landUse).addActionListener(this);
+			singleTreatmentComboBoxes.get(landUse).addItemListener(this);
+		}
 	}
 
 	@Override
 	public void doNotListenToAnymore() {
 		super.doNotListenToAnymore();
-		singleTreatmentButton.removeActionListener(this);
-		treatmentByPotentialVegetationButton.removeActionListener(this);
-		uniqueTreatmentComboBox.removeItemListener(this);
+		for (Enum<?> landUse : getCaller().modes.keySet()) {
+			singleTreatmentButtons.get(landUse).removeActionListener(this);
+			treatmentByPotentialVegetationButtons.get(landUse).removeActionListener(this);
+			singleTreatmentComboBoxes.get(landUse).removeItemListener(this);
+		}
 	}
 
 	private JPanel getLeftPanel() {
+		return super.getMainPanel();
+	}
+
+	@Override
+	protected JComponent getPanelToBeEmbeddedInTab(Enum<?> landUse) {
 		JPanel pane = new JPanel();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 
 		pane.add(Box.createVerticalStrut(10));
-		pane.add(createSimplePanel(singleTreatmentButton, 5));
+		pane.add(createSimplePanel(singleTreatmentButtons.get(landUse), 5));
 		pane.add(Box.createVerticalStrut(10));
-		pane.add(this.createSimplePanel(uniqueTreatmentComboBox, 20));
+		pane.add(this.createSimplePanel(singleTreatmentComboBoxes.get(landUse), 20));
 		pane.add(Box.createVerticalStrut(20));
-		pane.add(createSimplePanel(treatmentByPotentialVegetationButton, 5));
+		pane.add(createSimplePanel(treatmentByPotentialVegetationButtons.get(landUse), 5));
 		pane.add(Box.createVerticalStrut(10));
-		JScrollPane scrollPane = new JScrollPane(getTable());
+		JScrollPane scrollPane = new JScrollPane(getTable(landUse));
 		pane.add(createSimplePanel(scrollPane, 20));
 		pane.add(Box.createVerticalStrut(10));
 		return pane;
+		
 	}
-
 
 	private JPanel getRightPanel() {
 		areaLimitationsPanel = getCaller().getAreaLimitations().getUI(this);
@@ -144,29 +179,52 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchSelectorD
 		return pane;
 	}
 
-
+	private LandUse getLandUseFromName(String name) {
+		int index = name.indexOf("_");
+		if (index == -1) {
+			return null;
+		} else {
+			return LandUse.valueOf(name.substring(index + 1));
+		}
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(singleTreatmentButton)) {
-			if (singleTreatmentButton.isSelected()) {
-				getCaller().mode = Mode.SingleTreatment;
-				checkFeaturesToEnable();
-			}
-		} else if (e.getSource().equals(treatmentByPotentialVegetationButton)) {
-			if (treatmentByPotentialVegetationButton.isSelected()) {
-				getCaller().mode = Mode.TreatmentByPotentialVegetation;
-				checkFeaturesToEnable();
+		if (e.getSource() instanceof JRadioButton && ((JRadioButton) e.getSource()).isSelected()) {
+			String name = ((JRadioButton) e.getSource()).getName();
+			LandUse landUse;
+			if (name.startsWith("singleTreatmentButton")) {
+				landUse = getLandUseFromName(name);
+				if (landUse != null) {
+					getCaller().modes.put(landUse, Mode.SingleTreatment);
+					System.out.println("Single treatment for land use: " + landUse.name());
+					checkFeaturesToEnable();
+				}
+			} else if (name.startsWith("treatmentByPotentialVegetationButton")) {
+				landUse = getLandUseFromName(name);
+				if (landUse != null) {
+					getCaller().modes.put(landUse, Mode.TreatmentByPotentialVegetation);
+					System.out.println("Treatment by potential vegetation for land use: " + landUse.name());
+					checkFeaturesToEnable();
+				}
 			}
 		}
 	}
 
-	
-	
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		if (e.getSource().equals(uniqueTreatmentComboBox)) {
-			getCaller().singleTreatment = (OfficialHarvestTreatmentDefinition) uniqueTreatmentComboBox.getSelectedItem();
-			System.out.println("Treatment selected = " + uniqueTreatmentComboBox.getSelectedItem());
+		if (e.getSource() instanceof JComboBox) {
+			String name = ((JComboBox) e.getSource()).getName();
+			if (name.startsWith("singleTreatmentComboBox")) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					LandUse landUse = getLandUseFromName(name);
+					if (landUse != null) {
+						OfficialHarvestTreatmentDefinition treatment = (OfficialHarvestTreatmentDefinition) ((JComboBox) e.getSource()).getSelectedItem();
+						getCaller().singleTreatments.put(landUse, treatment);
+						System.out.println("Treatment selected = " + treatment + " for land use " + landUse.name());
+					}
+				}
+			}
 		}
 	}
 

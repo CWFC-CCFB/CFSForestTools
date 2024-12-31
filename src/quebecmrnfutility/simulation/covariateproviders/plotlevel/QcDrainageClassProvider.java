@@ -26,6 +26,10 @@ import java.util.Map;
 
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
 
+/**
+ * An interface to ensure the instance can provide its drainage class.
+ * @author Mathieu Fortin - 2020
+ */
 public interface QcDrainageClassProvider extends DrainageGroupProvider {
 	
 	public static enum QcDrainageClass {
@@ -56,18 +60,19 @@ public interface QcDrainageClassProvider extends DrainageGroupProvider {
 		}
 
 		/**
-		 * Returns true if the drainage string is among the following
-		 * 0, 1, 2, 3, 4, 5, 6.
-		 * @param drainageStr
-		 * @return a boolean
+		 * Return true if the drainage string can be converted into a 
+		 * QcDrainageClass enum.
+		 * 
+		 * @param drainageStr the string which should be one of the following: 0, 1, 2, 3, 4, 5, 6 
+		 * @return a boolean if the string can be converted into a drainage class
 		 */
 		public static boolean isEligibleDrainageString(String drainageStr) {
 			return getDrainageMap().containsKey(drainageStr);
 		}
 		
 		/**
-		 * Returns a QcDrainageClass enum from a drainage str.
-		 * @param drainageStr
+		 * Parse the string into a QcDrainageClass enum.
+		 * @param drainageStr the string which should be one of the following: 0, 1, 2, 3, 4, 5, 6 
 		 * @return may return null if the string is not eligible.
 		 */
 		public static QcDrainageClass getDrainageClassFromString(String drainageStr) {
