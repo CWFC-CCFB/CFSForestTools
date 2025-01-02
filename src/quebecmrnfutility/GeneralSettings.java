@@ -60,6 +60,7 @@ public class GeneralSettings {
 		TYPEECO(Level.plotLevel),
 		DRAINAGE_CLASS(Level.plotLevel),
 		SLOPE_CLASS(Level.plotLevel),
+		LAND_USE(Level.plotLevel),
 		
 		ORIGIN(Level.plotLevel),
 		DISTURBANCE(Level.plotLevel),
