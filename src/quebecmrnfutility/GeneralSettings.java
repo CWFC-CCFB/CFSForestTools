@@ -22,10 +22,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import quebecmrnfutility.predictor.thinners.formerofficialharvestmodule.FormerOfficialHarvestableTree.FormerOfficialHarvestableSpecies;
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
+import quebecmrnfutility.predictor.thinners.formerofficialharvestmodule.FormerOfficialHarvestableTree.FormerOfficialHarvestableSpecies;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree.VolSpecies;
-import repicea.io.tools.LevelProviderEnum;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
@@ -37,76 +36,6 @@ import repicea.util.REpiceaTranslator.TextableEnum;
  */
 @SuppressWarnings("deprecation")
 public class GeneralSettings {
-
-	public enum Level {
-		stratumLevel,
-		plotLevel, 
-		treeLevel 
-	}
-
-	public enum FieldID implements LevelProviderEnum {
-		STRATUM(Level.stratumLevel),
-		
-		PLOT(Level.plotLevel),
-		PLOT_AREA(Level.plotLevel),
-		PLOT_MEASUREMENTID(Level.plotLevel),
-		CRUISE_LINE(Level.plotLevel),
-		
-		LATITUDE(Level.plotLevel),
-		LONGITUDE(Level.plotLevel),
-		ALTITUDE(Level.plotLevel),
-		
-		ECOREGION(Level.plotLevel),
-		TYPEECO(Level.plotLevel),
-		DRAINAGE_CLASS(Level.plotLevel),
-		SLOPE_CLASS(Level.plotLevel),
-		LAND_USE(Level.plotLevel),
-		
-		ORIGIN(Level.plotLevel),
-		DISTURBANCE(Level.plotLevel),
-		
-		PLOTWEIGHT(Level.plotLevel),
-		
-		PRECTOT(Level.plotLevel),
-		MEANTEMP(Level.plotLevel),
-		DEGJR(Level.plotLevel),
-		PRECUTIL(Level.plotLevel),
-		PRECSAIS(Level.plotLevel),
-		JRXGEL(Level.plotLevel),
-		JRXGELC(Level.plotLevel),
-		JRCROIS(Level.plotLevel),
-		DPV(Level.plotLevel),
-		ARIDITE(Level.plotLevel),
-		NEIGEP(Level.plotLevel),
-		NEIGET(Level.plotLevel),
-
-		SPECIES(Level.treeLevel),
-		TREEID(Level.treeLevel),
-		TREESTATUS(Level.treeLevel),
-		TREEFREQ(Level.treeLevel),
-		TREEDHPCM(Level.treeLevel),
-		TREEHEIGHT(Level.treeLevel),
-		TREEVOLUME(Level.treeLevel),
-		TREEQUALITY(Level.treeLevel),
-		
-		AGE3M(Level.plotLevel),
-		AGE4M(Level.plotLevel),
-		AGE7M(Level.plotLevel),
-		AGE12M(Level.plotLevel),
-		AGEHD(Level.plotLevel),
-		DOMINANT_HEIGHT(Level.plotLevel);
-		
-		private Level level;
-		
-		FieldID(Level level) {
-			this.level = level;
-		}
-		
-		@Override
-		public Level getFieldLevel() {
-			return level;
-		}
-	}
 
 	public static enum MessageFieldID implements TextableEnum {
 		LatitudeError("latitude must be between 45 and 53 degrees", "la latitude doit \u00EAtre comprise entre 45 et 53 degr\u00E9s"),
