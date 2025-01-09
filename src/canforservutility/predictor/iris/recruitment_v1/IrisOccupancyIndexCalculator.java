@@ -32,9 +32,7 @@ import repicea.math.SymmetricMatrix;
 import repicea.simulation.geographic.GeographicDistanceCalculator;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.estimates.PopulationMeanEstimate;
-import repicea.stats.estimates.PopulationTotalEstimate;
-import repicea.stats.sampling.PopulationUnitWithEqualInclusionProbability;
-import repicea.stats.sampling.PopulationUnitWithUnequalInclusionProbability;
+import repicea.stats.sampling.PopulationUnit;
 
 /**
  * A class to calculate the occupancy index required by the recruitment module. <p>
@@ -172,35 +170,35 @@ public class IrisOccupancyIndexCalculator {
 //			return new SimpleEstimate(mean, variance);
 		} else {
 			int n = plotsWithinDistanceWithinLast10Yrs.size();
-			boolean allWeightsEqual = plotsWithinDistanceWithinLast10Yrs.stream().
-					allMatch(p -> p.getWeight() == plotsWithinDistanceWithinLast10Yrs.get(0).getWeight());
+//			boolean allWeightsEqual = plotsWithinDistanceWithinLast10Yrs.stream().
+//					allMatch(p -> p.getWeight() == plotsWithinDistanceWithinLast10Yrs.get(0).getWeight());
 			
-			if (allWeightsEqual) {	// Then we assume random sampling without replacement
+//			if (allWeightsEqual) {	// Then we assume random sampling without replacement
 //				CaseCount[1]++;
 				PopulationMeanEstimate estimate = new PopulationMeanEstimate();
 				Matrix obs;
 				for (int i = 0; i < n; i++) {
 					obs = new Matrix(1, 1, getOccurrence(plotsWithinDistanceWithinLast10Yrs.get(i), species), 0);
-					estimate.addObservation(new PopulationUnitWithEqualInclusionProbability(i + "", obs));
+					estimate.addObservation(new PopulationUnit(i + "", obs));
 				}
 				return new GaussianEstimate(estimate.getMean(), estimate.getVariance());
-			} else {	// Otherwise we use a HT estimator. We aksi assume the area for each weight is estimated as (n_k * w_k) / (sum_k n_k w_k)
+//			} else {	// Otherwise we use a HT estimator. We aksi assume the area for each weight is estimated as (n_k * w_k) / (sum_k n_k w_k)
 //				CaseCount[2]++;
-				double N = (maximumDistanceKm * maximumDistanceKm * Math.PI * 100) / thisPlot.getAreaHa();
-				PopulationTotalEstimate estimate = new PopulationTotalEstimate();
-				double sumWeight = 0d;
-				for (int i = 0; i < n; i++) {
-					sumWeight += plotsWithinDistanceWithinLast10Yrs.get(i).getWeight();
-				}
-				Matrix obs;
-				for (int i = 0; i < n; i++) {
-					IrisProtoPlot p = plotsWithinDistanceWithinLast10Yrs.get(i);
-					double newWeight = sumWeight / (p.getWeight() * N);	// this is the simplification of n_k / N_k with N_k = n_k * w_k / (sum_k n_k w_k) * N
-					obs = new Matrix(1, 1, getOccurrence(p, species), 0);
-					estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(i + "", obs, newWeight));
-				}
-				return new GaussianEstimate(estimate.getMean().scalarMultiply(1d/N), estimate.getVariance().scalarMultiply(1d/(N*N)));
-			}
+//				double N = (maximumDistanceKm * maximumDistanceKm * Math.PI * 100) / thisPlot.getAreaHa();
+//				PopulationTotalEstimate estimate = new PopulationTotalEstimate();
+//				double sumWeight = 0d;
+//				for (int i = 0; i < n; i++) {
+//					sumWeight += plotsWithinDistanceWithinLast10Yrs.get(i).getWeight();
+//				}
+//				Matrix obs;
+//				for (int i = 0; i < n; i++) {
+//					IrisProtoPlot p = plotsWithinDistanceWithinLast10Yrs.get(i);
+//					double newWeight = sumWeight / (p.getWeight() * N);	// this is the simplification of n_k / N_k with N_k = n_k * w_k / (sum_k n_k w_k) * N
+//					obs = new Matrix(1, 1, getOccurrence(p, species), 0);
+//					estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(i + "", obs, newWeight));
+//				}
+//				return new GaussianEstimate(estimate.getMean().scalarMultiply(1d/N), estimate.getVariance().scalarMultiply(1d/(N*N)));
+//			}
 		}
 	}
 

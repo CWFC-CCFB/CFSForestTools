@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import repicea.stats.estimates.PopulationTotalEstimate;
-import repicea.stats.sampling.PopulationUnitWithUnequalInclusionProbability;
+import repicea.stats.sampling.PopulationUnit;
 
 @SuppressWarnings("serial")
 class PlotList extends ArrayList<SamplePlot> {
@@ -36,10 +36,10 @@ class PlotList extends ArrayList<SamplePlot> {
 	}
 	
 	PopulationTotalEstimate getHorvitzThompsonEstimate(int populationSize) {
-		PopulationTotalEstimate estimate = new PopulationTotalEstimate();
+		PopulationTotalEstimate estimate = new PopulationTotalEstimate(populationSize);
 		
 		for (SamplePlot plot : this) {
-			estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(plot.toString(), plot.getY(), 1d/populationSize));
+			estimate.addObservation(new PopulationUnit(plot.toString(), plot.getY()));
 		}
 		return estimate;
 	}

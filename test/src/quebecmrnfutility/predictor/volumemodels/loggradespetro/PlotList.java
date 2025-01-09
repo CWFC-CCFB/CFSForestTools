@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import repicea.math.Matrix;
 import repicea.stats.estimates.PopulationTotalEstimate;
-import repicea.stats.sampling.PopulationUnitWithUnequalInclusionProbability;
+import repicea.stats.sampling.PopulationUnit;
 
 @SuppressWarnings("serial")
 class PlotList extends ArrayList<Plot> {
@@ -36,14 +36,14 @@ class PlotList extends ArrayList<Plot> {
 	}
 	
 	PopulationTotalEstimate getHorvitzThompsonEstimate(int populationSize) {
-		PopulationTotalEstimate estimate = new PopulationTotalEstimate();
+		PopulationTotalEstimate estimate = new PopulationTotalEstimate(populationSize);
 		
 		for (Plot plot : this) {
 			Matrix plotTotal = new Matrix(5,1);
 			for (PetroGradeTreeImpl tree : plot.getTrees()) {
 				plotTotal = plotTotal.add(tree.getRealizedValues());
 			}
-			estimate.addObservation(new PopulationUnitWithUnequalInclusionProbability(plot.toString(), plotTotal, 1d/populationSize));
+			estimate.addObservation(new PopulationUnit(plot.toString(), plotTotal));
 		}
 		return estimate;
 	}
