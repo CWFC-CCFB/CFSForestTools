@@ -21,8 +21,8 @@ package quebecmrnfutility.predictor.volumemodels.wbirchloggrades.simplelinearmod
 import java.util.ArrayList;
 import java.util.Random;
 
-import repicea.stats.estimates.PopulationTotalEstimate;
-import repicea.stats.sampling.PopulationUnit;
+import repicea.stats.sampling.FinitePopulationEstimate;
+
 
 @SuppressWarnings("serial")
 class PlotList extends ArrayList<SamplePlot> {
@@ -35,11 +35,11 @@ class PlotList extends ArrayList<SamplePlot> {
 		}
 	}
 	
-	PopulationTotalEstimate getHorvitzThompsonEstimate(int populationSize) {
-		PopulationTotalEstimate estimate = new PopulationTotalEstimate(populationSize);
+	FinitePopulationEstimate getHorvitzThompsonEstimate(int populationSize) {
+		FinitePopulationEstimate estimate = new FinitePopulationEstimate(populationSize);
 		
 		for (SamplePlot plot : this) {
-			estimate.addObservation(new PopulationUnit(plot.toString(), plot.getY()));
+			estimate.addObservation(plot.getY(), plot.toString());
 		}
 		return estimate;
 	}

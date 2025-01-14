@@ -21,8 +21,7 @@ package quebecmrnfutility.predictor.volumemodels.wbirchloggrades;
 import java.util.ArrayList;
 
 import repicea.math.Matrix;
-import repicea.stats.estimates.PopulationTotalEstimate;
-import repicea.stats.sampling.PopulationUnit;
+import repicea.stats.sampling.FinitePopulationEstimate;
 
 @SuppressWarnings("serial")
 class PlotList extends ArrayList<WBirchLogGradesStandImpl> {
@@ -33,15 +32,15 @@ class PlotList extends ArrayList<WBirchLogGradesStandImpl> {
 		}
 	}
 	
-	PopulationTotalEstimate getHorvitzThompsonEstimate(int populationSize) {
-		PopulationTotalEstimate estimate = new PopulationTotalEstimate(populationSize);
+	FinitePopulationEstimate getHorvitzThompsonEstimate(int populationSize) {
+		FinitePopulationEstimate estimate = new FinitePopulationEstimate(populationSize);
 		
 		for (WBirchLogGradesStandImpl plot : this) {
 			Matrix plotTotal = new Matrix(7,1);
 			for (WBirchLogGradesTreeImpl tree : plot.getTrees().values()) {
 				plotTotal = plotTotal.add(tree.getRealizedValues());
 			}
-			estimate.addObservation(new PopulationUnit(plot.toString(), plotTotal));
+			estimate.addObservation(plotTotal, plot.toString());
 		}
 		return estimate;
 	}

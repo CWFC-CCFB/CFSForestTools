@@ -313,14 +313,14 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	public List<Enum> getTreatmentList() {return Arrays.asList(TreatmentType.values());}
 
 	/**
-	 * Return the maximum annual area proportion for this treatment.
+	 * Return the maximum annual area for this treatment.
 	 * 
 	 * @param treatment a TreatmentType enum
-	 * @return a double if the treatment is listed. Otherwise, it must return 1d, which means there is no maximum.
+	 * @return a double if the treatment is listed. Otherwise, it must return 0d, which means there is no maximum.
 	 */
-	public double getMaxAnnualAreaProportionForThisTreatment(TreatmentType treatment) {
-		Double maxProp = selector.getAreaLimitations().areaLimitationMap.get(treatment);
-		return maxProp == null ? 1d : maxProp;
+	public double getMaxAnnualAreaHaForThisTreatment(TreatmentType treatment) {
+		Double maxAreaHa = selector.getAreaLimitations().areaLimitationMap.get(treatment);
+		return maxAreaHa == null ? 0d : maxAreaHa;
 	}
 	
 }

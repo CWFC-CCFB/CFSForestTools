@@ -29,9 +29,9 @@ import repicea.io.FormatField;
 import repicea.io.javacsv.CSVField;
 import repicea.io.javacsv.CSVWriter;
 import repicea.math.Matrix;
-import repicea.stats.estimates.BootstrapHybridPointEstimate;
-import repicea.stats.estimates.BootstrapHybridPointEstimate.VarianceEstimatorImplementation;
-import repicea.stats.estimates.PopulationTotalEstimate;
+import repicea.stats.sampling.BootstrapHybridPointEstimate;
+import repicea.stats.sampling.BootstrapHybridPointEstimate.VarianceEstimatorImplementation;
+import repicea.stats.sampling.FinitePopulationEstimate;
 import repicea.util.ObjectUtility;
 
 public class Population {
@@ -154,7 +154,7 @@ public class Population {
 				}
 				sample.setRealization(internalReal);
 				setRealizedValues(sample, currentModel);
-				PopulationTotalEstimate htEstimator = sample.getHorvitzThompsonEstimate(populationSize);
+				FinitePopulationEstimate htEstimator = sample.getHorvitzThompsonEstimate(populationSize);
 				hybHTEstimate.addPointEstimate(htEstimator);
 				if (!SimpleLinearModel.R2_95Version && real == 0 && internalReal >= 1) {
 					recordStabilizer[0] = internalReal;

@@ -35,7 +35,7 @@ public class OfficialHarvestSubmodelAreaLimitation implements REpiceaUIObjectWit
 	OfficialHarvestSubmodelAreaLimitation(Enum<?>[] treatments) {
 		areaLimitationMap = new TreeMap<Enum<?>, Double>();
 		for (Enum<?> treatment : treatments) {
-			areaLimitationMap.put(treatment, 1d);
+			areaLimitationMap.put(treatment, 0d);
 		}
 	}
 

@@ -46,10 +46,10 @@ import repicea.util.REpiceaTranslator.TextableEnum;
 public class OfficialHarvestSubmodelAreaLimitationPanel extends REpiceaPanel implements TableModelListener {
 
 	private static enum MessageID implements TextableEnum {
-		Treatment("Treatment", "Traitment"),
-		MaxAnnualAreaProp("Annual proportion", "Proportion annuelle"),
-		Title("Maximum annual proportion of area by treatment", "Proportion annuelle maximale de la surface par traitement"),
-		Footnote("Values greater than or equal to 1 mean no limit", "Les valeurs \u00E9gales ou sup\u00E9rieures \u00E0 1 signifient qu'il n'y a pas de maximum.");
+		Treatment("Treatment", "Traitement"),
+		MaxAnnualAreaProp("Annual area (ha)", "Surface annuelle (ha)"),
+		Title("Maximum annual areas by treatment", "Surfaces annuelles maximales par traitement"),
+		Footnote("Values equal to 0 mean no limit", "Les valeurs \u00E9gales \u00E0 0 signifient qu'il n'y a pas de maximum.");
 
 		MessageID(String englishText, String frenchText) {
 			setText(englishText, frenchText);

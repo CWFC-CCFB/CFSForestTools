@@ -31,8 +31,7 @@ import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.geographic.GeographicDistanceCalculator;
 import repicea.stats.estimates.GaussianEstimate;
-import repicea.stats.estimates.PopulationMeanEstimate;
-import repicea.stats.sampling.PopulationUnit;
+import repicea.stats.sampling.PopulationMeanEstimate;
 
 /**
  * A class to calculate the occupancy index required by the recruitment module. <p>
@@ -179,7 +178,7 @@ public class IrisOccupancyIndexCalculator {
 				Matrix obs;
 				for (int i = 0; i < n; i++) {
 					obs = new Matrix(1, 1, getOccurrence(plotsWithinDistanceWithinLast10Yrs.get(i), species), 0);
-					estimate.addObservation(new PopulationUnit(i + "", obs));
+					estimate.addObservation(obs, i + "");
 				}
 				return new GaussianEstimate(estimate.getMean(), estimate.getVariance());
 //			} else {	// Otherwise we use a HT estimator. We aksi assume the area for each weight is estimated as (n_k * w_k) / (sum_k n_k w_k)
