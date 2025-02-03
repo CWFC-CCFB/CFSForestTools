@@ -138,6 +138,7 @@ public class QuebecGeneralSettings {
 		SHRUB_SPECIES_LIST.add("PAQ");
 		SHRUB_SPECIES_LIST.add("PRP");
 		SHRUB_SPECIES_LIST.add("PRV");
+		SHRUB_SPECIES_LIST.add("PRN");
 		SHRUB_SPECIES_LIST.add("RHA");
 		SHRUB_SPECIES_LIST.add("RHM");
 		SHRUB_SPECIES_LIST.add("RHR");
