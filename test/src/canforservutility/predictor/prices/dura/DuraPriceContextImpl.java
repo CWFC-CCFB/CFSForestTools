@@ -58,28 +58,28 @@ class DuraPriceContextImpl implements DuraPriceContext {
 	
 	
 	@Override
-	public double getEXCAUSLag4() {return EXCAUSLag4;}
+	public double getExchangeRateRatioCANToUSA_lag4() {return EXCAUSLag4;}
 
 	@Override
-	public double getCLIMCOSTLAG() {return CLIMCOSTLAG;}
+	public double getClimateCost_BillionDollars() {return CLIMCOSTLAG;}
 
 	@Override
-	public double getFEDFUNDSLag1() {return FEDFUNDSLag1;}
+	public double getFederalFundsRate_lag1() {return FEDFUNDSLag1;}
 
 	@Override
-	public double getPSAVERTLag4() {return PSAVERTLag4;}
+	public double getPersonalSavingRate_lag4() {return PSAVERTLag4;}
 
 	@Override
-	public double getFEDFUNDSLag3() {return FEDFUNDSLag3;}
+	public double getFederalFundsRate_lag3() {return FEDFUNDSLag3;}
 
 	@Override
 	public boolean isCovidPeriod() {return isCovidPeriod;}
 
 	@Override
-	public double getHOUST() {return HOUST;}
+	public double getHousingStartNumber_ThousandUnits() {return HOUST;}
 
 	@Override
-	public double getEXCAUSLag1() {return EXCAUSLag1;}
+	public double getEchangeRateRatioCANToUSA_lag1() {return EXCAUSLag1;}
 
 	@Override
 	public String getSubjectId() {

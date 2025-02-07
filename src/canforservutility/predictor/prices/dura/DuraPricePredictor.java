@@ -34,6 +34,7 @@ import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
+import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.util.ObjectUtility;
 
 @SuppressWarnings("serial")
@@ -63,7 +64,8 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 			setXVector(dpc);
 			double pred = xVector.multiply(beta).getValueAt(0, 0);
 			if (isResidualVariabilityEnabled) {
-				// TODO
+				Matrix res = getResidualErrorForThisSubject(dpc, ErrorTermGroup.Default);
+				// TODO FP to be implemented
 			}
 			return pred;
 		}
@@ -77,28 +79,28 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 					xVector.setValueAt(0, index++, 1d);
 					break;
 				case EXCAUSLag4:
-					xVector.setValueAt(0, index++, dpc.getEXCAUSLag4());
+					xVector.setValueAt(0, index++, dpc.getExchangeRateRatioCANToUSA_lag4());
 					break;
 				case CLIMCOSTLAG:
-					xVector.setValueAt(0, index++, dpc.getCLIMCOSTLAG());
+					xVector.setValueAt(0, index++, dpc.getClimateCost_BillionDollars());
 					break;
 				case FEDFUNDSLag1:
-					xVector.setValueAt(0, index++, dpc.getFEDFUNDSLag1());
+					xVector.setValueAt(0, index++, dpc.getFederalFundsRate_lag1());
 					break;
 				case PSAVERTLag4:
-					xVector.setValueAt(0, index++, dpc.getPSAVERTLag4());
+					xVector.setValueAt(0, index++, dpc.getPersonalSavingRate_lag4());
 					break;
 				case FEDFUNDSLag3:
-					xVector.setValueAt(0, index++, dpc.getFEDFUNDSLag3());
+					xVector.setValueAt(0, index++, dpc.getFederalFundsRate_lag3());
 					break;
 				case DummyCovid1:
 					xVector.setValueAt(0, index++, dpc.isCovidPeriod() ? 1d : 0d);
 					break;
 				case HOUST:
-					xVector.setValueAt(0, index++, dpc.getHOUST());
+					xVector.setValueAt(0, index++, dpc.getHousingStartNumber_ThousandUnits());
 					break;
 				case EXCAUSLag1:
-					xVector.setValueAt(0, index++, dpc.getEXCAUSLag1());
+					xVector.setValueAt(0, index++, dpc.getEchangeRateRatioCANToUSA_lag1());
 					break; 
 				}
 			}
@@ -120,6 +122,11 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 		void setCovParms(Matrix vector) {
 			corrParm = vector.getValueAt(0, 0);
 			varParm = vector.getValueAt(1, 0);		
+		}
+
+		@Override
+		protected void setDefaultResidualError(Enum<?> enumVar, GaussianErrorTermEstimate estimate) {
+			super.setDefaultResidualError(enumVar, estimate);
 		}
 		
 	}
@@ -205,6 +212,7 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 			sp.setParameterEstimates(ge);
 			sp.setEffectList(EFFECT_LIST.get(wp.ordinal()));
 			sp.setCovParms(COVPARMS_VECTORS.get(wp.ordinal()));
+//			sp.setDefaultResidualError(ErrorTermGroup.Default, null); // TODO MF20250207 To be implemented once Helin has provided the residual variances
 		}
 	}
 
