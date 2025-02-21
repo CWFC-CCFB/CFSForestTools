@@ -15,7 +15,7 @@ jobs:
   gradle:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
         java: [11, 17, 21]
     runs-on: ${{ matrix.os }}
     steps:
