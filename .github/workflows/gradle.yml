@@ -43,10 +43,9 @@ jobs:
       run: ./gradlew integrationTest  
 
     - name: Store reports
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: reports ${{ matrix.java }} ${{ matrix.os }}
-          path: |
+      uses: actions/upload-artifact@v3
+      with:
+        name: reports ${{ matrix.java }} ${{ matrix.os }}
+        path: |
             **/build/reports/
             **/build/test-results/
