@@ -85,10 +85,6 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 	}
 
 	
-	/*
-	 * Useless for this class (non-Javadoc)
-	 * @see repicea.simulation.REpiceaPredictor#init()
-	 */
 	@Override
 	protected void init() {
 		try {
@@ -101,8 +97,7 @@ public final class SpruceBudwormOutbreakOccurrencePredictor extends REpiceaBinar
 
 			setParameterEstimates(new InternalParameterEstimates(defaultBetaMean, defaultBetaVariance));
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Unable to load the parameters of the SpruceBudwormOutbreakOccurrencePredictor class!");
+			throw new InvalidParameterException(e.getMessage());
 		}
 	}
 

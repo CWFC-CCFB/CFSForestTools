@@ -49,6 +49,7 @@ public class GeneralHeight2009PredictorTest {
 	 */
 	static void ReadStands() {
 		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTest.class) + "fichier_test_unitaire_smaller.csv";
+		System.out.println("Reading file " + filename);
 		standMap = new HashMap<String, Heightable2009Stand>();
 		CSVReader reader;
 		try {
