@@ -23,7 +23,7 @@ package canforservutility.predictor.prices.dura;
 
 import repicea.simulation.HierarchicalLevel;
 
-class DuraPriceContextImpl implements DuraPriceContext {
+class DuraPriceContextImpl implements DuraPriceContext, CovidPeriodProvider {
 
 	
 	final double EXCAUSLag4;
@@ -35,8 +35,9 @@ class DuraPriceContextImpl implements DuraPriceContext {
 	final double HOUST;
 	final double EXCAUSLag1;
 	final double pred;
+	final int quarterId;
 	
-	DuraPriceContextImpl(double EXCAUSLag4,
+	DuraPriceContextImpl(int quarterId, double EXCAUSLag4,
 			double CLIMCOSTLAG,
 			double FEDFUNDSLag1,
 			double PSAVERTLag4,
@@ -54,6 +55,7 @@ class DuraPriceContextImpl implements DuraPriceContext {
 		this.HOUST = HOUST;
 		this.EXCAUSLag1 = EXCAUSLag1;
 		this.pred = pred;
+		this.quarterId = quarterId;
 	}
 	
 	
@@ -81,22 +83,24 @@ class DuraPriceContextImpl implements DuraPriceContext {
 	@Override
 	public double getEchangeRateRatioCANToUSA_lag1() {return EXCAUSLag1;}
 
+	/**
+	 * Useless for this class.
+	 */
 	@Override
-	public String getSubjectId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getSubjectId() {return null;}
 
+	/**
+	 * Useless for this class.
+	 */
 	@Override
-	public HierarchicalLevel getHierarchicalLevel() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public HierarchicalLevel getHierarchicalLevel() {return null;}
 
 	@Override
 	public int getMonteCarloRealizationId() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public int getErrorTermIndex() {return quarterId;}
 
 }

@@ -34,20 +34,29 @@ import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
+import repicea.stats.StatisticalUtility.TypeMatrixR;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.util.ObjectUtility;
+import repicea.util.REpiceaTranslator;
+import repicea.util.REpiceaTranslator.TextableEnum;
 
+/**
+ * An implementation of Helin Dura's price model for 
+ * lumber and OSB products.
+ * @author Mathieu Fortin - February 2025
+ */
 @SuppressWarnings("serial")
 public final class DuraPricePredictor extends REpiceaPredictor {
 
 	
-	static final class DuraPriceSubPredictor extends REpiceaPredictor {
+	final class DuraPriceSubPredictor extends REpiceaPredictor {
 
 		final List<Effect> effectList;
 		final WoodProduct woodProduct;
 		Matrix xVector;
 		double varParm;
 		double corrParm;
+		double resVariance;
 		
 		protected DuraPriceSubPredictor(WoodProduct wp, boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 			super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
@@ -65,11 +74,15 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 			double pred = xVector.multiply(beta).getValueAt(0, 0);
 			if (isResidualVariabilityEnabled) {
 				Matrix res = getResidualErrorForThisSubject(dpc, ErrorTermGroup.Default);
-				// TODO FP to be implemented
+				pred += res.getValueAt(res.m_iRows - 1, 0);
 			}
 			return pred;
 		}
-	
+
+		SymmetricMatrix getResidualErrorCovMatrix(DuraPriceContext dpc) {
+			return getDefaultResidualError(ErrorTermGroup.Default).getVariance(getGaussianErrorTerms(dpc));
+		}
+		
 		private void setXVector(DuraPriceContext dpc) {
 			xVector.resetMatrix();
 			int index = 0;
@@ -94,7 +107,8 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 					xVector.setValueAt(0, index++, dpc.getFederalFundsRate_lag3());
 					break;
 				case DummyCovid1:
-					xVector.setValueAt(0, index++, dpc.isCovidPeriod() ? 1d : 0d);
+					double value = dpc instanceof CovidPeriodProvider && ((CovidPeriodProvider) dpc).isCovidPeriod() ? 1d : 0d;  
+					xVector.setValueAt(0, index++, value);
 					break;
 				case HOUST:
 					xVector.setValueAt(0, index++, dpc.getHousingStartNumber_ThousandUnits());
@@ -121,12 +135,16 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 		
 		void setCovParms(Matrix vector) {
 			corrParm = vector.getValueAt(0, 0);
-			varParm = vector.getValueAt(1, 0);		
+			double resStdDev = vector.getValueAt(1, 0);
+			resVariance = resStdDev * resStdDev;
+			varParm = vector.getValueAt(2, 0);		
 		}
 
-		@Override
-		protected void setDefaultResidualError(Enum<?> enumVar, GaussianErrorTermEstimate estimate) {
-			super.setDefaultResidualError(enumVar, estimate);
+		protected void setDefaultResidualError() {
+			GaussianErrorTermEstimate gete = new GaussianErrorTermEstimate(SymmetricMatrix.getIdentityMatrix(1).scalarMultiply(resVariance),
+					corrParm,
+					TypeMatrixR.POWER);
+			setDefaultResidualError(ErrorTermGroup.Default, gete);
 		}
 		
 	}
@@ -138,15 +156,62 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 	
 	static final Object LOCK = new Object();
 	
-	public static enum WoodProduct {
-		LUMBER_1X3,
-		LUMBER_1X4,
-		LUMBER_2X3,
-		LUMBER_2X4,
-		LUMBER_2X6,
-		LUMBER_2X8,
-		LUMBER_2X10,
-		PANEL_OSB;
+	/**
+	 * An enum that stands for the units associated with the
+	 * different products addressed in 
+	 * Helin Dura's models of wood product price.
+	 */
+	public static enum WoodProductUnit implements TextableEnum {
+		MBF("Thousand board feet", "Mille pieds mesure de planche"),
+		MSF("Thousand square feet", "Mille pieds carr\u00E9s");
+
+		WoodProductUnit(String englishText, String frenchText) {
+			setText(englishText, frenchText);
+		}
+		
+		@Override
+		public void setText(String englishText, String frenchText) {
+			REpiceaTranslator.setString(this, englishText, frenchText);
+		}
+		
+		@Override
+		public String toString() {return REpiceaTranslator.getString(this);}
+	}
+	
+	/**
+	 * An enum that stands for the different products addressed in 
+	 * Helin Dura's models of wood product price.
+	 */
+	public static enum WoodProduct implements TextableEnum {
+		LUMBER_1X3(WoodProductUnit.MBF, "Lumber 1x3", "Sciage 1x3"),
+		LUMBER_1X4(WoodProductUnit.MBF, "Lumber 1x4", "Sciage 1x4"),
+		LUMBER_2X3(WoodProductUnit.MBF, "Lumber 2x3", "Sciage 2x3"),
+		LUMBER_2X4(WoodProductUnit.MBF, "Lumber 2x4", "Sciage 2x4"),
+		LUMBER_2X6(WoodProductUnit.MBF, "Lumber 2x6", "Sciage 2x6"),
+		LUMBER_2X8(WoodProductUnit.MBF, "Lumber 2x8", "Sciage 2x8"),
+		LUMBER_2X10(WoodProductUnit.MBF, "Lumber 2x10", "Sciage 2x10"),
+		PANEL_OSB(WoodProductUnit.MSF, "OSB panel", "Panneau OSB");
+		
+		private WoodProductUnit unit;
+		
+		WoodProduct(WoodProductUnit unit, String englishText, String frenchText) {
+			this.unit = unit;
+			setText(englishText, frenchText);
+		}
+		
+		/**
+		 * Provide the units associated with the WoodProduct enum
+		 * @return a WoodProductUnit enum
+		 */
+		public WoodProductUnit getUnit() {return unit;}
+
+		@Override
+		public void setText(String englishText, String frenchText) {
+			REpiceaTranslator.setString(this, englishText, frenchText);
+		}
+		
+		@Override
+		public String toString() {return REpiceaTranslator.getString(this);}
 	}
 	
 	private static enum Effect {
@@ -161,14 +226,26 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 		EXCAUSLag1; 
 	}
 	
-	private final Map<WoodProduct, DuraPriceSubPredictor> subPredictorMap;
+	final Map<WoodProduct, DuraPriceSubPredictor> subPredictorMap;
 	
-	protected DuraPricePredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	/**
+	 * General constructor.
+	 * @param isParametersVariabilityEnabled true to enable the variability in the parameter estimates
+	 * @param isResidualVariabilityEnabled true to enable the variability due to the residual error
+	 */
+	public DuraPricePredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled); // no random effect in this model
 		subPredictorMap = new HashMap<WoodProduct, DuraPriceSubPredictor>();
 		init();
 	}
 
+	/**
+	 * Constructor in deterministic mode.
+	 */
+	public DuraPricePredictor() {
+		this(false,false);
+	}
+	
 	@Override
 	protected void init() {
 		synchronized (LOCK) {
@@ -212,7 +289,7 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 			sp.setParameterEstimates(ge);
 			sp.setEffectList(EFFECT_LIST.get(wp.ordinal()));
 			sp.setCovParms(COVPARMS_VECTORS.get(wp.ordinal()));
-//			sp.setDefaultResidualError(ErrorTermGroup.Default, null); // TODO MF20250207 To be implemented once Helin has provided the residual variances
+			sp.setDefaultResidualError(); 
 		}
 	}
 

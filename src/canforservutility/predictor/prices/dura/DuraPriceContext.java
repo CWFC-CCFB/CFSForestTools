@@ -22,8 +22,9 @@
 package canforservutility.predictor.prices.dura;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
 
-public interface DuraPriceContext extends MonteCarloSimulationCompliantObject {
+public interface DuraPriceContext extends MonteCarloSimulationCompliantObject, IndexableErrorTerm {
 
 
 	/**
@@ -55,7 +56,6 @@ public interface DuraPriceContext extends MonteCarloSimulationCompliantObject {
 	public double getPersonalSavingRate_lag4();
 
 	
-	
 	/**
 	 * Provide the effective interest rate defined by the US Federal Reserve.<p>
 	 * Rate set by the American Federal Open Market Committee to regulate the borrowing system between banks a quarter before date.
@@ -83,13 +83,15 @@ public interface DuraPriceContext extends MonteCarloSimulationCompliantObject {
 	 */
 	public double getClimateCost_BillionDollars();
 
+	
 	/**
-	 * Inform whether the quarter is during a Covid pandemic.
-	 * @return a boolean
+	 * Provide the number of the quarters since the beginning of the simulation.<p>
+	 * Typically, if the simulation starts on first quarter of 2026. Then, the 
+	 * first quarter of 2026 should bear the index 0, whereas the second quarter of 2027 should bear 
+	 * the index 5.
+	 * @return an integer
 	 */
-	public boolean isCovidPeriod();
-	
-	
-	
-	
+	@Override
+	public int getErrorTermIndex();
+
 }
