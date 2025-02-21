@@ -183,13 +183,13 @@ public final class DuraPricePredictor extends REpiceaPredictor {
 	 * Helin Dura's models of wood product price.
 	 */
 	public static enum WoodProduct implements TextableEnum {
-		LUMBER_1X3(WoodProductUnit.MBF, "Lumber 1x3", "Sciage 1x3"),
-		LUMBER_1X4(WoodProductUnit.MBF, "Lumber 1x4", "Sciage 1x4"),
-		LUMBER_2X3(WoodProductUnit.MBF, "Lumber 2x3", "Sciage 2x3"),
-		LUMBER_2X4(WoodProductUnit.MBF, "Lumber 2x4", "Sciage 2x4"),
-		LUMBER_2X6(WoodProductUnit.MBF, "Lumber 2x6", "Sciage 2x6"),
-		LUMBER_2X8(WoodProductUnit.MBF, "Lumber 2x8", "Sciage 2x8"),
-		LUMBER_2X10(WoodProductUnit.MBF, "Lumber 2x10", "Sciage 2x10"),
+		LUMBER_1x3(WoodProductUnit.MBF, "Lumber 1x3", "Sciage 1x3"),
+		LUMBER_1x4(WoodProductUnit.MBF, "Lumber 1x4", "Sciage 1x4"),
+		LUMBER_2x3(WoodProductUnit.MBF, "Lumber 2x3", "Sciage 2x3"),
+		LUMBER_2x4(WoodProductUnit.MBF, "Lumber 2x4", "Sciage 2x4"),
+		LUMBER_2x6(WoodProductUnit.MBF, "Lumber 2x6", "Sciage 2x6"),
+		LUMBER_2x8(WoodProductUnit.MBF, "Lumber 2x8", "Sciage 2x8"),
+		LUMBER_2x10(WoodProductUnit.MBF, "Lumber 2x10", "Sciage 2x10"),
 		PANEL_OSB(WoodProductUnit.MSF, "OSB panel", "Panneau OSB");
 		
 		private WoodProductUnit unit;
