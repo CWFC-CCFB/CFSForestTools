@@ -59,19 +59,22 @@ public class OfficialHarvestTreatmentDefinition implements Serializable,
 		return definitions.toArray(new OfficialHarvestTreatmentDefinition[]{});
 	}
 	
-	
-	protected boolean isTotalHarvest() {
+	/*
+	 * Default treatment for wood production.
+	 */
+	boolean isTotalHarvest() {
 		return treatmentType == TreatmentType.CPRS;
 	}
 
-	protected boolean isNoHarvest() {
+	/*
+	 * Default treatment for sensitive wood production.
+	 */
+	boolean isNoHarvest() {
 		return treatmentType == TreatmentType.PROTECTION;
 	}
 	
 	@Override
-	public int getNbAdditionalFields() {
-		return 1;
-	}
+	public int getNbAdditionalFields() {return 1;}
 
 	@Override
 	public List<Object> getAdditionalFields() {
