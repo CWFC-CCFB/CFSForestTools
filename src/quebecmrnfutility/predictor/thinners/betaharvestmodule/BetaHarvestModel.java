@@ -25,7 +25,6 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestableTree.BetaHarvestableSpecies;
-import quebecmrnfutility.predictor.thinners.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.math.utility.MatrixUtility;
@@ -34,6 +33,7 @@ import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
 import repicea.simulation.thinners.REpiceaTreatmentDefinition;
+import repicea.simulation.thinners.REpiceaTreatmentEnum;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -51,7 +51,7 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 	 * This Enum class defines the possible treatments in this harvest module.
 	 * @author M. Fortin - Septembre 2010
 	 */
-	public enum Treatment implements TreatmentEnum {
+	public enum Treatment implements REpiceaTreatmentEnum {
 		COUPE_JARDINAGE("Selection cutting", "Coupe de jardinage"),
 		COUPE_PROGRESSIVE("Shelterwood cutting", "Coupe progressive"),
 		ECLAIRCIE_COMMERCIALE("Commercial thinning", "\u00C9claircie commerciale"),
@@ -81,6 +81,9 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 		public void setText(String englishText, String frenchText) {
 			REpiceaTranslator.setString(this, englishText, frenchText);
 		}
+
+		@Override
+		public boolean isFinalCut() {return false;}
 
 	}
 	
@@ -195,9 +198,8 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 	@Override
 	public REpiceaTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(BetaHarvestableStand stand) {return null;}
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public List<Enum> getTreatmentList() {
+	public List<REpiceaTreatmentEnum> getTreatmentList() {
 		return Arrays.asList(Treatment.values());
 	}
 	

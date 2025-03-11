@@ -108,7 +108,7 @@ public class OfficialHarvestSubmodelAreaLimitationPanel extends REpiceaPanel imp
 		updateCaller = false;
 		doNotListenToAnymore();
 		tableModel.removeAll();
-		for (Enum treatment : caller.areaLimitationMap.keySet()) {
+		for (Enum<?> treatment : caller.areaLimitationMap.keySet()) {
 			tableModel.addRow(new Object[]{treatment, caller.areaLimitationMap.get(treatment)});
 		}
 		listenTo();

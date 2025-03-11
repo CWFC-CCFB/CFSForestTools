@@ -24,6 +24,7 @@ import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.LandUseProvider;
 import repicea.simulation.covariateproviders.plotlevel.PotentialVegetationProvider;
 import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
+import repicea.simulation.thinners.REpiceaThinningOccurrenceProvider;
 
 
 public interface OfficialHarvestableStand extends MonteCarloSimulationCompliantObject, 
@@ -35,4 +36,9 @@ public interface OfficialHarvestableStand extends MonteCarloSimulationCompliantO
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
+	/**
+	 * Provide the information on the last treatment occurrence.
+	 * @return an REpiceaThinningOccurrenceProvider instance
+	 */
+	public REpiceaThinningOccurrenceProvider getThinningOccurrence();
 }

@@ -35,6 +35,8 @@ import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
+import repicea.simulation.thinners.REpiceaThinningOccurrenceProvider;
+import repicea.simulation.thinners.REpiceaTreatmentEnum;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -53,33 +55,62 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	 * This Enum class contains all the available treatment for this harvester.
 	 * @author M. Fortin - September 2010
 	 */
-	public static enum TreatmentType implements TreatmentEnum {
+	public static enum TreatmentType implements REpiceaTreatmentEnum {
 		
-		CA("Sanitary harvesting", "Coupe d'am\u00E9lioration"), 
-		CE("Crop tree harvesting", "Coupe d'\u00E9claircie"), 
-		CJ_1997("Selection cutting before 1997", "Coupe de jardinage avant 1997"), 
-		CJ_2004CERF("Selection cutting 1997-2004 adapted for deer", "Coupe de jardinage 1997-2004 Cerf"), 
-		CJ_2004("Selection cutting 1997-2004", "Coupe de jardinage 1997-2004"), 
-		CJMSCRCERF("Selection cutting after 2004 adapted for deer", "Coupe de jardinage apr\u00E8s 2004 Cerf"), 
-		CJMSCR("Selection cutting after 2004", "Coupe de jardinage apr\u00E8s 2004"), 
-		CP("Shelterwood cutting", "Coupe progressive"), 
-		EC("Commercial thinning", "\u00C9claircie commerciale"), 		
-		ES("Selective thinning", "\u00C9claircie s\u00E9lective"),
-		CP_35("Partial cutting 35%", "Coupe partielle 35% chantier for\u00eat feuillue R-06"),
-		CP_45("Partial cutting 45%", "Coupe partielle 45% chantier for\u00eat feuillue R-06"),
-		CPI_CP("CPI_CP Outaouais", "CPI_CP Outaouais"),
-		CPI_RL("CPI_RL Outaouais", "CPI_RL Outaouais"),
-		CRS("CRS Outaouais", "CRS Outaouais"),
-		CJP("Selection cutting CIMOTFF","Coupes jardinage CIMOTFF"),
-		CJPG_QM("Selection cutting group of trees CIMOTFF","Coupe jardinage par groupe d'arbres CIMOTFF"),
-		CPI_CP_CIMOTF("CPI_CP CIMOTFF", "Coupe progressive irr\u00E9guli\u00E8re couvert permanent CIMOTFF"),
-		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irr\u00E9guli\u00E8re \u00E0 r\u00E9g\u00E9n\u00E9ration lente CIMOTFF"),
-		CPRS("Harvesting with soil and regeneration protection", "CPRS - Coupe avec protection de la r\u00E9g\u00E9n\u00E9ration et des sols"),
-		PROTECTION("No harvest", "Aucune coupe")
+		CA("Sanitary harvesting", "Coupe d'am\u00E9lioration", null), 
+		CE("Crop tree harvesting", "Coupe d'\u00E9claircie", new int[] {15, 30}), 
+		CJ_1997("Selection cutting before 1997", "Coupe de jardinage avant 1997", null), 
+		CJ_2004CERF("Selection cutting 1997-2004 adapted for deer", "Coupe de jardinage 1997-2004 Cerf", null), 
+		CJ_2004("Selection cutting 1997-2004", "Coupe de jardinage 1997-2004", null), 
+		CJMSCRCERF("Selection cutting after 2004 adapted for deer", "Coupe de jardinage apr\u00E8s 2004 Cerf", null), 
+		CJMSCR("Selection cutting after 2004", "Coupe de jardinage apr\u00E8s 2004", null), 
+		/**
+		 * Shelterwood cutting. <p>
+		 * 
+		 * Final cut is assumed to occur 15-30 years after shelterwood cutting.
+		 * @see <a href=https://forestierenchef.gouv.qc.ca/wp-content/uploads/099-102_MDPF_CPR.pdf>  
+		 * Bureau du Forestier en Chef du Qu\u00E9bec. Section 3.6 Coupe progressive irr\u00E9guli\u00E8re dans 
+		 * Manuel de d\u00E9termination des possibilit\u00E9s foresti\u00E8res 2013-2018.
+		 * </a>
+		 */
+		CP("Shelterwood cutting", "Coupe progressive", new int[] {15, 30}), 
+		EC("Commercial thinning", "\u00C9claircie commerciale", new int[] {15, 30}),
+		ES("Selective thinning", "\u00C9claircie s\u00E9lective", new int[] {15, 30}),
+		CP_35("Partial cutting 35%", "Coupe partielle 35% chantier for\u00eat feuillue R-06", new int[] {15, 30}),
+		CP_45("Partial cutting 45%", "Coupe partielle 45% chantier for\u00eat feuillue R-06", new int[] {15, 30}),
+		CPI_CP("CPI_CP Outaouais", "CPI_CP Outaouais", null),
+		CPI_RL("CPI_RL Outaouais", "CPI_RL Outaouais", null),
+		CRS("CRS Outaouais", "CRS Outaouais", null),
+		CJP("Selection cutting CIMOTFF","Coupes jardinage CIMOTFF", null),
+		CJPG_QM("Selection cutting group of trees CIMOTFF","Coupe jardinage par groupe d'arbres CIMOTFF", null),
+		CPI_CP_CIMOTF("CPI_CP CIMOTFF", "Coupe progressive irr\u00E9guli\u00E8re couvert permanent CIMOTFF", null),
+		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irr\u00E9guli\u00E8re \u00E0 r\u00E9g\u00E9n\u00E9ration lente CIMOTFF", null),
+		CPRS("Harvesting with soil and regeneration protection", "CPRS - Coupe avec protection de la r\u00E9g\u00E9n\u00E9ration et des sols", null),
+		PROTECTION("No harvest", "Aucune coupe", null)
 		;		
-		TreatmentType(String englishText, String frenchText) {
+
+		private static List<TreatmentType> FinalTreatments = Arrays.asList(CRS, CPRS);
+
+		int[] finalCutRange;
+		
+		
+		TreatmentType(String englishText, String frenchText, int[] finalCutRange) {
 			setText(englishText, frenchText);
+			this.finalCutRange = finalCutRange;
 		}
+
+		/**
+		 * Indicate that a final cut has to be schedule whenever the treatment 
+		 * is applied.
+		 * @return a boolean
+		 */
+		boolean doesFinalCutHaveToBeScheduled() {
+			return finalCutRange != null;
+		}
+		
+
+		@Override
+		public boolean isFinalCut() {return FinalTreatments.contains(this);}
 		
 		@Override
 		public String toString() {
@@ -305,12 +336,19 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 
 	@Override
 	public OfficialHarvestTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(OfficialHarvestableStand stand) {
-		return selector.getMatch(stand.getLandUse(), stand.getPotentialVegetation());
+		OfficialHarvestTreatmentDefinition currentSelection = selector.getMatch(stand.getLandUse(), stand.getPotentialVegetation()).getDeepClone();
+		REpiceaThinningOccurrenceProvider thinningOcc = stand.getThinningOccurrence();
+		if (thinningOcc != null) {
+			if (((OfficialHarvestTreatmentDefinition) thinningOcc.getTreatmentDefinition()).doesFinalCutHaveToBeScheduled()) {
+				OfficialHarvestTreatmentDefinition defCPRS = new OfficialHarvestTreatmentDefinition(TreatmentType.CPRS, currentSelection.getDelayBeforeReentryYrs());
+				return defCPRS;
+			}
+		}
+		return currentSelection;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public List<Enum> getTreatmentList() {return Arrays.asList(TreatmentType.values());}
+	public List<REpiceaTreatmentEnum> getTreatmentList() {return Arrays.asList(TreatmentType.values());}
 
 	/**
 	 * Return the maximum annual area for this treatment.

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
+import repicea.simulation.thinners.REpiceaThinningOccurrenceProvider;
 
 public class OfficialHarvestableStandImpl implements OfficialHarvestableStand {
 
@@ -78,5 +79,8 @@ public class OfficialHarvestableStandImpl implements OfficialHarvestableStand {
 	public LandUse getLandUse() {
 		return LandUse.WoodProduction;
 	}
+
+	@Override
+	public REpiceaThinningOccurrenceProvider getThinningOccurrence() {return null;}
 	
 }

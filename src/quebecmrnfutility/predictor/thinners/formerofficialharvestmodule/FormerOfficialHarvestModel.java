@@ -28,11 +28,11 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import quebecmrnfutility.predictor.thinners.officialharvestmodule.TreatmentEnum;
 import repicea.math.Matrix;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.simulation.thinners.REpiceaThinner;
 import repicea.simulation.thinners.REpiceaTreatmentDefinition;
+import repicea.simulation.thinners.REpiceaTreatmentEnum;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 
@@ -51,7 +51,7 @@ public class FormerOfficialHarvestModel extends REpiceaThinner<FormerOfficialHar
 	 * @author M. Fortin - September 2010
 	 */
 	@Deprecated
-	public static enum Treatment implements TreatmentEnum {
+	public static enum Treatment implements REpiceaTreatmentEnum {
 		CA("Sanitary harvesting", "Coupe d'am\u00E9lioration"), 
 		CE("Crop tree harvesting", "Coupe d'\u00E9claircie"), 
 		CJ("Selection cutting", "Coupe de jardinage"), 
@@ -77,6 +77,9 @@ public class FormerOfficialHarvestModel extends REpiceaThinner<FormerOfficialHar
 		public void setText(String englishText, String frenchText) {
 			REpiceaTranslator.setString(this, englishText, frenchText);
 		}
+
+		@Override
+		public boolean isFinalCut() {return false;}
 	}
 	
 	private FixedEffectVectorFactory xVectorFactory;
@@ -198,9 +201,8 @@ public class FormerOfficialHarvestModel extends REpiceaThinner<FormerOfficialHar
 	@Override
 	public REpiceaTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(FormerOfficialHarvestableStand stand) {return null;}
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public List<Enum> getTreatmentList() {return Arrays.asList(Treatment.values());}
+	public List<REpiceaTreatmentEnum> getTreatmentList() {return Arrays.asList(Treatment.values());}
 
 	
 	

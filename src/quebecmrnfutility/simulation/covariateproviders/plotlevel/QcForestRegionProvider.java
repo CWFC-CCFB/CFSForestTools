@@ -26,6 +26,9 @@ import java.util.Map;
 
 public interface QcForestRegionProvider {
 
+	/**
+	 * An enum variable that stands for the administrative region.
+	 */
 	public static enum QcForestRegion {
 		BasStLaurentGaspesie,
 		SaguenayLacSaintJean,

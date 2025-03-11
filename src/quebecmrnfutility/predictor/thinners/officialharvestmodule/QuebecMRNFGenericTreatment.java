@@ -25,6 +25,7 @@ import java.util.TreeMap;
 import quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestModel;
 import quebecmrnfutility.predictor.thinners.betaharvestmodule.BetaHarvestModel.Treatment;
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
+import repicea.simulation.thinners.REpiceaTreatmentEnum;
 
 /**
  * This class handles the treatment and its modifier.
@@ -44,7 +45,7 @@ public class QuebecMRNFGenericTreatment implements Serializable {
 	
 	
 	
-	private TreatmentEnum treatmentType;
+	private REpiceaTreatmentEnum treatmentType;
 	private int modifier;
 	
 	/**
@@ -53,7 +54,7 @@ public class QuebecMRNFGenericTreatment implements Serializable {
 	 * @param treatmentType an Enum that represent the treatment (see class OfficialHarvestModel)
 	 * @param modifier a modifier in % that ranges from [-80%,+infinity]
 	 */
-	public QuebecMRNFGenericTreatment(TreatmentEnum treatmentType, int modifier) {
+	public QuebecMRNFGenericTreatment(REpiceaTreatmentEnum treatmentType, int modifier) {
 		this.treatmentType = treatmentType;
 		if (modifier < -80) {
 			modifier = -80;
@@ -69,7 +70,7 @@ public class QuebecMRNFGenericTreatment implements Serializable {
 	 */
 	public static QuebecMRNFGenericTreatment getGenericTreatmentFromCompleteName(String treatmentCompleteName) {
 		int modifier = 0;
-		TreatmentEnum treatment;
+		REpiceaTreatmentEnum treatment;
 		
 		treatmentCompleteName = treatmentCompleteName.replace(";", "/");
 		
@@ -103,8 +104,8 @@ public class QuebecMRNFGenericTreatment implements Serializable {
 					}
 					treatment = null;
 					for (Object obj : c) {
-						if (((TreatmentEnum) obj).name().equals(variableName)) {
-							treatment = (TreatmentEnum) obj;
+						if (((REpiceaTreatmentEnum) obj).name().equals(variableName)) {
+							treatment = (REpiceaTreatmentEnum) obj;
 							break;
 						}
 					}
@@ -140,7 +141,7 @@ public class QuebecMRNFGenericTreatment implements Serializable {
 	 * This method returns the enum that matches the treatment.
 	 * @return an Enum instance
 	 */
-	public TreatmentEnum getTreatmentType() {
+	public REpiceaTreatmentEnum getTreatmentType() {
 		return treatmentType;
 	}
 	

@@ -67,7 +67,17 @@ public class QuebecGeneralSettings {
 		}
 	}
 	
-	
+	/**
+	 * Provide the administrative region.<p>
+	 * 
+	 * The match between the ecological and administrative region is not perfect. If the
+	 * stochastic mode is enabled, then a random number is generated in order to determine the
+	 * administrative region.
+	 * 
+	 * @param ecologicalRegion the ecological region.
+	 * @param stochastic a boolean to enable a stochastic mode
+	 * @return a QcForestRegion enum
+	 */
 	public static QcForestRegion getForestRegion(String ecologicalRegion, boolean stochastic) {
 		Map<QcForestRegion, Double> forestRegionMap = FOREST_REGION_MAP.get(ecologicalRegion);
 		double maxValue = 0;
@@ -173,22 +183,6 @@ public class QuebecGeneralSettings {
 		SHRUB_SPECIES_LIST.add("ERG");
 	}
 
-//	public static enum DrainageGroup {
-//		XERIC, 
-//		MESIC,
-//		SUBHYDRIC,
-//		HYDRIC;
-//		
-//		private Matrix dummy;
-//		
-//		DrainageGroup() {
-//			dummy = new Matrix(1,4);
-//			dummy.m_afData[0][this.ordinal()] = 1d;
-//		}
-//		
-//		public Matrix getDrainageDummy() {return dummy;}
-//	}
-
 
 	public static final Set<String> CONIFEROUS_SPECIES = new HashSet<String>();
 	static {
@@ -292,17 +286,6 @@ public class QuebecGeneralSettings {
 		ECO_REGION_MAP.put("6s","6est");
 	}
 
-//	public static final Map<String, DrainageGroup> DRAINAGE_CLASS_LIST = new HashMap<String, DrainageGroup>();
-//	static {
-//		DRAINAGE_CLASS_LIST.put("0", DrainageGroup.XERIC);
-//		DRAINAGE_CLASS_LIST.put("1", DrainageGroup.XERIC);
-//		DRAINAGE_CLASS_LIST.put("2", DrainageGroup.MESIC);
-//		DRAINAGE_CLASS_LIST.put("3", DrainageGroup.MESIC);
-//		DRAINAGE_CLASS_LIST.put("4", DrainageGroup.SUBHYDRIC);
-//		DRAINAGE_CLASS_LIST.put("5", DrainageGroup.HYDRIC);
-//		DRAINAGE_CLASS_LIST.put("6", DrainageGroup.HYDRIC);
-//	}
-
 	public static final Map<String, DrainageGroup> ENVIRONMENT_TYPE = new HashMap<String, DrainageGroup>();
 	static {
 		ENVIRONMENT_TYPE.put("0", DrainageGroup.Xeric);
@@ -316,8 +299,6 @@ public class QuebecGeneralSettings {
 		ENVIRONMENT_TYPE.put("8", DrainageGroup.Hydric);
 		ENVIRONMENT_TYPE.put("9", DrainageGroup.Hydric);
 	}
-
-	
 	
 	public static final Map<Integer, String> TREE_STATUS_LIST = new HashMap<Integer, String>();
 	static {
@@ -348,6 +329,85 @@ public class QuebecGeneralSettings {
 		TREE_STATUS_LIST.put(56, "Mort");
 	}
 
+	public static final Map<String, Integer> AGE_CLASS_MAP = new HashMap<String, Integer>();
+	static {
+		AGE_CLASS_MAP.put("0", 0);
+		
+		AGE_CLASS_MAP.put("10", 10);
+		AGE_CLASS_MAP.put("1010", 10);
+		AGE_CLASS_MAP.put("1030", 10);
+		AGE_CLASS_MAP.put("1050", 10);
+		AGE_CLASS_MAP.put("1070", 10);
+		AGE_CLASS_MAP.put("1090", 10);
+		AGE_CLASS_MAP.put("10120", 10);
+		
+		AGE_CLASS_MAP.put("30", 30);
+		AGE_CLASS_MAP.put("3010", 30);
+		AGE_CLASS_MAP.put("3030", 30);
+		AGE_CLASS_MAP.put("3050", 30);
+		AGE_CLASS_MAP.put("3070", 30);
+		AGE_CLASS_MAP.put("3090", 30);
+		AGE_CLASS_MAP.put("30120", 30);
+
+		AGE_CLASS_MAP.put("30VIN", 30);
+
+		AGE_CLASS_MAP.put("50", 50);
+		AGE_CLASS_MAP.put("5010", 50);
+		AGE_CLASS_MAP.put("5030", 50);
+		AGE_CLASS_MAP.put("5050", 50);
+		AGE_CLASS_MAP.put("5070", 50);
+		AGE_CLASS_MAP.put("5090", 50);
+		AGE_CLASS_MAP.put("50120", 50);
+		
+		AGE_CLASS_MAP.put("50VIN", 50);
+
+		AGE_CLASS_MAP.put("70", 70);
+		AGE_CLASS_MAP.put("7010", 70);
+		AGE_CLASS_MAP.put("7030", 70);
+		AGE_CLASS_MAP.put("7050", 70);
+		AGE_CLASS_MAP.put("7070", 70);
+		AGE_CLASS_MAP.put("7090", 70);
+		AGE_CLASS_MAP.put("70120", 70);
+		
+		AGE_CLASS_MAP.put("90", 90);
+		AGE_CLASS_MAP.put("9010", 90);
+		AGE_CLASS_MAP.put("9030", 90);
+		AGE_CLASS_MAP.put("9050", 90);
+		AGE_CLASS_MAP.put("9070", 90);
+		AGE_CLASS_MAP.put("9090", 90);
+		AGE_CLASS_MAP.put("90120", 90);
+
+		AGE_CLASS_MAP.put("90JIN", 90);
+
+		AGE_CLASS_MAP.put("120", 120);
+		AGE_CLASS_MAP.put("12010", 120);
+		AGE_CLASS_MAP.put("12030", 120);
+		AGE_CLASS_MAP.put("12050", 120);
+		AGE_CLASS_MAP.put("12070", 120);
+		AGE_CLASS_MAP.put("12090", 120);
+		AGE_CLASS_MAP.put("12012", 120);
+		
+		AGE_CLASS_MAP.put("120JI", 120);
+		AGE_CLASS_MAP.put("120VI", 120);
+
+		AGE_CLASS_MAP.put("JIN", 70);
+		AGE_CLASS_MAP.put("JIN10", 70);
+		AGE_CLASS_MAP.put("JIN30", 70);
+
+		AGE_CLASS_MAP.put("VIN", 90);
+		AGE_CLASS_MAP.put("VIN10", 90);
+		AGE_CLASS_MAP.put("VIN30", 90);
+		AGE_CLASS_MAP.put("VIN50", 90);
+		AGE_CLASS_MAP.put("VIN70", 90);
+		
+		AGE_CLASS_MAP.put("VINJI", 90);
+
+		AGE_CLASS_MAP.put("JIR", 70);
+		AGE_CLASS_MAP.put("VIR", 90);
+
+	}
+	
+	
 //	public static void main(String[] args) {
 //		QuebecForestRegion region = QuebecGeneralSettings.getForestRegion("2b", false);
 //	}
