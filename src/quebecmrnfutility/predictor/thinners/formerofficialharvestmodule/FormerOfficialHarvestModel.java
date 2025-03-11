@@ -201,9 +201,8 @@ public class FormerOfficialHarvestModel extends REpiceaThinner<FormerOfficialHar
 	@Override
 	public REpiceaTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(FormerOfficialHarvestableStand stand) {return null;}
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public List<Enum> getTreatmentList() {return Arrays.asList(Treatment.values());}
+	public List<REpiceaTreatmentEnum> getTreatmentList() {return Arrays.asList(Treatment.values());}
 
 	
 	

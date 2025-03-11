@@ -198,9 +198,8 @@ public final class BetaHarvestModel extends REpiceaThinner<BetaHarvestableStand,
 	@Override
 	public REpiceaTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(BetaHarvestableStand stand) {return null;}
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public List<Enum> getTreatmentList() {
+	public List<REpiceaTreatmentEnum> getTreatmentList() {
 		return Arrays.asList(Treatment.values());
 	}
 	

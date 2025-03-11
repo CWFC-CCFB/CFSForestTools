@@ -31,18 +31,23 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
+import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestTreatmentDefinition.ScheduledFinalHarvestInfo;
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestableTree.OfficialHarvestableSpecies;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.util.ObjectUtility;
 
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class OfficialHarvestModelTest {
 	
 	@Test
-    public void PredictedProbabilitiesTest() throws Exception {
+    public void test01PredictedProbabilities() throws Exception {
 		Collection<OfficialHarvestableStand> stands = readData();
 		OfficialHarvestModel harvester = new OfficialHarvestModel();
 		Map<String, Object> parms = new HashMap<String, Object>();
@@ -59,7 +64,7 @@ public class OfficialHarvestModelTest {
 	}
 
 	@Test
-    public void PredictedProbabilitiesTestWithClearCut() throws Exception {
+    public void test02PredictedProbabilitiesWithClearCut() throws Exception {
 		Collection<OfficialHarvestableStand> stands = readData();
 		OfficialHarvestModel harvester = new OfficialHarvestModel();
 		Map<String, Object> parms = new HashMap<String, Object>();
@@ -74,7 +79,7 @@ public class OfficialHarvestModelTest {
 
 	
 	@Test
-    public void PredictedProbabilitiesTestWithModifier() throws Exception {
+    public void test03predictedProbabilitiesWithModifier() throws Exception {
 		Collection<OfficialHarvestableStand> stands = readData();
 		OfficialHarvestModel harvester = new OfficialHarvestModel();
 		Map<String, Object> parms = new HashMap<String, Object>();
@@ -97,7 +102,7 @@ public class OfficialHarvestModelTest {
 	}
 
 	@Test
-    public void PredictedProbabilitiesTestUnderStochasticImplementation() throws Exception {
+    public void test04PredictedProbabilitiesUnderStochasticImplementation() throws Exception {
 		List<OfficialHarvestableStand> stands = readData();
 		OfficialHarvestModel harvester = new OfficialHarvestModel(true);
 		OfficialHarvestableStand stand = stands.get(0);
@@ -164,4 +169,20 @@ public class OfficialHarvestModelTest {
 		return stands;
 	}
 
+	@Test
+	public void test05TreatmentFinalCutBeingCarriedOutAlgorithm() {
+		OfficialHarvestTreatmentDefinition treatDef = new OfficialHarvestTreatmentDefinition(TreatmentType.CP, 10);
+		ScheduledFinalHarvestInfo info = treatDef.getProbabilityOfFinalCutBeingCarriedOut(2007, 2010, 2020);
+		assertEquals("Testing probability", 0d, info.prob, 1E-8);
+		Assert.assertTrue("Testing range", info.range == null);
+		info = treatDef.getProbabilityOfFinalCutBeingCarriedOut(2007, 2020, 2030);
+		assertEquals("Testing probability", 0.5333333333333333, info.prob, 1E-8);
+		assertEquals("Testing range", 2022, info.range[0]);
+		assertEquals("Testing range", 2030, info.range[1]);
+		info = treatDef.getProbabilityOfFinalCutBeingCarriedOut(2007, 2030, 2040);
+		assertEquals("Testing probability", 1d, info.prob, 1E-8);
+		assertEquals("Testing range", 2030, info.range[0]);
+		assertEquals("Testing range", 2037, info.range[1]);
+	}
+	
 }
