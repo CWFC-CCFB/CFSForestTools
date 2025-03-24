@@ -2,6 +2,8 @@
  * This file is part of the CFSForesttools library.
  *
  * Copyright (C) 2009-2014 Mathieu Fortin for Rouge-Epicea
+ * Copyright (C) 2025 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +30,10 @@ import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.stats.StatisticalUtility;
 
+/**
+ * Implementation of the model of recruitment dbh.
+ * @author Mathieu Fortin - 2009-2014, 2025
+ */
 @SuppressWarnings("serial")
 class Artemis2009RecruitDiameterInternalPredictor extends REpiceaPredictor {
 
@@ -58,30 +64,27 @@ class Artemis2009RecruitDiameterInternalPredictor extends REpiceaPredictor {
 	protected synchronized double[] predictRecruitDiameter(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree) {
 		Matrix beta = getParametersForThisRealization(stand);
 		
-		double dispersion = beta.getValueAt(beta.m_iRows-1, 0);	// last element (dispersion) is taken out of the vector
+		final double dispersion = beta.getValueAt(beta.m_iRows-1, 0);	// last element (dispersion) is taken out of the vector
 		beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0); 	// vector is resized to omit the last element (dispersion)
 
 		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009MortalityPredictor.ModuleName, effectList);
 //		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
-		double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
+		final double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
 		
-		double fGammaMean = Math.exp(xBeta);
+		final double fGammaMean = Math.exp(xBeta);
 
 		double dVariance = 0.0;
 
-//		double scale = dispersion;
-//		double shape = fGammaMean/dispersion;
-		double shape = dispersion;		// correction here this is the other way around
-		double scale = fGammaMean / dispersion; // correction here this is the other way around
+		final double shape = dispersion;		// MF20250324 This was corrected. It was formerly implemented the other way around.
+		final double scale = fGammaMean / dispersion; // MF20250324 This was corrected. It was formerly implemented the other way around.
 
 		double[] result = new double[2];
 		double fDiameter;
 
 		if (isResidualVariabilityEnabled) {
-			double randomDeviate = 0d;
-			try {
-				randomDeviate = StatisticalUtility.getRandom().nextGamma(shape, scale);
-			} catch (Exception e) {}	// happens usually when the shape is close to 0 which means that the random deviate is likely 0.
+			double randomDeviate = scale > 1E-8 ?
+					StatisticalUtility.getRandom().nextGamma(shape, scale) :
+						0d;
 			fDiameter = 9.1 + randomDeviate * 0.1;	
 			if (fDiameter > 21) {
 				fDiameter = 21;			// limiter for inconsistent predictions
