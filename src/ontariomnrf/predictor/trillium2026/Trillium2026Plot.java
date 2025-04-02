@@ -21,12 +21,12 @@ package ontariomnrf.predictor.trillium2026;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
-import repicea.simulation.covariateproviders.plotlevel.MeanAnnualPrecipitationMmProvider;
-import repicea.simulation.covariateproviders.plotlevel.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
 
 public interface Trillium2026Plot extends MonteCarloSimulationCompliantObject,
 											GrowthStepLengthYrProvider,
-											MeanAnnualPrecipitationMmProvider,
+											TotalAnnualPrecipitationMmProvider,
 											MeanAnnualTemperatureCelsiusProvider {
 
 	

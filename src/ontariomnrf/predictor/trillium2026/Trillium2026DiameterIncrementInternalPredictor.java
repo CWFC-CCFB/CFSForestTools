@@ -191,7 +191,7 @@ public class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredi
 				oXVector.setValueAt(0, index++, plot.getHighestTmaxCelsius());
 				break;
 			case TotalPrcp:
-				oXVector.setValueAt(0, index++, plot.getMeanAnnualPrecipitationMm());
+				oXVector.setValueAt(0, index++, plot.getTotalAnnualPrecipitationMm());
 				break;
 			case MeanTair:
 				oXVector.setValueAt(0, index++, plot.getMeanAnnualTemperatureCelsius());

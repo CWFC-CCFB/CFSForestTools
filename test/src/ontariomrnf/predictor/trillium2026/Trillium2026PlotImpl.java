@@ -26,7 +26,7 @@ class Trillium2026PlotImpl implements Trillium2026Plot {
 
 	
 	private final double growthStepLengthYr;
-	private final double meanAnnualPrecipitationMm;
+	private final double totalAnnualPrecipitationMm;
 	private final double meanAnnualTemperatureCelsius;
 	private final double meanTminJanuaryCelsius;
 	private final double totalPrecMarchToMayMm;
@@ -45,7 +45,7 @@ class Trillium2026PlotImpl implements Trillium2026Plot {
 	private final double CMI;
 	
 	Trillium2026PlotImpl(double growthStepLengthYr,
-			double meanAnnualPrecipitationMm,
+			double totalAnnualPrecipitationMm,
 			double meanAnnualTemperatureCelsius,
 			double meanTminJanuaryCelsius,
 			double totalPrecMarchToMayMm,
@@ -63,7 +63,7 @@ class Trillium2026PlotImpl implements Trillium2026Plot {
 			double P_anom,
 			double CMI) {
 		this.growthStepLengthYr = growthStepLengthYr;
-		this.meanAnnualPrecipitationMm = meanAnnualPrecipitationMm;
+		this.totalAnnualPrecipitationMm = totalAnnualPrecipitationMm;
 		this.meanAnnualTemperatureCelsius = meanAnnualTemperatureCelsius;
 		this.meanTminJanuaryCelsius = meanTminJanuaryCelsius;
 		this.totalPrecMarchToMayMm = totalPrecMarchToMayMm;
@@ -95,7 +95,7 @@ class Trillium2026PlotImpl implements Trillium2026Plot {
 	public double getGrowthStepLengthYr() {return growthStepLengthYr;}
 
 	@Override
-	public double getMeanAnnualPrecipitationMm() {return meanAnnualPrecipitationMm;}
+	public double getTotalAnnualPrecipitationMm() {return totalAnnualPrecipitationMm;}
 
 	@Override
 	public double getMeanAnnualTemperatureCelsius() {return meanAnnualTemperatureCelsius;}

@@ -25,8 +25,8 @@ import repicea.simulation.covariateproviders.plotlevel.EcologicalRegionProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
 import repicea.simulation.covariateproviders.plotlevel.ElevationMProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
-import repicea.simulation.covariateproviders.plotlevel.MeanAnnualPrecipitationMmProvider;
-import repicea.simulation.covariateproviders.plotlevel.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.SpruceBudwormDefoliatedProvider;
 import repicea.simulation.hdrelationships.HDRelationshipStand;
 
@@ -39,7 +39,7 @@ public interface Heightable2014Stand extends HDRelationshipStand,
 										InterventionResultProvider,
 										ElevationMProvider,
 										SpruceBudwormDefoliatedProvider,
-										MeanAnnualPrecipitationMmProvider {
+										TotalAnnualPrecipitationMmProvider {
 	
 	/**
 	 * This method returns the mean quadratic diameter for the stand. 

@@ -23,7 +23,7 @@ import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalRegionProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
-import repicea.simulation.covariateproviders.plotlevel.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.SpruceBudwormDefoliatedProvider;
 import repicea.simulation.covariateproviders.plotlevel.TreeStatusCollectionsProvider;
 import repicea.simulation.hdrelationships.HDRelationshipStand;
