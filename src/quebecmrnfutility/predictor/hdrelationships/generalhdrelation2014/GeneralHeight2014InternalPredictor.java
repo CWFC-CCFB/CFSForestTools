@@ -201,7 +201,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 				oXVector.setValueAt(0, pointeur++, lnDbh * averageTemp);
 				break;
 			case LogDbh_pTot:
-				oXVector.setValueAt(0, pointeur++, lnDbh * stand.getMeanAnnualPrecipitationMm());
+				oXVector.setValueAt(0, pointeur++, lnDbh * stand.getTotalAnnualPrecipitationMm());
 				break;
 //			case LogDbh_Dens:
 //				oXVector.m_afData[0][pointeur++] = lnDbh * stand.getNumberOfStemsHa();

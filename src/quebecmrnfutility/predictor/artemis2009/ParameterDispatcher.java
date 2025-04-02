@@ -289,7 +289,7 @@ public class ParameterDispatcher {
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 41: // 10 469 occurences
-				oXVector.setValueAt(0, pointer, stand.getMeanAnnualPrecipitationMm());
+				oXVector.setValueAt(0, pointer, stand.getTotalAnnualPrecipitationMm());
 				pointer ++;
 				break;
 			case 34: // 7436 occurences
@@ -351,7 +351,7 @@ public class ParameterDispatcher {
 				pointer ++;
 				break;
 			case 42: // 2366 occurences
-				fTmp = stand.getMeanAnnualPrecipitationMm();
+				fTmp = stand.getTotalAnnualPrecipitationMm();
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
 					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
 				}
@@ -372,7 +372,7 @@ public class ParameterDispatcher {
 				if (tree.getSpeciesGroupName().compareTo("SAB") == 0) {
 					dummySAB = 1;
 				}
-				oXVector.setValueAt(0, pointer, dummySAB * stand.getMeanAnnualPrecipitationMm());
+				oXVector.setValueAt(0, pointer, dummySAB * stand.getTotalAnnualPrecipitationMm());
 				pointer ++;
 				break;
 			case 2: // 1006 occurences

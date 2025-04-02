@@ -32,7 +32,7 @@ public class Heightable2014StandImpl implements Heightable2014Stand {
 	boolean isInterventionResult;
 	final double elevationM;
 	final double meanAnnualTemperatureC;
-	final double meanAnnualPrecipitationMm;
+	final double totalAnnualPrecipitationMm;
 	boolean isDefoliated;
 	final Collection<Heightable2014Tree> trees;
 	
@@ -51,7 +51,7 @@ public class Heightable2014StandImpl implements Heightable2014Stand {
 		this.ecoType = ecoType;
 		this.elevationM = elevationM;
 		this.meanAnnualTemperatureC = meanAnnualTemperatureC;
-		this.meanAnnualPrecipitationMm = meanAnnualPrecipitationMm;
+		this.totalAnnualPrecipitationMm = meanAnnualPrecipitationMm;
 		this.trees = new ArrayList<Heightable2014Tree>();
 	}
 	
@@ -105,8 +105,8 @@ public class Heightable2014StandImpl implements Heightable2014Stand {
 //	}
 
 	@Override
-	public double getMeanAnnualPrecipitationMm() {
-		return meanAnnualPrecipitationMm;
+	public double getTotalAnnualPrecipitationMm() {
+		return totalAnnualPrecipitationMm;
 	}
 
 	@Override
