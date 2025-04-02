@@ -30,7 +30,7 @@ class Artemis2009CompatibleStandImpl implements Artemis2009CompatibleStand {
 
 	private int monteCarloRealizationId = 0;
 	private final int dateYr;
-	private final double meanAnnualPrecipitationMm;
+	private final double totalAnnualPrecipitationMm;
 	private final double meanAnnualTemperatureC;
 	private final double elevationM;
 	private final double latitude;
@@ -64,7 +64,7 @@ class Artemis2009CompatibleStandImpl implements Artemis2009CompatibleStand {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.meanAnnualTemperatureC = meanAnnualTemperatureC;
-		this.meanAnnualPrecipitationMm = meanAnnualPrecipitationMm;
+		this.totalAnnualPrecipitationMm = meanAnnualPrecipitationMm;
 		this.potentialVegetation = potentialVegetation;
 	}
 	
@@ -113,7 +113,7 @@ class Artemis2009CompatibleStandImpl implements Artemis2009CompatibleStand {
 	public int getDateYr() {return dateYr;}
 
 	@Override
-	public double getMeanAnnualPrecipitationMm() {return meanAnnualPrecipitationMm;}
+	public double getTotalAnnualPrecipitationMm() {return totalAnnualPrecipitationMm;}
 
 	@Override
 	public double getMeanAnnualTemperatureCelsius() {return meanAnnualTemperatureC;}
