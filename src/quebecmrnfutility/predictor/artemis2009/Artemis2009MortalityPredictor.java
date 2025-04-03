@@ -45,6 +45,7 @@ public final class Artemis2009MortalityPredictor extends REpiceaBinaryEventPredi
 		init();
 	}
 
+	@Override
 	protected void init() {
 		internalPredictors = new HashMap<String, Artemis2009MortalityInternalPredictor>();
 		ParameterDispatcher pd = ParameterDispatcher.getInstance();
