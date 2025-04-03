@@ -33,17 +33,37 @@ public interface Trillium2026Plot extends MonteCarloSimulationCompliantObject,
 	public double getMeanTminJanuaryCelsius();
 	public double getTotalPrecMarchToMayMm();
 	public double getMeanTempJuneToAugustCelsius(); 
-	public double getT_anom();
-	public double getInterval();  // referred to as int in the effects
+	
+	/**
+	 * Mean temperature anomaly.<p>
+	 * That is the difference between the normals and the interval-averaged temperature
+	 * @return a double
+	 */
+	public double getMeanTempAnomalyCelsius(); 
+	
 	public double getTotalRadiation(); // add unit
 	public double getMeanSummerVPD();	// add unit
 	public double getFrostFreeDays();
 	public double getMeanTmaxJulyCelsius();
 	public double getSMImean();
-	public double getMx_anom();
+	
+	/**
+	 * Mean maximum temperature anomaly.<p>
+	 * That is the difference between the normals and the interval-averaged temperature.
+	 * @return a double
+	 */
+	public double getMaxTempAnomalyCelsius();
+	
 	public double getMeanSummerVPDDaylight();
 	public double getTotalPrecJuneToAugustMm();
-	public double getP_anom();
+
+	/**
+	 * Total precipitation anomaly.<p>
+	 * That is the difference between the normals and the interval-averaged temperature.
+	 * @return a double
+	 */
+	public double getTotalPrecipitationAnomalyMm();
+	
 	public double getCMI();
 	public double getHighestTmaxCelsius();
 	public double getDegreeDaysCelsius(); // add threshold is it 5C or 0C

@@ -31,7 +31,7 @@ import repicea.simulation.REpiceaPredictor;
 import repicea.stats.StatisticalUtility;
 
 @SuppressWarnings("serial")
-public class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredictor {
+final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredictor {
 
 	enum Effect {
 		Intercept,
@@ -41,17 +41,17 @@ public class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredi
 		MeanTminJanuary,
 		TotalPrecMarchToMay, 
 		MeanTempJuneToAugust, 
-		T_anom, 
-		interval, // TODO check the meaning of this one it is coded as int MF20250328 
+		MeanTempAnomaly, 
+		DBH_x_BAL, 
 		TotalRadiation, 
 		MeanSummerVPD, 
 		FrostFreeDay, 
 		MeanTmaxJuly, 
 		SMImean, 
-		Mx_anom, 
+		MaxTempAnomaly, 
 		MeanSummerVPDDaylight, 
 		TotalPrecJuneToAugust, 
-		P_anom, 
+		PrecAnomaly, 
 		CMI, 
 		HighestTmax, 
 		TotalPrcp, 
@@ -69,17 +69,17 @@ public class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredi
 		EffectMap.put("MeanTminJanuary", Effect.MeanTminJanuary);
 		EffectMap.put("TotalPrecMarchToMay", Effect.TotalPrecMarchToMay);
 		EffectMap.put("MeanTempJuneToAugust", Effect.MeanTempJuneToAugust);
-		EffectMap.put("T_anom", Effect.T_anom);
-		EffectMap.put("int", Effect.interval);
+		EffectMap.put("T_anom", Effect.MeanTempAnomaly);
+		EffectMap.put("int", Effect.DBH_x_BAL);
 		EffectMap.put("TotalRadiation", Effect.TotalRadiation);
 		EffectMap.put("MeanSummerVPD", Effect.MeanSummerVPD);
 		EffectMap.put("FrostFreeDay", Effect.FrostFreeDay);
 		EffectMap.put("MeanTmaxJuly", Effect.MeanTmaxJuly);
 		EffectMap.put("SMImean", Effect.SMImean);
-		EffectMap.put("Mx_anom", Effect.Mx_anom);
+		EffectMap.put("Mx_anom", Effect.MaxTempAnomaly);
 		EffectMap.put("MeanSummerVPDDaylight", Effect.MeanSummerVPDDaylight);
 		EffectMap.put("TotalPrecJuneToAugust", Effect.TotalPrecJuneToAugust);
-		EffectMap.put("P_anom", Effect.P_anom);
+		EffectMap.put("P_anom", Effect.PrecAnomaly);
 		EffectMap.put("CMI", Effect.CMI);
 		EffectMap.put("HitghestTmax", Effect.HighestTmax);
 		EffectMap.put("TotalPrcp", Effect.TotalPrcp);
@@ -88,17 +88,20 @@ public class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredi
 		EffectMap.put("LowestTmin", Effect.LowestTmin);
 	}
 	
+	private final Trillium2026DiameterIncrementPredictor owner;
 	@SuppressWarnings("unused")
 	private final Trillium2026TreeSpecies species;
 	private final List<Effect> effects;
 	private double sigma;
 	private double sigma2;
-	private Matrix oXVector;
+	
 
-	Trillium2026DiameterIncrementInternalPredictor(Trillium2026TreeSpecies species,
+	Trillium2026DiameterIncrementInternalPredictor(Trillium2026DiameterIncrementPredictor owner,
+			Trillium2026TreeSpecies species,
 			boolean isParametersVariabilityEnabled, 
 			boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
+		this.owner = owner;
 		this.species = species;
 		effects = new ArrayList<Effect>();
 	}
@@ -151,11 +154,11 @@ public class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredi
 			case MeanTempJuneToAugust: 
 				oXVector.setValueAt(0, index++, plot.getMeanTempJuneToAugustCelsius());
 				break;
-			case T_anom:
-				oXVector.setValueAt(0, index++, plot.getT_anom());
+			case MeanTempAnomaly:
+				oXVector.setValueAt(0, index++, plot.getMeanTempAnomalyCelsius());
 				break;
-			case interval:
-				oXVector.setValueAt(0, index++, plot.getInterval());
+			case DBH_x_BAL:
+				oXVector.setValueAt(0, index++, tree.getBasalAreaLargerThanSubjectM2Ha() * tree.getDbhCm());
 				break;
 			case TotalRadiation:
 				oXVector.setValueAt(0, index++, plot.getTotalRadiation());
@@ -172,8 +175,8 @@ public class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredi
 			case SMImean:
 				oXVector.setValueAt(0, index++, plot.getSMImean());
 				break;
-			case Mx_anom:
-				oXVector.setValueAt(0, index++, plot.getMx_anom());
+			case MaxTempAnomaly:
+				oXVector.setValueAt(0, index++, plot.getMaxTempAnomalyCelsius());
 				break;
 			case MeanSummerVPDDaylight:
 				oXVector.setValueAt(0, index++, plot.getMeanSummerVPDDaylight());
@@ -181,8 +184,8 @@ public class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredi
 			case TotalPrecJuneToAugust:
 				oXVector.setValueAt(0, index++, plot.getTotalPrecJuneToAugustMm());
 				break; 
-			case P_anom:
-				oXVector.setValueAt(0, index++, plot.getP_anom());
+			case PrecAnomaly:
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationAnomalyMm());
 				break;
 			case CMI:
 				oXVector.setValueAt(0, index++, plot.getCMI());
@@ -212,12 +215,22 @@ public class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredi
 		double pred = oXVector.multiply(beta).getValueAt(0, 0);
 		if (isResidualVariabilityEnabled) {
 			pred += StatisticalUtility.getRandom().nextGaussian() * sigma;
-			// back-transform here MF20250328
-		} else {
-			pred += sigma2 * .5; // TODO check if this is the appropriate back transformation
-			// back-transform here MF20250328
+		} 
+		
+		if (owner.doBackTransformation) {
+			if (isResidualVariabilityEnabled) {
+				pred = Math.sinh(pred);
+			} else {
+				pred = Math.exp(sigma2 * .5) * Math.sinh(pred);  // sinh is the back transformation and e^s2/2 is the correction factor
+			}
 		}
-		return pred;
+		
+		double stepLengthYr = plot.getGrowthStepLengthYr();
+		if (pred > 1.8 * stepLengthYr) { //  a cap, 1.8 is the 0.9995 percentile of observed periodical diameter increment 
+			pred = 1.8 * stepLengthYr;
+		}
+		
+		return pred; 
 	}
 	
 }

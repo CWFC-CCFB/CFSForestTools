@@ -66,13 +66,18 @@ public interface Trillium2026Tree extends MonteCarloSimulationCompliantObject,
 		UlmusSpp;
 		
 		private static Map<String, Trillium2026TreeSpecies> MatchingTrilliumSpeciesMap;
-		
+		private static Map<String, Trillium2026TreeSpecies> SppGroupMap;
 		
 		private static synchronized Map<String, Trillium2026TreeSpecies> getMatchingTrilliumSpeciesMap() {
 			if (MatchingTrilliumSpeciesMap == null) {
 				MatchingTrilliumSpeciesMap = new HashMap<String, Trillium2026TreeSpecies>();
+				SppGroupMap = new HashMap<String, Trillium2026TreeSpecies>();
 				for (Trillium2026TreeSpecies sp : Trillium2026TreeSpecies.values()) {
-					MatchingTrilliumSpeciesMap.put(sp.name().toLowerCase(), sp);
+					String lowercaseName = sp.name().toLowerCase();
+					MatchingTrilliumSpeciesMap.put(lowercaseName, sp);
+					if (lowercaseName.endsWith("spp")) {
+						SppGroupMap.put(lowercaseName.substring(0, lowercaseName.indexOf("spp")), sp);
+					}
 				}
 			}
 			return MatchingTrilliumSpeciesMap;
@@ -84,7 +89,17 @@ public interface Trillium2026Tree extends MonteCarloSimulationCompliantObject,
 			}
 			
 			String formattedCode = code.replace(" ", "").replace(".", "p").toLowerCase();
-			return getMatchingTrilliumSpeciesMap().get(formattedCode);
+			Trillium2026TreeSpecies species = getMatchingTrilliumSpeciesMap().get(formattedCode);
+			if (species != null) {
+				return species;
+			} else {
+				for (String genus : SppGroupMap.keySet()) {
+					if (formattedCode.startsWith(genus)) {
+						return SppGroupMap.get(genus);
+					}
+				}
+			}
+			return null;
 		}
 	}
 	

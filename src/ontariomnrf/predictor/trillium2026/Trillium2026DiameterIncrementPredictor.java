@@ -49,6 +49,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor {
 	
 	private final Map<Trillium2026TreeSpecies, Trillium2026DiameterIncrementInternalPredictor> internalPredictorMap;
 
+	boolean doBackTransformation = true; // for test purpose 
 
 	/**
 	 * Constructor.
@@ -58,6 +59,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor {
 		this(isVariabilityEnabled, isVariabilityEnabled);
 	}
 
+	
 	/**
 	 * Constructor.
 	 * @param isParametersVariabilityEnabled a boolean to enable/disable the stochastic variability in the parameter estimates
@@ -70,6 +72,11 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor {
 		init();
 	}
 
+	void enableBackTransformation(boolean doBackTransformation) {
+		this.doBackTransformation = doBackTransformation;
+	}
+	
+
 	@Override
 	protected synchronized void init() {
 		if (CoefMap == null) {
@@ -79,7 +86,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor {
 			Matrix beta = CoefMap.get(sp);
 			SymmetricMatrix vcov = VCovMap.get(sp);
 			ModelParameterEstimates parmEstimates = new ModelParameterEstimates(beta, vcov);
-			Trillium2026DiameterIncrementInternalPredictor pred = new Trillium2026DiameterIncrementInternalPredictor(sp, isParametersVariabilityEnabled, isResidualVariabilityEnabled);
+			Trillium2026DiameterIncrementInternalPredictor pred = new Trillium2026DiameterIncrementInternalPredictor(this, sp, isParametersVariabilityEnabled, isResidualVariabilityEnabled);
 			pred.setParameterEstimates(parmEstimates);
 			pred.setEffects(EffectMap.get(sp));
 			internalPredictorMap.put(sp, pred);
@@ -187,7 +194,13 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor {
 		}
 	}
 	
-	
+	/**
+	 * Provide a diameter increment prediction.<p>
+	 * 
+	 * @param plot a Trillium2026Plot instance
+	 * @param tree a Trillium2026Tree instance
+	 * @return the diameter increment (mm)
+	 */
 	public double predictGrowth(Trillium2026Plot plot, Trillium2026Tree tree) {
 		Trillium2026TreeSpecies species = tree.getTrillium2026TreeSpecies();
 		if (species == null) {
