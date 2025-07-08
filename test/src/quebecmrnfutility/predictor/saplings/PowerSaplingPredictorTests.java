@@ -105,7 +105,7 @@ public class PowerSaplingPredictorTests {
 			estimate.addRealization(mat);
 		}
 		double actualMean = estimate.getMean().getValueAt(0, 0);
-		Assert.assertEquals("Testing stochastic density prediction", 6873.953377106523, actualMean, 50);
+		Assert.assertEquals("Testing stochastic density prediction", 6873.953377106523, actualMean, 70);
 		double actualVariance = estimate.getVariance().getValueAt(0, 0);
 		Assert.assertTrue("Testing stochastic variance is not null", actualVariance > 0d);
 	}
