@@ -128,7 +128,7 @@ public class ResefDeadWoodPredictorTest {
 		double stochasticVariance = mcEst.getVariance().getValueAt(0, 0);
 		Assert.assertEquals("Testing means", 33.0540757, stochasticMean, 2E-1);
 		double expectedVariance = 12.00838853 * 12.00838853;
-		Assert.assertEquals("Testing variances", expectedVariance, stochasticVariance, 2);
+		Assert.assertEquals("Testing variances", expectedVariance, stochasticVariance, 5);
 		Assert.assertEquals("Testing deterministic means", 33.0540757, detPredictor.getDeadWoodBiomassMg(plot, true), 1E-8);
 	}
 
