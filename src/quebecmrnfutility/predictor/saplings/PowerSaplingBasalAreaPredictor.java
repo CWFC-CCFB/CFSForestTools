@@ -50,6 +50,16 @@ public class PowerSaplingBasalAreaPredictor extends REpiceaPredictor {
 		init();
 	}
 
+	/**
+	 * Constructor with single argument.
+	 * @param isVariabilityEnabled true to run the predictor in stochastic mode
+	 */
+	public PowerSaplingBasalAreaPredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled); // no random effect in this model
+	}
+
+	
+	
 	@Override
 	protected void init() {}
 	
