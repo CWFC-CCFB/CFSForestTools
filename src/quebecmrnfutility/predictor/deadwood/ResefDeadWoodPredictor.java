@@ -103,7 +103,7 @@ public class ResefDeadWoodPredictor extends REpiceaPredictor {
 	 * @param perHectare a boolean
 	 * @return a double
 	 */
-	public double getDeadWoodBiomassMg(ResefDeadWoodCompatiblePlot plot, boolean perHectare) {
+	public double predictDeadWoodBiomassMg(ResefDeadWoodCompatiblePlot plot, boolean perHectare) {
 		double biomassHa = internalPredictors.get(plot.getResefForestType()).predictDeadWoodBiomassMgHa(plot);
 		return perHectare ? 
 				biomassHa : 

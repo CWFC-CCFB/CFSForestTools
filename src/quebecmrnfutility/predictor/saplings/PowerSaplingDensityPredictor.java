@@ -51,6 +51,15 @@ public class PowerSaplingDensityPredictor extends REpiceaPredictor {
 		init();
 	}
 
+	
+	/**
+	 * Constructor with single argument.
+	 * @param isVariabilityEnabled true to run the predictor in stochastic mode
+	 */
+	public PowerSaplingDensityPredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled);
+	}
+
 	@Override
 	protected void init() {}
 	

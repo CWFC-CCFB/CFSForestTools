@@ -61,7 +61,7 @@ public class PowerSaplingPredictorTests {
 	@Test
 	public void test01BasalAreaDeterministicPrediction() {
 		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir);
-		PowerSaplingBasalAreaPredictor pred = new PowerSaplingBasalAreaPredictor(false,false);
+		PowerSaplingBasalAreaPredictor pred = new PowerSaplingBasalAreaPredictor(false);
 		double baPrediction = pred.predictSaplingBasalAreaM2Ha(myPlot);
 		Assert.assertEquals("Testing deterministic basal area prediction", 6.074210894764617, baPrediction, 1E-8);
 	}
@@ -87,7 +87,7 @@ public class PowerSaplingPredictorTests {
 	@Test
 	public void test03DensityDeterministicPrediction() {
 		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir);
-		PowerSaplingDensityPredictor pred = new PowerSaplingDensityPredictor(false,false);
+		PowerSaplingDensityPredictor pred = new PowerSaplingDensityPredictor(false);
 		double densityPrediction = pred.predictSaplingDensityTreeHa(myPlot);
 		Assert.assertEquals("Testing deterministic density prediction", 6873.953377106523, densityPrediction, 1E-8);
 	}

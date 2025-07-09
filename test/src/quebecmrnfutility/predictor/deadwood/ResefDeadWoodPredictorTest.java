@@ -75,7 +75,7 @@ public class ResefDeadWoodPredictorTest {
 		for (int i = 0; i < 100000; i++) {
 			plot.monteCarloId = i;
 			real = new Matrix(1,1);
-			real.setValueAt(0, 0, stoPredictor.getDeadWoodBiomassMg(plot, true));
+			real.setValueAt(0, 0, stoPredictor.predictDeadWoodBiomassMg(plot, true));
 			mcEst.addRealization(real);
 		}
 		
@@ -84,7 +84,7 @@ public class ResefDeadWoodPredictorTest {
 		Assert.assertEquals("Testing means", 25.30773903, stochasticMean, 1E-1);
 		double expectedVariance = 7.750338908 * 7.750338908;
 		Assert.assertEquals("Testing variances", expectedVariance, stochasticVariance, 1);
-		Assert.assertEquals("Testing deterministic means", 25.30773903, detPredictor.getDeadWoodBiomassMg(plot, true), 1E-8);
+		Assert.assertEquals("Testing deterministic means", 25.30773903, detPredictor.predictDeadWoodBiomassMg(plot, true), 1E-8);
 	}
 	
 	
@@ -98,7 +98,7 @@ public class ResefDeadWoodPredictorTest {
 		for (int i = 0; i < 100000; i++) {
 			plot.monteCarloId = i;
 			real = new Matrix(1,1);
-			real.setValueAt(0, 0, stoPredictor.getDeadWoodBiomassMg(plot, true));
+			real.setValueAt(0, 0, stoPredictor.predictDeadWoodBiomassMg(plot, true));
 			mcEst.addRealization(real);
 		}
 		
@@ -107,7 +107,7 @@ public class ResefDeadWoodPredictorTest {
 		Assert.assertEquals("Testing means", 11.95025186, stochasticMean, 1E-1);
 		double expectedVariance = 2.380472303 * 2.380472303;
 		Assert.assertEquals("Testing variances", expectedVariance, stochasticVariance, 1);
-		Assert.assertEquals("Testing deterministic means", 11.95025186, detPredictor.getDeadWoodBiomassMg(plot, true), 1E-8);
+		Assert.assertEquals("Testing deterministic means", 11.95025186, detPredictor.predictDeadWoodBiomassMg(plot, true), 1E-8);
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class ResefDeadWoodPredictorTest {
 		for (int i = 0; i < 100000; i++) {
 			plot.monteCarloId = i;
 			real = new Matrix(1,1);
-			real.setValueAt(0, 0, stoPredictor.getDeadWoodBiomassMg(plot, true));
+			real.setValueAt(0, 0, stoPredictor.predictDeadWoodBiomassMg(plot, true));
 			mcEst.addRealization(real);
 		}
 		
@@ -129,7 +129,7 @@ public class ResefDeadWoodPredictorTest {
 		Assert.assertEquals("Testing means", 33.0540757, stochasticMean, 2E-1);
 		double expectedVariance = 12.00838853 * 12.00838853;
 		Assert.assertEquals("Testing variances", expectedVariance, stochasticVariance, 5);
-		Assert.assertEquals("Testing deterministic means", 33.0540757, detPredictor.getDeadWoodBiomassMg(plot, true), 1E-8);
+		Assert.assertEquals("Testing deterministic means", 33.0540757, detPredictor.predictDeadWoodBiomassMg(plot, true), 1E-8);
 	}
 
 }
