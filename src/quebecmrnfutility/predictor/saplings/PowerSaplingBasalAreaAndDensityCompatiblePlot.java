@@ -22,6 +22,7 @@ package quebecmrnfutility.predictor.saplings;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
+import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
 
 /**
  * An interface to ensure the plot instance is compatible with the
@@ -30,7 +31,8 @@ import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
  * @author Mathieu Fortin and Hugues Power - July 2025
  */
 public interface PowerSaplingBasalAreaAndDensityCompatiblePlot extends MonteCarloSimulationCompliantObject,
-																		BasalAreaM2HaProvider {
+																		BasalAreaM2HaProvider,
+																		InterventionResultProvider {
 
 	public static enum CoverType {
 		Maple,
@@ -43,6 +45,7 @@ public interface PowerSaplingBasalAreaAndDensityCompatiblePlot extends MonteCarl
 	 * @return a CoverType enum
 	 */
 	public CoverType getCoverType();
+	
 
 	
 }

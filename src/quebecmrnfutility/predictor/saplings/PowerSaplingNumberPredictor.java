@@ -29,43 +29,39 @@ import repicea.stats.StatisticalUtility;
 import repicea.util.ObjectUtility;
 
 /**
- * A class that implements Hugues Power's model of sapling basal area.
+ * A class that implements Hugues Power's model of sapling density.
  * @author Mathieu Fortin - July 2025 
  */
 @SuppressWarnings("serial")
-public final class PowerSaplingBasalAreaPredictor extends PowerAbstractSaplingPredictor {
-
-	final double sigma2_res = 0.5638987;
-	final double sigma_res = Math.sqrt(sigma2_res);
-			
+public final class PowerSaplingNumberPredictor extends PowerAbstractSaplingPredictor {
 
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled true to run the predictor in stochastic mode
 	 */
-	public PowerSaplingBasalAreaPredictor(boolean isVariabilityEnabled) {
+	public PowerSaplingNumberPredictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled); 
 		init();
 	}
-	
+
 	@Override
 	protected void init() {
 		try {
 			Matrix beta = new Matrix(10,1);
-			beta.setValueAt(0, 0, 2.052411213); 	// intercept
-			beta.setValueAt(1, 0, -0.446751012); 	// coupe 
-			beta.setValueAt(2, 0, -0.419040509);	// couvertERS 
-			beta.setValueAt(3, 0, 0.222064797); 	// couvertSAB 
-			beta.setValueAt(4, 0, -0.024009915);	// st_Marchande 
-			beta.setValueAt(5, 0, 0.164807903); 	// coupe_CouvertERS 
-			beta.setValueAt(6, 0, -0.276597123);	// coupe_CouvertSAB
-			beta.setValueAt(7, 0, 0.013227236);		// coupe_St_Marchande 
-			beta.setValueAt(8, 0, -0.00644985);		// couvertERS_st_Marchande 
-			beta.setValueAt(9, 0, -0.003371122);	// couvertSAB_st_Marchande 
+			beta.setValueAt(0, 0, 3.335466866); 	// intercept
+			beta.setValueAt(1, 0, -0.416251832); 	// coupe
+			beta.setValueAt(2, 0, -0.007690412);	// couvertERS 
+			beta.setValueAt(3, 0, 0.551816811); 	// couvertSAB 
+			beta.setValueAt(4, 0, -0.037518226);	// st_Marchande 
+			beta.setValueAt(5, 0, 0.261917271); 	// coupe_CouvertERS 
+			beta.setValueAt(6, 0, -0.455604964);	// coupe_CouvertSAB
+			beta.setValueAt(7, 0, 0.016599712);		// coupe_St_Marchande 
+			beta.setValueAt(8, 0, -0.022045214);		// couvertERS_st_Marchande 
+			beta.setValueAt(9, 0, -0.013107319);	// couvertSAB_st_Marchande 
 			oXVector = new Matrix(1, beta.m_iRows);
 			
 			String path = ObjectUtility.getRelativePackagePath(getClass());
-			String vcovFilename = path + "0_VcovST.csv";
+			String vcovFilename = path + "0_VcovNB.csv";
 			SymmetricMatrix cov = SymmetricMatrix.convertToSymmetricIfPossible(ParameterLoader.loadMatrixFromFile(vcovFilename));
 			setParameterEstimates(new ModelParameterEstimates(beta, cov));
 		} catch (IOException e) {
@@ -73,24 +69,23 @@ public final class PowerSaplingBasalAreaPredictor extends PowerAbstractSaplingPr
 		}
 	}
 	
-	
 	/**
-	 * Predict the sapling basal area (m2/ha)
+	 * Predict the number of saplings in a 40-m2 plot
 	 * @param plot a PowerSaplingBasalAreaAndDensityCompatiblePlot instance
-	 * @return the sapling basal area (m2/ha)
+	 * @return the number of saplings 
 	 */
-	public synchronized double predictSaplingBasalAreaM2Ha(PowerSaplingBasalAreaAndDensityCompatiblePlot plot) {
+	public synchronized double predictSaplingDensityTreeHa(PowerSaplingBasalAreaAndDensityCompatiblePlot plot) {
 		Matrix beta = getParametersForThisRealization(plot);
 		setXVector(plot);
 		double pred = oXVector.multiply(beta).getValueAt(0, 0);
-		if (isVariabilityEnabled) {
-			pred += StatisticalUtility.getRandom().nextGaussian() * sigma_res;
+		double lambda = Math.exp(pred); // this is the mean of the Poisson distribution conditional on the parameter estimates
+		if (isResidualVariabilityEnabled) {
+			return StatisticalUtility.getRandom().nextPoisson(lambda);
 		} else {
 			Matrix xVx = oXVector.multiply(getParameterEstimates().getVariance()).multiply(oXVector.transpose());
-			pred += (sigma2_res + xVx.getValueAt(0, 0)) * .5; // otherwise it is marginalized over the distribution of the residual error and parameter estimates
+			pred += xVx.getValueAt(0, 0) * .5; // otherwise it is marginalized over the distribution of the parameter estimates
+			return Math.exp(pred);
 		}
-		double predBackTransformed = Math.exp(pred) - 1;
-		return predBackTransformed < 0d ? 0d : predBackTransformed;
 	}
 
 }

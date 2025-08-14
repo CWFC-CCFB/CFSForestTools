@@ -35,10 +35,12 @@ public class PowerSaplingPredictorTests {
 		int monteCarloId;
 		final double basalAreaM2Ha;
 		final CoverType coverType;
+		final boolean isInterventionResult;
 
-		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(double basalAreaM2Ha, CoverType coverType) {
+		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(double basalAreaM2Ha, CoverType coverType, boolean isInterventionResult) {
 			this.basalAreaM2Ha = basalAreaM2Ha;
 			this.coverType = coverType;
+			this.isInterventionResult = isInterventionResult;
 		}
 		
 		@Override
@@ -55,21 +57,24 @@ public class PowerSaplingPredictorTests {
 
 		@Override
 		public CoverType getCoverType() {return coverType;}
+
+		@Override
+		public boolean isInterventionResult() {return isInterventionResult;}
 		
 	}
 	
 	@Test
 	public void test01BasalAreaDeterministicPrediction() {
-		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir);
+		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir, false);
 		PowerSaplingBasalAreaPredictor pred = new PowerSaplingBasalAreaPredictor(false);
 		double baPrediction = pred.predictSaplingBasalAreaM2Ha(myPlot);
-		Assert.assertEquals("Testing deterministic basal area prediction", 6.074210894764617, baPrediction, 1E-8);
+		Assert.assertEquals("Testing deterministic basal area prediction", 6.45451208796443, baPrediction, 1E-8);
 	}
 
 	@Test
 	public void test02BasalAreaStochasticPrediction() {
-		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir);
-		PowerSaplingBasalAreaPredictor pred = new PowerSaplingBasalAreaPredictor(false, true);
+		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir, false);
+		PowerSaplingBasalAreaPredictor pred = new PowerSaplingBasalAreaPredictor(true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		Matrix mat;
 		for (int i = 0; i < 100000; i++) {
@@ -79,23 +84,49 @@ public class PowerSaplingPredictorTests {
 			estimate.addRealization(mat);
 		}
 		double actualMean = estimate.getMean().getValueAt(0, 0);
-		Assert.assertEquals("Testing stochastic basal area prediction", 6.074210894764617, actualMean, 0.1);
+		Assert.assertEquals("Testing stochastic basal area prediction", 6.45451208796443, actualMean, 0.1);
 		double actualVariance = estimate.getVariance().getValueAt(0, 0);
 		Assert.assertTrue("Testing stochastic variance is not null", actualVariance > 0d);
 	}
 
 	@Test
-	public void test03DensityDeterministicPrediction() {
-		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir);
-		PowerSaplingDensityPredictor pred = new PowerSaplingDensityPredictor(false);
-		double densityPrediction = pred.predictSaplingDensityTreeHa(myPlot);
-		Assert.assertEquals("Testing deterministic density prediction", 6873.953377106523, densityPrediction, 1E-8);
+	public void test03BasalAreaInterventionResultDeterministicPrediction() {
+		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Maple, true);
+		PowerSaplingBasalAreaPredictor pred = new PowerSaplingBasalAreaPredictor(false);
+		double baPrediction = pred.predictSaplingBasalAreaM2Ha(myPlot);
+		Assert.assertEquals("Testing deterministic basal area prediction", 2.6289032101907064, baPrediction, 1E-8);
 	}
 
 	@Test
-	public void test04DensityStochasticPrediction() {
-		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir);
-		PowerSaplingDensityPredictor pred = new PowerSaplingDensityPredictor(false, true);
+	public void test04BasalAreaInterventionResultStochasticPrediction() {
+		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Maple, true);
+		PowerSaplingBasalAreaPredictor pred = new PowerSaplingBasalAreaPredictor(true);
+		MonteCarloEstimate estimate = new MonteCarloEstimate();
+		Matrix mat;
+		for (int i = 0; i < 100000; i++) {
+			myPlot.monteCarloId = i;
+			double baPrediction = pred.predictSaplingBasalAreaM2Ha(myPlot);
+			mat = new Matrix(1,1,baPrediction,0d);
+			estimate.addRealization(mat);
+		}
+		double actualMean = estimate.getMean().getValueAt(0, 0);
+		Assert.assertEquals("Testing stochastic basal area prediction", 2.6289032101907064, actualMean, 0.1);
+		double actualVariance = estimate.getVariance().getValueAt(0, 0);
+		Assert.assertTrue("Testing stochastic variance is not null", actualVariance > 0d);
+	}
+
+	@Test
+	public void test10DensityDeterministicPrediction() {
+		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir, false);
+		PowerSaplingNumberPredictor pred = new PowerSaplingNumberPredictor(false);
+		double densityPrediction = pred.predictSaplingDensityTreeHa(myPlot);
+		Assert.assertEquals("Testing deterministic density prediction", 17.721426596284417, densityPrediction, 1E-8);
+	}
+
+	@Test
+	public void test11DensityStochasticPrediction() {
+		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir, false);
+		PowerSaplingNumberPredictor pred = new PowerSaplingNumberPredictor(true);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		Matrix mat;
 		for (int i = 0; i < 1000000; i++) {
@@ -105,12 +136,10 @@ public class PowerSaplingPredictorTests {
 			estimate.addRealization(mat);
 		}
 		double actualMean = estimate.getMean().getValueAt(0, 0);
-		Assert.assertEquals("Testing stochastic density prediction", 6873.953377106523, actualMean, 70);
+		Assert.assertEquals("Testing stochastic sapling number prediction",  17.721426596284417, actualMean, .1);
 		double actualVariance = estimate.getVariance().getValueAt(0, 0);
-		Assert.assertTrue("Testing stochastic variance is not null", actualVariance > 0d);
+		Assert.assertEquals("Testing stochastic sapling number prediction", 17.721426596284417, actualVariance, .1);
 	}
 
-	// TODO implement density predictions
-	// TODO implement stochastic predictions
 	
 }
