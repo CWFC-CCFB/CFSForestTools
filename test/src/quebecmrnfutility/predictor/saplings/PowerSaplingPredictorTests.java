@@ -119,7 +119,7 @@ public class PowerSaplingPredictorTests {
 	public void test10DensityDeterministicPrediction() {
 		PowerSaplingBasalAreaAndDensityCompatiblePlotImpl myPlot = new PowerSaplingBasalAreaAndDensityCompatiblePlotImpl(20, CoverType.Fir, false);
 		PowerSaplingNumberPredictor pred = new PowerSaplingNumberPredictor(false);
-		double densityPrediction = pred.predictSaplingDensityTreeHa(myPlot);
+		double densityPrediction = pred.predictSaplingNumber(myPlot);
 		Assert.assertEquals("Testing deterministic density prediction", 17.721426596284417, densityPrediction, 1E-8);
 	}
 
@@ -131,7 +131,7 @@ public class PowerSaplingPredictorTests {
 		Matrix mat;
 		for (int i = 0; i < 1000000; i++) {
 			myPlot.monteCarloId = i;
-			double densityPrediction = pred.predictSaplingDensityTreeHa(myPlot);
+			double densityPrediction = pred.predictSaplingNumber(myPlot);
 			mat = new Matrix(1,1,densityPrediction,0d);
 			estimate.addRealization(mat);
 		}

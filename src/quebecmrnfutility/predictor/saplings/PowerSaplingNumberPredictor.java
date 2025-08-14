@@ -74,7 +74,7 @@ public final class PowerSaplingNumberPredictor extends PowerAbstractSaplingPredi
 	 * @param plot a PowerSaplingBasalAreaAndDensityCompatiblePlot instance
 	 * @return the number of saplings 
 	 */
-	public synchronized double predictSaplingDensityTreeHa(PowerSaplingBasalAreaAndDensityCompatiblePlot plot) {
+	public synchronized double predictSaplingNumber(PowerSaplingBasalAreaAndDensityCompatiblePlot plot) {
 		Matrix beta = getParametersForThisRealization(plot);
 		setXVector(plot);
 		double pred = oXVector.multiply(beta).getValueAt(0, 0);
