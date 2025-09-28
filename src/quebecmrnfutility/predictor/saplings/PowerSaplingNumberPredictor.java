@@ -29,7 +29,7 @@ import repicea.stats.StatisticalUtility;
 import repicea.util.ObjectUtility;
 
 /**
- * A class that implements Hugues Power's model of sapling density.
+ * A class that implements Hugues Power's model of sapling number.
  * @author Mathieu Fortin - July 2025 
  */
 @SuppressWarnings("serial")
