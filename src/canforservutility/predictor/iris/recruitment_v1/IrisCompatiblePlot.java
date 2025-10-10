@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
@@ -35,7 +36,7 @@ import repicea.simulation.covariateproviders.plotlevel.SlopeInclinationPercentPr
 public interface IrisCompatiblePlot extends GrowthStepLengthYrProvider,
 											SlopeInclinationPercentProvider,
 											DrainageGroupProvider,
-											IrisProtoPlot {
+											OccupancyIndexCalculablePlot {
 	
 	
 	public static enum SoilDepth {
@@ -190,5 +191,5 @@ public interface IrisCompatiblePlot extends GrowthStepLengthYrProvider,
 	 * Return the list of plots to use to calculate the occupancy index.
 	 * @return a List of IrisProtoPlot instances
 	 */
-	public List<IrisProtoPlot> getPlotsForOccupancyIndexCalculation();
+	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation();
 }

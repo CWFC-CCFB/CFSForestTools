@@ -22,6 +22,7 @@ package canforservutility.predictor.iris.recruitment_v1;
 import java.security.InvalidParameterException;
 import java.util.List;
 
+import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 import repicea.math.Matrix;
 
@@ -82,7 +83,7 @@ final class IrisCompatiblePlotImpl implements IrisCompatiblePlot {
 	private final Matrix gSpGrMat;
 	private final double frostDays;
 	private final double lowestTmin;
-	private final List<IrisProtoPlot> plots;
+	private final List<OccupancyIndexCalculablePlot> plots;
 	private final double latitudeDeg;
 	private final double longitudeDeg;
 	private int monteCarloRealizationId = 0;
@@ -107,7 +108,7 @@ final class IrisCompatiblePlotImpl implements IrisCompatiblePlot {
 			SoilTexture soilTexture,
 			IrisSpecies species,
 			double gSpGr,
-			List<IrisProtoPlot> plots) {
+			List<OccupancyIndexCalculablePlot> plots) {
 		if (drainageGroup == null) {
 			throw new InvalidParameterException("The drainage group cannot be null!");
 		}
@@ -182,7 +183,7 @@ final class IrisCompatiblePlotImpl implements IrisCompatiblePlot {
 	}
 
 	@Override
-	public double getBasalAreaM2HaForThisSpecies(IrisSpecies species) {return gSpGrMat.getValueAt(0, species.ordinal());}
+	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {return gSpGrMat.getValueAt(0, species.ordinal());}
 
 	@Override
 	public double getBasalAreaOfConiferousSpecies() {return basalAreaM2HaConiferous;}
@@ -216,7 +217,7 @@ final class IrisCompatiblePlotImpl implements IrisCompatiblePlot {
 	public double getAreaHa() {return 0.04;}
 
 	@Override
-	public List<IrisProtoPlot> getPlotsForOccupancyIndexCalculation() {
+	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
 		return plots;
 	}
 	

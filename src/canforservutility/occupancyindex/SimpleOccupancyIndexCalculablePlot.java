@@ -1,8 +1,8 @@
 /*
  * This file is part of the CFSForesttools library.
  *
- * Copyright (C) 2020-2023 His Majesty the King in right of Canada
- * Author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
+ * Copyright (C) 2020-2025 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,11 +17,14 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris.recruitment_v1;
+package canforservutility.occupancyindex;
 
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
-
-public class IrisProtoPlotImpl implements IrisProtoPlot {
+/**
+ * An implementation of the OccupancyIndexCalculablePlot interface.
+ * 
+ * @author Mathieu Fortin - October 2025
+ */
+public class SimpleOccupancyIndexCalculablePlot implements OccupancyIndexCalculablePlot {
 
 	private final String id;
 	private final double latitudeDeg;
@@ -31,7 +34,7 @@ public class IrisProtoPlotImpl implements IrisProtoPlot {
 	private final double baHaSpecies;
 	double distanceKm;
 	
-	public IrisProtoPlotImpl(String id, 
+	public SimpleOccupancyIndexCalculablePlot(String id, 
 			double latitudeDeg, 
 			double longitudeDeg,
 			double weight,
@@ -74,7 +77,7 @@ public class IrisProtoPlotImpl implements IrisProtoPlot {
 	public double getWeight() {return weight;}
 	
 	@Override
-	public double getBasalAreaM2HaForThisSpecies(IrisSpecies species) {return baHaSpecies;}
+	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {return baHaSpecies;}
 
 	@Override 
 	public double getAreaHa() {return 0.04;}
