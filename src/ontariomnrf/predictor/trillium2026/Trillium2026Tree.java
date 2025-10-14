@@ -83,12 +83,17 @@ public interface Trillium2026Tree extends MonteCarloSimulationCompliantObject,
 			return MatchingTrilliumSpeciesMap;
 		}
 		
-		static Trillium2026TreeSpecies getTrilliumSpecies(String code) {
-			if (code == null) {
+		/**
+		 * Find the enum corresponding to a species name.
+		 * @param speciesLatinName the species name
+		 * @return a Trillium2026TreeSpecies enum
+		 */
+		public static Trillium2026TreeSpecies getTrilliumSpecies(String speciesLatinName) {
+			if (speciesLatinName == null) {
 				throw new InvalidParameterException("The code argument cannot be null!");
 			}
 			
-			String formattedCode = code.replace(" ", "").replace(".", "p").toLowerCase();
+			String formattedCode = speciesLatinName.replace(" ", "").replace(".", "p").toLowerCase();
 			Trillium2026TreeSpecies species = getMatchingTrilliumSpeciesMap().get(formattedCode);
 			if (species != null) {
 				return species;

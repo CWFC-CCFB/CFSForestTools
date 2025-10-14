@@ -78,7 +78,7 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 		super(isParameterVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);		
 		init();
 		occIndexCalculator = plots != null ? 
-				new OccupancyIndexCalculator(plots, 10d) : // max distance is 10 km for occupancy index  
+				new OccupancyIndexCalculator(plots) : 
 					null;
 	}
 

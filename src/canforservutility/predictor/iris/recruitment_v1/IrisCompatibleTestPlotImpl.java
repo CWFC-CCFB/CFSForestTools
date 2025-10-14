@@ -211,9 +211,6 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	public double getElevationM() {return 0;}
 
 	@Override
-	public void setWeight(double weight) {}
-
-	@Override
 	public double getAreaHa() {return 0.04;}
 
 	@Override

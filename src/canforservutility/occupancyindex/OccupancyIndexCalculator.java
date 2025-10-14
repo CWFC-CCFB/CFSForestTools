@@ -33,7 +33,7 @@ import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.sampling.PopulationMeanEstimate;
 
 /**
- * A class to calculate the occupancy index required by the recruitment module. <p>
+ * A class to calculate the occupancy index. <p>
  * The occupancy index is actually an estimate of the occupancy within a particular radius
  * around each plot. 
  * @author Mathieu Fortin - Sept 2022, October 2025
@@ -42,23 +42,26 @@ public class OccupancyIndexCalculator {
 
 		
 	final SymmetricMatrix distances;
-	private final double maximumDistanceKm;
+//	private final double maximumDisdtanceKm;
 	final Map<String, Integer> plotsId;
-	private final int minYearDiff = 0;
-	private final int maxYearDiff = 10;
-	
+	private int minYearDiff = 0;
+	private int maxYearDiff = 10;
+	private double maxMin;
+	private String maxMinPlotId;
 	
 	/**
 	 * Constructor. <p>
 	 * It is assumed that the plots with the same subjectId have the same
 	 * geographical coordinates. The constructor first sets the distance 
 	 * matrix. Only the first entry of the set of plots with the same subjectId
-	 * is considered in the calculation of the distance matrix.
+	 * is considered in the calculation of the distance matrix.<p>
+	 * The constructor first sets the distances. Then, the occupancy index can be 
+	 * obtained through the {@link OccupancyIndexCalculator#getOccupancyIndex(List, OccupancyIndexCalculablePlot, Enum)} 
+	 * method.
 	 * 
-	 * @param plots a List of Iris2020ProtoPlot instances
-	 * @param maxDistanceKm the radius around the plot of interest for estimating the occupancy index (e.g. 15 km)
+	 * @param plots a List of OccupancyIndexCalculablePlot instances
 	 */
-	public OccupancyIndexCalculator(List<OccupancyIndexCalculablePlot> plots, double maxDistanceKm) {
+	public OccupancyIndexCalculator(List<OccupancyIndexCalculablePlot> plots) {
 		plotsId = new HashMap<String, Integer>();
 		// first screen for the first entry plots
 		List<OccupancyIndexCalculablePlot> firstEntryPlots = new ArrayList<OccupancyIndexCalculablePlot>();
@@ -79,8 +82,45 @@ public class OccupancyIndexCalculator {
 		}
 		// calculate the distance matrix
 		distances = GeographicDistanceCalculator.getDistanceBetweenTheseCoordinates(latitudes, longitudes);
-		maximumDistanceKm = maxDistanceKm;
+//		maximumDistanceKm = maxDistanceKm;
+
+		maxMin = 0d;
+		maxMinPlotId = null;
+		for (int i = 0; i < firstEntryPlots.size(); i++) {
+			OccupancyIndexCalculablePlot p = firstEntryPlots.get(i);
+			double minForThisPlot = Double.POSITIVE_INFINITY;
+			for (int j = 0; j < distances.m_iCols; j++) {
+				double d = distances.getValueAt(i, j);
+				if (j != i && d < minForThisPlot) {
+					minForThisPlot = d;
+				}
+			}
+			if (minForThisPlot > maxMin) {
+				maxMin = minForThisPlot;
+				maxMinPlotId = p.getSubjectId();
+			}
+		}
+//		if (maxMin > this.maximumDistanceKm) {
+//			throw new UnsupportedOperationException(getMaximumDistanceNearestPlot() + System.lineSeparator() + "It exceeds the maximum distance as set through the maxDistanceKm argument!");
+//		}
 	}
+
+	/**
+	 * Provide the number of subjects.
+	 * @return an integer 
+	 */
+	public int getNumberOfSubjects() {
+		return plotsId.size();
+	}
+
+	/**
+	 * Provide the id of the plots with the maximum minimum distance to the nearest plot.
+	 * @return a String
+	 */
+	public String getMaximumDistanceNearestPlot() {
+		return "Plot " + maxMinPlotId + " has its nearest plot located at " + maxMin + " km.";
+	}
+	
 
 	/**
 	 * Return the distance between two plots.
@@ -114,14 +154,16 @@ public class OccupancyIndexCalculator {
 	 * @param plots the list of plots
 	 * @param thisPlot the plot of interest
 	 * @param species an enum standing for the species
+	 * @param radiusKm the radius (km) of the area upon which the occupancy is calculated
 	 * @param dateCache a Map in which the subsets of the sample are stored
 	 * @return a GaussiEstimate instance
 	 */
 	public GaussianEstimate getOccupancyIndex(List<OccupancyIndexCalculablePlot> plots, 
 			OccupancyIndexCalculablePlot thisPlot, 
 			Enum<?> species,
+			double radiusKm,
 			Map<Integer, List<OccupancyIndexCalculablePlot>> dateCache) {
-		
+
 		List<OccupancyIndexCalculablePlot> plotsWithinLast10Yrs;
 		if (dateCache != null) {
 			if (!dateCache.containsKey(thisPlot.getDateYr())) {
@@ -137,7 +179,7 @@ public class OccupancyIndexCalculator {
 		}
 		
 		List<OccupancyIndexCalculablePlot> plotsWithinDistanceWithinLast10Yrs = plotsWithinLast10Yrs.stream().
-				filter(p -> getDistanceKmBetweenThesePlots(thisPlot, p) < maximumDistanceKm).
+				filter(p -> getDistanceKmBetweenThesePlots(thisPlot, p) < radiusKm).
 				collect(Collectors.toList());
 		
 		Map<String, OccupancyIndexCalculablePlot> singletonMap = new HashMap<String, OccupancyIndexCalculablePlot>();
@@ -157,7 +199,8 @@ public class OccupancyIndexCalculator {
 		plotsWithinDistanceWithinLast10Yrs.addAll(singletonMap.values());
 		
 		if (plotsWithinDistanceWithinLast10Yrs.size() == 1) {
-			throw new UnsupportedOperationException("The occupancy index cannot be calculated since there is only one plot in the sample!");
+			throw new UnsupportedOperationException("The occupancy index cannot be calculated since there is only one plot in the sample!" + System.lineSeparator() +
+					getMaximumDistanceNearestPlot() + " The radius has been set to " + radiusKm + " km.");
 		} else {
 			int n = plotsWithinDistanceWithinLast10Yrs.size();
 			PopulationMeanEstimate estimate = new PopulationMeanEstimate();
@@ -178,13 +221,55 @@ public class OccupancyIndexCalculator {
 	 * @param plots the list of plots
 	 * @param thisPlot the plot of interest
 	 * @param species an enum standing for the species
+	 * @param radiusKm the radius (km) of the area upon which the occupancy is calculated
+	 * 
 	 * @return a GaussiEstimate instance
 	 */
 	public GaussianEstimate getOccupancyIndex(List<OccupancyIndexCalculablePlot> plots, 
 			OccupancyIndexCalculablePlot thisPlot, 
-			Enum<?> species) {
-		return getOccupancyIndex(plots, thisPlot, species, null);
+			Enum<?> species,
+			double radiusKm) {
+		return getOccupancyIndex(plots, thisPlot, species, radiusKm, null);
 	}
 
+	/**
+	 * Set the minimum year difference for a plot measurement to be considered 
+	 * in the calculation. <p>
+	 * This parameter is set to 0 by default.
+	 * @param diff an integer >= 0 and smaller than the maximum year difference.
+	 */
+	public void setMinimumYearDifference(int diff) {
+		if (diff < 0 || diff > maxYearDiff) {
+			throw new InvalidParameterException("The minimum year difference must be >= 0 and smaller than the maximum year difference!");
+		}
+		this.minYearDiff = diff;
+	}
+
+	/**
+	 * Set the maximum year difference for a plot measurement to be considered 
+	 * in the calculation. <p>
+	 * This parameter is set to 10 by default.
+	 * @param diff an integer larger than the minimum  year difference.
+	 */
+	public void setMaximumYearDifference(int diff) {
+		if (diff <= minYearDiff) {
+			throw new InvalidParameterException("The maximum year difference must be larger than the minimum year difference!");
+		}
+		this.maxYearDiff = diff;
+	}
+	
+	/**
+	 * Provide the minimum year difference for a plot measurement to be considered
+	 * in the calculation.
+	 * @return the number of years 
+	 */
+	public int getMinimumYearDifference() {return minYearDiff;}
+
+	/**
+	 * Provide the maximum year difference for a plot measurement to be considered
+	 * in the calculation.
+	 * @return the number of years 
+	 */
+	public int getMaximumYearDifference() {return maxYearDiff;}
 
 }

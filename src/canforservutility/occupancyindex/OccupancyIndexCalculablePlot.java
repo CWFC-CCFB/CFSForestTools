@@ -24,7 +24,6 @@ import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.plotlevel.AreaHaProvider;
 import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.GeographicalCoordinatesProvider;
-import repicea.simulation.covariateproviders.plotlevel.PlotWeightProvider;
 
 /**
  * This interface ensures the plot can provide the basic information for the calculation
@@ -36,7 +35,6 @@ import repicea.simulation.covariateproviders.plotlevel.PlotWeightProvider;
 public interface OccupancyIndexCalculablePlot extends MonteCarloSimulationCompliantObject,
 									GeographicalCoordinatesProvider,
 									DateYrProvider,
-									PlotWeightProvider,
 									AreaHaProvider {
 
 	/**

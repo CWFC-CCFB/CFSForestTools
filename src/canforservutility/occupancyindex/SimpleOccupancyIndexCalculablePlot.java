@@ -29,7 +29,6 @@ public class SimpleOccupancyIndexCalculablePlot implements OccupancyIndexCalcula
 	private final String id;
 	private final double latitudeDeg;
 	private final double longitudeDeg;
-	private final double weight;
 	private final int dateYr;
 	private final double baHaSpecies;
 	double distanceKm;
@@ -37,13 +36,11 @@ public class SimpleOccupancyIndexCalculablePlot implements OccupancyIndexCalcula
 	public SimpleOccupancyIndexCalculablePlot(String id, 
 			double latitudeDeg, 
 			double longitudeDeg,
-			double weight,
 			int dateYr,
 			double baHaSpecies) {
 		this.id = id;
 		this.latitudeDeg = latitudeDeg;
 		this.longitudeDeg = longitudeDeg; 
-		this.weight = weight;
 		this.dateYr = dateYr;
 		this.baHaSpecies = baHaSpecies;
 	}
@@ -69,12 +66,6 @@ public class SimpleOccupancyIndexCalculablePlot implements OccupancyIndexCalcula
 
 	@Override
 	public int getDateYr() {return dateYr;}
-
-	@Override
-	public void setWeight(double weight) {}
-
-	@Override
-	public double getWeight() {return weight;}
 	
 	@Override
 	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {return baHaSpecies;}

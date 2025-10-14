@@ -250,7 +250,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		Map<Integer, GaussianEstimate> innerMap2 = getInnerMap2(plot, (Map) occupancyIndices);
 		if (!innerMap2.containsKey(plot.getDateYr())) {
-			GaussianEstimate occIndex10kmEstimate = owner.occIndexCalculator.getOccupancyIndex(plot.getPlotsForOccupancyIndexCalculation(), plot, species);
+			GaussianEstimate occIndex10kmEstimate = owner.occIndexCalculator.getOccupancyIndex(plot.getPlotsForOccupancyIndexCalculation(), plot, species, 10d); // max distance is 10 km for occupancy index  
 			innerMap2.put(plot.getDateYr(), occIndex10kmEstimate);	
 		}
 		return innerMap2.get(plot.getDateYr());
