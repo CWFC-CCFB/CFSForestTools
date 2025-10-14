@@ -22,6 +22,7 @@ package canforservutility.predictor.iris.recruitment_v1;
 import java.security.InvalidParameterException;
 import java.util.List;
 
+import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 import repicea.math.Matrix;
 
@@ -178,7 +179,7 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	}
 
 	@Override
-	public double getBasalAreaM2HaForThisSpecies(IrisSpecies species) {return gSpGrMat.getValueAt(0, species.ordinal());}
+	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {return gSpGrMat.getValueAt(0, species.ordinal());}
 
 
 
@@ -210,13 +211,10 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	public double getElevationM() {return 0;}
 
 	@Override
-	public void setWeight(double weight) {}
-
-	@Override
 	public double getAreaHa() {return 0.04;}
 
 	@Override
-	public List<IrisProtoPlot> getPlotsForOccupancyIndexCalculation() {
+	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
 		return null;
 	}
 	

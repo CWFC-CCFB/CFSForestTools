@@ -17,15 +17,13 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris.recruitment_v1;
+package canforservutility.occupancyindex;
 
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.plotlevel.AreaHaProvider;
 import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.GeographicalCoordinatesProvider;
-import repicea.simulation.covariateproviders.plotlevel.PlotWeightProvider;
 
 /**
  * This interface ensures the plot can provide the basic information for the calculation
@@ -34,19 +32,18 @@ import repicea.simulation.covariateproviders.plotlevel.PlotWeightProvider;
  * This interface is internal. It is extended in the IrisCompatiblePlot interface.
  * @author Mathieu Fortin - June 2023
  */
-interface IrisProtoPlot extends MonteCarloSimulationCompliantObject,
+public interface OccupancyIndexCalculablePlot extends MonteCarloSimulationCompliantObject,
 									GeographicalCoordinatesProvider,
 									DateYrProvider,
-									PlotWeightProvider,
 									AreaHaProvider {
 
 	/**
 	 * Provide the basal area (m2/ha) for this species or species group. 
 	 * 
-	 * @param species a IrisSpecies enum
+	 * @param species an enum standing for the species
 	 * @return a double
 	 */
-	public double getBasalAreaM2HaForThisSpecies(IrisSpecies species);
+	public double getBasalAreaM2HaForThisSpecies(Enum<?> species);
 
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}

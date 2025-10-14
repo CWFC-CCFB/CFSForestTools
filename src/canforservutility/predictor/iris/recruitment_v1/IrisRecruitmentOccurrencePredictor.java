@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import canforservutility.occupancyindex.OccupancyIndexCalculator;
+import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -48,7 +50,7 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 
 	private Map<IrisSpecies, IrisRecruitmentOccurrenceInternalPredictor> internalPredictors;
 
-	final IrisOccupancyIndexCalculator occIndexCalculator;
+	final OccupancyIndexCalculator occIndexCalculator;
 	
 	
 	/**
@@ -57,7 +59,7 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 	 * @param plots a List of IrisProtoPlot instances that are all the plots to be considered in the calculation of the
 	 * occupancy index.
 	 */
-	public IrisRecruitmentOccurrencePredictor(boolean isVariabilityEnabled, List<IrisProtoPlot> plots) {
+	public IrisRecruitmentOccurrencePredictor(boolean isVariabilityEnabled, List<OccupancyIndexCalculablePlot> plots) {
 		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled, plots);		// random effect variability is associated with occupancy index measurement error
 	}
 	
@@ -72,11 +74,11 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 	protected IrisRecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
 			boolean isRandomEffectsVariabilityEnabled, 
 			boolean isResidualVariabilityEnabled,
-			List<IrisProtoPlot> plots) {
+			List<OccupancyIndexCalculablePlot> plots) {
 		super(isParameterVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);		
 		init();
 		occIndexCalculator = plots != null ? 
-				new IrisOccupancyIndexCalculator(plots, 10d) : // max distance is 10 km for occupancy index  
+				new OccupancyIndexCalculator(plots) : 
 					null;
 	}
 

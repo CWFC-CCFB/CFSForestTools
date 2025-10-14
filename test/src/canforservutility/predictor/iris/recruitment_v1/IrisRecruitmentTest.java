@@ -183,7 +183,7 @@ public class IrisRecruitmentTest {
 	 * Validation test for occurrence using R validation dataset
 	 */
 	@Test
-	public void testOccurrencePredictionsAgainstRPredictions() throws IOException {
+	public void test01OccurrencePredictionsAgainstRPredictions() throws IOException {
 		IrisRecruitmentOccurrencePredictor predictor = new IrisRecruitmentOccurrencePredictor(false, null); // deterministic
 		List<IrisCompatibleTestPlotImpl> plots = TestPlotListForOccurrences; 
 		int nbTested = 0;
@@ -209,7 +209,7 @@ public class IrisRecruitmentTest {
 	 * Validation test for number of recruits using R validation dataset with known occupancy index.
 	 */
 	@Test
-	public void testMeanNumberPredictionsAgainstRPredictions() throws IOException {
+	public void test02MeanNumberPredictionsAgainstRPredictions() throws IOException {
 		IrisRecruitmentNumberPredictor predictor = new IrisRecruitmentNumberPredictor(false, 
 				new IrisRecruitmentOccurrencePredictor(false, null)); // deterministic
 		List<IrisCompatibleTestPlotImpl> plots = TestPlotListForNumbers; 
@@ -231,7 +231,7 @@ public class IrisRecruitmentTest {
 	 * Validation test for stochastic implementation with known occupancy index.
 	 */
 	@Test
-	public void testStochasticMeanNumberPredictions() throws IOException {
+	public void test03StochasticMeanNumberPredictions() throws IOException {
 		IrisRecruitmentNumberPredictor detPredictor = new IrisRecruitmentNumberPredictor(false,
 				new IrisRecruitmentOccurrencePredictor(false, null)); // deterministic
 		IrisRecruitmentNumberPredictor stoPredictor = new IrisRecruitmentNumberPredictor(false, false, true,
@@ -269,7 +269,7 @@ public class IrisRecruitmentTest {
 	 * Validation test for stochastic implementation of occurrence part with unknown occupancy index.
 	 */
 	@Test
-	public void testStochasticImplementationOccurrencePredictions() throws IOException {
+	public void test04StochasticImplementationOccurrencePredictions() throws IOException {
 		List<IrisCompatiblePlotImpl> plots = StandardPlotList; 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		IrisRecruitmentOccurrencePredictor detPredictor = new IrisRecruitmentOccurrencePredictor(false, false, false, (List) plots); // deterministic
@@ -299,7 +299,7 @@ public class IrisRecruitmentTest {
 	 * Validation test for stochastic implementation of occurrence part with unknown occupancy index.
 	 */
 	@Test
-	public void testStochasticImplementationMeanNumberPredictions() throws IOException {
+	public void test05StochasticImplementationMeanNumberPredictions() throws IOException {
 		List<IrisCompatiblePlotImpl> plots = StandardPlotList; 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		IrisRecruitmentNumberPredictor detPredictor = new IrisRecruitmentNumberPredictor(false, false, false, new IrisRecruitmentOccurrencePredictor(false, (List) plots)); // deterministic

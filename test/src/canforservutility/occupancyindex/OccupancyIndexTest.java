@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris.recruitment_v1;
+package canforservutility.occupancyindex;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,41 +34,59 @@ import repicea.io.javacsv.CSVReader;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
 
-public class IrisOccupancyIndexTest {
+public class OccupancyIndexTest {
 
-	private static List<IrisProtoPlot> plots;
+	private static List<OccupancyIndexCalculablePlot> plots;
 	
 	@BeforeClass
 	public static void initialize() throws IOException {
-		String filename = ObjectUtility.getPackagePath(IrisOccupancyIndexTest.class) + "datasetERSForProximityIndex.csv";
+		String filename = ObjectUtility.getPackagePath(OccupancyIndexTest.class) + "datasetERSForProximityIndex.csv";
 		CSVReader r = new CSVReader(filename);
-		plots = new ArrayList<IrisProtoPlot>();
+		plots = new ArrayList<OccupancyIndexCalculablePlot>();
 		Object[] record;
 		while((record = r.nextRecord()) != null) {
 			String id = record[0].toString();
 			double latitudeDeg = Double.parseDouble(record[1].toString());
 			double longitudeDeg = Double.parseDouble(record[2].toString());
-			double weight = Double.parseDouble(record[3].toString());
+//			double weight = Double.parseDouble(record[3].toString());
 			int dateYr = Integer.parseInt(record[4].toString());
 			double baHaSpecies = Double.parseDouble(record[5].toString());
-			plots.add(new IrisProtoPlotImpl(id, latitudeDeg, longitudeDeg, weight, dateYr, baHaSpecies));
+			plots.add(new SimpleOccupancyIndexCalculablePlot(id, latitudeDeg, longitudeDeg, dateYr, baHaSpecies));
 		}
 		r.close();
 	}
 	
 	@Test
-	public void occupancyIndexTest1() throws IOException {
+	public void test01OccupancyIndexSinglePlot() throws IOException {
 		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
-		IrisOccupancyIndexCalculator calculator = new IrisOccupancyIndexCalculator(plots, 15);
+		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots);
+		System.out.println(calculator.getMaximumDistanceNearestPlot());
 		Assert.assertEquals("Testing the size of the id list", 12267, calculator.plotsId.size());
 		Assert.assertEquals("Testing the size of the distance matrix", 12267, calculator.distances.m_iRows);
-		ConcurrentHashMap<Integer, List<IrisProtoPlot>> dateFilteredPlots = new ConcurrentHashMap<Integer, List<IrisProtoPlot>>();
-		GaussianEstimate proximityIndexEstimate = calculator.getOccupancyIndex(plots, plots.get(0), IrisSpecies.ERS, dateFilteredPlots);
+		ConcurrentHashMap<Integer, List<OccupancyIndexCalculablePlot>> dateFilteredPlots = new ConcurrentHashMap<Integer, List<OccupancyIndexCalculablePlot>>();
+		GaussianEstimate proximityIndexEstimate = calculator.getOccupancyIndex(plots, plots.get(0), IrisSpecies.ERS, 15d, dateFilteredPlots);
 		double proximityIndexMean = proximityIndexEstimate.getMean().getValueAt(0, 0);
 		double proximityIndexVariance = proximityIndexEstimate.getVariance().getValueAt(0, 0);
 		Assert.assertEquals("Testing the mean of the estimate", 0.5, proximityIndexMean, 1E-8);
 		Assert.assertEquals("Testing the size of the distance matrix", 0.05, proximityIndexVariance, 1E-8);
 	}
+
+	
+	@Test
+	public void test02OccupancyIndexAllPlots() throws IOException {
+		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
+		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots);
+		try {
+			for (int i = 0; i < plots.size(); i++) {
+				calculator.getOccupancyIndex(plots, plots.get(i), IrisSpecies.ERS, 10d);
+			}
+			Assert.fail("Should have thrown an unsupported operation exception!");
+		} catch (UnsupportedOperationException e) {
+			e.printStackTrace();
+			System.out.println("Relax! This error was expected!");
+		}
+	}
+
 	
 	@AfterClass
 	public static void cleanup() {
