@@ -56,7 +56,7 @@ public class OccupancyIndexCalculator {
 	 * matrix. Only the first entry of the set of plots with the same subjectId
 	 * is considered in the calculation of the distance matrix.<p>
 	 * The constructor first sets the distances. Then, the occupancy index can be 
-	 * obtained through the {@link OccupancyIndexCalculator#getOccupancyIndex(List, OccupancyIndexCalculablePlot, Enum)} 
+	 * obtained through the {@link OccupancyIndexCalculator#getOccupancyIndex(List, OccupancyIndexCalculablePlot, Enum, double)} 
 	 * method.
 	 * 
 	 * @param plots a List of OccupancyIndexCalculablePlot instances
@@ -236,11 +236,11 @@ public class OccupancyIndexCalculator {
 	 * Set the minimum year difference for a plot measurement to be considered 
 	 * in the calculation. <p>
 	 * This parameter is set to 0 by default.
-	 * @param diff an integer >= 0 and smaller than the maximum year difference.
+	 * @param diff an integer equal to or greater than 0 and smaller than the maximum year difference.
 	 */
 	public void setMinimumYearDifference(int diff) {
 		if (diff < 0 || diff > maxYearDiff) {
-			throw new InvalidParameterException("The minimum year difference must be >= 0 and smaller than the maximum year difference!");
+			throw new InvalidParameterException("The minimum year difference must be greater than or equal to 0 and smaller than the maximum year difference!");
 		}
 		this.minYearDiff = diff;
 	}
