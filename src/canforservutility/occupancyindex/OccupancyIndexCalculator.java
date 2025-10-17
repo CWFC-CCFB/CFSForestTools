@@ -21,6 +21,7 @@ package canforservutility.occupancyindex;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,14 +41,56 @@ import repicea.stats.sampling.PopulationMeanEstimate;
  */
 public class OccupancyIndexCalculator {
 
+	@SuppressWarnings("serial")
+	static class NearestNeighborEntryList extends ArrayList<NearestNeighborEntry> {
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < size(); i++) {
+				if (i > 0) {
+					sb.append(System.lineSeparator());
+				}
+				if (i == 50) {
+					sb.append("...");
+					break;
+				}
+				sb.append(get(i).toString());
+			}
+			return sb.toString();
+		}
+	}
+	
+	static class NearestNeighborEntry implements Comparable<NearestNeighborEntry> {
+		final String plotId;
+		final double distanceKm;
+		NearestNeighborEntry(String plotId, double distanceKm) {
+			this.plotId = plotId;
+			this.distanceKm = distanceKm;
+		}
 		
+		@Override
+		public int compareTo(NearestNeighborEntry o) {
+			if (this.distanceKm > o.distanceKm) {
+				return -1;
+			} else if (this.distanceKm < o.distanceKm) {
+				return 1;
+			} else return 0;
+		}
+		
+		@Override
+		public String toString() {
+			return "Plot id = " + plotId + "; Nearest neighbor at " + distanceKm + " km.";
+		}
+		
+	}
+	
 	final SymmetricMatrix distances;
-//	private final double maximumDisdtanceKm;
 	final Map<String, Integer> plotsId;
 	private int minYearDiff = 0;
 	private int maxYearDiff = 10;
-	private double maxMin;
-	private String maxMinPlotId;
+
+	private final NearestNeighborEntryList nearestNeighbors;
 	
 	/**
 	 * Constructor. <p>
@@ -82,10 +125,8 @@ public class OccupancyIndexCalculator {
 		}
 		// calculate the distance matrix
 		distances = GeographicDistanceCalculator.getDistanceBetweenTheseCoordinates(latitudes, longitudes);
-//		maximumDistanceKm = maxDistanceKm;
 
-		maxMin = 0d;
-		maxMinPlotId = null;
+		nearestNeighbors = new NearestNeighborEntryList();
 		for (int i = 0; i < firstEntryPlots.size(); i++) {
 			OccupancyIndexCalculablePlot p = firstEntryPlots.get(i);
 			double minForThisPlot = Double.POSITIVE_INFINITY;
@@ -95,14 +136,10 @@ public class OccupancyIndexCalculator {
 					minForThisPlot = d;
 				}
 			}
-			if (minForThisPlot > maxMin) {
-				maxMin = minForThisPlot;
-				maxMinPlotId = p.getSubjectId();
-			}
+			
+			nearestNeighbors.add(new NearestNeighborEntry(p.getSubjectId(), minForThisPlot));
 		}
-//		if (maxMin > this.maximumDistanceKm) {
-//			throw new UnsupportedOperationException(getMaximumDistanceNearestPlot() + System.lineSeparator() + "It exceeds the maximum distance as set through the maxDistanceKm argument!");
-//		}
+		Collections.sort(nearestNeighbors);
 	}
 
 	/**
@@ -118,7 +155,7 @@ public class OccupancyIndexCalculator {
 	 * @return a String
 	 */
 	public String getMaximumDistanceNearestPlot() {
-		return "Plot " + maxMinPlotId + " has its nearest plot located at " + maxMin + " km.";
+		return nearestNeighbors.toString();
 	}
 	
 
@@ -149,14 +186,16 @@ public class OccupancyIndexCalculator {
 	
 	/**
 	 * Provide an estimate of the occupancy index. <p>
-	 * The method implements the design-based estimators. 
+	 * The method implements the design-based estimators. If there is only one plot in the
+	 * sample, then a GaussianEstimate with mean NaN and variance NaN is produced. 
 	 * 
 	 * @param plots the list of plots
 	 * @param thisPlot the plot of interest
 	 * @param species an enum standing for the species
 	 * @param radiusKm the radius (km) of the area upon which the occupancy is calculated
 	 * @param dateCache a Map in which the subsets of the sample are stored
-	 * @return a GaussiEstimate instance
+	 * @return a GaussiEstimate instance, the mean and variance of which are NaN if the variance
+	 * cannot be calculated, i.e. if there is only one plot within the radius.
 	 */
 	public GaussianEstimate getOccupancyIndex(List<OccupancyIndexCalculablePlot> plots, 
 			OccupancyIndexCalculablePlot thisPlot, 
@@ -199,8 +238,8 @@ public class OccupancyIndexCalculator {
 		plotsWithinDistanceWithinLast10Yrs.addAll(singletonMap.values());
 		
 		if (plotsWithinDistanceWithinLast10Yrs.size() == 1) {
-			throw new UnsupportedOperationException("The occupancy index cannot be calculated since there is only one plot in the sample!" + System.lineSeparator() +
-					getMaximumDistanceNearestPlot() + " The radius has been set to " + radiusKm + " km.");
+			Matrix nullMatrix = new Matrix(1,1,Double.NaN,0);
+			return new GaussianEstimate(nullMatrix, SymmetricMatrix.convertToSymmetricIfPossible(nullMatrix));
 		} else {
 			int n = plotsWithinDistanceWithinLast10Yrs.size();
 			PopulationMeanEstimate estimate = new PopulationMeanEstimate();
