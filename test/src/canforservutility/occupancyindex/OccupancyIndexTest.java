@@ -78,7 +78,10 @@ public class OccupancyIndexTest {
 		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots);
 		try {
 			for (int i = 0; i < plots.size(); i++) {
-				calculator.getOccupancyIndex(plots, plots.get(i), IrisSpecies.ERS, 10d);
+				GaussianEstimate occInd = calculator.getOccupancyIndex(plots, plots.get(i), IrisSpecies.ERS, 10d);
+				if (Double.isNaN(occInd.getMean().getValueAt(0, 0)) && Double.isNaN(occInd.getVariance().getValueAt(0, 0))) {
+					throw new UnsupportedOperationException("Occupancy index could not be calculated for this plot since there is only one plot within the radius!");
+				}
 			}
 			Assert.fail("Should have thrown an unsupported operation exception!");
 		} catch (UnsupportedOperationException e) {
