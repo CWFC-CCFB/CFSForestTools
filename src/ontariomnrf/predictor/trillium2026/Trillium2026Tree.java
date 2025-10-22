@@ -44,9 +44,9 @@ public interface Trillium2026Tree extends MonteCarloSimulationCompliantObject,
 		FraxinusAmericana,
 		FraxinusNigra,
 		FraxinusPennsylvanica,
-		JuglansSpp,
+		JuglansSpp,				// To be merged with meridional species
 		LarixLaricina,
-		LiriodendronTulipifera,
+		LiriodendronTulipifera, // To be merged with meridional species
 		OstryaVirginiana,
 		PiceaMariana,
 		PiceaGlauca,
@@ -59,11 +59,13 @@ public interface Trillium2026Tree extends MonteCarloSimulationCompliantObject,
 		PrunusPensylvanica,
 		PrunusSerotina,
 		QuercusRubra,
-		QuercusSpp,
+		QuercusSpp,				// To be merged with meridional species
 		ThujaOccidentalis,
 		TiliaAmericana,
 		TsugaCanadensis,
-		UlmusSpp;
+		UlmusSpp,
+		Shrubs,
+		MeridionalSpecies; 		// should further include Quercus spp, Juglans spp, Liriodendro tulipifera, Pinus rigida, Sassafras albidum
 		
 		private static Map<String, Trillium2026TreeSpecies> MatchingTrilliumSpeciesMap;
 		private static Map<String, Trillium2026TreeSpecies> SppGroupMap;
