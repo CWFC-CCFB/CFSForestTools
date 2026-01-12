@@ -241,6 +241,7 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 
 	public static void main(String[] args) {
 		MerisTreeLoggerParameters o = new MerisTreeLoggerParameters();
+		o.initializeDefaultLogCategories();
 		o.showUI(null);
 	}
 }

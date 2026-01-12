@@ -21,21 +21,51 @@ package quebecmrnfutility.treelogger.meristreelogger;
 
 import java.awt.Window;
 
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
+
+import repicea.gui.UIControlManager;
 import repicea.simulation.treelogger.TreeLoggerParametersDialog;
+import repicea.util.REpiceaTranslator;
+import repicea.util.REpiceaTranslator.TextableEnum;
 
 @SuppressWarnings("serial")
 public class MerisTreeLoggerParametersDialog extends TreeLoggerParametersDialog<MerisTreeLogCategory> {
 
+	private static enum MessageID implements TextableEnum {
+		ImportFromCSVFile("Import", "Importer");
+		
+		MessageID(String englishText, String frenchText) {
+			setText(englishText, frenchText);
+		}
+
+		@Override
+		public void setText(String englishText, String frenchText) {
+			REpiceaTranslator.setString(this, englishText, frenchText);
+		}
+		
+		@Override 
+		public String toString() {
+			return REpiceaTranslator.getString(this);
+		}
+		
+	}
+	
+	final JMenuItem importButton; 
+	
 	protected MerisTreeLoggerParametersDialog(Window window, MerisTreeLoggerParameters params) {
 		super(window, params);
 		logGradePriorityChangeEnabled = false; 
+		importButton = UIControlManager.createCommonMenuItem(MessageID.ImportFromCSVFile);
+		mnFile.add(new JSeparator());
+		mnFile.add(importButton); // TODO MF2025122 Add actionlistener to this button
 	}
 
 	@Override
 	protected void initUI() {
 		super.initUI();
-		mnFile.setEnabled(false);
-		mnEdit.setEnabled(false);
+		mnFile.setEnabled(true);
+		mnEdit.setEnabled(true);
 		mnSpecies.setEnabled(false);			//	the species cannot be changed in SybilleTreeLogger
 		mnLogGrade.setEnabled(false);			// the log grade cannot be changed either
 		mnTools.setEnabled(false);
