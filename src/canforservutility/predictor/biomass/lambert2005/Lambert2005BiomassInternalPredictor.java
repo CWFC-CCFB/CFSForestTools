@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassParameter;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ErrorCovarianceEquation;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.Version;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
 import repicea.math.Matrix;
@@ -64,7 +62,7 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 		nbTotalParms = version.nbParms * BiomassCompartment.getBasicBiomassCompartments().size();
 		parameterEstimates = new Matrix(nbTotalParms, 1);
 		parameterCovariance = new Matrix(nbTotalParms, nbTotalParms);
-		errorCovariance = new SymmetricMatrix(ErrorCovarianceEquation.errorCovarianceEquationSize);
+		errorCovariance = new SymmetricMatrix(Lambert2005BiomassPredictor.ERROR_COVARIANCE_EQUATION_LABELS.size());
 		c = new Matrix(Lambert2005BiomassPredictor.ESTIMATED_WEIGHT_LABELS.size(), 1);		
 	}
 	
@@ -81,9 +79,9 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 		c.setValueAt(index, 0, value);
 	}
 	
-	void setErrorCovariance(ErrorCovarianceEquation equation, double[] value){
-		for (int i = 0; i < ErrorCovarianceEquation.errorCovarianceEquationSize; i++)			
-			errorCovariance.setValueAt(equation.ordinal(), i, value[i]);
+	void setErrorCovariance(int index, double[] value){
+		for (int i = 0; i < value.length; i++)			
+			errorCovariance.setValueAt(index, i, value[i]);
 	}
 		
 	@Override
@@ -153,10 +151,10 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	
 	double predictSingleBiomass(Matrix beta, BiomassCompartment comp, double dbhcm, double hm) {
 		int baseIndex = comp.rank * (version == Version.Complete ? 3 : 2);
-		double term1 = beta.getValueAt(baseIndex + BiomassParameter.BETA1.ordinal(), 0);
-		double term2 = Math.pow(dbhcm, beta.getValueAt(baseIndex + BiomassParameter.BETA2.ordinal(), 0));
+		double term1 = beta.getValueAt(baseIndex, 0);
+		double term2 = Math.pow(dbhcm, beta.getValueAt(baseIndex + 1, 0));
 		double term3 = version == Version.Complete ? 
-				Math.pow(hm, beta.getValueAt(baseIndex + BiomassParameter.BETA3.ordinal(), 0)) :
+				Math.pow(hm, beta.getValueAt(baseIndex + 2, 0)) :
 					1d;
 		return term1 * term2 * term3;
 	}
