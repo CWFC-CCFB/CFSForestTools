@@ -1,4 +1,4 @@
-EstType,Parameter,awood,bwood,cwood,abark,bbark,cbark,abranch,bbranch,cbranch,afoliage,bfoliage,cfoliage,ess,esslat
+EstType,Parameter,awood,bwood,cwood,abark,bbark,cbark,abranche,bbranche,cbranche,afoliage,bfoliage,cfoliage,ess,esslat
 SUR Esti,awood,6.85E-07,6.83E-07,-9.10E-06,1.25E-07,-8.59E-08,-8.36E-06,5.81E-08,-2.80E-08,-1.87E-06,-1.16E-07,1.68E-06,-1.79E-06,Balsam Fir,AbiesBalsamea
 SUR Esti,bwood,6.83E-07,0.000265037,-0.00030434,1.58E-08,0.000233458,-0.0002641,-3.09E-07,9.168E-05,-9.20463E-05,-1.79E-06,5.61355E-05,-5.45484E-05,Balsam Fir,AbiesBalsamea
 SUR Esti,cwood,-9.10E-06,-0.00030434,0.000452604,-1.53E-06,-0.000262373,0.000399837,-3.98E-07,-0.000103413,0.000129246,2.95E-06,-8.25816E-05,8.44152E-05,Balsam Fir,AbiesBalsamea

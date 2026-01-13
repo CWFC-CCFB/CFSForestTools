@@ -1,8 +1,8 @@
 /*
  * This file is part of the CFSForesttools library
  *
- * Copyright (C) 2021 Her Majesty the Queen in right of Canada
- * Author: Jean-Francois Lavoie
+ * Copyright (C) 2021-2026 His Majesty the King in right of Canada
+ * Authors: Jean-Francois Lavoie and Mathieu Fortin, Canadian Forest Service
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,21 +25,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassParameter;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ErrorCovarianceEquation;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.EstimatedWeightDependent;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.FileImportParameter;
+import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
+import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 import repicea.stats.Distribution;
 import repicea.stats.StatisticalUtility;
 
 /**
  * Implement the biomass models in Lambert et al. (2005) for each individual species.
- * @author Jean-Francois Lavoie 2021
+ * @author <ul><li>Jean-Francois Lavoie 2021 <li>Mathieu Fortin February 2026 (refactoring)</ul>
  * @see <a href=https://doi.org/10.1139/x05-112> Lambert, M.-C., C.-H. Ung, and F. Raulier. 2005. Canadian
  * national tree aboveground biomass equations. Canadian Journal of Forest Research 35(8): 1996-2018 
  * </a>
@@ -53,33 +51,37 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	final SymmetricMatrix errorCovariance;	
 	final Matrix c;	// column vector
 	final Lambert2005Species species;
-	Matrix cholesky; 	
+	Matrix cholesky; 
+	int nbTotalParms;
+	final ModelVersion version;
 	
-	Lambert2005BiomassInternalPredictor(Lambert2005Species species, boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled){
+	Lambert2005BiomassInternalPredictor(ModelVersion v, Lambert2005Species species, boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled){
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
 		this.species = species;
-		parameterEstimates = new Matrix(FileImportParameter.fileImportParameterSize, 1);
-		parameterCovariance = new Matrix(FileImportParameter.fileImportParameterSize, FileImportParameter.fileImportParameterSize);
-		errorCovariance = new SymmetricMatrix(ErrorCovarianceEquation.errorCovarianceEquationSize);
-		c = new Matrix(EstimatedWeightDependent.values().length, 1);		
+		this.version = v;
+		nbTotalParms = version.nbParms * BiomassCompartment.getBasicBiomassCompartments().size();
+		parameterEstimates = new Matrix(nbTotalParms, 1);
+		parameterCovariance = new Matrix(nbTotalParms, nbTotalParms);
+		errorCovariance = new SymmetricMatrix(Lambert2005BiomassPredictor.ERROR_COVARIANCE_EQUATION_LABELS.size());
+		c = new Matrix(Lambert2005BiomassPredictor.ESTIMATED_WEIGHT_LABELS.size(), 1);		
 	}
 	
-	void setParameterEstimate(FileImportParameter param, double value){
-		parameterEstimates.setValueAt(param.ordinal(), 0, value);
+	void setParameterEstimate(int index, double value){
+		parameterEstimates.setValueAt(index, 0, value);
 	}
 			
-	void setParameterCovariance(FileImportParameter param, double[] value){
-		for (int i = 0; i < FileImportParameter.fileImportParameterSize; i++)			
-			parameterCovariance.setValueAt(param.ordinal(), i, value[i]);
+	void setParameterCovariance(int index, double[] value){
+		for (int i = 0; i < nbTotalParms; i++)			
+			parameterCovariance.setValueAt(index, i, value[i]);
 	}
 	
-	void setEstimatedWeight(EstimatedWeightDependent index, double value) {
-		c.setValueAt(index.ordinal(), 0, value);
+	void setEstimatedWeight(int index, double value) {
+		c.setValueAt(index, 0, value);
 	}
 	
-	void setErrorCovariance(ErrorCovarianceEquation equation, double[] value){
-		for (int i = 0; i < ErrorCovarianceEquation.errorCovarianceEquationSize; i++)			
-			errorCovariance.setValueAt(equation.ordinal(), i, value[i]);
+	void setErrorCovariance(int index, double[] value){
+		for (int i = 0; i < value.length; i++)			
+			errorCovariance.setValueAt(index, i, value[i]);
 	}
 		
 	@Override
@@ -94,7 +96,15 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 
 		SymmetricMatrix variance = SymmetricMatrix.convertToSymmetricIfPossible(parameterCovariance.getSubMatrix(validIndices, validIndices));
 		setParameterEstimates(new SASParameterEstimates(parameterEstimates, variance));
-		cholesky = errorCovariance.getLowerCholTriangle();
+		try {
+			cholesky = errorCovariance.getLowerCholTriangle();
+		} catch(UnsupportedOperationException e) {
+			Matrix m = errorCovariance.diagonalVector().elementWisePower(0.5);
+			Matrix m1 = m.multiply(m.transpose());
+			Matrix corr = errorCovariance.elementWiseDivide(m1);
+			System.err.println("Unable to calculate Cholesky decomposition for species " + this.species.name() + " with model " + version.name());
+			int u = 0;
+		}
 	}	
 	
 	Matrix getWeight(Lambert2005Tree tree) {
@@ -109,9 +119,11 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	
 	Matrix predictBiomass(Lambert2005Tree tree) {
 		
-		Matrix beta = this.getParametersForThisRealization(tree);
+		Matrix beta = getParametersForThisRealization(tree);
 		double dbhcm = tree.getDbhCm();
-		double hm = tree.getHeightM();	
+		double hm = tree.implementHeighMProvider() ? 
+				((HeightMProvider) tree).getHeightM() :
+					-999;
 		
 		List<BiomassCompartment> compValues = BiomassCompartment.getBasicBiomassCompartments(); 
 		Matrix result = new Matrix(BiomassCompartment.values().length, 1);
@@ -146,11 +158,27 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	}
 	
 	double predictSingleBiomass(Matrix beta, BiomassCompartment comp, double dbhcm, double hm) {
-		int baseIndex = comp.rank * FileImportParameter.biomassParameterSize;
-		double term1 = beta.getValueAt(baseIndex + BiomassParameter.BETA1.ordinal(), 0);
-		double term2 = Math.pow(dbhcm, beta.getValueAt(baseIndex + BiomassParameter.BETA2.ordinal(), 0));
-		double term3 = Math.pow(hm, beta.getValueAt(baseIndex + BiomassParameter.BETA3.ordinal(), 0));
-		
+		int baseIndex = comp.rank * (version == ModelVersion.Complete ? 3 : 2);
+		double term1 = beta.getValueAt(baseIndex, 0);
+		double term2 = Math.pow(dbhcm, beta.getValueAt(baseIndex + 1, 0));
+		double term3 = version == ModelVersion.Complete ? 
+				Math.pow(hm, beta.getValueAt(baseIndex + 2, 0)) :
+					1d;
 		return term1 * term2 * term3;
 	}
+
+	/*
+	 * For test purposes only.
+	 */
+	Matrix testParametersForThisRealization(Lambert2005Tree tree) {
+		return getParametersForThisRealization(tree);
+	}
+
+	/*
+	 * For test purposes only.
+	 */
+	Matrix testMeanParameters() {
+		return getParameterEstimates().getMean();
+	}
+	
 }
