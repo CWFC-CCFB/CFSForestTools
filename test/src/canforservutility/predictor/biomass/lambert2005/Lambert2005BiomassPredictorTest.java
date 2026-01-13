@@ -23,14 +23,18 @@ package canforservutility.predictor.biomass.lambert2005;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
+import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.MerchantableVolumePredictor;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableStand;
@@ -43,43 +47,33 @@ import repicea.simulation.species.REpiceaSpecies;
 import repicea.util.ObjectUtility;
 
 public class Lambert2005BiomassPredictorTest {
-	enum FileImportPrediction {
-		DBH,
-		HEIGHT,
-		OM_STEM_WOOD,
-		OM_STEM_BARK,
-		OM_BRANCHES,
-		OM_FOLIAGE_TWIGS,
-		OM_TOTAL,
-		OM_STEM,
-		OM_CROWN,
-		RESIDU_WOOD,
-		RESIDU_BARK,
-		RESIDU_STEM,
-		RESIDU_BRANCHES,
-		RESIDU_FOLIAGE,
-		RESIDU_CROWN,
-		RESIDU_TOTAL,
-		RES_WOOD,
-		RES_BARK,
-		RES_STEM,
-		RES_BRANCHES,
-		RES_FOLIAGE,
-		RES_CROWN,
-		RES_TOTAL,
-		PRED_WOOD,
-		PRED_BARK,
-		PRED_STEM,
-		PRED_BRANCHES,
-		PRED_FOLIAGE,
-		PRED_CROWN,
-		PRED_TOTAL,
-		ESS,
-		ESSLAT
+
+	private static final String DBH_FIELD = "dbh";
+	private static final String HEIGHT_FIELD = "height";
+	private static final List<String> PRED_FIELDS = new ArrayList<String>();
+	static {
+		List<BiomassCompartment> biomassCompartments = Arrays.asList(BiomassCompartment.values()); 
+		List<String> tmpList = biomassCompartments.stream().map(p -> "pred_".concat(p.name().toLowerCase())).collect(Collectors.toList());
+		PRED_FIELDS.addAll(tmpList);
 	}
-		
+
+	private static final List<String> RES_FIELDS = new ArrayList<String>();
+	static {
+		List<BiomassCompartment> biomassCompartments = Arrays.asList(BiomassCompartment.values()); 
+		List<String> tmpList = biomassCompartments.stream().map(p -> "res_".concat(p.name().toLowerCase())).collect(Collectors.toList());
+		RES_FIELDS.addAll(tmpList);
+	}
+
+	private static final List<String> OM_FIELDS = Arrays.asList(new String[] {"om_stem_wood",
+			"om_stem_bark",
+			"om_stem",
+			"om_branches",
+			"om_foliage_twigs",
+			"om_crown",
+			"om_Total"});
+	
 	@Test	
-	public void biomassPredictionsTest() throws IOException {
+	public void test01BiomassPredictionsWithCompleteModel() throws IOException {
 				
 		Lambert2005BiomassPredictor predictor = new Lambert2005BiomassPredictor(false, false);
 		
@@ -93,21 +87,20 @@ public class Lambert2005BiomassPredictorTest {
 		int csvLine = 2;
 		
 		while ((record = reader.nextRecord()) != null) {
-			String species = record[FileImportPrediction.ESSLAT.ordinal()].toString();
-			double dbhcm = Double.parseDouble(record[FileImportPrediction.DBH.ordinal()].toString());
-			double hm = Double.parseDouble(record[FileImportPrediction.HEIGHT.ordinal()].toString());
+			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
+			double hm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(HEIGHT_FIELD)].toString());
 			
-			Matrix groundtruth = new Matrix(7,1);
-			groundtruth.setValueAt(FileImportPrediction.PRED_WOOD.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_WOOD.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_BARK.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_BARK.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_STEM.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_STEM.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_BRANCHES.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_BRANCHES.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_FOLIAGE.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_FOLIAGE.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_CROWN.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_CROWN.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_TOTAL.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_TOTAL.ordinal()].toString()));
+			Matrix groundtruth = new Matrix(PRED_FIELDS.size(),1);
+			for (String f : PRED_FIELDS) {
+				int indexInFile = reader.getHeader().getIndexOfThisField(f);
+				groundtruth.setValueAt(PRED_FIELDS.indexOf(f), 
+						0, 
+						Double.parseDouble(record[indexInFile].toString()));
+			}
 						
-			Lambert2005TreeImpl tree = new Lambert2005TreeImpl(
-					Lambert2005Species.valueOf(species),
+			Lambert2005Tree tree = new Lambert2005TreeCompleteImpl(
+					Lambert2005BiomassPredictor.ENGLISH_TO_LATIN_LOOKUP_MAP.get(species),
 					dbhcm, 
 					hm);
 			
@@ -117,22 +110,18 @@ public class Lambert2005BiomassPredictorTest {
 //			System.out.println("Ground Truth : " + groundtruth.toString());
 //			System.out.println("Prediction : " + prediction.toString());
 			
-			// now compare prediction with ground truth
-			FileImportPrediction[] columns = FileImportPrediction.values();			
-			for (int i = 0; i < 7; i++) {	
-				String message ="Comparing prediction " + columns[i + FileImportPrediction.PRED_WOOD.ordinal()].toString() + " at line " + csvLine; 
+			for (int i = 0; i < PRED_FIELDS.size(); i++) {
+				String message ="Comparing prediction " + PRED_FIELDS.get(i) + " at line " + csvLine; 
 				Assert.assertEquals(message, groundtruth.getValueAt(i, 0), prediction.getValueAt(i, 0), 1E-6);
 			}
 			
 			csvLine++;
 		}
-		
 		reader.close();			
-		
 	}
-		
+	
 	@Test
-	public void biomassPredictionsWithResidualErrorTest() throws IOException {
+	public void test02BiomassPredictionsWithResidualErrorAndCompleteModel() throws IOException {
 		Lambert2005BiomassPredictor predictor = new Lambert2005BiomassPredictor(false, false);
 		
 		// read csv file
@@ -147,41 +136,38 @@ public class Lambert2005BiomassPredictorTest {
 		Map<Lambert2005Species, List<Integer>> differentLines = new HashMap<Lambert2005Species, List<Integer>>();
 		
 		while ((record = reader.nextRecord()) != null) {
-			String species = record[FileImportPrediction.ESSLAT.ordinal()].toString();
-			double dbhcm = Double.parseDouble(record[FileImportPrediction.DBH.ordinal()].toString());
-			double hm = Double.parseDouble(record[FileImportPrediction.HEIGHT.ordinal()].toString());
+			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
+			double hm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(HEIGHT_FIELD)].toString());
 			
-			Matrix groundtruth = new Matrix(7,1);
-			groundtruth.setValueAt(FileImportPrediction.PRED_WOOD.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_WOOD.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_BARK.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_BARK.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_STEM.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_STEM.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_BRANCHES.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_BRANCHES.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_FOLIAGE.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_FOLIAGE.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_CROWN.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_CROWN.ordinal()].toString()));
-			groundtruth.setValueAt(FileImportPrediction.PRED_TOTAL.ordinal() - FileImportPrediction.PRED_WOOD.ordinal(), 0, Double.parseDouble(record[FileImportPrediction.PRED_TOTAL.ordinal()].toString()));
-						
-			Matrix om = new Matrix(7,1);
-			om.setValueAt(0, 0, Double.parseDouble(record[FileImportPrediction.OM_STEM_WOOD.ordinal()].toString()));
-			om.setValueAt(1, 0, Double.parseDouble(record[FileImportPrediction.OM_STEM_BARK.ordinal()].toString()));
-			om.setValueAt(2, 0, Double.parseDouble(record[FileImportPrediction.OM_STEM.ordinal()].toString()));
-			om.setValueAt(3, 0, Double.parseDouble(record[FileImportPrediction.OM_BRANCHES.ordinal()].toString()));
-			om.setValueAt(4, 0, Double.parseDouble(record[FileImportPrediction.OM_FOLIAGE_TWIGS.ordinal()].toString()));
-			om.setValueAt(5, 0, Double.parseDouble(record[FileImportPrediction.OM_CROWN.ordinal()].toString()));
-			om.setValueAt(6, 0, Double.parseDouble(record[FileImportPrediction.OM_TOTAL.ordinal()].toString()));
+			Matrix groundtruth = new Matrix(PRED_FIELDS.size(),1);
+			for (String f : PRED_FIELDS) {
+				int indexInFile = reader.getHeader().getIndexOfThisField(f);
+				groundtruth.setValueAt(PRED_FIELDS.indexOf(f), 
+						0, 
+						Double.parseDouble(record[indexInFile].toString()));
+			}
+
+			Matrix om = new Matrix(OM_FIELDS.size(),1);
+			for (String f : OM_FIELDS) {
+				int indexInFile = reader.getHeader().getIndexOfThisField(f);
+				om.setValueAt(OM_FIELDS.indexOf(f), 
+						0, 
+						Double.parseDouble(record[indexInFile].toString()));
+			}
+
+			Matrix res = new Matrix(RES_FIELDS.size(),1);
+			for (String f : RES_FIELDS) {
+				int indexInFile = reader.getHeader().getIndexOfThisField(f);
+				res.setValueAt(RES_FIELDS.indexOf(f), 
+						0, 
+						Double.parseDouble(record[indexInFile].toString()));
+			}
 			
-			Matrix res = new Matrix(7,1);
-			res.setValueAt(0, 0, Double.parseDouble(record[FileImportPrediction.RES_WOOD.ordinal()].toString()));
-			res.setValueAt(1, 0, Double.parseDouble(record[FileImportPrediction.RES_BARK.ordinal()].toString()));
-			res.setValueAt(2, 0, Double.parseDouble(record[FileImportPrediction.RES_STEM.ordinal()].toString()));
-			res.setValueAt(3, 0, Double.parseDouble(record[FileImportPrediction.RES_BRANCHES.ordinal()].toString()));
-			res.setValueAt(4, 0, Double.parseDouble(record[FileImportPrediction.RES_FOLIAGE.ordinal()].toString()));
-			res.setValueAt(5, 0, Double.parseDouble(record[FileImportPrediction.RES_CROWN.ordinal()].toString()));
-			res.setValueAt(6, 0, Double.parseDouble(record[FileImportPrediction.RES_TOTAL.ordinal()].toString()));
-			
-			Lambert2005TreeImpl tree = new Lambert2005TreeImpl(
-					Lambert2005Species.valueOf(species),
+			Lambert2005Tree tree = new Lambert2005TreeCompleteImpl(
+					Lambert2005BiomassPredictor.ENGLISH_TO_LATIN_LOOKUP_MAP.get(species),
 					dbhcm, 
-					hm); 					
+					hm);
 			
 			Matrix prediction = predictor.predictBiomassKg(tree);
 			
@@ -193,9 +179,6 @@ public class Lambert2005BiomassPredictorTest {
 //			System.out.println("Species : " + species); 
 //			System.out.println("Ground Truth : " + res.toString());
 //			System.out.println("Residual  : " + m1.toString());
-			
-			// now compare prediction with ground truth
-			FileImportPrediction[] columns = FileImportPrediction.values();	
 								
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(1E-6)) {
@@ -219,13 +202,177 @@ public class Lambert2005BiomassPredictorTest {
 					
 		System.out.println("Total of " + nbDifferences + " lines different on " + csvLine);
 		
-		// The csv containing the residual errors to check against has 485 lines of data on 25910 that have been computed with specific 
+		// The csv containing the residual errors to check against has 116 lines of data on 25910 that have been computed with specific 
 		// weights that have been manually assigned (ref : e-mail from MC Lambert on Sept 10 2021)
-		// We expect those 485 lines to fail, but the other ones should be predicted correctly.
+		// We expect those 116 lines to fail, but the other ones should be predicted correctly.
 		Assert.assertTrue(nbDifferences == 116);
 		
 		reader.close();		
 	}
+	
+	@Test	
+	public void test03BiomassPredictionsWithReducedModel() throws IOException {
+				
+		Lambert2005BiomassPredictor predictor = new Lambert2005BiomassPredictor(false, false);
+		
+		// read csv file
+		String path = ObjectUtility.getRelativePackagePath(getClass());
+		String parmsFilename = path + "1_pred_res.csv";
+		CSVReader reader = new CSVReader(parmsFilename);
+		
+		Object[] record;
+		
+		int csvLine = 2;
+		
+		while ((record = reader.nextRecord()) != null) {
+			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
+			
+			Matrix groundtruth = new Matrix(PRED_FIELDS.size(),1);
+			for (String f : PRED_FIELDS) {
+				int indexInFile = reader.getHeader().getIndexOfThisField(f);
+				groundtruth.setValueAt(PRED_FIELDS.indexOf(f), 
+						0, 
+						Double.parseDouble(record[indexInFile].toString()));
+			}
+						
+			Lambert2005Tree tree = new Lambert2005TreeReducedImpl(
+					Lambert2005BiomassPredictor.ENGLISH_TO_LATIN_LOOKUP_MAP.get(species),
+					dbhcm);
+			
+			Matrix prediction = predictor.predictBiomassKg(tree);
+											
+//			System.out.println("Species : " + species); 
+//			System.out.println("Ground Truth : " + groundtruth.toString());
+//			System.out.println("Prediction : " + prediction.toString());
+			
+			for (int i = 0; i < PRED_FIELDS.size(); i++) {
+				String message ="Comparing prediction " + PRED_FIELDS.get(i) + " at line " + csvLine; 
+				Assert.assertEquals(message, groundtruth.getValueAt(i, 0), prediction.getValueAt(i, 0), 1E-6);
+			}
+			
+			csvLine++;
+		}
+		reader.close();			
+	}
+
+	// TODO MF20260113 Reenable this test when we have parameter estimates with more digits
+	@Ignore
+	@Test
+	public void test04BiomassPredictionsWithResidualErrorAndReducedModel() throws IOException {
+		Lambert2005BiomassPredictor predictor = new Lambert2005BiomassPredictor(false, false);
+		
+		// read csv file
+		String path = ObjectUtility.getRelativePackagePath(getClass());
+		String parmsFilename = path + "0_pred_res.csv";
+		CSVReader reader = new CSVReader(parmsFilename);
+		
+		Object[] record;
+		
+		int csvLine = 2;
+		
+		Map<Lambert2005Species, List<Integer>> differentLines = new HashMap<Lambert2005Species, List<Integer>>();
+		
+		while ((record = reader.nextRecord()) != null) {
+			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
+			
+			Matrix groundtruth = new Matrix(PRED_FIELDS.size(),1);
+			for (String f : PRED_FIELDS) {
+				int indexInFile = reader.getHeader().getIndexOfThisField(f);
+				groundtruth.setValueAt(PRED_FIELDS.indexOf(f), 
+						0, 
+						Double.parseDouble(record[indexInFile].toString()));
+			}
+
+			Matrix om = new Matrix(OM_FIELDS.size(),1);
+			for (String f : OM_FIELDS) {
+				int indexInFile = reader.getHeader().getIndexOfThisField(f);
+				om.setValueAt(OM_FIELDS.indexOf(f), 
+						0, 
+						Double.parseDouble(record[indexInFile].toString()));
+			}
+
+			Matrix res = new Matrix(RES_FIELDS.size(),1);
+			for (String f : RES_FIELDS) {
+				int indexInFile = reader.getHeader().getIndexOfThisField(f);
+				res.setValueAt(RES_FIELDS.indexOf(f), 
+						0, 
+						Double.parseDouble(record[indexInFile].toString()));
+			}
+			
+			Lambert2005Tree tree = new Lambert2005TreeReducedImpl(
+					Lambert2005BiomassPredictor.ENGLISH_TO_LATIN_LOOKUP_MAP.get(species),
+					dbhcm);
+			
+			Matrix prediction = predictor.predictBiomassKg(tree);
+			
+			Matrix w = predictor.getWeight(tree);					
+			
+			Matrix m1 = om.subtract(prediction).elementWiseDivide(w);
+			
+//			System.out.println("Processing line " + csvLine);
+//			System.out.println("Species : " + species); 
+//			System.out.println("Ground Truth : " + res.toString());
+//			System.out.println("Residual  : " + m1.toString());
+								
+			Matrix difference = res.subtract(m1).getAbsoluteValue();
+			if (difference.anyElementLargerThan(0.5)) {
+				Lambert2005Species speciesEnum = tree.getLambert2005Species(); 
+				if (!differentLines.containsKey(speciesEnum)) {
+					differentLines.put(speciesEnum, new ArrayList<Integer>());
+				}
+				differentLines.get(speciesEnum).add(csvLine);				
+			}			
+			
+			csvLine++;
+		}
+		
+//		for (Integer i : differentLines) {
+//			System.out.println("Found differences at CSV line " + i);
+//		}
+		int nbDifferences = 0;
+		for (List<Integer> diffForAParticularSpecies : differentLines.values()) {
+			nbDifferences += diffForAParticularSpecies.size();
+		}
+					
+		System.out.println("Total of " + nbDifferences + " lines different on " + csvLine);
+		
+		// The csv containing the residual errors to check against has 116 lines of data on 25910 that have been computed with specific 
+		// weights that have been manually assigned (ref : e-mail from MC Lambert on Sept 10 2021)
+		// We expect those 116 lines to fail, but the other ones should be predicted correctly.
+		Assert.assertTrue(nbDifferences == 116);
+		
+		reader.close();		
+	}
+
+	@Test
+	public void test05ParameterVariability() throws InterruptedException {
+		Lambert2005Tree tree = new Lambert2005TreeReducedImpl(Lambert2005Species.AbiesBalsamea, 20);
+		Lambert2005BiomassPredictor predictor = new Lambert2005BiomassPredictor(true);
+		List<String> errorList = new ArrayList<String>();
+		for (ModelVersion v : predictor.internalPredictors.keySet()) {
+			Map<Lambert2005Species, Lambert2005BiomassInternalPredictor> innerMap = predictor.internalPredictors.get(v);
+			for (Lambert2005Species s : innerMap.keySet()) {
+				try { 
+				Matrix betaThisReal = innerMap.get(s).testParametersForThisRealization(tree);
+				Matrix betaMean = innerMap.get(s).testMeanParameters();
+				Assert.assertTrue(betaThisReal.subtract(betaMean).getAbsoluteValue().anyElementLargerThan(1E-4));
+				} catch (UnsupportedOperationException e) {
+					errorList.add("Unable to perform Cholesky decomposition for version " + v.name() + " and species " + s.name());
+				}
+			}
+		}
+
+		if (!errorList.isEmpty()) {
+			for (String s : errorList) {
+				System.err.println(s);
+			}
+			Assert.fail("Some versions and species have troubles with the Cholesky decomposition!");
+		}
+	}
+	
+	
 	
 	
 	static class Tree extends VolumableTreeImpl implements Lambert2005Tree {
