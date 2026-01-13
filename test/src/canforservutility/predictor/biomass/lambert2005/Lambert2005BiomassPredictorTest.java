@@ -23,7 +23,9 @@ package canforservutility.predictor.biomass.lambert2005;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -142,7 +144,7 @@ public class Lambert2005BiomassPredictorTest {
 		
 		int csvLine = 2;
 		
-		List<Integer> differentLines = new ArrayList<Integer>();
+		Map<Lambert2005Species, List<Integer>> differentLines = new HashMap<Lambert2005Species, List<Integer>>();
 		
 		while ((record = reader.nextRecord()) != null) {
 			String species = record[FileImportPrediction.ESSLAT.ordinal()].toString();
@@ -197,7 +199,11 @@ public class Lambert2005BiomassPredictorTest {
 								
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(1E-6)) {
-				differentLines.add(csvLine);				
+				Lambert2005Species speciesEnum = tree.getLambert2005Species(); 
+				if (!differentLines.containsKey(speciesEnum)) {
+					differentLines.put(speciesEnum, new ArrayList<Integer>());
+				}
+				differentLines.get(speciesEnum).add(csvLine);				
 			}			
 			
 			csvLine++;
@@ -206,13 +212,17 @@ public class Lambert2005BiomassPredictorTest {
 //		for (Integer i : differentLines) {
 //			System.out.println("Found differences at CSV line " + i);
 //		}
+		int nbDifferences = 0;
+		for (List<Integer> diffForAParticularSpecies : differentLines.values()) {
+			nbDifferences += diffForAParticularSpecies.size();
+		}
 					
-		System.out.println("Total of " + differentLines.size() + " lines different on " + csvLine);
+		System.out.println("Total of " + nbDifferences + " lines different on " + csvLine);
 		
 		// The csv containing the residual errors to check against has 485 lines of data on 25910 that have been computed with specific 
 		// weights that have been manually assigned (ref : e-mail from MC Lambert on Sept 10 2021)
 		// We expect those 485 lines to fail, but the other ones should be predicted correctly.
-		Assert.assertTrue(differentLines.size() == 485);
+		Assert.assertTrue(nbDifferences == 116);
 		
 		reader.close();		
 	}

@@ -1,0 +1,289 @@
+EstType,Parameter,Estimate,StdErr,tValue,Probt,DF,ess
+SUR Esti,awood,0.052796,0.00464,11.38,<.0001,58.44,Alpine Fir
+SUR Esti,bwood,2.430882,0.0268,90.85,<.0001,58.44,Alpine Fir
+SUR Esti,abark,0.010765,0.00262,4.11,0.0001,58.44,Alpine Fir
+SUR Esti,bbark,2.3876,0.0739,32.29,<.0001,58.44,Alpine Fir
+SUR Esti,abranche,0.012139,0.00329,3.69,0.0005,58.44,Alpine Fir
+SUR Esti,bbranche,2.351866,0.0845,27.84,<.0001,58.44,Alpine Fir
+SUR Esti,afoliage,0.025058,0.00858,2.92,0.0050,58.44,Alpine Fir
+SUR Esti,bfoliage,2.038857,0.1070,19.05,<.0001,58.44,Alpine Fir
+SUR Esti,awood,0.053421,0.00166,32.10,<.0001,637.4,Balsam Fir
+SUR Esti,bwood,2.402992,0.0103,232.99,<.0001,637.4,Balsam Fir
+SUR Esti,abark,0.011472,0.000427,26.87,<.0001,637.4,Balsam Fir
+SUR Esti,bbark,2.348436,0.0127,184.87,<.0001,637.4,Balsam Fir
+SUR Esti,abranche,0.006961,0.000731,9.52,<.0001,637.4,Balsam Fir
+SUR Esti,bbranche,2.540562,0.0347,73.13,<.0001,637.4,Balsam Fir
+SUR Esti,afoliage,0.083994,0.00459,18.29,<.0001,637.4,Balsam Fir
+SUR Esti,bfoliage,1.669547,0.0199,83.85,<.0001,637.4,Balsam Fir
+SUR Esti,awood,0.050963,0.00326,15.62,<.0001,205.4,Balsam Poplar
+SUR Esti,bwood,2.452863,0.0205,119.38,<.0001,205.4,Balsam Poplar
+SUR Esti,abark,0.029683,0.00346,8.59,<.0001,205.4,Balsam Poplar
+SUR Esti,bbark,2.113052,0.0375,56.42,<.0001,205.4,Balsam Poplar
+SUR Esti,abranche,0.011997,0.00137,8.78,<.0001,205.4,Balsam Poplar
+SUR Esti,bbranche,2.416541,0.0376,64.20,<.0001,205.4,Balsam Poplar
+SUR Esti,afoliage,0.027586,0.00180,15.32,<.0001,205.4,Balsam Poplar
+SUR Esti,bfoliage,1.62147,0.0240,67.43,<.0001,205.4,Balsam Poplar
+SUR Esti,awood,0.056243,0.00448,12.54,<.0001,78.44,Basswood
+SUR Esti,bwood,2.410172,0.0227,106.31,<.0001,78.44,Basswood
+SUR Esti,abark,0.030161,0.00685,4.41,<.0001,78.44,Basswood
+SUR Esti,bbark,2.097565,0.0652,32.16,<.0001,78.44,Basswood
+SUR Esti,abranche,0.023028,0.00692,3.33,0.0013,78.44,Basswood
+SUR Esti,bbranche,2.238207,0.0888,25.20,<.0001,78.44,Basswood
+SUR Esti,afoliage,0.028844,0.00947,3.05,0.0032,78.44,Basswood
+SUR Esti,bfoliage,1.637776,0.0966,16.95,<.0001,78.44,Basswood
+SUR Esti,awood,0.147821,0.0202,7.32,<.0001,175.4,Beech
+SUR Esti,bwood,2.298603,0.0401,57.29,<.0001,175.4,Beech
+SUR Esti,abark,0.012024,0.000980,12.27,<.0001,175.4,Beech
+SUR Esti,bbark,2.238754,0.0256,87.41,<.0001,175.4,Beech
+SUR Esti,abranche,0.03703,0.00421,8.80,<.0001,175.4,Beech
+SUR Esti,bbranche,2.367951,0.0353,67.10,<.0001,175.4,Beech
+SUR Esti,afoliage,0.037565,0.00549,6.84,<.0001,175.4,Beech
+SUR Esti,bfoliage,1.61639,0.0445,36.33,<.0001,175.4,Beech
+SUR Esti,awood,0.094131,0.00725,12.98,<.0001,71.44,Black Ash
+SUR Esti,bwood,2.349108,0.0245,95.79,<.0001,71.44,Black Ash
+SUR Esti,abark,0.032311,0.00499,6.47,<.0001,71.44,Black Ash
+SUR Esti,bbark,2.076088,0.0474,43.75,<.0001,71.44,Black Ash
+SUR Esti,abranche,0.044778,0.00860,5.21,<.0001,71.44,Black Ash
+SUR Esti,bbranche,1.977072,0.0781,25.33,<.0001,71.44,Black Ash
+SUR Esti,afoliage,0.053778,0.00877,6.13,<.0001,71.44,Black Ash
+SUR Esti,bfoliage,1.358447,0.0562,24.16,<.0001,71.44,Black Ash
+SUR Esti,awood,0.374304,0.0573,6.53,<.0001,76.44,Black Cherry
+SUR Esti,bwood,1.940585,0.0472,41.12,<.0001,76.44,Black Cherry
+SUR Esti,abark,0.067933,0.0204,3.33,0.0013,76.44,Black Cherry
+SUR Esti,bbark,1.837741,0.0883,20.82,<.0001,76.44,Black Cherry
+SUR Esti,abranche,0.079606,0.0108,7.34,<.0001,76.44,Black Cherry
+SUR Esti,bbranche,2.01033,0.0483,41.65,<.0001,76.44,Black Cherry
+SUR Esti,afoliage,0.083993,0.00533,15.76,<.0001,76.44,Black Cherry
+SUR Esti,bfoliage,1.231878,0.0248,49.76,<.0001,76.44,Black Cherry
+SUR Esti,awood,0.047723,0.00103,46.40,<.0001,1532,Black Spruce
+SUR Esti,bwood,2.514703,0.00753,334.11,<.0001,1532,Black Spruce
+SUR Esti,abark,0.015332,0.000605,25.34,<.0001,1532,Black Spruce
+SUR Esti,bbark,2.24293,0.0139,161.37,<.0001,1532,Black Spruce
+SUR Esti,abranche,0.027833,0.00194,14.38,<.0001,1532,Black Spruce
+SUR Esti,bbranche,2.083869,0.0253,82.41,<.0001,1532,Black Spruce
+SUR Esti,afoliage,0.16475,0.00880,18.72,<.0001,1532,Black Spruce
+SUR Esti,bfoliage,1.414335,0.0208,67.92,<.0001,1532,Black Spruce
+SUR Esti,awood,0.061863,0.00303,20.40,<.0001,233.4,Eastern Hemlock
+SUR Esti,bwood,2.382107,0.0150,158.78,<.0001,233.4,Eastern Hemlock
+SUR Esti,abark,0.013938,0.000993,14.03,<.0001,233.4,Eastern Hemlock
+SUR Esti,bbark,2.328179,0.0210,110.73,<.0001,233.4,Eastern Hemlock
+SUR Esti,abranche,0.021674,0.00306,7.09,<.0001,233.4,Eastern Hemlock
+SUR Esti,bbranche,2.265295,0.0420,53.88,<.0001,233.4,Eastern Hemlock
+SUR Esti,afoliage,0.077561,0.00690,11.24,<.0001,233.4,Eastern Hemlock
+SUR Esti,bfoliage,1.699517,0.0292,58.12,<.0001,233.4,Eastern Hemlock
+SUR Esti,awood,0.127674,0.0126,10.13,<.0001,31.44,Eastern Red Cedar
+SUR Esti,bwood,1.977815,0.0320,61.76,<.0001,31.44,Eastern Red Cedar
+SUR Esti,abark,0.037665,0.00760,4.96,<.0001,31.44,Eastern Red Cedar
+SUR Esti,bbark,1.606373,0.0707,22.73,<.0001,31.44,Eastern Red Cedar
+SUR Esti,abranche,0.025382,0.00728,3.49,0.0015,31.44,Eastern Red Cedar
+SUR Esti,bbranche,2.288448,0.0948,24.13,<.0001,31.44,Eastern Red Cedar
+SUR Esti,afoliage,0.055004,0.0172,3.19,0.0032,31.44,Eastern Red Cedar
+SUR Esti,bfoliage,1.865585,0.1079,17.30,<.0001,31.44,Eastern Red Cedar
+SUR Esti,awood,0.06542,0.00369,17.72,<.0001,182.4,Eastern White Cedar
+SUR Esti,bwood,2.212087,0.0170,129.75,<.0001,182.4,Eastern White Cedar
+SUR Esti,abark,0.011447,0.00129,8.89,<.0001,182.4,Eastern White Cedar
+SUR Esti,bbark,2.143229,0.0348,61.52,<.0001,182.4,Eastern White Cedar
+SUR Esti,abranche,0.033485,0.00336,9.95,<.0001,182.4,Eastern White Cedar
+SUR Esti,bbranche,1.936728,0.0331,58.52,<.0001,182.4,Eastern White Cedar
+SUR Esti,afoliage,0.049914,0.00379,13.18,<.0001,182.4,Eastern White Cedar
+SUR Esti,bfoliage,1.727813,0.0265,65.13,<.0001,182.4,Eastern White Cedar
+SUR Esti,awood,0.099691,0.0129,7.72,<.0001,197.4,Eastern White Pine
+SUR Esti,bwood,2.270891,0.0350,64.90,<.0001,197.4,Eastern White Pine
+SUR Esti,abark,0.019151,0.00159,12.06,<.0001,197.4,Eastern White Pine
+SUR Esti,bbark,2.203776,0.0237,93.05,<.0001,197.4,Eastern White Pine
+SUR Esti,abranche,0.005649,0.000786,7.19,<.0001,197.4,Eastern White Pine
+SUR Esti,bbranche,2.601056,0.0381,68.26,<.0001,197.4,Eastern White Pine
+SUR Esti,afoliage,0.028419,0.00237,11.99,<.0001,197.4,Eastern White Pine
+SUR Esti,bfoliage,1.937535,0.0248,78.17,<.0001,197.4,Eastern White Pine
+SUR Esti,awood,0.071977,0.00434,16.60,<.0001,41.44,Grey Birch
+SUR Esti,bwood,2.388455,0.0223,107.12,<.0001,41.44,Grey Birch
+SUR Esti,abark,0.016773,0.00113,14.83,<.0001,41.44,Grey Birch
+SUR Esti,bbark,2.256917,0.0304,74.26,<.0001,41.44,Grey Birch
+SUR Esti,abranche,0.008826,0.00266,3.32,0.0019,41.44,Grey Birch
+SUR Esti,bbranche,2.568916,0.1188,21.63,<.0001,41.44,Grey Birch
+SUR Esti,afoliage,0.009939,0.00197,5.05,<.0001,41.44,Grey Birch
+SUR Esti,bfoliage,1.898453,0.0820,23.17,<.0001,41.44,Grey Birch
+SUR Esti,awood,0.211616,0.0547,3.87,0.0002,74.44,Hickory
+SUR Esti,bwood,2.201252,0.0776,28.37,<.0001,74.44,Hickory
+SUR Esti,abark,0.036495,0.00461,7.92,<.0001,74.44,Hickory
+SUR Esti,bbark,2.113325,0.0397,53.28,<.0001,74.44,Hickory
+SUR Esti,abranche,0.008658,0.00250,3.46,0.0009,74.44,Hickory
+SUR Esti,bbranche,2.892655,0.0892,32.43,<.0001,74.44,Hickory
+SUR Esti,afoliage,0.017271,0.00297,5.81,<.0001,74.44,Hickory
+SUR Esti,bfoliage,1.983032,0.0517,38.37,<.0001,74.44,Hickory
+SUR Esti,awood,0.19294,0.0431,4.47,0.0008,12.44,Hop-Hornbeam
+SUR Esti,bwood,1.967188,0.0833,23.60,<.0001,12.44,Hop-Hornbeam
+SUR Esti,abark,0.067092,0.0201,3.34,0.0059,12.44,Hop-Hornbeam
+SUR Esti,bbark,1.591084,0.1317,12.08,<.0001,12.44,Hop-Hornbeam
+SUR Esti,abranche,0.02777,0.0110,2.52,0.0267,12.44,Hop-Hornbeam
+SUR Esti,bbranche,2.133614,0.1417,15.06,<.0001,12.44,Hop-Hornbeam
+SUR Esti,afoliage,0.029328,0.00805,3.64,0.0034,12.44,Hop-Hornbeam
+SUR Esti,bfoliage,1.950198,0.1018,19.15,<.0001,12.44,Hop-Hornbeam
+SUR Esti,awood,0.080378,0.00420,19.16,<.0001,362.4,Jack Pine
+SUR Esti,bwood,2.404091,0.0168,142.85,<.0001,362.4,Jack Pine
+SUR Esti,abark,0.018384,0.000902,20.37,<.0001,362.4,Jack Pine
+SUR Esti,bbark,2.070306,0.0165,125.82,<.0001,362.4,Jack Pine
+SUR Esti,abranche,0.007879,0.00115,6.86,<.0001,362.4,Jack Pine
+SUR Esti,bbranche,2.415534,0.0486,49.69,<.0001,362.4,Jack Pine
+SUR Esti,afoliage,0.038894,0.00286,13.62,<.0001,362.4,Jack Pine
+SUR Esti,bfoliage,1.729001,0.0251,68.94,<.0001,362.4,Jack Pine
+SUR Esti,awood,0.095882,0.0144,6.64,<.0001,98.44,Largetooth Aspen
+SUR Esti,bwood,2.342988,0.0483,48.50,<.0001,98.44,Largetooth Aspen
+SUR Esti,abark,0.03075,0.00353,8.72,<.0001,98.44,Largetooth Aspen
+SUR Esti,bbark,2.223977,0.0388,57.28,<.0001,98.44,Largetooth Aspen
+SUR Esti,abranche,0.004724,0.000600,7.87,<.0001,98.44,Largetooth Aspen
+SUR Esti,bbranche,2.652987,0.0435,61.02,<.0001,98.44,Largetooth Aspen
+SUR Esti,afoliage,0.008043,0.00156,5.15,<.0001,98.44,Largetooth Aspen
+SUR Esti,bfoliage,2.014858,0.0629,32.01,<.0001,98.44,Largetooth Aspen
+SUR Esti,awood,0.047517,0.00286,16.63,<.0001,199.4,Lodgepole Pine
+SUR Esti,bwood,2.543685,0.0190,133.82,<.0001,199.4,Lodgepole Pine
+SUR Esti,abark,0.018606,0.00181,10.26,<.0001,199.4,Lodgepole Pine
+SUR Esti,bbark,2.080659,0.0319,65.17,<.0001,199.4,Lodgepole Pine
+SUR Esti,abranche,0.019811,0.00274,7.24,<.0001,199.4,Lodgepole Pine
+SUR Esti,bbranche,2.128664,0.0499,42.67,<.0001,199.4,Lodgepole Pine
+SUR Esti,afoliage,0.043158,0.00514,8.40,<.0001,199.4,Lodgepole Pine
+SUR Esti,bfoliage,1.716606,0.0410,41.86,<.0001,199.4,Lodgepole Pine
+SUR Esti,awood,0.157109,0.0287,5.47,<.0001,25.44,Red Ash
+SUR Esti,bwood,2.181727,0.0572,38.14,<.0001,25.44,Red Ash
+SUR Esti,abark,0.041619,0.00753,5.53,<.0001,25.44,Red Ash
+SUR Esti,bbark,2.050863,0.0592,34.62,<.0001,25.44,Red Ash
+SUR Esti,abranche,0.017731,0.00585,3.03,0.0056,25.44,Red Ash
+SUR Esti,bbranche,2.337001,0.1025,22.81,<.0001,25.44,Red Ash
+SUR Esti,afoliage,0.104074,0.0259,4.01,0.0005,25.44,Red Ash
+SUR Esti,bfoliage,1.218501,0.0778,15.66,<.0001,25.44,Red Ash
+SUR Esti,awood,0.101396,0.00520,19.49,<.0001,175.4,Red Maple
+SUR Esti,bwood,2.344786,0.0173,135.41,<.0001,175.4,Red Maple
+SUR Esti,abark,0.029124,0.00270,10.78,<.0001,175.4,Red Maple
+SUR Esti,bbark,2.08927,0.0320,65.30,<.0001,175.4,Red Maple
+SUR Esti,abranche,0.017483,0.00340,5.14,<.0001,175.4,Red Maple
+SUR Esti,bbranche,2.484637,0.0603,41.23,<.0001,175.4,Red Maple
+SUR Esti,afoliage,0.051515,0.00653,7.89,<.0001,175.4,Red Maple
+SUR Esti,bfoliage,1.519761,0.0400,37.99,<.0001,175.4,Red Maple
+SUR Esti,awood,0.175443,0.0149,11.77,<.0001,115.4,Red Oak
+SUR Esti,bwood,2.16159,0.0267,81.05,<.0001,115.4,Red Oak
+SUR Esti,abark,0.038055,0.00508,7.49,<.0001,115.4,Red Oak
+SUR Esti,bbark,2.099071,0.0403,52.06,<.0001,115.4,Red Oak
+SUR Esti,abranche,0.008511,0.00282,3.02,0.0031,115.4,Red Oak
+SUR Esti,bbranche,2.77901,0.0979,28.37,<.0001,115.4,Red Oak
+SUR Esti,afoliage,0.037251,0.00290,12.87,<.0001,115.4,Red Oak
+SUR Esti,bfoliage,1.67396,0.0268,62.38,<.0001,115.4,Red Oak
+SUR Esti,awood,0.056421,0.00344,16.40,<.0001,369.4,Red Pine
+SUR Esti,bwood,2.446541,0.0192,127.56,<.0001,369.4,Red Pine
+SUR Esti,abark,0.018768,0.000578,32.49,<.0001,369.4,Red Pine
+SUR Esti,bbark,2.052712,0.0102,200.79,<.0001,369.4,Red Pine
+SUR Esti,abranche,0.003282,0.000485,6.77,<.0001,369.4,Red Pine
+SUR Esti,bbranche,2.751454,0.0455,60.49,<.0001,369.4,Red Pine
+SUR Esti,afoliage,0.021208,0.00137,15.52,<.0001,369.4,Red Pine
+SUR Esti,bfoliage,2.068954,0.0204,101.65,<.0001,369.4,Red Pine
+SUR Esti,awood,0.098905,0.00677,14.61,<.0001,53.44,Red Spruce
+SUR Esti,bwood,2.281374,0.0212,107.39,<.0001,53.44,Red Spruce
+SUR Esti,abark,0.022036,0.00168,13.11,<.0001,53.44,Red Spruce
+SUR Esti,bbark,2.090844,0.0257,81.51,<.0001,53.44,Red Spruce
+SUR Esti,abranche,0.000528,0.000105,5.04,<.0001,53.44,Red Spruce
+SUR Esti,bbranche,3.274989,0.0591,55.38,<.0001,53.44,Red Spruce
+SUR Esti,afoliage,0.006559,0.00119,5.50,<.0001,53.44,Red Spruce
+SUR Esti,bfoliage,2.421292,0.0545,44.43,<.0001,53.44,Red Spruce
+SUR Esti,awood,0.232421,0.0326,7.13,<.0001,38.44,Silver Maple
+SUR Esti,bwood,2.100026,0.0398,52.79,<.0001,38.44,Silver Maple
+SUR Esti,abark,0.027801,0.00227,12.24,<.0001,38.44,Silver Maple
+SUR Esti,bbark,2.04328,0.0262,77.96,<.0001,38.44,Silver Maple
+SUR Esti,abranche,0.002834,0.00103,2.74,0.0092,38.44,Silver Maple
+SUR Esti,bbranche,3.102009,0.1059,29.29,<.0001,38.44,Silver Maple
+SUR Esti,afoliage,0.143005,0.0545,2.62,0.0125,38.44,Silver Maple
+SUR Esti,bfoliage,1.258041,0.1091,11.53,<.0001,38.44,Silver Maple
+SUR Esti,awood,0.131464,0.00836,15.73,<.0001,233.4,Sugar Maple
+SUR Esti,bwood,2.31291,0.0182,126.87,<.0001,233.4,Sugar Maple
+SUR Esti,abark,0.063077,0.0103,6.15,<.0001,233.4,Sugar Maple
+SUR Esti,bbark,1.924131,0.0464,41.45,<.0001,233.4,Sugar Maple
+SUR Esti,abranche,0.032956,0.00380,8.67,<.0001,233.4,Sugar Maple
+SUR Esti,bbranche,2.374076,0.0341,69.58,<.0001,233.4,Sugar Maple
+SUR Esti,afoliage,0.039291,0.00241,16.30,<.0001,233.4,Sugar Maple
+SUR Esti,bfoliage,1.69304,0.0196,86.18,<.0001,233.4,Sugar Maple
+SUR Esti,awood,0.062455,0.00276,22.60,<.0001,573.4,Tamarack Larch
+SUR Esti,bwood,2.447484,0.0153,159.67,<.0001,573.4,Tamarack Larch
+SUR Esti,abark,0.01742,0.000501,34.79,<.0001,573.4,Tamarack Larch
+SUR Esti,bbark,2.110891,0.0101,209.94,<.0001,573.4,Tamarack Larch
+SUR Esti,abranche,0.019626,0.00146,13.42,<.0001,573.4,Tamarack Larch
+SUR Esti,bbranche,2.265247,0.0269,84.09,<.0001,573.4,Tamarack Larch
+SUR Esti,afoliage,0.080135,0.00628,12.76,<.0001,573.4,Tamarack Larch
+SUR Esti,bfoliage,1.487489,0.0291,51.05,<.0001,573.4,Tamarack Larch
+SUR Esti,awood,0.060463,0.00292,20.70,<.0001,771.4,Trembling Aspen
+SUR Esti,bwood,2.475048,0.0155,160.17,<.0001,771.4,Trembling Aspen
+SUR Esti,abark,0.01684,0.000733,22.96,<.0001,771.4,Trembling Aspen
+SUR Esti,bbark,2.394914,0.0143,167.82,<.0001,771.4,Trembling Aspen
+SUR Esti,abranche,0.007997,0.000823,9.71,<.0001,771.4,Trembling Aspen
+SUR Esti,bbranche,2.521351,0.0333,75.69,<.0001,771.4,Trembling Aspen
+SUR Esti,afoliage,0.026098,0.00358,7.30,<.0001,771.4,Trembling Aspen
+SUR Esti,bfoliage,1.630431,0.0439,37.15,<.0001,771.4,Trembling Aspen
+SUR Esti,awood,0.18608,0.0142,13.08,<.0001,107.4,White Ash
+SUR Esti,bwood,2.166526,0.0251,86.25,<.0001,107.4,White Ash
+SUR Esti,abark,0.04065,0.00397,10.25,<.0001,107.4,White Ash
+SUR Esti,bbark,1.994644,0.0308,64.67,<.0001,107.4,White Ash
+SUR Esti,abranche,0.046138,0.0102,4.54,<.0001,107.4,White Ash
+SUR Esti,bbranche,2.229112,0.0695,32.07,<.0001,107.4,White Ash
+SUR Esti,afoliage,0.110572,0.0276,4.00,0.0001,107.4,White Ash
+SUR Esti,bfoliage,1.227686,0.0753,16.30,<.0001,107.4,White Ash
+SUR Esti,awood,0.059261,0.00204,29.02,<.0001,604.4,White Birch
+SUR Esti,bwood,2.502584,0.0114,219.68,<.0001,604.4,White Birch
+SUR Esti,abark,0.013466,0.000769,17.50,<.0001,604.4,White Birch
+SUR Esti,bbark,2.405279,0.0193,124.39,<.0001,604.4,White Birch
+SUR Esti,abranche,0.013514,0.000918,14.72,<.0001,604.4,White Birch
+SUR Esti,bbranche,2.553199,0.0231,110.72,<.0001,604.4,White Birch
+SUR Esti,afoliage,0.054586,0.00278,19.61,<.0001,604.4,White Birch
+SUR Esti,bfoliage,1.6351,0.0189,86.61,<.0001,604.4,White Birch
+SUR Esti,awood,0.040248,0.00404,9.97,<.0001,79.44,White Elm
+SUR Esti,bwood,2.580427,0.0286,90.11,<.0001,79.44,White Elm
+SUR Esti,abark,0.007282,0.00235,3.10,0.0027,79.44,White Elm
+SUR Esti,bbark,2.485893,0.0974,25.51,<.0001,79.44,White Elm
+SUR Esti,abranche,0.040117,0.00422,9.52,<.0001,79.44,White Elm
+SUR Esti,bbranche,2.182586,0.0356,61.37,<.0001,79.44,White Elm
+SUR Esti,afoliage,0.075041,0.00305,24.59,<.0001,79.44,White Elm
+SUR Esti,bfoliage,1.34361,0.0164,82.06,<.0001,79.44,White Elm
+SUR Esti,awood,0.076186,0.00816,9.34,<.0001,59.44,White Oak
+SUR Esti,bwood,2.333491,0.0373,62.48,<.0001,59.44,White Oak
+SUR Esti,abark,0.033764,0.00190,17.80,<.0001,59.44,White Oak
+SUR Esti,bbark,1.984477,0.0181,109.80,<.0001,59.44,White Oak
+SUR Esti,abranche,0.011281,0.00230,4.91,<.0001,59.44,White Oak
+SUR Esti,bbranche,2.621115,0.0583,44.93,<.0001,59.44,White Oak
+SUR Esti,afoliage,0.018771,0.00414,4.53,<.0001,59.44,White Oak
+SUR Esti,bfoliage,1.788122,0.0671,26.65,<.0001,59.44,White Oak
+SUR Esti,awood,0.035908,0.000900,39.89,<.0001,830.4,White Spruce
+SUR Esti,bwood,2.577466,0.00878,293.53,<.0001,830.4,White Spruce
+SUR Esti,abark,0.011576,0.000461,25.09,<.0001,830.4,White Spruce
+SUR Esti,bbark,2.302158,0.0140,164.78,<.0001,830.4,White Spruce
+SUR Esti,abranche,0.028278,0.00172,16.44,<.0001,830.4,White Spruce
+SUR Esti,bbranche,2.082343,0.0222,93.91,<.0001,830.4,White Spruce
+SUR Esti,afoliage,0.160068,0.00847,18.89,<.0001,830.4,White Spruce
+SUR Esti,bfoliage,1.467043,0.0184,79.64,<.0001,830.4,White Spruce
+SUR Esti,awood,0.193224,0.0193,10.00,<.0001,278.4,Yellow Birch
+SUR Esti,bwood,2.156912,0.0269,80.21,<.0001,278.4,Yellow Birch
+SUR Esti,abark,0.019226,0.00166,11.55,<.0001,278.4,Yellow Birch
+SUR Esti,bbark,2.24748,0.0243,92.40,<.0001,278.4,Yellow Birch
+SUR Esti,abranche,0.03053,0.00237,12.89,<.0001,278.4,Yellow Birch
+SUR Esti,bbranche,2.404354,0.0230,104.75,<.0001,278.4,Yellow Birch
+SUR Esti,afoliage,0.111861,0.0121,9.28,<.0001,278.4,Yellow Birch
+SUR Esti,bfoliage,1.397341,0.0313,44.63,<.0001,278.4,Yellow Birch
+SUR Esti,awood,0.087096,0.00146,59.61,<.0001,3352,feuillu
+SUR Esti,bwood,2.370244,0.00516,459.61,<.0001,3352,feuillu
+SUR Esti,abark,0.024062,0.000912,26.39,<.0001,3352,feuillu
+SUR Esti,bbark,2.196945,0.0116,188.63,<.0001,3352,feuillu
+SUR Esti,abranche,0.016716,0.000669,24.98,<.0001,3352,feuillu
+SUR Esti,bbranche,2.480691,0.0131,189.23,<.0001,3352,feuillu
+SUR Esti,afoliage,0.03902,0.000922,42.31,<.0001,3352,feuillu
+SUR Esti,bfoliage,1.622917,0.00830,195.64,<.0001,3352,feuillu
+SUR Esti,awood,0.06476,0.00121,53.44,<.0001,5280,resineux
+SUR Esti,bwood,2.392745,0.00609,392.73,<.0001,5280,resineux
+SUR Esti,abark,0.016166,0.000243,66.54,<.0001,5280,resineux
+SUR Esti,bbark,2.195871,0.00546,402.38,<.0001,5280,resineux
+SUR Esti,abranche,0.015621,0.000510,30.63,<.0001,5280,resineux
+SUR Esti,bbranche,2.291616,0.0108,212.56,<.0001,5280,resineux
+SUR Esti,afoliage,0.086072,0.00246,35.02,<.0001,5280,resineux
+SUR Esti,bfoliage,1.626055,0.0100,162.32,<.0001,5280,resineux
+SUR Esti,awood,0.078703,0.00125,63.00,<.0001,8634,all
+SUR Esti,bwood,2.370169,0.00509,465.98,<.0001,8634,all
+SUR Esti,abark,0.018461,0.000219,84.27,<.0001,8634,all
+SUR Esti,bbark,2.215911,0.00413,537.05,<.0001,8634,all
+SUR Esti,abranche,0.023016,0.000607,37.89,<.0001,8634,all
+SUR Esti,bbranche,2.267763,0.00966,234.71,<.0001,8634,all
+SUR Esti,afoliage,0.07666,0.00205,37.32,<.0001,8634,all
+SUR Esti,bfoliage,1.572003,0.00956,164.44,<.0001,8634,all

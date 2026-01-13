@@ -27,13 +27,13 @@ import java.util.List;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassParameter;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ErrorCovarianceEquation;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.EstimatedWeightDependent;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.FileImportParameter;
+import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.Version;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
+import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 import repicea.stats.Distribution;
 import repicea.stats.StatisticalUtility;
 
@@ -53,28 +53,32 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	final SymmetricMatrix errorCovariance;	
 	final Matrix c;	// column vector
 	final Lambert2005Species species;
-	Matrix cholesky; 	
+	Matrix cholesky; 
+	int nbTotalParms;
+	final Version version;
 	
-	Lambert2005BiomassInternalPredictor(Lambert2005Species species, boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled){
+	Lambert2005BiomassInternalPredictor(Version v, Lambert2005Species species, boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled){
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
 		this.species = species;
-		parameterEstimates = new Matrix(FileImportParameter.fileImportParameterSize, 1);
-		parameterCovariance = new Matrix(FileImportParameter.fileImportParameterSize, FileImportParameter.fileImportParameterSize);
+		this.version = v;
+		nbTotalParms = version.nbParms * BiomassCompartment.getBasicBiomassCompartments().size();
+		parameterEstimates = new Matrix(nbTotalParms, 1);
+		parameterCovariance = new Matrix(nbTotalParms, nbTotalParms);
 		errorCovariance = new SymmetricMatrix(ErrorCovarianceEquation.errorCovarianceEquationSize);
-		c = new Matrix(EstimatedWeightDependent.values().length, 1);		
+		c = new Matrix(Lambert2005BiomassPredictor.ESTIMATED_WEIGHT_LABELS.size(), 1);		
 	}
 	
-	void setParameterEstimate(FileImportParameter param, double value){
-		parameterEstimates.setValueAt(param.ordinal(), 0, value);
+	void setParameterEstimate(int index, double value){
+		parameterEstimates.setValueAt(index, 0, value);
 	}
 			
-	void setParameterCovariance(FileImportParameter param, double[] value){
-		for (int i = 0; i < FileImportParameter.fileImportParameterSize; i++)			
-			parameterCovariance.setValueAt(param.ordinal(), i, value[i]);
+	void setParameterCovariance(int index, double[] value){
+		for (int i = 0; i < nbTotalParms; i++)			
+			parameterCovariance.setValueAt(index, i, value[i]);
 	}
 	
-	void setEstimatedWeight(EstimatedWeightDependent index, double value) {
-		c.setValueAt(index.ordinal(), 0, value);
+	void setEstimatedWeight(int index, double value) {
+		c.setValueAt(index, 0, value);
 	}
 	
 	void setErrorCovariance(ErrorCovarianceEquation equation, double[] value){
@@ -111,7 +115,9 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 		
 		Matrix beta = this.getParametersForThisRealization(tree);
 		double dbhcm = tree.getDbhCm();
-		double hm = tree.getHeightM();	
+		double hm = tree.implementHeighMProvider() ? 
+				((HeightMProvider) tree).getHeightM() :
+					-999;
 		
 		List<BiomassCompartment> compValues = BiomassCompartment.getBasicBiomassCompartments(); 
 		Matrix result = new Matrix(BiomassCompartment.values().length, 1);
@@ -146,11 +152,12 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	}
 	
 	double predictSingleBiomass(Matrix beta, BiomassCompartment comp, double dbhcm, double hm) {
-		int baseIndex = comp.rank * FileImportParameter.biomassParameterSize;
+		int baseIndex = comp.rank * (version == Version.Complete ? 3 : 2);
 		double term1 = beta.getValueAt(baseIndex + BiomassParameter.BETA1.ordinal(), 0);
 		double term2 = Math.pow(dbhcm, beta.getValueAt(baseIndex + BiomassParameter.BETA2.ordinal(), 0));
-		double term3 = Math.pow(hm, beta.getValueAt(baseIndex + BiomassParameter.BETA3.ordinal(), 0));
-		
+		double term3 = version == Version.Complete ? 
+				Math.pow(hm, beta.getValueAt(baseIndex + BiomassParameter.BETA3.ordinal(), 0)) :
+					1d;
 		return term1 * term2 * term3;
 	}
 }

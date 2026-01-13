@@ -22,8 +22,9 @@
 package canforservutility.predictor.biomass.lambert2005;
 
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 
-public class Lambert2005TreeImpl implements Lambert2005Tree {
+class Lambert2005TreeImpl implements Lambert2005Tree, HeightMProvider {
 
 	Lambert2005Species species;
 	double dbhcm;
@@ -36,38 +37,24 @@ public class Lambert2005TreeImpl implements Lambert2005Tree {
 	}
 	
 	@Override
-	public double getDbhCm() {
-		// TODO Auto-generated method stub
-		return dbhcm;
-	}
+	public double getDbhCm() {return dbhcm;}
 
 	@Override
-	public double getHeightM() {
-		// TODO Auto-generated method stub
-		return hm;
-	}
+	public double getHeightM() {return hm;}
 
 	@Override
 	public String getSubjectId() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public HierarchicalLevel getHierarchicalLevel() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int getMonteCarloRealizationId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public int getMonteCarloRealizationId() {return 0;}
 
 	@Override
-	public Lambert2005Species getLambert2005Species() {
-		// TODO Auto-generated method stub
-		return species;
-	}
+	public Lambert2005Species getLambert2005Species() {return species;}
 }

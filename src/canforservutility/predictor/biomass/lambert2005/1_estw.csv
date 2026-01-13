@@ -1,0 +1,253 @@
+Dependent,Estimate,Probt,ess
+wood2,2.44215,<.0001,Alpine Fir
+bark2,2.86839,<.0001,Alpine Fir
+stem2,2.66757,<.0001,Alpine Fir
+branches2,3.79687,<.0001,Alpine Fir
+foliage2,2.87570,<.0001,Alpine Fir
+crown2,3.32461,<.0001,Alpine Fir
+total2,2.44397,<.0001,Alpine Fir
+wood2,4.03502,<.0001,Balsam Fir
+bark2,4.08280,<.0001,Balsam Fir
+stem2,4.03444,<.0001,Balsam Fir
+branches2,3.90440,<.0001,Balsam Fir
+foliage2,2.41406,<.0001,Balsam Fir
+crown2,3.49173,<.0001,Balsam Fir
+total2,3.62676,<.0001,Balsam Fir
+wood2,4.48525,<.0001,Balsam Poplar
+bark2,3.86089,<.0001,Balsam Poplar
+stem2,3.90218,<.0001,Balsam Poplar
+branches2,4.27250,<.0001,Balsam Poplar
+foliage2,2.96785,<.0001,Balsam Poplar
+crown2,4.43433,<.0001,Balsam Poplar
+total2,4.01816,<.0001,Balsam Poplar
+wood2,3.13671,<.0001,Basswood
+bark2,3.01846,<.0001,Basswood
+stem2,3.03742,<.0001,Basswood
+branches2,3.80417,<.0001,Basswood
+foliage2,2.60568,<.0001,Basswood
+crown2,3.60366,<.0001,Basswood
+total2,2.91250,<.0001,Basswood
+wood2,2.85310,<.0001,Beech
+bark2,3.35432,<.0001,Beech
+stem2,2.85949,<.0001,Beech
+branches2,3.90187,<.0001,Beech
+foliage2,1.31874,<.0001,Beech
+crown2,3.43317,<.0001,Beech
+total2,2.92357,<.0001,Beech
+wood2,3.95600,<.0001,Black Ash
+bark2,2.31009,<.0001,Black Ash
+stem2,3.43177,<.0001,Black Ash
+branches2,3.92735,<.0001,Black Ash
+foliage2,1.34784,0.0008,Black Ash
+crown2,3.59142,<.0001,Black Ash
+total2,3.81860,<.0001,Black Ash
+wood2,1.60628,<.0001,Black Cherry
+bark2,1.58388,<.0001,Black Cherry
+stem2,1.56433,<.0001,Black Cherry
+branches2,4.27971,<.0001,Black Cherry
+foliage2,2.20270,<.0001,Black Cherry
+crown2,4.38762,<.0001,Black Cherry
+total2,1.52058,0.0002,Black Cherry
+wood2,3.29886,<.0001,Black Spruce
+bark2,3.04617,<.0001,Black Spruce
+stem2,3.19487,<.0001,Black Spruce
+branches2,3.42846,<.0001,Black Spruce
+foliage2,2.78246,<.0001,Black Spruce
+crown2,3.10429,<.0001,Black Spruce
+total2,3.54848,<.0001,Black Spruce
+wood2,4.57701,<.0001,Eastern Hemlock
+bark2,4.09848,<.0001,Eastern Hemlock
+stem2,4.31327,<.0001,Eastern Hemlock
+branches2,3.39699,<.0001,Eastern Hemlock
+foliage2,3.43038,<.0001,Eastern Hemlock
+crown2,3.27876,<.0001,Eastern Hemlock
+total2,3.60364,<.0001,Eastern Hemlock
+wood2,1.91687,0.0137,Eastern Red Cedar
+bark2,1.35749,0.0122,Eastern Red Cedar
+stem2,1.76302,0.0073,Eastern Red Cedar
+branches2,2.91511,<.0001,Eastern Red Cedar
+foliage2,2.70227,<.0001,Eastern Red Cedar
+crown2,2.25446,0.0003,Eastern Red Cedar
+total2,1.53502,0.0042,Eastern Red Cedar
+wood2,2.78390,<.0001,Eastern White Cedar
+bark2,3.28583,<.0001,Eastern White Cedar
+stem2,2.98533,<.0001,Eastern White Cedar
+branches2,3.70437,<.0001,Eastern White Cedar
+foliage2,2.93894,<.0001,Eastern White Cedar
+crown2,3.34684,<.0001,Eastern White Cedar
+total2,2.95717,<.0001,Eastern White Cedar
+wood2,2.65808,<.0001,Eastern White Pine
+bark2,3.74837,<.0001,Eastern White Pine
+stem2,2.79422,<.0001,Eastern White Pine
+branches2,3.70768,<.0001,Eastern White Pine
+foliage2,3.25077,<.0001,Eastern White Pine
+crown2,4.03668,<.0001,Eastern White Pine
+total2,2.75840,<.0001,Eastern White Pine
+wood2,3.10592,<.0001,Grey Birch
+bark2,3.30291,<.0001,Grey Birch
+stem2,3.18261,<.0001,Grey Birch
+branches2,4.10396,<.0001,Grey Birch
+foliage2,2.90239,<.0001,Grey Birch
+crown2,3.88447,<.0001,Grey Birch
+total2,3.91647,<.0001,Grey Birch
+wood2,2.40307,<.0001,Hickory
+bark2,2.88902,<.0001,Hickory
+stem2,2.42334,<.0001,Hickory
+branches2,4.46458,<.0001,Hickory
+foliage2,2.63108,<.0001,Hickory
+crown2,4.38138,<.0001,Hickory
+total2,2.76086,<.0001,Hickory
+wood2,3.97947,0.1315,Hop-Hornbeam
+bark2,3.10184,0.1255,Hop-Hornbeam
+stem2,4.23694,0.1687,Hop-Hornbeam
+branches2,1.29374,0.4210,Hop-Hornbeam
+foliage2,0.45804,0.8154,Hop-Hornbeam
+crown2,-0.20892,0.9002,Hop-Hornbeam
+total2,2.72695,0.0117,Hop-Hornbeam
+wood2,3.27775,<.0001,Jack Pine
+bark2,3.40355,<.0001,Jack Pine
+stem2,3.26039,<.0001,Jack Pine
+branches2,4.29048,<.0001,Jack Pine
+foliage2,2.82226,<.0001,Jack Pine
+crown2,3.96567,<.0001,Jack Pine
+total2,3.38335,<.0001,Jack Pine
+wood2,2.16102,<.0001,Largetooth Aspen
+bark2,2.95264,<.0001,Largetooth Aspen
+stem2,2.29249,<.0001,Largetooth Aspen
+branches2,5.08492,<.0001,Largetooth Aspen
+foliage2,2.11228,<.0001,Largetooth Aspen
+crown2,3.99956,<.0001,Largetooth Aspen
+total2,2.34890,<.0001,Largetooth Aspen
+wood2,3.53775,<.0001,Lodgepole Pine
+bark2,2.56842,<.0001,Lodgepole Pine
+stem2,3.18080,<.0001,Lodgepole Pine
+branches2,3.99135,<.0001,Lodgepole Pine
+foliage2,2.66643,<.0001,Lodgepole Pine
+crown2,3.38768,<.0001,Lodgepole Pine
+total2,3.00311,<.0001,Lodgepole Pine
+wood2,2.01242,0.0008,Red Ash
+bark2,2.46679,0.0061,Red Ash
+stem2,2.04414,0.0006,Red Ash
+branches2,2.68339,0.0018,Red Ash
+foliage2,1.25744,0.0976,Red Ash
+crown2,3.93566,0.0006,Red Ash
+total2,1.86575,0.0444,Red Ash
+wood2,4.41115,<.0001,Red Maple
+bark2,4.45732,<.0001,Red Maple
+stem2,4.31451,<.0001,Red Maple
+branches2,3.69936,<.0001,Red Maple
+foliage2,1.75424,<.0001,Red Maple
+crown2,3.55719,<.0001,Red Maple
+total2,4.25114,<.0001,Red Maple
+wood2,3.23181,<.0001,Red Oak
+bark2,2.77700,<.0001,Red Oak
+stem2,3.06744,<.0001,Red Oak
+branches2,3.94245,<.0001,Red Oak
+foliage2,2.81168,<.0001,Red Oak
+crown2,3.92822,<.0001,Red Oak
+total2,3.64278,<.0001,Red Oak
+wood2,4.29428,<.0001,Red Pine
+bark2,3.68291,<.0001,Red Pine
+stem2,4.30735,<.0001,Red Pine
+branches2,4.49044,<.0001,Red Pine
+foliage2,2.85230,<.0001,Red Pine
+crown2,4.12982,<.0001,Red Pine
+total2,3.94955,<.0001,Red Pine
+wood2,3.12663,<.0001,Red Spruce
+bark2,4.15156,<.0001,Red Spruce
+stem2,2.73877,0.0046,Red Spruce
+branches2,3.57717,<.0001,Red Spruce
+foliage2,3.24827,<.0001,Red Spruce
+crown2,3.82174,<.0001,Red Spruce
+total2,3.63779,<.0001,Red Spruce
+wood2,1.56703,0.0005,Silver Maple
+bark2,3.24186,<.0001,Silver Maple
+stem2,1.65020,<.0001,Silver Maple
+branches2,5.08709,<.0001,Silver Maple
+foliage2,0.80523,0.1234,Silver Maple
+crown2,3.71907,<.0001,Silver Maple
+total2,2.77926,<.0001,Silver Maple
+wood2,3.46051,<.0001,Sugar Maple
+bark2,2.22130,<.0001,Sugar Maple
+stem2,3.05282,<.0001,Sugar Maple
+branches2,3.93030,<.0001,Sugar Maple
+foliage2,2.63241,<.0001,Sugar Maple
+crown2,3.98031,<.0001,Sugar Maple
+total2,3.27563,<.0001,Sugar Maple
+wood2,3.77739,<.0001,Tamarack Larch
+bark2,3.44120,<.0001,Tamarack Larch
+stem2,3.79741,<.0001,Tamarack Larch
+branches2,4.11609,<.0001,Tamarack Larch
+foliage2,2.36771,<.0001,Tamarack Larch
+crown2,3.38822,<.0001,Tamarack Larch
+total2,3.87542,<.0001,Tamarack Larch
+wood2,3.65608,<.0001,Trembling Aspen
+bark2,4.25218,<.0001,Trembling Aspen
+stem2,3.73980,<.0001,Trembling Aspen
+branches2,4.48852,<.0001,Trembling Aspen
+foliage2,1.73637,<.0001,Trembling Aspen
+crown2,3.60177,<.0001,Trembling Aspen
+total2,3.54473,<.0001,Trembling Aspen
+wood2,3.92880,<.0001,White Ash
+bark2,2.88805,<.0001,White Ash
+stem2,3.91326,<.0001,White Ash
+branches2,3.96698,<.0001,White Ash
+foliage2,0.83114,0.0022,White Ash
+crown2,3.48983,<.0001,White Ash
+total2,3.61557,<.0001,White Ash
+wood2,3.49120,<.0001,White Birch
+bark2,3.89005,<.0001,White Birch
+stem2,3.61553,<.0001,White Birch
+branches2,4.89821,<.0001,White Birch
+foliage2,2.45881,<.0001,White Birch
+crown2,4.20076,<.0001,White Birch
+total2,3.80882,<.0001,White Birch
+wood2,3.73480,<.0001,White Elm
+bark2,3.14315,<.0001,White Elm
+stem2,3.27459,<.0001,White Elm
+branches2,3.11205,<.0001,White Elm
+foliage2,2.33624,<.0001,White Elm
+crown2,3.55880,<.0001,White Elm
+total2,3.28138,<.0001,White Elm
+wood2,4.85944,<.0001,White Oak
+bark2,3.18920,<.0001,White Oak
+stem2,4.92314,<.0001,White Oak
+branches2,4.52744,<.0001,White Oak
+foliage2,3.14304,<.0001,White Oak
+crown2,4.26125,<.0001,White Oak
+total2,4.70041,<.0001,White Oak
+wood2,5.02271,<.0001,White Spruce
+bark2,4.25039,<.0001,White Spruce
+stem2,4.80580,<.0001,White Spruce
+branches2,3.88408,<.0001,White Spruce
+foliage2,2.00460,<.0001,White Spruce
+crown2,3.28234,<.0001,White Spruce
+total2,4.03728,<.0001,White Spruce
+wood2,2.04821,<.0001,Yellow Birch
+bark2,2.68217,<.0001,Yellow Birch
+stem2,2.02902,<.0001,Yellow Birch
+branches2,4.47561,<.0001,Yellow Birch
+foliage2,1.44505,<.0001,Yellow Birch
+crown2,3.46854,<.0001,Yellow Birch
+total2,2.33947,<.0001,Yellow Birch
+wood2,3.32446,<.0001,feuillu
+bark2,3.21093,<.0001,feuillu
+stem2,3.12466,<.0001,feuillu
+branches2,4.87205,<.0001,feuillu
+foliage2,2.53098,<.0001,feuillu
+crown2,4.51537,<.0001,feuillu
+total2,3.63117,<.0001,feuillu
+wood2,3.58790,<.0001,resineux
+bark2,4.42402,<.0001,resineux
+stem2,3.70155,<.0001,resineux
+branches2,3.90335,<.0001,resineux
+foliage2,2.92099,<.0001,resineux
+crown2,3.43377,<.0001,resineux
+total2,3.82194,<.0001,resineux
+wood2,3.63549,<.0001,all
+bark2,4.31852,<.0001,all
+stem2,3.65530,<.0001,all
+branches2,4.82202,<.0001,all
+foliage2,2.93597,<.0001,all
+crown2,4.07530,<.0001,all
+total2,3.91017,<.0001,all

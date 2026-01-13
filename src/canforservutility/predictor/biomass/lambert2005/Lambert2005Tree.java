@@ -31,7 +31,7 @@ import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
  * @author Jean-Francois Lavoie, Aug 2021
  */
 
-public interface Lambert2005Tree extends DbhCmProvider, HeightMProvider, MonteCarloSimulationCompliantObject {
+public interface Lambert2005Tree extends DbhCmProvider, MonteCarloSimulationCompliantObject {
 	
 	public enum Lambert2005Species {	
 		Any,
@@ -73,4 +73,14 @@ public interface Lambert2005Tree extends DbhCmProvider, HeightMProvider, MonteCa
 	}
 	
 	public Lambert2005Species getLambert2005Species();
+	
+	/**
+	 * Ask the tree instance if it implements the HeightMProvider
+	 * @return a boolean (true if it implements the interface or false otherwise)
+	 */
+	public default boolean implementHeighMProvider() {
+		return this instanceof HeightMProvider;
+	}
+	
+	
 }
