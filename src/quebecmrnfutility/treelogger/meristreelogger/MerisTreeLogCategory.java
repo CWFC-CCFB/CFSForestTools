@@ -38,13 +38,26 @@ public class MerisTreeLogCategory extends LogCategory {
 	
 	final List<String> speciesListInThisGroup;
 	final boolean isBark;
-	
-	MerisTreeLogCategory(String logCategoryName, String speciesGroup) {
+	final boolean barkIsOneCategory;
+		
+	/**
+	 * Constructor.
+	 * @param logCategoryName
+	 * @param speciesGroup
+	 * @param barkIsOneCategory if this boolean is set to true, then we assume that the matrix split the bark into a category
+	 */
+	MerisTreeLogCategory(String logCategoryName, String speciesGroup, boolean barkIsOneCategory) {
 		super(logCategoryName, false);
 		setSpecies(speciesGroup);
-		isBark = logCategoryName.toLowerCase().contains("ecorce") || logCategoryName.toLowerCase().contains("\u00E9corce");
+		this.barkIsOneCategory = barkIsOneCategory;
+		isBark = isBarkInName(logCategoryName);
 		speciesListInThisGroup = new ArrayList<String>();
 	}
+	
+	static boolean isBarkInName(String name) {
+		return name.toLowerCase().contains("ecorce") || name.toLowerCase().contains("\u00E9corce");
+	}
+	
 	
 	void addSpecies(String species) {
 		if (!speciesListInThisGroup.contains(species)) {

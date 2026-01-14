@@ -26,9 +26,11 @@ import repicea.simulation.treelogger.WoodPiece;
 public class MerisWoodPiece extends WoodPiece {
 
 	protected MerisWoodPiece(MerisTreeLogCategory logCategory, LoggableTree tree, double volumeOfThisWoodPieceM3) {
-		super(logCategory, tree, logCategory.isBark, volumeOfThisWoodPieceM3);
-		setProperty(Property.barkVolume_m3, logCategory.isBark ? volumeOfThisWoodPieceM3 : 0d);
-		setProperty(Property.woodVolume_m3, logCategory.isBark ? 0d : volumeOfThisWoodPieceM3);
+		super(logCategory, tree, tree.isCommercialVolumeOverbark(), volumeOfThisWoodPieceM3); // the super constructor handles the bark splitting 
+		if (logCategory.barkIsOneCategory) { // if the bark is one of the log category, then we override with this block
+			setProperty(Property.barkVolume_m3, logCategory.isBark ? volumeOfThisWoodPieceM3 : 0d);
+			setProperty(Property.woodVolume_m3, logCategory.isBark ? 0d : volumeOfThisWoodPieceM3);
+		}
 	}
 
 }

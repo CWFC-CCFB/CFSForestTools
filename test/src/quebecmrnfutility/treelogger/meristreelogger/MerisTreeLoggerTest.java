@@ -20,12 +20,14 @@
 package quebecmrnfutility.treelogger.meristreelogger;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import repicea.simulation.treelogger.WoodPiece;
+import repicea.util.ObjectUtility;
 
 public class MerisTreeLoggerTest {
 
@@ -46,13 +48,13 @@ public class MerisTreeLoggerTest {
 		public double getCommercialVolumeM3() {return volumeM3;}
 
 		@Override
-		public boolean isCommercialVolumeOverbark() {return true;}
+		public boolean isCommercialVolumeOverbark() {return false;}
 
 		@Override
 		public String getSpeciesName() {return speciesName;}
 
 		@Override
-		public double getBarkProportionOfWoodVolume() {return 0;}
+		public double getBarkProportionOfWoodVolume() {return 0.08;}
 
 		@Override
 		public double getDbhCm() {return dbhCm;}
@@ -79,8 +81,20 @@ public class MerisTreeLoggerTest {
 			totalVolumeWoodM3 += wp.getWoodVolumeM3();
 			totalVolumeBarkM3 += wp.getBarkVolumeM3();
 		}
-		Assert.assertEquals("Testing bark volume", 0.1157, totalVolumeBarkM3, 1E-5);
-		Assert.assertEquals("Testing wood volume", 0.8843, totalVolumeWoodM3, 1E-5);
-		Assert.assertEquals("Testing wood volume", 1d, totalVolumeWoodM3 + totalVolumeBarkM3, 1E-5);
+		Assert.assertEquals("Testing bark volume", 0.08, totalVolumeBarkM3, 1E-8);
+		Assert.assertEquals("Testing wood volume", 1d, totalVolumeWoodM3, 1E-8);
 	}
+	
+	@Test
+	public void test02ImportFromFileHappyPath() {
+		MerisTreeLoggerParameters parms = Singleton.getTreeLoggerParameters();
+		String filename = ObjectUtility.getPackagePath(getClass()) + "Matrice_DAEF_exemple.csv";
+		parms.importFromFile(filename);
+		Map<?,?> m = parms.getLogCategories();
+		Assert.assertEquals("Testing number of species", 2, m.size());
+		parms.initializeDefaultLogCategories();
+		m = parms.getLogCategories();
+		Assert.assertEquals("Testing number of species", 16, m.size());
+	}
+
 }

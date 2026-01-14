@@ -29,6 +29,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
@@ -115,7 +116,8 @@ public class MerisTreeLogCategoryPanel extends LogCategoryPanel<MerisTreeLogCate
 
 		featurePanel1.add(Box.createHorizontalStrut(6), BorderLayout.EAST);
 
-		textFieldPanel1.add(speciesList);
+		
+		textFieldPanel1.add(new JScrollPane(speciesList));
 		
 	}
 

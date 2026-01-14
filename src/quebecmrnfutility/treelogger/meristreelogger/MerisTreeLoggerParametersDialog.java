@@ -20,11 +20,20 @@
 package quebecmrnfutility.treelogger.meristreelogger;
 
 import java.awt.Window;
+import java.awt.event.ActionEvent;
 
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 
+import repicea.app.SettingMemory;
+import repicea.gui.CommonGuiUtility;
+import repicea.gui.CommonGuiUtility.FileChooserOutput;
+import repicea.gui.REpiceaAWTProperty;
 import repicea.gui.UIControlManager;
+import repicea.io.REpiceaFileFilter;
+import repicea.io.REpiceaFileFilterList;
 import repicea.simulation.treelogger.TreeLoggerParametersDialog;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
@@ -34,7 +43,7 @@ public class MerisTreeLoggerParametersDialog extends TreeLoggerParametersDialog<
 
 	private static enum MessageID implements TextableEnum {
 		ImportFromCSVFile("Import", "Importer");
-		
+
 		MessageID(String englishText, String frenchText) {
 			setText(englishText, frenchText);
 		}
@@ -43,22 +52,23 @@ public class MerisTreeLoggerParametersDialog extends TreeLoggerParametersDialog<
 		public void setText(String englishText, String frenchText) {
 			REpiceaTranslator.setString(this, englishText, frenchText);
 		}
-		
+
 		@Override 
 		public String toString() {
 			return REpiceaTranslator.getString(this);
 		}
-		
+
 	}
-	
+
 	final JMenuItem importButton; 
-	
+
 	protected MerisTreeLoggerParametersDialog(Window window, MerisTreeLoggerParameters params) {
 		super(window, params);
 		logGradePriorityChangeEnabled = false; 
 		importButton = UIControlManager.createCommonMenuItem(MessageID.ImportFromCSVFile);
 		mnFile.add(new JSeparator());
-		mnFile.add(importButton); // TODO MF2025122 Add actionlistener to this button
+		mnFile.add(importButton); 
+		importButton.setEnabled(getTreeLoggerParameters().getGUIPermission().isEnablingGranted());
 	}
 
 	@Override
@@ -74,6 +84,62 @@ public class MerisTreeLoggerParametersDialog extends TreeLoggerParametersDialog<
 	}
 
 	@Override
+	public void listenTo() {
+		super.listenTo();
+		importButton.addActionListener(this);
+	}
+
+	@Override
+	public void doNotListenToAnymore() {
+		super.doNotListenToAnymore();
+		importButton.removeActionListener(this);
+	}
+
+	@Override
 	protected void settingsAction() {}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (arg0.getSource().equals(importButton)) {
+			importAction();
+		} else {
+			super.actionPerformed(arg0);
+		}
+	}
+
+	private void importAction() {
+		try {
+			SettingMemory settings = getWindowSettings();
+			String filename;
+			if (settings != null) {
+				filename = settings.getProperty(getClass().getSimpleName() + ".last.file.loaded", "");
+			} else {
+				filename = "";
+			}
+			REpiceaFileFilterList fileFilters = new REpiceaFileFilterList(REpiceaFileFilter.CSV);
+
+			FileChooserOutput fileChooserOutput = CommonGuiUtility.browseAction(this,
+					JFileChooser.FILES_ONLY, 
+					filename,
+					fileFilters,
+					JFileChooser.OPEN_DIALOG);		// false : not restricted
+
+			if (fileChooserOutput.isValid()) {
+				((MerisTreeLoggerParameters) getTreeLoggerParameters()).importFromFile(fileChooserOutput.getFilename());
+
+				postLoadingAction();
+				firePropertyChange(REpiceaAWTProperty.JustLoaded, null, this);
+				if (settings != null) {
+					settings.setProperty(getClass().getSimpleName() + ".last.file.loaded", fileChooserOutput.getFilename());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, 
+					REpiceaTranslator.getString(UIControlManager.InformationMessage.ErrorWhileLoadingData),
+					REpiceaTranslator.getString(UIControlManager.InformationMessageTitle.Error),
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
 }
