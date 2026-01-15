@@ -335,9 +335,6 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 
 			while ((record = reader.nextRecord()) != null) {
 				Lambert2005Species currentSpecies = getLambertSpecies(record, indexSpeciesField, v);
-				if (currentSpecies == Lambert2005Species.BetulaPopulifolia && v == ModelVersion.Reduced) {
-					int u = 0;
-				}
 				parmName = record[indexParmNameField].toString();
 				List<String> parmNames = ModelVersion.getParmNames(v);
 				int indexParm = parmNames.indexOf(parmName);
@@ -444,12 +441,44 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 	 * @param tree a Lambert2005Tree instance
 	 * @return a Matrix instance that is a column vector 
 	 */
-	public synchronized Matrix predictBiomassKg(Lambert2005Tree tree) {
+	public Matrix predictBiomassKg(Lambert2005Tree tree) {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
 		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(tree.getLambert2005Species());
 		return predictor.predictBiomass(tree);
 	}
-	
+
+	/**
+	 * Fast track for deterministic predictions with either models.<p>
+	 * If heightM is not null, the complete version is used. Otherwise, it 
+	 * uses the reduced version.
+	 * @param speciesLatin the Latin name (e.g. AbiesBalsamea)
+	 * @param dbhCm tree diameter (cm)
+	 * @param heightM tree height (m)
+	 * @return the total biomass (Mg)
+	 */
+	public double predictTotalBiomassMg(String speciesLatin, double dbhCm, Double heightM) {
+		if (dbhCm <= 0d) {
+			throw new InvalidParameterException("The dbhCm argument must be positive!");
+		}
+		if (heightM != null && heightM <= 0) {
+			throw new InvalidParameterException("If not null, the heightM argument must be positive!");
+		}
+		ModelVersion v = heightM != null ? ModelVersion.Complete : ModelVersion.Reduced;
+		Lambert2005Species species = Lambert2005Species.valueOf(speciesLatin); 
+		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(species);
+		return predictor.predictTotalBiomassMg(species, dbhCm, heightM == null ? 0d : heightM);
+	}
+
+	/**
+	 * Fast track for deterministic predictions with the reduced model.
+	 * @param speciesLatin the Latin name (e.g. AbiesBalsamea)
+	 * @param dbhCm tree diameter (cm)
+	 * @return the total biomass (Mg)
+	 */
+	public double predictTotalBiomassMg(String speciesLatin, double dbhCm) {
+		return predictTotalBiomassMg(speciesLatin, dbhCm, null);
+	}
+
 	Matrix getWeight(Lambert2005Tree tree) {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
 		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(tree.getLambert2005Species());
