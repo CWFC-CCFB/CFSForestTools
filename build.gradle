@@ -5,6 +5,8 @@
 
 plugins {
     id 'com.palantir.git-version' version '3.0.0'
+    id 'maven-publish'
+    id 'signing'
 }
 
 
@@ -13,10 +15,36 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 
+task sourcesJar(type: Jar) {
+	 archiveClassifier = 'sources'
+	 manifest {
+        attributes("Built-By": "Mathieu Fortin",
+        		   "Specification-Title": "CFSForestTools sources",
+	       		   "Specification-Version": project.version,                   
+                   "Specification-Vendor": "CFS",
+                   "Implementation-Title": "cfsforesttools",
+                   "Implementation-Version": project.version,
+                   "Implementation-Vendor": "CFS",
+                   )
+    }
+   	duplicatesStrategy = DuplicatesStrategy.EXCLUDE		// to avoid duplicate files
+    
+	into ('/') {
+		from files(['./README.md', './LICENSE.md'])			
+	}
+	
+	// include all java files from main sourceset into the jar file (resources are already included)
+	from sourceSets.main.java
+	from sourceSets.main.resources		
+}
+
+
 java {
   toolchain {
     languageVersion.set(JavaLanguageVersion.of(8))
   }
+  withSourcesJar()
+  withJavadocJar()
 }
 
 repositories {
@@ -71,7 +99,7 @@ dependencies {
     implementation group: 'io.github.cwfc-ccfb', name: 'repicea-mathstats', version: '[1.8.1,)'    
     implementation group: 'io.github.cwfc-ccfb', name: 'repicea-simulation', version: '[1.3.17,)'    
     implementation group: 'io.github.cwfc-ccfb', name: 'biosimclient', version: '[1.2.2,)'    
-	    
+   
     testImplementation "junit:junit:4.12"    
 }
 
@@ -93,13 +121,13 @@ test {
 
 jar {
 	manifest {
-        attributes("Built-By": "Mathieu Fortin",
-        		   "Specification-Title": "Growth Models for Eastern Canada",
-        		   "Specification-Version": archiveVersion,                   
-                   "Specification-Vendor": "Canadian Wood Fibre Centre",
-                   "Implementation-Title": "mrnfforesttools",
-	               "Implementation-Version": archiveVersion,
-                   "Implementation-Vendor": "Canadian Wood Fibre Centre",
+       attributes("Built-By": "Mathieu Fortin",
+        		   "Specification-Title": "CFSForestTools sources",
+	       		   "Specification-Version": project.version,                   
+                   "Specification-Vendor": "CFS",
+                   "Implementation-Title": "cfsforesttools",
+                   "Implementation-Version": project.version,
+                   "Implementation-Vendor": "CFS",
                    )
     }
     
@@ -142,3 +170,60 @@ task install(type: Copy) {
 	from jar
 	into "../externallibraries/" + rootProject.name
 }
+
+publishing {
+    publications {
+        cfsforesttools(MavenPublication) {
+          	from components.java
+        	pom {
+        		name = 'CFSForesttools'
+				group = 'io.github.cwfc-ccfb'
+        		description = 'Support for growth models in France'
+        		url = 'https://github.com/CWFC-CCFB/cfsforesttools'
+        		properties = [
+        			packaging: "jar"
+	       		]
+        		licenses {
+        			license {
+        				name = 'GNU Lesser General Public License 3'
+        				url  = 'https://www.gnu.org/licenses/lgpl-3.0'
+        			}
+        		}
+        		developers {
+        			developer {
+        				id = 'matfortin'
+        				name = 'Mathieu Fortin'
+        				email = 'mathieu.fortin.re@gmail.com'
+        			}        
+        		}
+        		
+                scm {
+          			connection = 'scm:git:https://github.com/CWFC-CCFB/cfsforesttools'
+          			developerConnection = 'scm:git:https://github.com/CWFC-CCFB/cfsforesttools'
+          			url = 'https://github.com/CWFC-CCFB/cfsforesttools'
+        		}
+		     }	
+        }
+    }
+    repositories {
+        maven {
+            name = 'LocalFile'
+            url = "file://${buildDir}/repo"
+        }
+
+		maven {
+		 	name = 'Sonatype'
+		 	credentials(PasswordCredentials)
+		 	url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+		}
+    }
+}
+
+signing {
+    sign publishing.publications.cfsforesttools
+}
+
+publishCfsforesttoolsPublicationToLocalFileRepository {
+	dependsOn jar
+}
+
