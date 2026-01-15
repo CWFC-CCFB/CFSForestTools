@@ -99,11 +99,10 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 		try {
 			cholesky = errorCovariance.getLowerCholTriangle();
 		} catch(UnsupportedOperationException e) {
-			Matrix m = errorCovariance.diagonalVector().elementWisePower(0.5);
-			Matrix m1 = m.multiply(m.transpose());
-			Matrix corr = errorCovariance.elementWiseDivide(m1);
+//			Matrix m = errorCovariance.diagonalVector().elementWisePower(0.5);
+//			Matrix m1 = m.multiply(m.transpose());
+//			Matrix corr = errorCovariance.elementWiseDivide(m1);
 			System.err.println("Unable to calculate Cholesky decomposition for species " + this.species.name() + " with model " + version.name());
-			int u = 0;
 		}
 	}	
 	
@@ -116,24 +115,31 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	Matrix getCholesky() {
 		return cholesky;
 	}
-	
+
 	Matrix predictBiomass(Lambert2005Tree tree) {
 		
 		Matrix beta = getParametersForThisRealization(tree);
-		double dbhcm = tree.getDbhCm();
-		double hm = tree.implementHeighMProvider() ? 
+		double dbhCm = tree.getDbhCm();
+		double heightM = tree.implementHeighMProvider() ? 
 				((HeightMProvider) tree).getHeightM() :
 					-999;
+		return internalPredictBiomass(beta, dbhCm, heightM);
+	}
+
+	
+	
+	Matrix internalPredictBiomass(Matrix beta, double dbhCm, double heightM) {
+		
 		
 		List<BiomassCompartment> compValues = BiomassCompartment.getBasicBiomassCompartments(); 
 		Matrix result = new Matrix(BiomassCompartment.values().length, 1);
 		
 		for (BiomassCompartment cat : compValues) {
-			result.setValueAt(cat.ordinal(), 0, predictSingleBiomass(beta, cat, dbhcm, hm));
+			result.setValueAt(cat.ordinal(), 0, predictSingleBiomass(beta, cat, dbhCm, heightM));
 		}		
 		
 		if (this.isResidualVariabilityEnabled) {
-			Matrix weight = c.powMatrix(dbhcm).elementWisePower(0.5);
+			Matrix weight = c.powMatrix(dbhCm).elementWisePower(0.5);
 			Matrix r = StatisticalUtility.drawRandomVector(weight.m_iRows, Distribution.Type.GAUSSIAN);		
 			Matrix res = weight.matrixDiagonal().multiply(getCholesky()).multiply(r);
 			
@@ -179,6 +185,13 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	 */
 	Matrix testMeanParameters() {
 		return getParameterEstimates().getMean();
+	}
+
+	double predictTotalBiomassMg(Lambert2005Species species, double dbhCm, Double heightM) {
+		Matrix pred = internalPredictBiomass(getParameterEstimates().getMean(),
+				dbhCm,
+				heightM);
+		return pred.getValueAt(BiomassCompartment.TOTAL.ordinal(), 0) * 0.001;
 	}
 	
 }
