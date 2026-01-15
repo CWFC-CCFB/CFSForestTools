@@ -371,9 +371,20 @@ public class Lambert2005BiomassPredictorTest {
 			Assert.fail("Some versions and species have troubles with the Cholesky decomposition!");
 		}
 	}
+
+	@Test
+	public void test06DeterministicFastTrackCompleteVersion() {
+		Lambert2005BiomassPredictor pred = new Lambert2005BiomassPredictor();
+		double observed = pred.predictTotalBiomassMg("AbiesBalsamea", 27.7, 22.1);
+		Assert.assertEquals("Comparing fasttrack 3-parm model", 0.2632655726, observed, 1E-8);
+	}
 	
-	
-	
+	@Test
+	public void test07DeterministicFastTrackReducedVersion() {
+		Lambert2005BiomassPredictor pred = new Lambert2005BiomassPredictor();
+		double observed = pred.predictTotalBiomassMg("AbiesLasiocarpa", 33.1);
+		Assert.assertEquals("Comparing fasttrack 2-parm model", 0.38409593131, observed, 1E-8);
+	}
 	
 	static class Tree extends VolumableTreeImpl implements Lambert2005Tree {
 
