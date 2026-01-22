@@ -87,7 +87,7 @@ public class Lambert2005BiomassPredictorTest {
 		int csvLine = 2;
 		
 		while ((record = reader.nextRecord()) != null) {
-			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			String species = record[reader.getHeader().getIndexOfThisField(BiomassParameterLoader.SPECIES_FIELD)].toString();
 			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
 			double hm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(HEIGHT_FIELD)].toString());
 			
@@ -136,7 +136,7 @@ public class Lambert2005BiomassPredictorTest {
 		Map<Lambert2005Species, List<Integer>> differentLines = new HashMap<Lambert2005Species, List<Integer>>();
 		
 		while ((record = reader.nextRecord()) != null) {
-			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			String species = record[reader.getHeader().getIndexOfThisField(BiomassParameterLoader.SPECIES_FIELD)].toString();
 			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
 			double hm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(HEIGHT_FIELD)].toString());
 			
@@ -225,7 +225,7 @@ public class Lambert2005BiomassPredictorTest {
 		int csvLine = 2;
 		
 		while ((record = reader.nextRecord()) != null) {
-			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			String species = record[reader.getHeader().getIndexOfThisField(BiomassParameterLoader.SPECIES_FIELD)].toString();
 			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
 			
 			Matrix groundtruth = new Matrix(PRED_FIELDS.size(),1);
@@ -274,7 +274,7 @@ public class Lambert2005BiomassPredictorTest {
 		Map<Lambert2005Species, List<Integer>> differentLines = new HashMap<Lambert2005Species, List<Integer>>();
 		
 		while ((record = reader.nextRecord()) != null) {
-			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			String species = record[reader.getHeader().getIndexOfThisField(BiomassParameterLoader.SPECIES_FIELD)].toString();
 			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
 			
 			Matrix groundtruth = new Matrix(PRED_FIELDS.size(),1);

@@ -30,14 +30,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
-import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaPredictor;
-import repicea.util.ObjectUtility;
 
 /**
  * Implement the biomass models in Lambert et al. (2005) for each individual species.
- * @author <ul><li>Jean-Francois Lavoie 2021 <li>Mathieu Fortin February 2026 (refactoring)</ul>
+ * @author <ul><li>Jean-Francois Lavoie 2021 <li>Mathieu Fortin January 2026 (refactoring)</ul>
  * @see <a href=https://doi.org/10.1139/x05-112> Lambert, M.-C., C.-H. Ung, and F. Raulier. 2005. Canadian
  * national tree aboveground biomass equations. Canadian Journal of Forest Research 35(8): 1996-2018 
  * </a>
@@ -86,14 +84,8 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Yellow Birch", Lambert2005Species.BetulaAlleghaniensis);
 	}
 	
-	final static String SPECIES_FIELD = "ess";
-	private final static String PARM_NAME_FIELD = "Parameter";
-	private final static String ESTIMATE_FIELD = "Estimate";
-	private final static String DEPENDENT_FIELD = "Dependent";
-	private final static String EQUATION_FIELD = "Equation";
-	private final static List<String> S_FIELDS = Arrays.asList(new String[]{"s1", "s2", "s3", "s4", "s5", "s6", "s7"});
 	
-	public enum BiomassCompartment {
+	public static enum BiomassCompartment {
 		/**
 		 * Wood between 0.30 cm in height and minimum diameter of 9 cm.
 		 */
@@ -142,13 +134,13 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 			this.fieldName = fieldName;
 		}		
 		
-		private static List<String> getWeightLabels() {
+		static List<String> getWeightLabels() {
 			List<BiomassCompartment> compartments = Arrays.asList(BiomassCompartment.values());
 			List<String> weightLabels = compartments.stream().map(p -> p.name().toLowerCase().concat("2")).collect(Collectors.toList());
 			return weightLabels;
 		}
 		
-		private static List<String> getErrorCovarianceEquationLabels() {
+		static List<String> getErrorCovarianceEquationLabels() {
 			List<BiomassCompartment> compartments = Arrays.asList(BiomassCompartment.values());
 			List<String> errCovNames = compartments.stream().map(p -> p.name().toLowerCase()).collect(Collectors.toList());
 			return errCovNames;
@@ -157,8 +149,6 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 
 	private static List<String> PARMS_PREFIX = Arrays.asList(new String[] {"a","b","c"});
 	
-	final static List<String> ESTIMATED_WEIGHT_LABELS = BiomassCompartment.getWeightLabels();
-	final static List<String> ERROR_COVARIANCE_EQUATION_LABELS = BiomassCompartment.getErrorCovarianceEquationLabels();
 	
 	/**
 	 * Define the version of the model.
@@ -234,24 +224,17 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 	@Override
 	protected void init() {
 		try {
-
-			String path = ObjectUtility.getRelativePackagePath(getClass());
-			
-			for (String prefix : new String[] {"0", "1"}) {
-//			for (String prefix : new String[] {"0"}) {
-				ModelVersion v = prefix.equals("0") ? ModelVersion.Complete : ModelVersion.Reduced;
-				String parmsFilename = path + prefix + "_parms.csv";
-				readParameterFile(parmsFilename, v);	
-				String covbFilename = path + prefix + "_covb.csv";
-				readParameterCovarianceFile(covbFilename, v);
-				String estwFilename = path + prefix + "_estw.csv";
-				readEstimatedWeightsFile(estwFilename, v);
-				String covFilename = path + prefix + "_cov.csv";
-				readErrorCovarianceFile(covFilename, v);					
-			}
-			for (ModelVersion v : this.internalPredictors.keySet()) {
-				for (Lambert2005BiomassInternalPredictor predictorValue : internalPredictors.get(v).values()) {
-					predictorValue.init();
+			for (ModelVersion v : ModelVersion.values()) {
+				for (Lambert2005Species sp : Lambert2005Species.values()) {
+					if (!internalPredictors.containsKey(v)) {
+						internalPredictors.put(v, new HashMap<Lambert2005Species, Lambert2005BiomassInternalPredictor>());
+					}
+					Map<Lambert2005Species, Lambert2005BiomassInternalPredictor> innerMap = internalPredictors.get(v);
+					innerMap.put(sp, new Lambert2005BiomassInternalPredictor(v, 
+							sp, 
+							isParametersVariabilityEnabled,
+							isResidualVariabilityEnabled,
+							BiomassParameterLoader.getInstance()));
 				}
 			}
 		} catch (Exception e) {
@@ -259,8 +242,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		}		
 	}
 	
-	
-	private Lambert2005Species getLambertSpecies(Object[] record, int indexSpeciesField, ModelVersion v) {
+	static Lambert2005Species getLambertSpecies(Object[] record, int indexSpeciesField, ModelVersion v) {
 		String speciesStr = record[indexSpeciesField].toString();
 		if (!ENGLISH_TO_LATIN_LOOKUP_MAP.containsKey(speciesStr)) {
 			throw new InvalidParameterException("This species cannot be matched to a Latin name: " + speciesStr);
@@ -268,171 +250,8 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		Lambert2005Species species = ENGLISH_TO_LATIN_LOOKUP_MAP.get(speciesStr);
 		return species;
 	}
+
 	
-	private void readParameterFile(String filename, ModelVersion v)	{
-		CSVReader reader = null;
-		
-		try {
-			reader = new CSVReader(filename);
-			Object[] record;
-			double value;
-			String paramName;			
-			
-			Lambert2005BiomassInternalPredictor currentInternalPredictor = null; 
-
-			int indexSpeciesField = reader.getHeader().getIndexOfThisField(SPECIES_FIELD);
-			int indexParmNameField = reader.getHeader().getIndexOfThisField(PARM_NAME_FIELD);
-			int indexEstimateField = reader.getHeader().getIndexOfThisField(ESTIMATE_FIELD);
-			
-			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = getLambertSpecies(record, indexSpeciesField, v);
-				// here we create one internal predictor per species and version encountered
-				paramName = record[indexParmNameField].toString();
-				value = Double.parseDouble(record[indexEstimateField].toString());
-
-				if (!internalPredictors.containsKey(v)) {
-					internalPredictors.put(v, new HashMap<Lambert2005Species, Lambert2005BiomassInternalPredictor>());
-				}
-				
-				Map<Lambert2005Species, Lambert2005BiomassInternalPredictor> innerMap = internalPredictors.get(v);
-				
-				if (!innerMap.containsKey(currentSpecies)) {	// create the internalPredictor
-					innerMap.put(currentSpecies, new Lambert2005BiomassInternalPredictor(v, currentSpecies, this.isParametersVariabilityEnabled, this.isResidualVariabilityEnabled));
-				}
-
-				currentInternalPredictor = innerMap.get(currentSpecies);					
-
-				// populate the internalPredictor
-				// Note : some values might be missing from the CSV file, and a value of 0.0 should be used in that case.
-				// This is why we read from the CSV file and write every found value to the predictor which has been initialized with 0.0 values.
-				int paramIndex = ModelVersion.getParmNames(v).indexOf(paramName);						
-				if (paramIndex == -1) {
-					reader.close();
-					throw new InvalidParameterException("The parameter name " + paramName + "cannot be found in this version of the model " + v.name());
-				}
-				currentInternalPredictor.setParameterEstimate(paramIndex, value);						
-			}
-			
-			reader.close();
-		} catch (Exception e) {
-			if (reader != null) {
-				reader.close();
-			}
-			System.out.println("Lambert2005BiomassPredictor.readParameterFile() : Unable to read " + filename + ".  Details : " + e.getMessage());
-		}
-	}
-	
-	private void readParameterCovarianceFile(String filename, ModelVersion v)	{
-		CSVReader reader = null;
-		
-		try {
-			reader = new CSVReader(filename);
-			Object[] record;
-			String parmName;								 		
-			
-			int indexSpeciesField = reader.getHeader().getIndexOfThisField(SPECIES_FIELD);
-			int indexParmNameField = reader.getHeader().getIndexOfThisField(PARM_NAME_FIELD);
-
-			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = getLambertSpecies(record, indexSpeciesField, v);
-				parmName = record[indexParmNameField].toString();
-				List<String> parmNames = ModelVersion.getParmNames(v);
-				int indexParm = parmNames.indexOf(parmName);
-				double values[] = new double[parmNames.size()];
-				
-				for (String pName : parmNames) {
-					int fieldIndex = reader.getHeader().getIndexOfThisField(pName);
-					int indexInArray = parmNames.indexOf(pName);
-					try {
-						values[indexInArray] = Double.parseDouble(record[fieldIndex].toString());
-					} catch (NumberFormatException e)  { 			
-						if (!e.getMessage().equals("empty String")) {
-							reader.close();
-							throw e; 
-						}
-					}
-				}
-								
-				Lambert2005BiomassInternalPredictor currentInternalPredictor = internalPredictors.get(v).get(currentSpecies);
-				
-				// populate the internalPredictor cov values
-				// Note : some values might be missing from the CSV file, and a value of 0.0 should be used in that case.
-				// This is why we read from the CSV file and write every found value to the predictor which has been initialized with 0.0 values.
-				currentInternalPredictor.setParameterCovariance(indexParm, values);						
-			}
-			
-			reader.close();
-		} catch (Exception e) {
-			if (reader != null) {
-				reader.close();
-			}
-			System.out.println("Lambert2005BiomassPredictor.readParameterCovarianceFile() : Unable to read " + filename + ".  Details : " + e.getMessage());
-		}
-	}
-	
-	private void readEstimatedWeightsFile(String filename, ModelVersion v)	{
-		CSVReader reader = null;
-		
-		try {
-			reader = new CSVReader(filename);
-			Object[] record;
-			double value;
-			
-			int indexSpeciesField = reader.getHeader().getIndexOfThisField(SPECIES_FIELD);
-			int indexDependentField = reader.getHeader().getIndexOfThisField(DEPENDENT_FIELD);
-			int indexEstimateField = reader.getHeader().getIndexOfThisField(ESTIMATE_FIELD);
-											 				
-			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = getLambertSpecies(record, indexSpeciesField, v);
-				String weightName = record[indexDependentField].toString();									
-				int indexWeight = ESTIMATED_WEIGHT_LABELS.indexOf(weightName);
-				value = Double.parseDouble(record[indexEstimateField].toString());
-				// all internal predictors should be already known here
-				Lambert2005BiomassInternalPredictor currentInternalPredictor = internalPredictors.get(v).get(currentSpecies);
-				currentInternalPredictor.setEstimatedWeight(indexWeight, value);						
-			}
-			
-			reader.close();
-		} catch (Exception e) {
-			if (reader != null) {
-				reader.close();
-			}
-			System.out.println("Lambert2005BiomassPredictor.readEstimatedWeightsFile() : Unable to read " + filename + ".  Details : " + e.getMessage());
-		}
-	}
-	
-	private void readErrorCovarianceFile(String filename, ModelVersion v)	{
-		CSVReader reader = null;
-		
-		try {
-			reader = new CSVReader(filename);
-			Object[] record;
-			
-			int indexSpeciesField = reader.getHeader().getIndexOfThisField(SPECIES_FIELD);
-			int indexEquationField = reader.getHeader().getIndexOfThisField(EQUATION_FIELD);
-
-			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = getLambertSpecies(record, indexSpeciesField, v);
-				String equationName = record[indexEquationField].toString();									
-				int indexEquation = ERROR_COVARIANCE_EQUATION_LABELS.indexOf(equationName);
-				double values[] = new double[S_FIELDS.size()];
-				for (String sf : S_FIELDS) {
-					int indexInFile = reader.getHeader().getIndexOfThisField(sf);
-					int indexInArray = S_FIELDS.indexOf(sf);
-					values[indexInArray] = Double.parseDouble(record[indexInFile].toString());					
-				}
-				Lambert2005BiomassInternalPredictor currentInternalPredictor = internalPredictors.get(v).get(currentSpecies);
-				currentInternalPredictor.setErrorCovariance(indexEquation, values);						
-			}
-			
-			reader.close();
-		} catch (Exception e) {
-			if (reader != null) {
-				reader.close();
-			}
-			System.out.println("Lambert2005BiomassPredictor.readErrorCovarianceFile() : Unable to read " + filename + ".  Details : " + e.getMessage());
-		}
-	}
 	
 	/**
 	 * Provide the biomass in different compartments of a particular tree. <p>

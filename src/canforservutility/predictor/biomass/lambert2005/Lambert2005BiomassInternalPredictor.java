@@ -23,6 +23,7 @@ package canforservutility.predictor.biomass.lambert2005;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
@@ -45,48 +46,26 @@ import repicea.stats.StatisticalUtility;
 @SuppressWarnings("serial")
 final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	
-	final Matrix parameterEstimates;
-	final Matrix parameterCovariance;	
-	
 	final SymmetricMatrix errorCovariance;	
 	final Matrix c;	// column vector
 	final Lambert2005Species species;
-	Matrix cholesky; 
-	int nbTotalParms;
+	final Matrix cholesky; 
 	final ModelVersion version;
 	
-	Lambert2005BiomassInternalPredictor(ModelVersion v, Lambert2005Species species, boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled){
+	Lambert2005BiomassInternalPredictor(ModelVersion v, 
+			Lambert2005Species species, 
+			boolean isParametersVariabilityEnabled, 
+			boolean isResidualVariabilityEnabled,
+			BiomassParameterLoader parmLoader){
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
 		this.species = species;
 		this.version = v;
-		nbTotalParms = version.nbParms * BiomassCompartment.getBasicBiomassCompartments().size();
-		parameterEstimates = new Matrix(nbTotalParms, 1);
-		parameterCovariance = new Matrix(nbTotalParms, nbTotalParms);
-		errorCovariance = new SymmetricMatrix(Lambert2005BiomassPredictor.ERROR_COVARIANCE_EQUATION_LABELS.size());
-		c = new Matrix(Lambert2005BiomassPredictor.ESTIMATED_WEIGHT_LABELS.size(), 1);		
-	}
-	
-	void setParameterEstimate(int index, double value){
-		parameterEstimates.setValueAt(index, 0, value);
-	}
-			
-	void setParameterCovariance(int index, double[] value){
-		for (int i = 0; i < nbTotalParms; i++)			
-			parameterCovariance.setValueAt(index, i, value[i]);
-	}
-	
-	void setEstimatedWeight(int index, double value) {
-		c.setValueAt(index, 0, value);
-	}
-	
-	void setErrorCovariance(int index, double[] value){
-		for (int i = 0; i < value.length; i++)			
-			errorCovariance.setValueAt(index, i, value[i]);
-	}
 		
-	@Override
-	protected void init() {
-		// here we need to provide a covariance matrix that doesn't present any row or column for 0.0 parameters
+        Matrix parameterEstimates = getMatrix(parmLoader.parmsMatrices, version, species);
+        Matrix parameterCovariance = getMatrix(parmLoader.varcovMatrices, version, species);
+        errorCovariance = SymmetricMatrix.convertToSymmetricIfPossible(getMatrix(parmLoader.covErrMatrices, version, species));
+        c = getMatrix(parmLoader.weightsMatrices, version, species);
+		
 		List<Integer> validIndices = new ArrayList<Integer>();
 		for (int i = 0; i < parameterEstimates.m_iRows; i++) {
 			if (parameterEstimates.getValueAt(i, 0) != 0.0) {
@@ -96,15 +75,25 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 
 		SymmetricMatrix variance = SymmetricMatrix.convertToSymmetricIfPossible(parameterCovariance.getSubMatrix(validIndices, validIndices));
 		setParameterEstimates(new SASParameterEstimates(parameterEstimates, variance));
-		try {
-			cholesky = errorCovariance.getLowerCholTriangle();
-		} catch(UnsupportedOperationException e) {
-//			Matrix m = errorCovariance.diagonalVector().elementWisePower(0.5);
-//			Matrix m1 = m.multiply(m.transpose());
-//			Matrix corr = errorCovariance.elementWiseDivide(m1);
-			System.err.println("Unable to calculate Cholesky decomposition for species " + this.species.name() + " with model " + version.name());
-		}
-	}	
+		cholesky = errorCovariance.getLowerCholTriangle();
+	}
+	
+
+    private static Matrix getMatrix(Map<ModelVersion, Map<Lambert2005Species, Matrix>> parmDict,
+            ModelVersion v,
+            Lambert2005Species species) {
+            if (!parmDict.containsKey(v)) {
+                throw new UnsupportedOperationException("Model version " + v.name() + " is not in the outer dictionary!");
+            }
+            Map<Lambert2005Species, Matrix> innerMap = parmDict.get(v);
+            if (!innerMap.containsKey(species)) {
+                throw new UnsupportedOperationException("Species " + species.name() + " is not in the inner dictionary!");
+            }
+            return innerMap.get(species);
+    }
+
+	@Override
+	protected void init() {}	
 	
 	Matrix getWeight(Lambert2005Tree tree) {
 		double dbhcm = tree.getDbhCm();
@@ -117,7 +106,6 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	}
 
 	Matrix predictBiomass(Lambert2005Tree tree) {
-		
 		Matrix beta = getParametersForThisRealization(tree);
 		double dbhCm = tree.getDbhCm();
 		double heightM = tree.implementHeighMProvider() ? 
