@@ -143,7 +143,7 @@ public interface VolumableTree extends DbhCmProvider,
 		
 		/**
 		 * Find an eligible species using the three-letter species code from Quebec.
-		 * @param speciesCode a String
+		 * @param latinName a String
 		 * @return a VolSpecies enum
 		 */
 		public static VolSpecies findEligibleSpeciesUsingLatinName(String latinName) {
