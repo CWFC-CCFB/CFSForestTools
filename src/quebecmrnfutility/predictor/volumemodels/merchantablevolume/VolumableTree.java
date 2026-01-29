@@ -43,7 +43,7 @@ public interface VolumableTree extends DbhCmProvider,
 	
 	
 	public enum VolSpecies implements REpiceaSpecies {
-		BOG(REpiceaSpecies.Species.Betula_populifolia_QC),   // should be added to Species enum
+		BOG(REpiceaSpecies.Species.Betula_populifolia_QC),   
 		BOJ(REpiceaSpecies.Species.Betula_alleghaniensis_QC),
 		BOP(REpiceaSpecies.Species.Betula_papyrifera_QC),
 		CET(REpiceaSpecies.Species.Prunus_serotina_QC),

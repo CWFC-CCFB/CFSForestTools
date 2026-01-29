@@ -149,13 +149,13 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	
 	/**
 	 * A fast-track computation of deterministic predictions.
-	 * @param speciesLatinName the latin name
+	 * @param speciesName the Latin name or the three-character code used in Quebec
 	 * @param dbhCm tree dbh (cm)
 	 * @param heightM tree height (m)
 	 * @param overbark a boolean true to get the overbark volume 
 	 * @return the volume (dm3)
 	 */
-	public double predictDeterministicTreeCommercialVolumeDm3(String speciesLatinName, double dbhCm, double heightM, boolean overbark) {
+	public double predictDeterministicTreeCommercialVolumeDm3(String speciesName, double dbhCm, double heightM, boolean overbark) {
 		if (dbhCm < 9.1) {	// means this is a sapling
 			return 0d;
 		}
@@ -163,12 +163,16 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		if (heightM < 1.3) {	// means the height has not been calculated
 			throw new InvalidParameterException("Volume cannot be calculated if the tree is not at least 1.3 m in height!");
 		}
-		
-		VolSpecies species = VolSpecies.findEligibleSpeciesUsingLatinName(speciesLatinName);
+
+		VolSpecies species = VolSpecies.findEligibleSpeciesUsingQuebecSpeciesCode(speciesName);
+
+		if (species == null) {
+			species = VolSpecies.findEligibleSpeciesUsingLatinName(speciesName);
+		}
 		
 		if (species == null) {
 			throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
-					" does not support species " + speciesLatinName + "!");
+					" does not support species " + speciesName + "!");
 		}
 		Matrix modelParameters = getParameterEstimates().getMean();
 		double volume = computePrediction(dbhCm, dbhCm * dbhCm, heightM, modelParameters, species);
