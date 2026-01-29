@@ -19,6 +19,8 @@
 package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree.VolSpecies;
 import repicea.math.Matrix;
@@ -28,6 +30,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
+import repicea.simulation.species.REpiceaSpecies;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
@@ -112,10 +115,20 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		if (tree.getHeightM() < 1.3) {	// means the height has not been calculated
 			throw new InvalidParameterException("Volume cannot be calculated if the tree is not at least 1.3 m in height!");
 		}
-
-		double volume = fixedEffectPrediction(stand, tree);
-		volume += blupImplementation(stand, tree);
-		volume += residualImplementation(tree);
+		
+		REpiceaSpecies speciesEnum = tree.getVolumableTreeSpecies();
+		VolSpecies species = speciesEnum instanceof VolSpecies ?
+				(VolSpecies) speciesEnum :
+					VolSpecies.findEligibleSpeciesUsingLatinName(speciesEnum.getLatinName());
+		
+		if (species == null) {
+			throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
+					" does not support species " + speciesEnum.getLatinName() + "!");
+		}
+		Matrix modelParameters = getParametersForThisRealization(stand);
+		double volume = fixedEffectPrediction(stand, tree, modelParameters, species);
+		volume += blupImplementation(stand, tree, species);
+		volume += residualImplementation(tree, species);
 		if (volume < 0d) {
 			volume = 1d;		// at least 1 dm3 if dbh >= 9.1 Correction for negative volumes MF2021-03-25
 		}
@@ -123,20 +136,65 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	}
 
 	/**
+	 * Return the Latin names of the eligible species for this model.
+	 * @return a List of Strings.
+	 */
+	public static List<String> getEligibleSpecies() {
+		List<String> speciesList = new ArrayList<String>();
+		for (String sp : VolSpecies.getLatinNameList()) {
+			speciesList.add(sp.substring(0, 1).toUpperCase() + sp.substring(1));
+		}
+		return speciesList;
+	}
+	
+	/**
+	 * A fast-track computation of deterministic predictions.
+	 * @param speciesLatinName the latin name
+	 * @param dbhCm tree dbh (cm)
+	 * @param heightM tree height (m)
+	 * @param overbark a boolean true to get the overbark volume 
+	 * @return the volume (dm3)
+	 */
+	public double predictDeterministicTreeCommercialVolumeDm3(String speciesLatinName, double dbhCm, double heightM, boolean overbark) {
+		if (dbhCm < 9.1) {	// means this is a sapling
+			return 0d;
+		}
+
+		if (heightM < 1.3) {	// means the height has not been calculated
+			throw new InvalidParameterException("Volume cannot be calculated if the tree is not at least 1.3 m in height!");
+		}
+		
+		VolSpecies species = VolSpecies.findEligibleSpeciesUsingLatinName(speciesLatinName);
+		
+		if (species == null) {
+			throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
+					" does not support species " + speciesLatinName + "!");
+		}
+		Matrix modelParameters = getParameterEstimates().getMean();
+		double volume = computePrediction(dbhCm, dbhCm * dbhCm, heightM, modelParameters, species);
+		if (overbark) {
+			volume *= (1d + species.getBarkProportionOfWoodVolume());
+		}
+		return volume;
+	}
+	
+	/**
 	 * This method computes the fixed effect prediction.
 	 * @param stand = a VolumableStand object
 	 * @param t = a TreeVolumable object
 	 * @return the fixed effect prediction (double)
 	 * @throws Exception
 	 */
-	private synchronized double fixedEffectPrediction(VolumableStand stand, VolumableTree t) {
-		Matrix modelParameters = getParametersForThisRealization(stand);
-		this.oXVector.resetMatrix();
-		int pointeur = 0;
-		VolSpecies species = t.getVolumableTreeSpecies();
+	private double fixedEffectPrediction(VolumableStand stand, VolumableTree t, Matrix modelParameters, VolSpecies species) {
 		double dbh = t.getDbhCm();
 		double dbh2 = t.getSquaredDbhCm();
 		double height = t.getHeightM();
+		return computePrediction(dbh, dbh2, height, modelParameters, species);
+	}
+
+	private synchronized double computePrediction(double dbh, double dbh2, double height, Matrix modelParameters, VolSpecies species) {
+		this.oXVector.resetMatrix();
+		int pointeur = 0;
 		double cylindre = Math.PI*dbh2*height*0.025;
 		
 		oXVector.setValueAt(0, pointeur, height/dbh);
@@ -152,14 +210,15 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		
 		return oXVector.multiply(modelParameters).getValueAt(0, 0);
 	}
-
+	
+	
 	/**
 	 * This method accounts for the random effects in the predictions if the random effect variability is enabled. Otherwise, it returns 0d.
 	 * @param stand = a VolumableStand object
 	 * @param t = a TreeVolumable object
 	 * @return a simulated random effect (double)
 	 */
-	private double blupImplementation(VolumableStand stand, VolumableTree t) {
+	private double blupImplementation(VolumableStand stand, VolumableTree t, VolSpecies species) {
 		if (isRandomEffectsVariabilityEnabled) {					
 			String cruiseLineID = stand.getCruiseLineID();
 			if (cruiseLineID == null) {
@@ -169,7 +228,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			Matrix cruiseLineRandomEffects = getRandomEffectsForThisSubject(cruiseLine);
 			Matrix plotRandomEffects = getRandomEffectsForThisSubject(stand);
 			Matrix totalRandomEffects = cruiseLineRandomEffects.add(plotRandomEffects);
-			VolSpecies species = t.getVolumableTreeSpecies();
+//			VolSpecies species = t.getVolumableTreeSpecies();
 			double dbh2 = t.getSquaredDbhCm();
 
 			int type = 1;
@@ -188,9 +247,9 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	 * @param t a TreeVolumable object
 	 * @return a simulated residual (double)
 	 */
-	private double residualImplementation(VolumableTree t) {
+	private double residualImplementation(VolumableTree t, VolSpecies species) {
 		if (isResidualVariabilityEnabled) {
-			VolSpecies species = t.getVolumableTreeSpecies();
+//			VolSpecies species = t.getVolumableTreeSpecies();
 			Matrix dummy = species.getDummy();
 			double dbh2 = t.getSquaredDbhCm();
 

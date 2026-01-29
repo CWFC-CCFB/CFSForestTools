@@ -38,7 +38,7 @@ public class VolumableTreeImpl implements VolumableTree {
 	 * @param heightM tree height (m)
 	 */
 	public VolumableTreeImpl(String speciesName, double dbhCm, double heightM) {
-		species = VolSpecies.findEligibleSpecies(speciesName);
+		species = VolSpecies.findEligibleSpeciesUsingQuebecSpeciesCode(speciesName);
 		if (species == null) {
 			throw new InvalidParameterException("Species " + speciesName + " is not recognized!");
 		}
