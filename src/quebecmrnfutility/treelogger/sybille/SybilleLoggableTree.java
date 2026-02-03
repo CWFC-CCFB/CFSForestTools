@@ -19,6 +19,7 @@
 package quebecmrnfutility.treelogger.sybille;
 
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.LoggableTree;
 
 /**
@@ -27,5 +28,7 @@ import repicea.simulation.treelogger.LoggableTree;
  */
 public interface SybilleLoggableTree extends LoggableTree, StemTaperTree {
 
+	@Override
+	public default SpeciesLocale getSpeciesLocale() {return SpeciesLocale.Quebec;}
 
 }

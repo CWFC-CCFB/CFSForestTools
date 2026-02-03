@@ -21,6 +21,7 @@ package quebecmrnfutility.treelogger.sybille;
 import java.util.Vector;
 
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 
 public class LoggableTreeImpl implements SybilleLoggableTree {
@@ -91,8 +92,8 @@ public class LoggableTreeImpl implements SybilleLoggableTree {
 	}
 
 	@Override
-	public double getBarkProportionOfWoodVolume() {
-		return getStemTaperTreeSpecies().getBarkProportionOfWoodVolume();
+	public double getBarkProportionOfWoodVolume(SpeciesLocale locale) {
+		return getStemTaperTreeSpecies().getBarkProportionOfWoodVolume(locale);
 	}
 
 	@Override

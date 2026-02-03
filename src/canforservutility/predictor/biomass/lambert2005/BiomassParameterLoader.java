@@ -42,6 +42,7 @@ class BiomassParameterLoader {
 	private final static String ESTIMATE_FIELD = "Estimate";
 	private final static String DEPENDENT_FIELD = "Dependent";
 	private final static String EQUATION_FIELD = "Equation";
+	static String ANY = "all";
 	private final static List<String> S_FIELDS = Arrays.asList(new String[]{"s1", "s2", "s3", "s4", "s5", "s6", "s7"});
 	final static List<String> ESTIMATED_WEIGHT_LABELS = BiomassCompartment.getWeightLabels();
 	final static List<String> ERROR_COVARIANCE_EQUATION_LABELS = BiomassCompartment.getErrorCovarianceEquationLabels();
@@ -130,17 +131,19 @@ class BiomassParameterLoader {
 			int indexEstimateField = reader.getHeader().getIndexOfThisField(ESTIMATE_FIELD);
 			
 			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
-				// here we create one internal predictor per species and version encountered
-				paramName = record[indexParmNameField].toString();
-				value = Double.parseDouble(record[indexEstimateField].toString());
+				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
+					Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
+					// here we create one internal predictor per species and version encountered
+					paramName = record[indexParmNameField].toString();
+					value = Double.parseDouble(record[indexEstimateField].toString());
 
-                Matrix parms = getMatrix(parmDict, v, currentSpecies, ParmComponent.Parms, false); // not square
-                int paramIndex = ModelVersion.getParmNames(v).indexOf(paramName);
-                if (paramIndex == -1)
-                    throw new InvalidParameterException("Parameter" + paramName + " not found in model " + v.name());
+	                Matrix parms = getMatrix(parmDict, v, currentSpecies, ParmComponent.Parms, false); // not square
+	                int paramIndex = ModelVersion.getParmNames(v).indexOf(paramName);
+	                if (paramIndex == -1)
+	                    throw new InvalidParameterException("Parameter" + paramName + " not found in model " + v.name());
 
-                parms.setValueAt(paramIndex, 0, value);
+	                parms.setValueAt(paramIndex, 0, value);
+				}
             }
 			reader.close();
 		} catch (Exception e) {
@@ -163,29 +166,31 @@ class BiomassParameterLoader {
 			int indexParmNameField = reader.getHeader().getIndexOfThisField(PARM_NAME_FIELD);
 
 			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
-				parmName = record[indexParmNameField].toString();
-				List<String> parmNames = ModelVersion.getParmNames(v);
-				int indexParm = parmNames.indexOf(parmName);
-				double values[] = new double[parmNames.size()];
-				
-				for (String pName : parmNames) {
-					int fieldIndex = reader.getHeader().getIndexOfThisField(pName);
-					int indexInArray = parmNames.indexOf(pName);
-					try {
-						values[indexInArray] = Double.parseDouble(record[fieldIndex].toString());
-					} catch (NumberFormatException e)  { 			
-						if (!e.getMessage().equals("empty String")) {
-							reader.close();
-							throw e; 
+				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
+					Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
+					parmName = record[indexParmNameField].toString();
+					List<String> parmNames = ModelVersion.getParmNames(v);
+					int indexParm = parmNames.indexOf(parmName);
+					double values[] = new double[parmNames.size()];
+
+					for (String pName : parmNames) {
+						int fieldIndex = reader.getHeader().getIndexOfThisField(pName);
+						int indexInArray = parmNames.indexOf(pName);
+						try {
+							values[indexInArray] = Double.parseDouble(record[fieldIndex].toString());
+						} catch (NumberFormatException e)  { 			
+							if (!e.getMessage().equals("empty String")) {
+								reader.close();
+								throw e; 
+							}
 						}
 					}
-				}
 
-                Matrix parm = getMatrix(parmDict, v, currentSpecies, ParmComponent.VarCov, true); // square matrix expected
-                for (int i = 0; i < values.length; i++) {
-                    parm.setValueAt(indexParm, i, values[i]);
-                }
+					Matrix parm = getMatrix(parmDict, v, currentSpecies, ParmComponent.VarCov, true); // square matrix expected
+					for (int i = 0; i < values.length; i++) {
+						parm.setValueAt(indexParm, i, values[i]);
+					}
+				}
 			}
 			
 			reader.close();
@@ -211,13 +216,15 @@ class BiomassParameterLoader {
 			int indexEstimateField = reader.getHeader().getIndexOfThisField(ESTIMATE_FIELD);
 											 				
 			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
-				String weightName = record[indexDependentField].toString();									
-				int indexWeight = ESTIMATED_WEIGHT_LABELS.indexOf(weightName);
-				value = Double.parseDouble(record[indexEstimateField].toString());
-				
-				Matrix parm = getMatrix(parmDict, v, currentSpecies, ParmComponent.Weights, false); // not square
-				parm.setValueAt(indexWeight, 0, value);
+				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
+					Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
+					String weightName = record[indexDependentField].toString();									
+					int indexWeight = ESTIMATED_WEIGHT_LABELS.indexOf(weightName);
+					value = Double.parseDouble(record[indexEstimateField].toString());
+
+					Matrix parm = getMatrix(parmDict, v, currentSpecies, ParmComponent.Weights, false); // not square
+					parm.setValueAt(indexWeight, 0, value);
+				}
 			}
 			reader.close();
 		} catch (Exception e) {
@@ -239,21 +246,23 @@ class BiomassParameterLoader {
 			int indexEquationField = reader.getHeader().getIndexOfThisField(EQUATION_FIELD);
 
 			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
-				String equationName = record[indexEquationField].toString();									
-				int indexEquation = ERROR_COVARIANCE_EQUATION_LABELS.indexOf(equationName);
-				double values[] = new double[S_FIELDS.size()];
-				for (String sf : S_FIELDS) {
-					int indexInFile = reader.getHeader().getIndexOfThisField(sf);
-					int indexInArray = S_FIELDS.indexOf(sf);
-					values[indexInArray] = Double.parseDouble(record[indexInFile].toString());					
-				}
-				Matrix parm = getMatrix(parmDict, v, currentSpecies, ParmComponent.ErrVCov, true); // square
-				for (int i = 0; i < values.length; i++)	{
-					parm.setValueAt(indexEquation, i, values[i]);
-				}
+				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
+					Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
+					String equationName = record[indexEquationField].toString();									
+					int indexEquation = ERROR_COVARIANCE_EQUATION_LABELS.indexOf(equationName);
+					double values[] = new double[S_FIELDS.size()];
+					for (String sf : S_FIELDS) {
+						int indexInFile = reader.getHeader().getIndexOfThisField(sf);
+						int indexInArray = S_FIELDS.indexOf(sf);
+						values[indexInArray] = Double.parseDouble(record[indexInFile].toString());					
+					}
+					Matrix parm = getMatrix(parmDict, v, currentSpecies, ParmComponent.ErrVCov, true); // square
+					for (int i = 0; i < values.length; i++)	{
+						parm.setValueAt(indexEquation, i, values[i]);
+					}
+				}	
 			}
-			
+
 			reader.close();
 		} catch (Exception e) {
 			if (reader != null) {

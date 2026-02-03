@@ -29,6 +29,7 @@ import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.stemtaper.AbstractStemTaperPredictor.BasicStemTaperTree;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 
@@ -49,23 +50,23 @@ public interface StemTaperTree extends BasicStemTaperTree,
 		/**
 		 * Betula papyrifera
 		 */
-		BOP(REpiceaSpecies.Species.Betula_spp), 
+		BOP(REpiceaSpecies.Species.Betula_papyrifera), 
 		/**
 		 * Picea glauca
 		 */
-		EPB(REpiceaSpecies.Species.Picea_abies), 
+		EPB(REpiceaSpecies.Species.Picea_glauca), 
 		/**
 		 * Picea mariana
 		 */
-		EPN(REpiceaSpecies.Species.Picea_abies), 
+		EPN(REpiceaSpecies.Species.Picea_mariana), 
 		/**
 		 * Picea rubens
 		 */
-		EPR(REpiceaSpecies.Species.Picea_abies), 
+		EPR(REpiceaSpecies.Species.Picea_rubens), 
 		/**
 		 * Pupolus grandidentata
 		 */
-		PEG(REpiceaSpecies.Species.Populus_spp),
+		PEG(REpiceaSpecies.Species.Populus_grandidentata),
 		/**
 		 * Pinus strobus
 		 */
@@ -73,19 +74,19 @@ public interface StemTaperTree extends BasicStemTaperTree,
 		/**
 		 * Pinus banksiana
 		 */
-		PIG(REpiceaSpecies.Species.Pinus_sylvestris),
+		PIG(REpiceaSpecies.Species.Pinus_banksiana),
 		/**
 		 * Populus tremuloides
 		 */
-		PET(REpiceaSpecies.Species.Populus_spp), 
+		PET(REpiceaSpecies.Species.Populus_tremuloides), 
 		/**
 		 * Abies balsamea
 		 */
-		SAB(REpiceaSpecies.Species.Abies_spp), 
+		SAB(REpiceaSpecies.Species.Abies_balsamea), 
 		/**
 		 * Thuja occidentalis
 		 */
-		THO(REpiceaSpecies.Species.Thuja_plicata);
+		THO(REpiceaSpecies.Species.Thuja_occidentalis);
 		
 		private static Set<String> eligibleSpeciesNames;
 	
@@ -120,8 +121,8 @@ public interface StemTaperTree extends BasicStemTaperTree,
 		}
 
 		@Override
-		public double getBarkProportionOfWoodVolume() {
-			return species.getBarkProportionOfWoodVolume();
+		public double getBarkProportionOfWoodVolume(SpeciesLocale locale) {
+			return species.getBarkProportionOfWoodVolume(locale);
 		}
 
 	}

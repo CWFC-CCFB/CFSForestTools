@@ -20,6 +20,8 @@ package quebecmrnfutility.treelogger.wbirchprodvol;
 
 import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesStand;
 import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesTree;
+import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.LoggableTree;
 
 public interface WBirchProdVolLoggableTree extends WBirchLogGradesTree, LoggableTree {
@@ -32,8 +34,11 @@ public interface WBirchProdVolLoggableTree extends WBirchLogGradesTree, Loggable
 
 
 	@Override
-	public default WBirchProdVolTreeSpecies getWBirchProdVolTreeSpecies() {
-		return WBirchProdVolTreeSpecies.WhiteBirch;
+	public default REpiceaSpecies getWBirchProdVolTreeSpecies() {
+		return REpiceaSpecies.Species.Betula_papyrifera;
 	}
+	
+	@Override
+	public default SpeciesLocale getSpeciesLocale() {return SpeciesLocale.Quebec;}
 
 }

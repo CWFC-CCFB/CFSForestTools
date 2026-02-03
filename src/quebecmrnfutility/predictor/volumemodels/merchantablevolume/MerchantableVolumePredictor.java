@@ -31,6 +31,7 @@ import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
@@ -177,7 +178,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		Matrix modelParameters = getParameterEstimates().getMean();
 		double volume = computePrediction(dbhCm, dbhCm * dbhCm, heightM, modelParameters, species);
 		if (overbark) {
-			volume *= (1d + species.getBarkProportionOfWoodVolume());
+			volume *= (1d + species.getBarkProportionOfWoodVolume(SpeciesLocale.Quebec));
 		}
 		return volume;
 	}
