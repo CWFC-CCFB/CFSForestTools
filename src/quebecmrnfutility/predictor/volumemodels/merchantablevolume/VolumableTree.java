@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
@@ -42,40 +41,40 @@ public interface VolumableTree extends DbhCmProvider,
 										HeightMProvider {
 	
 	
-	public enum VolSpecies implements REpiceaSpecies {
-		BOG(REpiceaSpecies.Species.Betula_populifolia_QC),   
-		BOJ(REpiceaSpecies.Species.Betula_alleghaniensis_QC),
-		BOP(REpiceaSpecies.Species.Betula_papyrifera_QC),
-		CET(REpiceaSpecies.Species.Prunus_serotina_QC),
-		CHR(REpiceaSpecies.Species.Quercus_rubra_QC),
-		EPB(REpiceaSpecies.Species.Picea_glauca_QC),
-		EPN(REpiceaSpecies.Species.Picea_mariana_QC),
-		EPR(REpiceaSpecies.Species.Picea_rubens_QC),
-		ERR(REpiceaSpecies.Species.Acer_rubrum_QC),
-		ERS(REpiceaSpecies.Species.Acer_saccharum_QC),
-		FRA(REpiceaSpecies.Species.Fraxinus_americana_QC),
-		FRN(REpiceaSpecies.Species.Fraxinus_nigra_QC),
-		HEG(REpiceaSpecies.Species.Fagus_grandifolia_QC),
-		MEL(REpiceaSpecies.Species.Larix_laricina_QC),
-		ORA(REpiceaSpecies.Species.Ulmus_americana_QC),
-		OSV(REpiceaSpecies.Species.Ostrya_virginiana_QC),
-		PEB(REpiceaSpecies.Species.Populus_balsamifera_QC),
-		PEG(REpiceaSpecies.Species.Populus_grandidentata_QC),
-		PET(REpiceaSpecies.Species.Populus_tremuloides_QC),
-		PIB(REpiceaSpecies.Species.Pinus_strobus_QC),
-		PIG(REpiceaSpecies.Species.Pinus_banksiana_QC),
-		PIR(REpiceaSpecies.Species.Pinus_resinosa_QC),
-		PRU(REpiceaSpecies.Species.Tsuga_canadensis_QC),
-		SAB(REpiceaSpecies.Species.Abies_balsamea_QC),
-		THO(REpiceaSpecies.Species.Thuja_occidentalis_QC),
-		TIL(REpiceaSpecies.Species.Tilia_americana_QC);
+	enum VolSpecies implements REpiceaSpecies {
+		BOG(REpiceaSpecies.Species.Betula_populifolia),   
+		BOJ(REpiceaSpecies.Species.Betula_alleghaniensis),
+		BOP(REpiceaSpecies.Species.Betula_papyrifera),
+		CET(REpiceaSpecies.Species.Prunus_serotina),
+		CHR(REpiceaSpecies.Species.Quercus_rubra),
+		EPB(REpiceaSpecies.Species.Picea_glauca),
+		EPN(REpiceaSpecies.Species.Picea_mariana),
+		EPR(REpiceaSpecies.Species.Picea_rubens),
+		ERR(REpiceaSpecies.Species.Acer_rubrum),
+		ERS(REpiceaSpecies.Species.Acer_saccharum),
+		FRA(REpiceaSpecies.Species.Fraxinus_americana),
+		FRN(REpiceaSpecies.Species.Fraxinus_nigra),
+		HEG(REpiceaSpecies.Species.Fagus_grandifolia),
+		MEL(REpiceaSpecies.Species.Larix_laricina),
+		ORA(REpiceaSpecies.Species.Ulmus_americana),
+		OSV(REpiceaSpecies.Species.Ostrya_virginiana),
+		PEB(REpiceaSpecies.Species.Populus_balsamifera),
+		PEG(REpiceaSpecies.Species.Populus_grandidentata),
+		PET(REpiceaSpecies.Species.Populus_tremuloides),
+		PIB(REpiceaSpecies.Species.Pinus_strobus),
+		PIG(REpiceaSpecies.Species.Pinus_banksiana),
+		PIR(REpiceaSpecies.Species.Pinus_resinosa),
+		PRU(REpiceaSpecies.Species.Tsuga_canadensis),
+		SAB(REpiceaSpecies.Species.Abies_balsamea),
+		THO(REpiceaSpecies.Species.Thuja_occidentalis),
+		TIL(REpiceaSpecies.Species.Tilia_americana);
 		
 		private static List<String> EligibleSpeciesCodes;
 		private static Map<String, VolSpecies> SpeciesLookupMap;
 		private static List<String> EligibleLatinNames;
 		
 		private Matrix dummy;
-		private SpeciesType speciesType;
+//		private SpeciesType speciesType;
 		
 		private final REpiceaSpecies.Species species;
 		
@@ -83,15 +82,15 @@ public interface VolumableTree extends DbhCmProvider,
 			this.species = species;
 			dummy = new Matrix(1,26);
 			dummy.setValueAt(0, ordinal(), 1d);
-			if (QuebecGeneralSettings.CONIFEROUS_SPECIES.contains(this.name().toUpperCase().trim())) {
-				speciesType = SpeciesType.ConiferousSpecies;
-			} else {
-				speciesType = SpeciesType.BroadleavedSpecies;
-			}
+//			if (QuebecGeneralSettings.CONIFEROUS_SPECIES.contains(this.name().toUpperCase().trim())) {
+//				speciesType = SpeciesType.ConiferousSpecies;
+//			} else {
+//				speciesType = SpeciesType.BroadleavedSpecies;
+//			}
 		}
 		
 		@Override
-		public SpeciesType getSpeciesType() {return this.speciesType;}
+		public SpeciesType getSpeciesType() {return species.getSpeciesType();}
 		public Matrix getDummy() {return this.dummy;}
 		
 		/**
@@ -99,7 +98,7 @@ public interface VolumableTree extends DbhCmProvider,
 		 * @param speciesCode a String
 		 * @return a VolSpecies enum
 		 */
-		public static VolSpecies findEligibleSpeciesUsingQuebecSpeciesCode(String speciesCode) {
+		static VolSpecies findEligibleSpeciesUsingQuebecSpeciesCode(String speciesCode) {
 			if (speciesCode == null) {
 				return null;
 			} else {
@@ -146,7 +145,7 @@ public interface VolumableTree extends DbhCmProvider,
 		 * @param latinName a String
 		 * @return a VolSpecies enum
 		 */
-		public static VolSpecies findEligibleSpeciesUsingLatinName(String latinName) {
+		static VolSpecies findEligibleSpeciesUsingLatinName(String latinName) {
 			if (latinName == null || latinName.isEmpty()) {
 				return null;
 			} else {
@@ -163,10 +162,14 @@ public interface VolumableTree extends DbhCmProvider,
 		public void setText(String englishText, String frenchText) {}
 
 		@Override
-		public double getBarkProportionOfWoodVolume() {return species.getBarkProportionOfWoodVolume();}
-
+		public double getBarkProportionOfWoodVolume(SpeciesLocale locale) {
+			return species.getBarkProportionOfWoodVolume(locale);
+		}
+		
 		@Override
-		public double getBasicWoodDensity() {return species.getBasicWoodDensity();}
+		public double getBasicWoodDensity(SpeciesLocale locale) {
+			return species.getBasicWoodDensity(locale);
+		}
 
 		@Override
 		public String getLatinName() {return species.getLatinName();}

@@ -31,6 +31,7 @@ import repicea.simulation.covariateproviders.treelevel.BarkProportionProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 /**
  * This interface makes sure the tree instance is compatible with the PetroGradePredictor class.
@@ -47,8 +48,8 @@ public interface PetroGradeTree extends DbhCmProvider,
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 
 	public enum PetroGradeSpecies implements BarkProportionProvider {
-		BOJ(REpiceaSpecies.Species.Betula_spp),
-		ERS(REpiceaSpecies.Species.Acer_spp);
+		BOJ(REpiceaSpecies.Species.Betula_alleghaniensis),
+		ERS(REpiceaSpecies.Species.Acer_saccharum);
 
 		private static Set<String> eligibleSpeciesNames;
 
@@ -80,8 +81,8 @@ public interface PetroGradeTree extends DbhCmProvider,
 		}
 
 		@Override
-		public double getBarkProportionOfWoodVolume() {
-			return species.getBarkProportionOfWoodVolume();
+		public double getBarkProportionOfWoodVolume(SpeciesLocale locale) {
+			return species.getBarkProportionOfWoodVolume(locale);
 		}
 
 	}

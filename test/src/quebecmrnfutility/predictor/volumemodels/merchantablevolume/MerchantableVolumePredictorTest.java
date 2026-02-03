@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 public class MerchantableVolumePredictorTest {
 
@@ -121,7 +122,7 @@ public class MerchantableVolumePredictorTest {
 		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
 		double volumeDM3 = volPred.predictDeterministicTreeCommercialVolumeDm3("Betula alleghaniensis", 18d, 15d, true);
 		Assert.assertEquals("Testing volume", 
-				149.284990537785 * (1 + REpiceaSpecies.Species.Betula_alleghaniensis_QC.getBarkProportionOfWoodVolume()),
+				149.284990537785 * (1 + REpiceaSpecies.Species.Betula_alleghaniensis.getBarkProportionOfWoodVolume(SpeciesLocale.Quebec)),
 				volumeDM3, 
 				1E-8);
 	}

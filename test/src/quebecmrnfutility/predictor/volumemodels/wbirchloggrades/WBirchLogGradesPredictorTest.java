@@ -28,16 +28,13 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolTreeLoggerParameters.ProductID;
 import repicea.io.FormatField;
 import repicea.io.javacsv.CSVField;
 import repicea.io.javacsv.CSVReader;
 import repicea.io.javacsv.CSVWriter;
 import repicea.math.Matrix;
 import repicea.stats.estimates.MonteCarloEstimate;
-import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesPredictor;
-import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesStand;
-import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesTree;
-import quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolTreeLoggerParameters.ProductID;
 import repicea.util.ObjectUtility;
 
 public class WBirchLogGradesPredictorTest {

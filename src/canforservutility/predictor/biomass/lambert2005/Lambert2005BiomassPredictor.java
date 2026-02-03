@@ -65,7 +65,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Spruce", Lambert2005Species.PiceaGlauca);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("feuillu", Lambert2005Species.Broadleaved);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("resineux", Lambert2005Species.Coniferous);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("all", Lambert2005Species.Any);
+	//	ENGLISH_TO_LATIN_LOOKUP_MAP.put("all", Lambert2005Species.Any);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Alpine Fir", Lambert2005Species.AbiesLasiocarpa);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Basswood", Lambert2005Species.TiliaAmericana);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Beech", Lambert2005Species.FagusGrandifolia);
@@ -262,7 +262,8 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 	 */
 	public Matrix predictBiomassKg(Lambert2005Tree tree) {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
-		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(tree.getLambert2005Species());
+		Lambert2005Species species = Lambert2005Species.findEligibleSpeciesUsingLatinName(tree.getLambert2005Species().getLatinName());
+		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(species);
 		return predictor.predictBiomass(tree);
 	}
 
@@ -283,7 +284,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 			throw new InvalidParameterException("If not null, the heightM argument must be positive!");
 		}
 		ModelVersion v = heightM != null ? ModelVersion.Complete : ModelVersion.Reduced;
-		Lambert2005Species species = Lambert2005Species.valueOf(speciesLatin); 
+		Lambert2005Species species = Lambert2005Species.findEligibleSpeciesUsingLatinName(speciesLatin);
 		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(species);
 		return predictor.predictTotalBiomassMg(species, dbhCm, heightM == null ? 0d : heightM);
 	}

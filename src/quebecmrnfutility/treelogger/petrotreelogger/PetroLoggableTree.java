@@ -19,6 +19,7 @@
 package quebecmrnfutility.treelogger.petrotreelogger;
 
 import quebecmrnfutility.predictor.volumemodels.loggradespetro.PetroGradeTree;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.LoggableTree;
 
 /**
@@ -28,5 +29,9 @@ import repicea.simulation.treelogger.LoggableTree;
  */
 public interface PetroLoggableTree extends LoggableTree, PetroGradeTree {
 
+	@Override
+	public default SpeciesLocale getSpeciesLocale() {
+		return SpeciesLocale.Quebec;
+	}
 	
  }

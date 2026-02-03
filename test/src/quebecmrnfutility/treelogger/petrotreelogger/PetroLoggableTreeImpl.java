@@ -18,6 +18,8 @@
  */
 package quebecmrnfutility.treelogger.petrotreelogger;
 
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+
 public class PetroLoggableTreeImpl implements PetroLoggableTree {
 
 	final PetroGradeSpecies species;
@@ -105,19 +107,15 @@ public class PetroLoggableTreeImpl implements PetroLoggableTree {
 
 
 	@Override
-	public String getSubjectId() {
-		return "";
-	}
+	public String getSubjectId() {return "";}
 
 	@Override
-	public int getMonteCarloRealizationId() {
-		return 0;
-	}
+	public int getMonteCarloRealizationId() {return 0;}
 
 	
 	@Override
-	public double getBarkProportionOfWoodVolume() {
-		return getPetroGradeSpecies().getBarkProportionOfWoodVolume();
+	public double getBarkProportionOfWoodVolume(SpeciesLocale locale) {
+		return getPetroGradeSpecies().getBarkProportionOfWoodVolume(locale);
 	}
 	
 	@Override
