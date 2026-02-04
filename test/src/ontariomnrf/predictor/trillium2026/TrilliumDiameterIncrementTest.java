@@ -20,7 +20,6 @@
 package ontariomnrf.predictor.trillium2026;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,20 +29,212 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import ontariomnrf.predictor.trillium2026.Trillium2026Tree.Trillium2026TreeSpecies;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
 public class TrilliumDiameterIncrementTest {
 
+	static class Trillium2026TreeImpl implements Trillium2026Tree, Trillium2026Plot {
 
-	private static Map<Trillium2026TreeSpecies, List<Trillium2026TreeImpl>> TreeMap;
+		private final double growthStepLengthYr;
+		private final double totalAnnualPrecipitationMm;
+		private final double meanAnnualTemperatureCelsius;
+		private final double meanTminJanuaryCelsius;
+		private final double totalPrecMarchToMayMm;
+		private final double meanTempJuneToAugustCelsius;
+		private final double t_anom;
+		private final double totalRadiation;
+		private final double meanSummerVPD;
+		private final double frostFreeDays;
+		private final double meanTmaxJulyCelsius;
+		private final double SMImean;
+		private final double Mx_anom;
+		private final double meanSummerVPDDaylight;
+		private final double totalPrecJuneToAugustMm;
+		private final double P_anom;
+		private final double CMI;
+		private final double highestTmaxCelsius;
+		private final double degreeDaysCelsius;
+		private final double lowestTmin;
+		private final double dbhCm;
+		private final double BAL;
+		private final Species species;
+		protected final double pred;
+		protected final double predTransformed;
+		private int mcReal;
+		private final int dateYr;
+		private final boolean dummyHarvest;
+		
+		Trillium2026TreeImpl(double growthStepLengthYr,
+				double totalAnnualPrecipitationMm,
+				double meanAnnualTemperatureCelsius,
+				double meanTminJanuaryCelsius,
+				double totalPrecMarchToMayMm,
+				double meanTempJuneToAugustCelsius,
+				double t_anom,
+				double totalRadiation,
+				double meanSummerVPD,
+				double frostFreeDays,
+				double meanTmaxJulyCelsius,
+				double SMImean,
+				double Mx_anom,
+				double meanSummerVPDDaylight,
+				double totalPrecJuneToAugustMm,
+				double P_anom,
+				double CMI,
+				double highestTmaxCelsius,
+				double degreeDaysCelsius,
+				double lowestTmin,
+				double dbhCm,
+				double BAL,
+				Species species, 
+				double pred,
+				double predTransformed,
+				int dateYr,
+				Boolean dummyHarvest) {
+			this.growthStepLengthYr = growthStepLengthYr;
+			this.totalAnnualPrecipitationMm = totalAnnualPrecipitationMm;
+			this.meanAnnualTemperatureCelsius = meanAnnualTemperatureCelsius;
+			this.meanTminJanuaryCelsius = meanTminJanuaryCelsius;
+			this.totalPrecMarchToMayMm = totalPrecMarchToMayMm;
+			this.meanTempJuneToAugustCelsius = meanTempJuneToAugustCelsius;
+			this.t_anom = t_anom;
+			this.totalRadiation = totalRadiation;
+			this.meanSummerVPD = meanSummerVPD;
+			this.frostFreeDays = frostFreeDays;
+			this.meanTmaxJulyCelsius = meanTmaxJulyCelsius;
+			this.SMImean = SMImean;
+			this.Mx_anom = Mx_anom;
+			this.meanSummerVPDDaylight = meanSummerVPDDaylight;
+			this.totalPrecJuneToAugustMm = totalPrecJuneToAugustMm;
+			this.P_anom = P_anom;
+			this.CMI = CMI;
+			this.highestTmaxCelsius = highestTmaxCelsius;
+			this.degreeDaysCelsius = degreeDaysCelsius;
+			this.lowestTmin = lowestTmin;
+			this.dbhCm = dbhCm;
+			this.BAL = BAL;
+			this.species = species;
+			this.pred = pred;
+			this.predTransformed = predTransformed;
+			this.dateYr = dateYr;
+			this.dummyHarvest = dummyHarvest != null ?
+					dummyHarvest :
+						false;
+		}
+		
+		@Override
+		public String getSubjectId() {return null;}
+
+		@Override
+		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
+
+		void setMonteCarloRealizationId(int real) {this.mcReal = real;}
+
+		@Override
+		public int getMonteCarloRealizationId() {return mcReal;}
+
+		@Override
+		public double getGrowthStepLengthYr() {return growthStepLengthYr;}
+
+		@Override
+		public double getTotalAnnualPrecipitationMm() {return totalAnnualPrecipitationMm;}
+
+		@Override
+		public double getMeanAnnualTemperatureCelsius() {return meanAnnualTemperatureCelsius;}
+
+		@Override
+		public double getMeanTminJanuaryCelsius() {return meanTminJanuaryCelsius;}
+
+		@Override
+		public double getTotalPrecMarchToMayMm() {return totalPrecMarchToMayMm;}
+
+		@Override
+		public double getMeanTempJuneToAugustCelsius() {return meanTempJuneToAugustCelsius;}
+
+		@Override
+		public double getMeanTempAnomalyCelsius() {return t_anom;}
+
+		@Override
+		public double getTotalRadiation() {return totalRadiation;}
+
+		@Override
+		public double getMeanSummerVPD() {return meanSummerVPD;}
+
+		@Override
+		public double getFrostFreeDays() {return frostFreeDays;}
+
+		@Override
+		public double getMeanTmaxJulyCelsius() {return meanTmaxJulyCelsius;}
+
+		@Override
+		public double getSMImean() {return SMImean;}
+
+		@Override
+		public double getMaxTempAnomalyCelsius() {return Mx_anom;}
+
+		@Override
+		public double getMeanSummerVPDDaylight() {return meanSummerVPDDaylight;}
+
+		@Override
+		public double getTotalPrecJuneToAugustMm() {return totalPrecJuneToAugustMm;}
+
+		@Override
+		public double getTotalPrecipitationAnomalyMm() {return P_anom;}
+
+		@Override
+		public double getCMI() {return CMI;}
+
+		@Override
+		public double getHighestTmaxCelsius() {return highestTmaxCelsius;}
+
+		@Override
+		public double getDegreeDaysCelsius() {return degreeDaysCelsius;}
+
+		@Override
+		public double getLowestTmin() {return lowestTmin;}
+
+
+		@Override
+		public double getDbhCm() {return dbhCm;}
+
+		@Override
+		public double getBasalAreaLargerThanSubjectM2Ha() {return BAL;}
+
+		@Override
+		public Species getTrillium2026TreeSpecies() {return species;}
+
+		@Override
+		public boolean isGoingToBeHarvested() {
+			return dummyHarvest;
+		}
+
+		@Override
+		public int getDateYr() {
+			return dateYr;
+		}
+
+		@Override
+		public double getLnDbhCm() {
+			return Math.log(getDbhCm());
+		}
+
+		@Override
+		public double getSquaredDbhCm() {
+			return getDbhCm() * getDbhCm();
+		}
+	}
+
+	
+	private static Map<Species, List<Trillium2026TreeImpl>> TreeMap;
 
 	@BeforeClass
 	public static void readTrees() throws IOException {
-		TreeMap = new LinkedHashMap<Trillium2026TreeSpecies, List<Trillium2026TreeImpl>>();
+		TreeMap = new LinkedHashMap<Species, List<Trillium2026TreeImpl>>();
 		String filename = ObjectUtility.getPackagePath(TrilliumDiameterIncrementTest.class) + "diameterIncrementTestData.csv";
 		CSVReader reader = null;
 		try {
@@ -77,15 +268,11 @@ public class TrilliumDiameterIncrementTest {
 //					double transformedY = Math.log(dDbhCm + Math.sqrt(dDbhCm * dDbhCm + 1));
 //					double retransformedY = Math.sinh(transformedY);
 					double BAL = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("BAL")].toString());
-					String genusName = record[reader.getHeader().getIndexOfThisField("SpecGenus")].toString();
-					String speciesName = record[reader.getHeader().getIndexOfThisField("SpecSpec")].toString();
-					String completeSpeciesName = genusName + speciesName;
-					Trillium2026TreeSpecies species	= Trillium2026TreeSpecies.getTrilliumSpecies(completeSpeciesName);
-					if (species == null) {
-						throw new InvalidParameterException("Species " + completeSpeciesName + " is not recognized");
-					}
+					String speciesName = record[reader.getHeader().getIndexOfThisField("SpecGroup")].toString();
+					Species species	= Trillium2026DiameterIncrementPredictor.getSpeciesFromString(speciesName);
 					double pred = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("pred")].toString());
 					double predTransformed = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("pred_transformed")].toString());
+					int dateYr = ((Double) Double.parseDouble(record[reader.getHeader().getIndexOfThisField("FieldSeasonYear.x")].toString())).intValue();
 					Trillium2026TreeImpl tree = new Trillium2026TreeImpl(growthStepLengthYr,
 							totalAnnualPrecipitationMm,
 							meanAnnualTemperatureCelsius,
@@ -110,7 +297,9 @@ public class TrilliumDiameterIncrementTest {
 							BAL,
 							species, 
 							pred, 
-							predTransformed);
+							predTransformed,
+							dateYr,
+							null);
 					if (!TreeMap.containsKey(species)) {
 						TreeMap.put(species, new ArrayList<Trillium2026TreeImpl>());
 					}
@@ -130,7 +319,7 @@ public class TrilliumDiameterIncrementTest {
 	public void test01DeterministicPredictionsOnTransformedScale() {
 		Trillium2026DiameterIncrementPredictor diamIncPredictor = new Trillium2026DiameterIncrementPredictor(false); // deterministic
 		diamIncPredictor.enableBackTransformation(false);
-		for (Trillium2026TreeSpecies species : TreeMap.keySet()) {
+		for (Species species : TreeMap.keySet()) {
 			int nbTested = 0;
 			for (Trillium2026TreeImpl t : TreeMap.get(species)) {
 				double observed = diamIncPredictor.predictGrowth(t, t);
@@ -145,7 +334,7 @@ public class TrilliumDiameterIncrementTest {
 	@Test
 	public void test02DeterministicPredictionsOnOriginalScale() {
 		Trillium2026DiameterIncrementPredictor diamIncPredictor = new Trillium2026DiameterIncrementPredictor(false); // deterministic
-		for (Trillium2026TreeSpecies species : TreeMap.keySet()) {
+		for (Species species : TreeMap.keySet()) {
 			int nbTested = 0;
 			for (Trillium2026TreeImpl t : TreeMap.get(species)) {
 				double observed = diamIncPredictor.predictGrowth(t, t);
@@ -161,7 +350,7 @@ public class TrilliumDiameterIncrementTest {
 	public void test03StochasticPredictions() {
 		Trillium2026DiameterIncrementPredictor stoPredictor = new Trillium2026DiameterIncrementPredictor(false, true); // deterministic
 		Trillium2026DiameterIncrementPredictor detPredictor = new Trillium2026DiameterIncrementPredictor(false); // deterministic
-		Trillium2026TreeImpl t = TreeMap.get(Trillium2026TreeSpecies.AbiesBalsamea).get(0);
+		Trillium2026TreeImpl t = TreeMap.get(Species.Abies_balsamea).get(0);
 		Matrix real;
 		MonteCarloEstimate mcEstimate = new MonteCarloEstimate();
 		for (int i = 0; i < 100000; i++) {

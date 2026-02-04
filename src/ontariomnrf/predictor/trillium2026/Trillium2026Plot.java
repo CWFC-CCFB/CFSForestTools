@@ -20,20 +20,25 @@
 package ontariomnrf.predictor.trillium2026;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
-import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
+import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
 
 public interface Trillium2026Plot extends MonteCarloSimulationCompliantObject,
 											GrowthStepLengthYrProvider,
 											TotalAnnualPrecipitationMmProvider,
-											MeanAnnualTemperatureCelsiusProvider {
+											MeanAnnualTemperatureCelsiusProvider,
+											InterventionPlannedProvider,
+											DateYrProvider {
 
 	
 	public double getMeanTminJanuaryCelsius();
 	public double getTotalPrecMarchToMayMm();
 	public double getMeanTempJuneToAugustCelsius(); 
-	
+	public double getTotalPrecJuneToAugustMm();
+
 	/**
 	 * Mean temperature anomaly.<p>
 	 * That is the difference between the normals and the interval-averaged temperature
@@ -55,7 +60,6 @@ public interface Trillium2026Plot extends MonteCarloSimulationCompliantObject,
 	public double getMaxTempAnomalyCelsius();
 	
 	public double getMeanSummerVPDDaylight();
-	public double getTotalPrecJuneToAugustMm();
 
 	/**
 	 * Total precipitation anomaly.<p>
@@ -68,5 +72,7 @@ public interface Trillium2026Plot extends MonteCarloSimulationCompliantObject,
 	public double getHighestTmaxCelsius();
 	public double getDegreeDaysCelsius(); // add threshold is it 5C or 0C
 	public double getLowestTmin();
+
+	public default boolean isFromPlantation() {return false;}
 
 }

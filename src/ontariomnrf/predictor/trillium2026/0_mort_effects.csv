@@ -1,0 +1,16 @@
+"Effect","EffectID"
+"Intercept",0
+"DBH_x",1
+"BAL",2
+"dummyHarvest",3
+"IDBH_xBAL",4
+"plantedTRUE",5
+"beyondMinus25",6
+"MeanTminJanuary",7
+"MeanTempJuneToAugust",8
+"IDBH_x2",9
+"TotalPrecMarchToMay",10
+"TotalPrecJuneToAugust",11
+"logDBH_x",12
+"IBAL2",13
+"DutchElmDiseaseOutbreak",14

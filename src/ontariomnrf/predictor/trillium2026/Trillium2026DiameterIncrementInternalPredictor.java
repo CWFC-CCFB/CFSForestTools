@@ -24,10 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ontariomnrf.predictor.trillium2026.Trillium2026Tree.Trillium2026TreeSpecies;
 import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.StatisticalUtility;
 
 @SuppressWarnings("serial")
@@ -90,14 +90,14 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 	
 	private final Trillium2026DiameterIncrementPredictor owner;
 	@SuppressWarnings("unused")
-	private final Trillium2026TreeSpecies species;
+	private final Species species;
 	private final List<Effect> effects;
 	private double sigma;
 	private double sigma2;
 	
 
 	Trillium2026DiameterIncrementInternalPredictor(Trillium2026DiameterIncrementPredictor owner,
-			Trillium2026TreeSpecies species,
+			Species species,
 			boolean isParametersVariabilityEnabled, 
 			boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
