@@ -25,7 +25,6 @@ import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.math.integral.AbstractGaussQuadrature.NumberOfPoints;
 import repicea.math.integral.GaussHermiteQuadrature;
-import repicea.math.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
@@ -33,7 +32,6 @@ import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.stats.estimates.GaussianEstimate;
-import repicea.stats.model.glm.LinkFunction;
 import repicea.stats.model.glm.LinkFunction.Type;
 import repicea.util.ObjectUtility;
 
@@ -65,24 +63,6 @@ public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredict
 	
 	private final EmbeddedLinkFunction linkFunction;
 	private final GaussHermiteQuadrature ghq;
-//	private final List<Integer> indicesForGaussianQuad;
-	
-	@SuppressWarnings("serial")
-	class EmbeddedLinkFunction extends LinkFunction implements GaussHermiteQuadratureCompatibleFunction<Double> {
-
-		final double standardDeviation;
-		
-		EmbeddedLinkFunction(Type linkFunctionType, double randomEffectVariance) {
-			super(linkFunctionType);
-			standardDeviation = Math.sqrt(randomEffectVariance);
-		}
-		
-		@Override
-		public double convertFromGaussToOriginal(double x, double mu, int covarianceIndexI, int covarianceIndexJ) {
-			return mu + Math.sqrt(2d) * x * standardDeviation;
-		}
-		
-	}
 	
 	
 	/**

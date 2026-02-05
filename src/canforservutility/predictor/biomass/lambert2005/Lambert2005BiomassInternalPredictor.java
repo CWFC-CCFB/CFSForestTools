@@ -27,12 +27,12 @@ import java.util.Map;
 
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.Distribution;
 import repicea.stats.StatisticalUtility;
 
@@ -48,12 +48,12 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	
 	final SymmetricMatrix errorCovariance;	
 	final Matrix c;	// column vector
-	final Lambert2005Species species;
+	final Species species;
 	final Matrix cholesky; 
 	final ModelVersion version;
 	
 	Lambert2005BiomassInternalPredictor(ModelVersion v, 
-			Lambert2005Species species, 
+			Species species, 
 			boolean isParametersVariabilityEnabled, 
 			boolean isResidualVariabilityEnabled,
 			BiomassParameterLoader parmLoader){
@@ -79,13 +79,13 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 	}
 	
 
-    private static Matrix getMatrix(Map<ModelVersion, Map<Lambert2005Species, Matrix>> parmDict,
+    private static Matrix getMatrix(Map<ModelVersion, Map<Species, Matrix>> parmDict,
             ModelVersion v,
-            Lambert2005Species species) {
+            Species species) {
             if (!parmDict.containsKey(v)) {
                 throw new UnsupportedOperationException("Model version " + v.name() + " is not in the outer dictionary!");
             }
-            Map<Lambert2005Species, Matrix> innerMap = parmDict.get(v);
+            Map<Species, Matrix> innerMap = parmDict.get(v);
             if (!innerMap.containsKey(species)) {
                 throw new UnsupportedOperationException("Species " + species.name() + " is not in the inner dictionary!");
             }
@@ -175,7 +175,7 @@ final class Lambert2005BiomassInternalPredictor extends REpiceaPredictor {
 		return getParameterEstimates().getMean();
 	}
 
-	double predictTotalBiomassMg(Lambert2005Species species, double dbhCm, Double heightM) {
+	double predictTotalBiomassMg(double dbhCm, Double heightM) {
 		Matrix pred = internalPredictBiomass(getParameterEstimates().getMean(),
 				dbhCm,
 				heightM);

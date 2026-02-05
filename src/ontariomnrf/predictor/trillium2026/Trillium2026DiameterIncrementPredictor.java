@@ -32,6 +32,8 @@ import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 /**
@@ -39,7 +41,7 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - March 2025
  */
 @SuppressWarnings("serial")
-public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor {
+public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
 
 	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
 	static {
@@ -246,6 +248,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor {
 	 * Provide the list of eligible species for this module.
 	 * @return a List of Species enums
 	 */
+	@Override
 	public List<Species> getEligibleSpecies() {
 		List<Species> species = new ArrayList<Species>(SpeciesLookupMap.values());
 		Collections.sort(species);
@@ -255,4 +258,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor {
 	public static void main(String[] args) {
 		new Trillium2026DiameterIncrementPredictor(false);
 	}
+
+	@Override
+	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
 }

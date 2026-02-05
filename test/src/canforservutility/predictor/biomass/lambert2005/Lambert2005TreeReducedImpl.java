@@ -24,6 +24,7 @@ package canforservutility.predictor.biomass.lambert2005;
 import java.security.InvalidParameterException;
 
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 /**
  * An implementation of the Lambert2005Tree interface for the reduced model.
@@ -31,15 +32,15 @@ import repicea.simulation.HierarchicalLevel;
  */
 public class Lambert2005TreeReducedImpl implements Lambert2005Tree {
 
-	final Lambert2005Species species;
+	final Species species;
 	final double dbhCm;
 	
 	/**
 	 * Constructor.
-	 * @param species a Lambert2005Species enum
+	 * @param species a Species enum
 	 * @param dbhCm tree diameter at breast height (cm)
 	 */
-	public Lambert2005TreeReducedImpl(Lambert2005Species species, double dbhCm) {
+	public Lambert2005TreeReducedImpl(Species species, double dbhCm) {
 		if (species == null) {
 			throw new InvalidParameterException("The species argument cannot be null!");
 		}
@@ -63,7 +64,7 @@ public class Lambert2005TreeReducedImpl implements Lambert2005Tree {
 	public int getMonteCarloRealizationId() {return 0;}
 
 	@Override
-	public Lambert2005Species getLambert2005Species() {return species;}
+	public Species getLambert2005Species() {return species;}
 
 }
 

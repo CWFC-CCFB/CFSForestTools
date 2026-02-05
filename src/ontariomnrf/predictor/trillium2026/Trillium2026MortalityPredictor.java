@@ -9,10 +9,13 @@ import java.util.Map;
 import repicea.io.javacsv.CSVReader;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 @SuppressWarnings("serial")
-public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<Trillium2026Plot, Trillium2026Tree> {
+public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<Trillium2026Plot, Trillium2026Tree>
+										implements REpiceaSpeciesCompliantObject {
 
 	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
 	static {
@@ -69,10 +72,6 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 		return internalPredictorMap.get(species).predictEventProbability(plot, tree);
 	}
 	
-	/**
-	 * Provide the list of eligible species for this module.
-	 * @return a List of Species enums
-	 */
 	public List<Species> getEligibleSpecies() {
 		List<Species> species = new ArrayList<Species>(SpeciesLookupMap.values());
 		Collections.sort(species);
@@ -85,7 +84,7 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 			String path = ObjectUtility.getRelativePackagePath(getClass());
 
 			EffectLists = new HashMap<Species, List<Double>>();
-			String effectFilename = path + "0_mort_effectlist.csv";
+			String effectFilename = path + "0_mort_effectList.csv";
 			readFile(EffectLists, effectFilename);
 			
 			CoefLists = new HashMap<Species, List<Double>>();
@@ -144,7 +143,6 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 		}
 	}
 
-	public static void main(String[] args) {
-		new Trillium2026MortalityPredictor(false);
-	}
+	@Override
+	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
 }

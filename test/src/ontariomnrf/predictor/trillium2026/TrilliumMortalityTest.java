@@ -30,8 +30,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import repicea.io.javacsv.CSVReader;
+import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
 public class TrilliumMortalityTest {
@@ -249,39 +251,24 @@ public class TrilliumMortalityTest {
 		}
 	}
 
-//	@Test
-//	public void test02DeterministicPredictionsOnOriginalScale() {
-//		Trillium2026DiameterIncrementPredictor diamIncPredictor = new Trillium2026DiameterIncrementPredictor(false); // deterministic
-//		for (Trillium2026TreeSpecies species : TreeMap.keySet()) {
-//			int nbTested = 0;
-//			for (Trillium2026TreeImpl t : TreeMap.get(species)) {
-//				double observed = diamIncPredictor.predictGrowth(t, t);
-//				double expected = t.predTransformed;
-//				Assert.assertEquals("Comparing predictions on transformed scale", expected, observed, 1E-8);
-//				nbTested++;
-//			}
-//			System.out.println(species.name() + " - Nb trees successfully tested = " + nbTested);
-//		}
-//	}
-//
-//	@Test
-//	public void test03StochasticPredictions() {
-//		Trillium2026DiameterIncrementPredictor stoPredictor = new Trillium2026DiameterIncrementPredictor(false, true); // deterministic
-//		Trillium2026DiameterIncrementPredictor detPredictor = new Trillium2026DiameterIncrementPredictor(false); // deterministic
-//		Trillium2026TreeImpl t = TreeMap.get(Trillium2026TreeSpecies.AbiesBalsamea).get(0);
-//		Matrix real;
-//		MonteCarloEstimate mcEstimate = new MonteCarloEstimate();
-//		for (int i = 0; i < 100000; i++) {
-//			t.setMonteCarloRealizationId(i);
-//			real = new Matrix(1,1);
-//			real.setValueAt(0, 0, stoPredictor.predictGrowth(t, t));
-//			mcEstimate.addRealization(real);
-//		}
-//		double observed = mcEstimate.getMean().getValueAt(0, 0);
-//		double expected = detPredictor.predictGrowth(t, t);
-//		System.out.println("Stochastic prediction = " +  observed + "; deterministic prediction = " + expected);
-//		Assert.assertEquals("Comparing stochastic and deterministic predictions", expected, observed, 1E-2);
-//		
-//	}
+	@Test
+	public void test03StochasticPredictions() {
+		Trillium2026MortalityPredictor stoPredictor = new Trillium2026MortalityPredictor(false, true, false); // random effect variability enabled
+		Trillium2026MortalityPredictor detPredictor = new Trillium2026MortalityPredictor(false); 
+		Trillium2026TreeImpl t = TreeMap.get(Species.Abies_balsamea).get(0);
+		Matrix real;
+		MonteCarloEstimate mcEstimate = new MonteCarloEstimate();
+		for (int i = 0; i < 100000; i++) {
+			t.setMonteCarloRealizationId(i);
+			real = new Matrix(1,1);
+			real.setValueAt(0, 0, stoPredictor.predictEventProbability(t, t));
+			mcEstimate.addRealization(real);
+		}
+		double observed = mcEstimate.getMean().getValueAt(0, 0);
+		double expected = detPredictor.predictEventProbability(t, t);
+		System.out.println("Stochastic prediction = " +  observed + "; deterministic prediction = " + expected);
+		Assert.assertEquals("Comparing stochastic and deterministic predictions", expected, observed, 1E-2);
+		
+	}
 	
 }
