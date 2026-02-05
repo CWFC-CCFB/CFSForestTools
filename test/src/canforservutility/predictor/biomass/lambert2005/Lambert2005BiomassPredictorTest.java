@@ -35,7 +35,6 @@ import org.junit.Test;
 
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.MerchantableVolumePredictor;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableStand;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableStandImpl;
@@ -44,6 +43,7 @@ import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.util.ObjectUtility;
 
@@ -355,12 +355,12 @@ public class Lambert2005BiomassPredictorTest {
 
 	@Test
 	public void test05ParameterVariability() throws InterruptedException {
-		Lambert2005Tree tree = new Lambert2005TreeReducedImpl(Lambert2005Species.AbiesBalsamea, 20);
+		Lambert2005Tree tree = new Lambert2005TreeReducedImpl(Species.Abies_balsamea, 20);
 		Lambert2005BiomassPredictor predictor = new Lambert2005BiomassPredictor(true);
 		List<String> errorList = new ArrayList<String>();
 		for (ModelVersion v : predictor.internalPredictors.keySet()) {
-			Map<Lambert2005Species, Lambert2005BiomassInternalPredictor> innerMap = predictor.internalPredictors.get(v);
-			for (Lambert2005Species s : innerMap.keySet()) {
+			Map<Species, Lambert2005BiomassInternalPredictor> innerMap = predictor.internalPredictors.get(v);
+			for (Species s : innerMap.keySet()) {
 				try { 
 				Matrix betaThisReal = innerMap.get(s).testParametersForThisRealization(tree);
 				Matrix betaMean = innerMap.get(s).testMeanParameters();
@@ -395,15 +395,15 @@ public class Lambert2005BiomassPredictorTest {
 	
 	static class Tree extends VolumableTreeImpl implements Lambert2005Tree {
 
-		final Lambert2005Species lambertSpecies;
+		final Species lambertSpecies;
 		
-		public Tree(String speciesName, Lambert2005Species lambertSpecies, double dbhCm, double heightM) {
+		public Tree(String speciesName, Species lambertSpecies, double dbhCm, double heightM) {
 			super(speciesName, dbhCm, heightM);
 			this.lambertSpecies = lambertSpecies;
 		}
 
 		@Override
-		public Lambert2005Species getLambert2005Species() {return lambertSpecies;}
+		public Species getLambert2005Species() {return lambertSpecies;}
 
 		@Override
 		public String getSubjectId() {return null;}
@@ -420,14 +420,13 @@ public class Lambert2005BiomassPredictorTest {
 	public static void main(String[] args) {
 		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
 		Lambert2005BiomassPredictor bioPred = new Lambert2005BiomassPredictor();
-		Lambert2005Species species = Lambert2005Species.PopulusTremuloides;
-		REpiceaSpecies.Species repiceaSpecies = REpiceaSpecies.Species.Populus_tremuloides;
+		Species species = Species.Populus_tremuloides;
 		VolumableStand p = new VolumableStandImpl();
 		Tree t = new Tree("PET", species, 20, 15);
 		double volumeM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t) * 0.001;
-		double overbarkCommercialVolumeM3 = volumeM3 * (1 + repiceaSpecies.getBarkProportionOfWoodVolume(SpeciesLocale.Quebec));
+		double overbarkCommercialVolumeM3 = volumeM3 * (1 + species.getBarkProportionOfWoodVolume(SpeciesLocale.Quebec));
 		double totalAbovegroundbiomassMg = bioPred.predictBiomassKg(t).getValueAt(BiomassCompartment.TOTAL.ordinal(), 0) * 0.001;
-		double basicWoodDensity = repiceaSpecies.getBasicWoodDensity(SpeciesLocale.Quebec);
+		double basicWoodDensity = species.getBasicWoodDensity(SpeciesLocale.Quebec);
 		double totalAbovegroundVolumeM3 = totalAbovegroundbiomassMg / basicWoodDensity;
 		double possibleExpansionFactor = totalAbovegroundVolumeM3 / overbarkCommercialVolumeM3;
 		System.out.println("DBH = " + t.getDbhCm() + "; Height = " + t.getHeightM() + "; BEF = " + possibleExpansionFactor);

@@ -29,9 +29,9 @@ import java.util.Map;
 
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.util.ObjectUtility;
 
 class BiomassParameterLoader {
@@ -48,17 +48,17 @@ class BiomassParameterLoader {
 	final static List<String> ERROR_COVARIANCE_EQUATION_LABELS = BiomassCompartment.getErrorCovarianceEquationLabels();
 
 
-    final Map<ModelVersion, Map<Lambert2005Species, Matrix>> parmsMatrices;
-    final Map<ModelVersion, Map<Lambert2005Species, Matrix>> varcovMatrices;
-    final Map<ModelVersion, Map<Lambert2005Species, Matrix>> weightsMatrices;
-    final Map<ModelVersion, Map<Lambert2005Species, Matrix>> covErrMatrices;
+    final Map<ModelVersion, Map<Species, Matrix>> parmsMatrices;
+    final Map<ModelVersion, Map<Species, Matrix>> varcovMatrices;
+    final Map<ModelVersion, Map<Species, Matrix>> weightsMatrices;
+    final Map<ModelVersion, Map<Species, Matrix>> covErrMatrices;
 
 
     private BiomassParameterLoader() {
-        parmsMatrices = new HashMap<ModelVersion, Map<Lambert2005Species, Matrix>>();
-        varcovMatrices = new HashMap<ModelVersion, Map<Lambert2005Species, Matrix>>();
-        weightsMatrices = new HashMap<ModelVersion, Map<Lambert2005Species, Matrix>>();
-        covErrMatrices = new HashMap<ModelVersion, Map<Lambert2005Species, Matrix>>();
+        parmsMatrices = new HashMap<ModelVersion, Map<Species, Matrix>>();
+        varcovMatrices = new HashMap<ModelVersion, Map<Species, Matrix>>();
+        weightsMatrices = new HashMap<ModelVersion, Map<Species, Matrix>>();
+        covErrMatrices = new HashMap<ModelVersion, Map<Species, Matrix>>();
         loadParameterFiles();
     }
 
@@ -96,15 +96,15 @@ class BiomassParameterLoader {
         Weights;
     }
 
-    private static Matrix getMatrix(Map<ModelVersion, Map<Lambert2005Species, Matrix>> parmDict,
+    private static Matrix getMatrix(Map<ModelVersion, Map<Species, Matrix>> parmDict,
         ModelVersion v, 
-        Lambert2005Species species,
+        Species species,
         ParmComponent parmComponent,
         boolean shouldBeSquare) {
         if (!parmDict.containsKey(v)) {
-            parmDict.put(v, new HashMap<Lambert2005Species, Matrix>());
+            parmDict.put(v, new HashMap<Species, Matrix>());
         }
-        Map<Lambert2005Species, Matrix> innerMap = parmDict.get(v);
+        Map<Species, Matrix> innerMap = parmDict.get(v);
         
         if (!innerMap.containsKey(species)) {
         	int nbParms = parmComponent == ParmComponent.Weights || parmComponent == ParmComponent.ErrVCov ?
@@ -118,7 +118,7 @@ class BiomassParameterLoader {
 
 
     @SuppressWarnings("resource")
-	private void loadParameterFile(String filename, ModelVersion v, Map<ModelVersion, Map<Lambert2005Species, Matrix>> parmDict) {
+	private void loadParameterFile(String filename, ModelVersion v, Map<ModelVersion, Map<Species, Matrix>> parmDict) {
 		CSVReader reader = null;
 		try {
 			reader = new CSVReader(filename);
@@ -132,7 +132,7 @@ class BiomassParameterLoader {
 			
 			while ((record = reader.nextRecord()) != null) {
 				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
-					Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
+					Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
 					// here we create one internal predictor per species and version encountered
 					paramName = record[indexParmNameField].toString();
 					value = Double.parseDouble(record[indexEstimateField].toString());
@@ -154,7 +154,7 @@ class BiomassParameterLoader {
 		}
     }
 
-    private void loadParameterCovarianceFile(String filename, ModelVersion v, Map<ModelVersion, Map<Lambert2005Species, Matrix>> parmDict) {
+    private void loadParameterCovarianceFile(String filename, ModelVersion v, Map<ModelVersion, Map<Species, Matrix>> parmDict) {
 		CSVReader reader = null;
 		
 		try {
@@ -167,7 +167,7 @@ class BiomassParameterLoader {
 
 			while ((record = reader.nextRecord()) != null) {
 				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
-					Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
+					Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
 					parmName = record[indexParmNameField].toString();
 					List<String> parmNames = ModelVersion.getParmNames(v);
 					int indexParm = parmNames.indexOf(parmName);
@@ -203,7 +203,7 @@ class BiomassParameterLoader {
 
     }
  
-    private void loadEstimatedWeightsFile(String filename, ModelVersion v, Map<ModelVersion, Map<Lambert2005Species, Matrix>> parmDict) {
+    private void loadEstimatedWeightsFile(String filename, ModelVersion v, Map<ModelVersion, Map<Species, Matrix>> parmDict) {
 		CSVReader reader = null;
 		
 		try {
@@ -217,7 +217,7 @@ class BiomassParameterLoader {
 											 				
 			while ((record = reader.nextRecord()) != null) {
 				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
-					Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
+					Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
 					String weightName = record[indexDependentField].toString();									
 					int indexWeight = ESTIMATED_WEIGHT_LABELS.indexOf(weightName);
 					value = Double.parseDouble(record[indexEstimateField].toString());
@@ -235,7 +235,7 @@ class BiomassParameterLoader {
 		}
     }
     	
-    private void loadErrorCovarianceFile(String filename, ModelVersion v, Map<ModelVersion, Map<Lambert2005Species, Matrix>> parmDict) {
+    private void loadErrorCovarianceFile(String filename, ModelVersion v, Map<ModelVersion, Map<Species, Matrix>> parmDict) {
 		CSVReader reader = null;
 		
 		try {
@@ -247,7 +247,7 @@ class BiomassParameterLoader {
 
 			while ((record = reader.nextRecord()) != null) {
 				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
-					Lambert2005Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
+					Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
 					String equationName = record[indexEquationField].toString();									
 					int indexEquation = ERROR_COVARIANCE_EQUATION_LABELS.indexOf(equationName);
 					double values[] = new double[S_FIELDS.size()];

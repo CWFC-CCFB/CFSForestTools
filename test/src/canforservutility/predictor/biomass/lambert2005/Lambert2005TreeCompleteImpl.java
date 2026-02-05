@@ -24,6 +24,7 @@ package canforservutility.predictor.biomass.lambert2005;
 import java.security.InvalidParameterException;
 
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 /**
  * An implementation of the Lambert2005Tree interface for the complete model.
@@ -39,7 +40,7 @@ public class Lambert2005TreeCompleteImpl extends Lambert2005TreeReducedImpl impl
 	 * @param dbhCm tree diameter at breast height (cm)
 	 * @param heightM tree height (m)
 	 */
-	public Lambert2005TreeCompleteImpl(Lambert2005Species species, double dbhCm, double heightM) {
+	public Lambert2005TreeCompleteImpl(Species species, double dbhCm, double heightM) {
 		super(species, dbhCm);
 		if (heightM <= 0d) {
 			throw new InvalidParameterException("The tree height must be positive!");
