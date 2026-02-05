@@ -67,7 +67,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Spruce", Species.Picea_glauca);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("feuillu", Species.Other_broadleaved);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("resineux", Species.Other_coniferous);
-	//	ENGLISH_TO_LATIN_LOOKUP_MAP.put("all", Lambert2005Species.Any);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("all", Species.Other);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Alpine Fir", Species.Abies_lasiocarpa);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Basswood", Species.Tilia_americana);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Beech", Species.Fagus_grandifolia);

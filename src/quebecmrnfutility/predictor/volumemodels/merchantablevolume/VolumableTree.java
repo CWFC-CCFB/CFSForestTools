@@ -41,7 +41,7 @@ public interface VolumableTree extends DbhCmProvider,
 										HeightMProvider {
 	
 	
-	enum VolSpecies implements REpiceaSpecies {
+	public enum VolSpecies implements REpiceaSpecies {
 		BOG(REpiceaSpecies.Species.Betula_populifolia),   
 		BOJ(REpiceaSpecies.Species.Betula_alleghaniensis),
 		BOP(REpiceaSpecies.Species.Betula_papyrifera),
@@ -91,14 +91,14 @@ public interface VolumableTree extends DbhCmProvider,
 		
 		@Override
 		public SpeciesType getSpeciesType() {return species.getSpeciesType();}
-		public Matrix getDummy() {return this.dummy;}
+		Matrix getDummy() {return this.dummy;}
 		
 		/**
 		 * Find an eligible species using the three-letter species code from Quebec.
 		 * @param speciesCode a String
 		 * @return a VolSpecies enum
 		 */
-		static VolSpecies findEligibleSpeciesUsingQuebecSpeciesCode(String speciesCode) {
+		public static VolSpecies findEligibleSpeciesUsingQuebecSpeciesCode(String speciesCode) {
 			if (speciesCode == null) {
 				return null;
 			} else {

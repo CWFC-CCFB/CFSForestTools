@@ -13,6 +13,16 @@ import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
+/**
+ * Implementation of the mortality model based in interval-averaged climate variables shown in 
+ * Fortin et al. (2025).<p>
+ * The approach has been extended to all the species groups in Ontario.
+ * @author Mathieu Fortin - February 2026
+ * @see <a href=https://doi.org/10.1139/cjfr-2024-0205> Fortin, M., J. Riofrio, L. C. de Melo, M. W. Ashiq, M. Sharma,
+ * C. Howard, and B. N. I. Eskelson. 2025. Climate-sensitive models of tree mortality based on lifetime analysis and irregular
+ * permanent-plot remeasurements. Canadian Journal of Forest Research 55: 1-15
+ * </a>
+ */
 @SuppressWarnings("serial")
 public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<Trillium2026Plot, Trillium2026Tree>
 										implements REpiceaSpeciesCompliantObject {

@@ -42,7 +42,7 @@ class BiomassParameterLoader {
 	private final static String ESTIMATE_FIELD = "Estimate";
 	private final static String DEPENDENT_FIELD = "Dependent";
 	private final static String EQUATION_FIELD = "Equation";
-	static String ANY = "all";
+//	static String ANY = "all";
 	private final static List<String> S_FIELDS = Arrays.asList(new String[]{"s1", "s2", "s3", "s4", "s5", "s6", "s7"});
 	final static List<String> ESTIMATED_WEIGHT_LABELS = BiomassCompartment.getWeightLabels();
 	final static List<String> ERROR_COVARIANCE_EQUATION_LABELS = BiomassCompartment.getErrorCovarianceEquationLabels();
@@ -131,7 +131,7 @@ class BiomassParameterLoader {
 			int indexEstimateField = reader.getHeader().getIndexOfThisField(ESTIMATE_FIELD);
 			
 			while ((record = reader.nextRecord()) != null) {
-				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
+//				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
 					Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
 					// here we create one internal predictor per species and version encountered
 					paramName = record[indexParmNameField].toString();
@@ -143,7 +143,7 @@ class BiomassParameterLoader {
 	                    throw new InvalidParameterException("Parameter" + paramName + " not found in model " + v.name());
 
 	                parms.setValueAt(paramIndex, 0, value);
-				}
+//				}
             }
 			reader.close();
 		} catch (Exception e) {
@@ -166,7 +166,7 @@ class BiomassParameterLoader {
 			int indexParmNameField = reader.getHeader().getIndexOfThisField(PARM_NAME_FIELD);
 
 			while ((record = reader.nextRecord()) != null) {
-				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
+//				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
 					Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
 					parmName = record[indexParmNameField].toString();
 					List<String> parmNames = ModelVersion.getParmNames(v);
@@ -190,7 +190,7 @@ class BiomassParameterLoader {
 					for (int i = 0; i < values.length; i++) {
 						parm.setValueAt(indexParm, i, values[i]);
 					}
-				}
+//				}
 			}
 			
 			reader.close();
@@ -216,7 +216,7 @@ class BiomassParameterLoader {
 			int indexEstimateField = reader.getHeader().getIndexOfThisField(ESTIMATE_FIELD);
 											 				
 			while ((record = reader.nextRecord()) != null) {
-				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
+//				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
 					Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
 					String weightName = record[indexDependentField].toString();									
 					int indexWeight = ESTIMATED_WEIGHT_LABELS.indexOf(weightName);
@@ -224,7 +224,7 @@ class BiomassParameterLoader {
 
 					Matrix parm = getMatrix(parmDict, v, currentSpecies, ParmComponent.Weights, false); // not square
 					parm.setValueAt(indexWeight, 0, value);
-				}
+//				}
 			}
 			reader.close();
 		} catch (Exception e) {
@@ -246,7 +246,7 @@ class BiomassParameterLoader {
 			int indexEquationField = reader.getHeader().getIndexOfThisField(EQUATION_FIELD);
 
 			while ((record = reader.nextRecord()) != null) {
-				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
+//				if (!record[indexSpeciesField].toString().trim().toLowerCase().equals(ANY)) {
 					Species currentSpecies = Lambert2005BiomassPredictor.getLambertSpecies(record, indexSpeciesField, v);
 					String equationName = record[indexEquationField].toString();									
 					int indexEquation = ERROR_COVARIANCE_EQUATION_LABELS.indexOf(equationName);
@@ -260,7 +260,7 @@ class BiomassParameterLoader {
 					for (int i = 0; i < values.length; i++)	{
 						parm.setValueAt(indexEquation, i, values[i]);
 					}
-				}	
+//				}	
 			}
 
 			reader.close();
