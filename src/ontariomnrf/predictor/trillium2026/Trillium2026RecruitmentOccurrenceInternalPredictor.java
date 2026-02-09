@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris.recruitment_v1;
+package ontariomnrf.predictor.trillium2026;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -25,10 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.DisturbanceType;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.SoilDepth;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.SoilTexture;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -37,17 +33,14 @@ import repicea.math.integral.GaussLegendreQuadrature;
 import repicea.math.utility.GaussianUtility;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaBinaryEventPredictor;
-import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
-//import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
-import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.model.glm.LinkFunction;
 
 @SuppressWarnings("serial")
-class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<IrisCompatiblePlot, IrisCompatibleTree> {
+class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<Trillium2026Plot, Trillium2026Tree> {
 
-	private final static ClimateVariableTemporalResolution IntervalBeforeStartResolution = ClimateVariableTemporalResolution.IntervalAveragedStartingBeforeInitialMeasurement;
 	
 	/**
 	 * A nested class for Trapezoidal integration in case random variability around the occupancy index is
@@ -61,7 +54,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 		final double meanOccIndex;
 		final double varOccIndex;
 		
-		InternalMathFunction(Matrix xVector, Matrix beta, IrisCompatiblePlot plot, int indexVar, double meanOccIndex, double varOccIndex) {
+		InternalMathFunction(Matrix xVector, Matrix beta, Trillium2026Plot plot, int indexVar, double meanOccIndex, double varOccIndex) {
 			super(Type.CLogLog, new InternalStatisticalExpression(xVector, beta, plot, meanOccIndex));
 			this.xVector = xVector;
 			this.indexVar = indexVar;
@@ -82,10 +75,10 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 
 		final Matrix xVector;
 		final Matrix beta;
-		final IrisCompatiblePlot plot;
+		final Trillium2026Plot plot;
 		final double meanOccIndex;
 		
-		InternalStatisticalExpression(Matrix xVector, Matrix beta, IrisCompatiblePlot plot, double meanOccIndex) {
+		InternalStatisticalExpression(Matrix xVector, Matrix beta, Trillium2026Plot plot, double meanOccIndex) {
 			this.xVector = xVector;
 			this.beta = beta;
 			this.plot = plot;
@@ -95,7 +88,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 		@Override
 		public Double getValue() {
 			double xBeta = xVector.multiply(beta).getValueAt(0, 0);
-			if (IrisRecruitmentOccurrenceInternalPredictor.this.offsetEnabled) {
+			if (Trillium2026RecruitmentOccurrenceInternalPredictor.this.offsetEnabled) {
 				xBeta += Math.log(plot.getGrowthStepLengthYr());
 			}
 			return xBeta;
@@ -103,7 +96,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 		
 		@Override
 		public void setVariableValue(int variableIndex, double variableValue) {
-			IrisRecruitmentOccurrenceInternalPredictor.this.setOccupancyInXVector(plot, IrisRecruitmentOccurrenceInternalPredictor.this.species, variableValue);
+			Trillium2026RecruitmentOccurrenceInternalPredictor.this.setOccupancyInXVector(plot, Trillium2026RecruitmentOccurrenceInternalPredictor.this.species, variableValue);
 		}		
 
 		@Override
@@ -118,17 +111,17 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	}
 
 
-	private final IrisRecruitmentOccurrencePredictor owner;
+	private final Trillium2026RecruitmentOccurrencePredictor owner;
 	private final List<Integer> effectList;
 	private final boolean offsetEnabled;
 	private final Map<String, Map<Integer, Map<Integer, GaussianEstimate>>> occupancyIndices; // 1st key plot id, 2nd key realization id, 3rd key dateYr
 	private final Map<String, Map<Integer, Map<Integer, Double>>> occupancyIndicesDeviates; // 1st key plot id, 2nd key realization id, 3rd key dateYr
 	private final List<Integer> occupancyIndexVarIndices; // effect Ids that include the occupancy index
 //	private final TrapezoidalRule tr;
-	private final IrisSpecies species;
+	private final Species species;
 	
-	protected IrisRecruitmentOccurrenceInternalPredictor(IrisRecruitmentOccurrencePredictor owner,
-			IrisSpecies species,
+	protected Trillium2026RecruitmentOccurrenceInternalPredictor(Trillium2026RecruitmentOccurrencePredictor owner,
+			Species species,
 			boolean isParametersVariabilityEnabled, 
 			boolean isOccupancyIndexVariabilityEnabled, 
 			boolean isResidualVariabilityEnabled, 
@@ -150,7 +143,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 		for (int i = 0; i < effectMat.m_iRows; i++) {
 			int effectId = (int) effectMat.getValueAt(i, 0);
 			effectList.add(effectId);
-			if (IrisRecruitmentOccurrencePredictor.OccupancyIndexEffects.contains(effectId)) {
+			if (Trillium2026RecruitmentOccurrencePredictor.OccupancyIndexEffects.contains(effectId)) {
 				occupancyIndexVarIndices.add(effectId);
 			}
 		}
@@ -161,13 +154,13 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	@Override
 	protected void init() {}
 	
-	private void setOccupancyInXVector(IrisCompatiblePlot plot, IrisSpecies species, double occupancyIndex10km) {
+	private void setOccupancyInXVector(Trillium2026Plot plot, Species species, double occupancyIndex10km) {
 		for (int effectId : occupancyIndexVarIndices) {
 			setValueInXVector(effectId, plot, species, occupancyIndex10km); 
 		}
 	}
 
-	private double getProb(Matrix beta, IrisCompatiblePlot plot) {
+	private double getProb(Matrix beta, Trillium2026Plot plot) {
 		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		if (offsetEnabled) {
 			xBeta += Math.log(plot.getGrowthStepLengthYr());
@@ -177,11 +170,11 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	}
 	
 	@Override
-	public double predictEventProbability(IrisCompatiblePlot plot, IrisCompatibleTree tree, Map<String, Object> parms) {
-		return calculateEventProbability(plot, tree.getSpecies());
+	public double predictEventProbability(Trillium2026Plot plot, Trillium2026Tree tree, Map<String, Object> parms) {
+		return calculateEventProbability(plot, tree.getTrillium2026TreeSpecies());
 	}
 
-	protected synchronized double calculateEventProbability(IrisCompatiblePlot plot, IrisSpecies species) {
+	protected synchronized double calculateEventProbability(Trillium2026Plot plot, Species species) {
 		Matrix beta = getParametersForThisRealization(plot);
 		constructXVector(plot, species);
 		if (isUsingOccupancyIndex()) {
@@ -220,7 +213,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	
 	static List<Double> deviates = new ArrayList<Double>();
 	
-	double getOccupancyRandomDeviate(IrisCompatiblePlot plot, IrisSpecies species) {
+	double getOccupancyRandomDeviate(Trillium2026Plot plot, Species species) {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		Map<Integer, Double> innerMap2 = getInnerMap2(plot, (Map) occupancyIndicesDeviates);
 		if (!innerMap2.containsKey(plot.getDateYr())) {
@@ -233,7 +226,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 
 	}
 	
-	private Map<Integer, ?> getInnerMap2(IrisCompatiblePlot plot, Map<String, Map<Integer, Map<Integer, ?>>> oMap) {
+	private Map<Integer, ?> getInnerMap2(Trillium2026Plot plot, Map<String, Map<Integer, Map<Integer, ?>>> oMap) {
 		if (isUsingOccupancyIndex()) {
 			if (!oMap.containsKey(plot.getSubjectId())) {
 				oMap.put(plot.getSubjectId(), new HashMap<Integer, Map<Integer, ?>>());
@@ -250,7 +243,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 		
 	}
 	
-	GaussianEstimate getOccupancyIndex(IrisCompatiblePlot plot, IrisSpecies species) {
+	GaussianEstimate getOccupancyIndex(Trillium2026Plot plot, Species species) {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		Map<Integer, GaussianEstimate> innerMap2 = getInnerMap2(plot, (Map) occupancyIndices);
 		if (!innerMap2.containsKey(plot.getDateYr())) {
@@ -262,149 +255,63 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	
 	private boolean isUsingOccupancyIndex() {return !occupancyIndexVarIndices.isEmpty();}
 
-	// TODO MF20260209 That could be improved by internalizing the loop on the effects and avoiding calculating over and over again the same variables.
-	private void setValueInXVector(int effectId, IrisCompatiblePlot plot, IrisSpecies species, double occupancyIndex10km) {
+	private void setValueInXVector(int effectId, Trillium2026Plot plot, Species species, double occupancyIndex10km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
 		}
 		switch(effectId) {
-		case 26: // intercept
 		case 1:	// intercept
 			oXVector.setValueAt(0, index, 1d);
 			break;
 		case 2: // DD
-			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution));
+			oXVector.setValueAt(0, index, plot.get.getMeanDegreeDaysOverThePeriod());
 			break;
-		case 3: // DD:TotalPrcp
-			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution) * 
-					plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution));
+		case 3: // Frost free days
+			oXVector.setValueAt(0, index, plot.getMeanNumberFrostDaysOverThePeriod());
 			break;
-		case 4: // DD2
-			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution) * 
-					plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution));
+		case 4: // G_F
+			oXVector.setValueAt(0, index, plot.getBasalAreaOfBroadleavedSpecies());
 			break;
-		case 5: // 
-			if (plot.getSoilDepth() == SoilDepth.Thick) {
-				oXVector.setValueAt(0, index, 1d);
-			}
+		case 5: // G_F2
+			oXVector.setValueAt(0, index, plot.getBasalAreaOfBroadleavedSpecies() * plot.getBasalAreaOfBroadleavedSpecies());
 			break;
-		case 6: // 
-			if (plot.getSoilDepth() == SoilDepth.Shallow) {
-				oXVector.setValueAt(0, index, 1d);
-			}
+		case 6: // G_R
+			oXVector.setValueAt(0, index, plot.getBasalAreaOfConiferousSpecies());
 			break;
-		case 7: // 
-			if (plot.getSoilDepth() == SoilDepth.VeryShallow) {
-				oXVector.setValueAt(0, index, 1d);
-			}
+		case 7: // G_R2
+			oXVector.setValueAt(0, index, plot.getBasalAreaOfConiferousSpecies() * plot.getBasalAreaOfConiferousSpecies());
 			break;
-		case 8: // 
-			if (plot.getDrainageGroup() == DrainageGroup.Xeric) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 9: // 
-			if (plot.getDrainageGroup() == DrainageGroup.Subhydric) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 10: // 
-			if (plot.getDrainageGroup() == DrainageGroup.Hydric) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 11: // 
-			if (plot.getPastDisturbance() == DisturbanceType.Fire) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 12: // 
-			if (plot.getPastDisturbance() == DisturbanceType.OtherNatural) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 13: // 
-			if (plot.getPastDisturbance() == DisturbanceType.Harvest) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 14: // 
-			if (plot.getSoilTexture() == SoilTexture.Crude) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 15: // 
-			if (plot.getSoilTexture() == SoilTexture.Fine) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 16: // 
-			if (plot.getUpcomingDisturbance() == DisturbanceType.Fire) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 17: // 
-			if (plot.getUpcomingDisturbance() == DisturbanceType.OtherNatural) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 18: // 
-			if (plot.getUpcomingDisturbance() == DisturbanceType.Harvest) {
-				oXVector.setValueAt(0, index, 1d);
-			}
-			break;
-		case 19: // 
-			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(IntervalBeforeStartResolution));
-			break;
-		case 20: // G_F
-			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
-			break;
-		case 21: // G_F2
-			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies) *
-					plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
-			break;
-		case 22: // G_R
-			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
-			break;
-		case 23: // G_R2
-			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies) * 
-					plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
-			break;
-		case 24: // G_SpGr
+		case 8: // G_SpGr
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species));
 			break;
-		case 25: // G_SpGr2
+		case 9: // G_SpGr2
 			double g_spgr = plot.getBasalAreaM2HaForThisSpecies(species);
 			oXVector.setValueAt(0, index, g_spgr * g_spgr);
 			break;
-		case 27: // lnDt
+		case 10: // lnDt
 			oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 			break;
-		case 28: // lowest t min
-			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(IntervalBeforeStartResolution));
+		case 11: // lowest t min
+			oXVector.setValueAt(0, index, plot.getMeanLowestTemperatureOverThePeriod());
 			break;
-		case 29: // occIndex10km
+		case 12: // MeanTminJanuary
+			oXVector.setValueAt(0, index, plot.getMeanLowestTemperatfffureOverThePeriod());
+			break;
+		case 13: // occIndex25km
 			oXVector.setValueAt(0, index, occupancyIndex10km);
 			break;
-		case 30: // pente
-			oXVector.setValueAt(0, index, plot.getSlopeInclinationPercent());
-			break;
-		case 31: // speciesThere
-			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
-			break;
-		case 32: // occIndex10km2
+		case 14: // occIndex25km2
 			oXVector.setValueAt(0, index, occupancyIndex10km * occupancyIndex10km);
 			break;
-		case 33: // timeSince1970
-			oXVector.setValueAt(0, index, plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970);
+		case 15: // speciesThere
+			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
 			break;
-		case 34: // TotalPrcp
-			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution));
+		case 16: // TotalPrcp
+			oXVector.setValueAt(0, index, plot.getMeanPrecipitationOverThePeriod());
 			break;
-		case 35: // TotalPrcp2
-			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution) * 
-					plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution));
+		case 17: // TotalPrecMarchToMay
+			oXVector.setValueAt(0, index, plot.getTotalPrecMarchToMayMm());
 			break;
 		default:
 			throw new InvalidParameterException("The effect id " + effectId + " is unknown!");
@@ -414,7 +321,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	/*
 	 * Construct the xVector without the occupancy index.
 	 */
-	private void constructXVector(IrisCompatiblePlot plot, IrisSpecies species) {
+	private void constructXVector(Trillium2026Plot plot, Species species) {
 		oXVector.resetMatrix();
 		
 		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();

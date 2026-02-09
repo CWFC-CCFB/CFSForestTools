@@ -22,6 +22,7 @@ package quebecmrnfutility.predictor.artemis2014;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.plotlevel.AreaHaProvider;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
@@ -59,6 +60,7 @@ public interface Artemis2014CompatibleStand extends PotentialVegetationProvider,
 													DrainageGroupProvider,
 													EcologicalRegionProvider {
 	
+	final static ClimateVariableTemporalResolution Normals30YearTemporalResolution = ClimateVariableTemporalResolution.Normals30Year; 
 	
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}

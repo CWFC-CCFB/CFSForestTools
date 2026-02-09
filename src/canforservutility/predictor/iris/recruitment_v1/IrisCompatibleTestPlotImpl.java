@@ -25,6 +25,8 @@ import java.util.List;
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 import repicea.math.Matrix;
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 
 final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 
@@ -152,10 +154,10 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	public int getDateYr() {return dateYr;}
 
 	@Override
-	public double getMeanDegreeDaysOverThePeriod() {return dd;}
+	public double getGrowingDegreeDaysCelsius(ClimateVariableTemporalResolution resolution) {return dd;}
 
 	@Override
-	public double getMeanPrecipitationOverThePeriod() {return prcp;}
+	public double getTotalAnnualPrecipitationMm(ClimateVariableTemporalResolution resolution)  {return prcp;}
 
 	@Override
 	public SoilDepth getSoilDepth() {return soilDepth;}
@@ -181,23 +183,21 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	@Override
 	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {return gSpGrMat.getValueAt(0, species.ordinal());}
 
-
-
 	@Override
-	public double getBasalAreaOfConiferousSpecies() {return basalAreaM2HaConiferous;}
-
-	@Override
-	public double getBasalAreaOfBroadleavedSpecies() {return basalAreaM2HaBroadleaved;}
+	public double getBasalAreaM2HaForThisSpeciesType(SpeciesType type) {
+		return type == SpeciesType.ConiferousSpecies ?
+				basalAreaM2HaConiferous :
+					basalAreaM2HaBroadleaved;
+	}
 
 	@Override
 	public double getSlopeAspect() {return slopeAspect;}
 
+	@Override
+	public double getAnnualNbFrostFreeDays(ClimateVariableTemporalResolution resolution) {return frostDays;}
 
 	@Override
-	public double getMeanNumberFrostDaysOverThePeriod() {return frostDays;}
-
-	@Override
-	public double getMeanLowestTemperatureOverThePeriod() {return lowestTmin;}
+	public double getLowestAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return lowestTmin;}
 
 	protected double getOccupancyIndex10km(IrisSpecies species) {return occIndex10km;}
 

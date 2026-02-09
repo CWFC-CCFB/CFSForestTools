@@ -34,7 +34,9 @@ import repicea.math.integral.GaussHermiteQuadrature;
 import repicea.math.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.stats.LinearStatisticalExpression;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.estimates.GaussianEstimate;
@@ -43,6 +45,8 @@ import repicea.stats.model.glm.LinkFunction.Type;
 
 @SuppressWarnings("serial")
 class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
+
+	private final static ClimateVariableTemporalResolution IntervalBeforeStartResolution = ClimateVariableTemporalResolution.IntervalAveragedStartingBeforeInitialMeasurement;
 
 	/**
 	 * A nested class for Gauss-Hermite quadrature in case the random variability around occupancy index is
@@ -175,10 +179,11 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 			oXVector.setValueAt(0, index, 1d);
 			break;
 		case 2: // DD
-			oXVector.setValueAt(0, index, plot.getMeanDegreeDaysOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution));
 			break;
 		case 3: // DD2
-			oXVector.setValueAt(0, index, plot.getMeanDegreeDaysOverThePeriod() * plot.getMeanDegreeDaysOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution) * 
+					plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution));
 			break;
 		case 4: // dt
 			oXVector.setValueAt(0, index, plot.getGrowthStepLengthYr());
@@ -239,16 +244,17 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 			}
 			break;
 		case 16: // FrostDay
-			oXVector.setValueAt(0, index, plot.getMeanNumberFrostDaysOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(IntervalBeforeStartResolution));
 			break;
 		case 17: // G_F
-			oXVector.setValueAt(0, index, plot.getBasalAreaOfBroadleavedSpecies());
+			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
 			break;
 		case 18: // G_R
-			oXVector.setValueAt(0, index, plot.getBasalAreaOfConiferousSpecies());
+			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
 			break;
 		case 19: // G_R2
-			oXVector.setValueAt(0, index, plot.getBasalAreaOfConiferousSpecies() * plot.getBasalAreaOfConiferousSpecies());
+			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies) * 
+					plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
 			break;
 		case 20: // G_SpGr
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species));
@@ -261,7 +267,7 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 			oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 			break;
 		case 24: // LowestTmin
-			oXVector.setValueAt(0, index, plot.getMeanLowestTemperatureOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(IntervalBeforeStartResolution));
 			break;
 		case 25: // occIndex10km
 			oXVector.setValueAt(0, index, occupancyIndex10km);
@@ -276,10 +282,11 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 			oXVector.setValueAt(0, index, plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970);
 			break;
 		case 30: // TotalPrcp
-			oXVector.setValueAt(0, index, plot.getMeanPrecipitationOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution));
 			break;
 		case 31: // TotalPrcp * TotalPrcp
-			oXVector.setValueAt(0, index, plot.getMeanPrecipitationOverThePeriod() * plot.getMeanPrecipitationOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution) * 
+					plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution));
 			break;
 		default:
 			throw new InvalidParameterException("The effect id " + effectId + " is unknown!");

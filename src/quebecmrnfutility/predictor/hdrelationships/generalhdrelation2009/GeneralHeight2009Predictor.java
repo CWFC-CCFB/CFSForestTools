@@ -31,6 +31,7 @@ import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
@@ -53,6 +54,8 @@ import repicea.util.ObjectUtility;
  */
 public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<Heightable2009Stand, Heightable2009Tree> {
 	
+	final static ClimateVariableTemporalResolution Normals30YearTemporalResolution = ClimateVariableTemporalResolution.Normals30Year;
+
 	private static final long serialVersionUID = 20100804L;
 
 	private static enum DisturbanceType {HUMAN, 
@@ -200,7 +203,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 			System.out.println("Error in HD relationship: The basal area of the plot has not been calculated yet!");
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
-		double averageTemp = stand.getMeanAnnualTemperatureCelsius();
+		double averageTemp = stand.getMeanAnnualTemperatureCelsius(Normals30YearTemporalResolution);
 		DrainageGroup drainageGroup = getDrainageGroup(stand);
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();

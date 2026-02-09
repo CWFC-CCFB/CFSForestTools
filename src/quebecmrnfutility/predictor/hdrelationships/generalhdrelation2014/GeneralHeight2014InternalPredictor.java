@@ -120,7 +120,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 			System.out.println("Error in HD relationship: The basal area of the plot has not been calculated yet!");
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
-		double averageTemp = stand.getMeanAnnualTemperatureCelsius();	
+		double averageTemp = stand.getMeanAnnualTemperatureCelsius(GeneralHeight2014Predictor.Normals30YearTemporalResolution);	
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();
 		boolean isDefoliated = stand.isSBWDefoliated();
@@ -201,7 +201,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 				oXVector.setValueAt(0, pointeur++, lnDbh * averageTemp);
 				break;
 			case LogDbh_pTot:
-				oXVector.setValueAt(0, pointeur++, lnDbh * stand.getTotalAnnualPrecipitationMm());
+				oXVector.setValueAt(0, pointeur++, lnDbh * stand.getTotalAnnualPrecipitationMm(GeneralHeight2014Predictor.Normals30YearTemporalResolution));
 				break;
 //			case LogDbh_Dens:
 //				oXVector.m_afData[0][pointeur++] = lnDbh * stand.getNumberOfStemsHa();

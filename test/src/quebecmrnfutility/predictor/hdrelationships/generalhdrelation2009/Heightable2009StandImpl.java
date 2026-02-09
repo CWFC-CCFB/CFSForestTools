@@ -21,6 +21,7 @@ package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.plotlevel.MeanQuadraticDiameterCmProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
@@ -73,7 +74,7 @@ public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadrat
 	}
 
 	@Override
-	public double getMeanAnnualTemperatureCelsius() {
+	public double getMeanAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {
 		return meanAnnualTemperatureC;
 	}
 
