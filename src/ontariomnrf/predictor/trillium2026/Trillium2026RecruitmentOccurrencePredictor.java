@@ -1,8 +1,8 @@
 /*
  * This file is part of the CFSForesttools library.
  *
- * Copyright (C) 2020-2023 His Majesty the King in right of Canada
- * Author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
+ * Copyright (C) 2026 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,22 +17,25 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris.recruitment_v1;
+package ontariomnrf.predictor.trillium2026;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import canforservutility.occupancyindex.OccupancyIndexCalculator;
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
-import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
+import canforservutility.occupancyindex.OccupancyIndexCalculator;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 /**
@@ -40,15 +43,33 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - May 2020
  */
 @SuppressWarnings("serial")
-public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<IrisRecruitmentPlot, IrisTree> {
+public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<Trillium2026RecruitmentPlot, Trillium2026Tree> 
+														implements REpiceaSpeciesCompliantObject {
 
+	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
+	static List<Species> SpeciesList;
+//	private static Map<Integer, Species> SpeciesIndexMap = new HashMap<Integer, Species>();
+	static {
+		Species[] species = new Species[] {Species.Abies_balsamea, Species.Acer_rubrum, Species.Acer_saccharum, 
+				Species.Betula_alleghaniensis, Species.Betula_papyrifera, Species.Fagus_grandifolia, 
+				Species.Picea_glauca, Species.Picea_mariana, Species.Pinus_banksiana,
+				Species.Pinus_strobus, Species.Populus_tremuloides};
+//		int index = 1;
+		for (Species sp : species) {
+			SpeciesLookupMap.put(sp.getLatinName(), sp);
+//			SpeciesIndexMap.put(index++, sp);
+		}
+		SpeciesList = Arrays.asList(species);
+	}
+	
+	
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
 	static {
-		OccupancyIndexEffects.add(29);
-		OccupancyIndexEffects.add(32);
+		OccupancyIndexEffects.add(13);
+		OccupancyIndexEffects.add(14);
 	}
 
-	private Map<IrisSpecies, IrisRecruitmentOccurrenceInternalPredictor> internalPredictors;
+	private Map<Species, Trillium2026RecruitmentOccurrenceInternalPredictor> internalPredictors;
 
 	final OccupancyIndexCalculator occIndexCalculator;
 	
@@ -59,22 +80,23 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 	 * @param plots a List of IrisProtoPlot instances that are all the plots to be considered in the calculation of the
 	 * occupancy index.
 	 */
-	public IrisRecruitmentOccurrencePredictor(boolean isVariabilityEnabled, List<OccupancyIndexCalculablePlot> plots) {
+	public Trillium2026RecruitmentOccurrencePredictor(boolean isVariabilityEnabled, List<OccupancyIndexCalculablePlot> plots) {
 		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled, plots);		// random effect variability is associated with occupancy index measurement error
 	}
 	
 	/**
-	 * Constructor for test purposes. <p>
+	 * Constructor for test purposes.<p>
+	 * 
 	 * IMPORTANT: The random effect variability is only enabling the variability in 
 	 * the occupancy index.
-	 * 
+	 *
 	 * @param isParameterVariabilityEnabled true to enable the parameter estimates variability
 	 * @param isRandomEffectsVariabilityEnabled true to enable the variability in the occupancy index
 	 * @param isResidualVariabilityEnabled true to enable the residual error variability
 	 * @param plots a List of IrisProtoPlot instances that are all the plots to be considered in the calculation of the
 	 * occupancy index.
 	 */
-	protected IrisRecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
+	protected Trillium2026RecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
 			boolean isRandomEffectsVariabilityEnabled, 
 			boolean isResidualVariabilityEnabled,
 			List<OccupancyIndexCalculablePlot> plots) {
@@ -87,7 +109,7 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 
 	@Override
 	protected void init() {
-		internalPredictors = new HashMap<IrisSpecies, IrisRecruitmentOccurrenceInternalPredictor>();
+		internalPredictors = new HashMap<Species, Trillium2026RecruitmentOccurrenceInternalPredictor>();
 		String rootPath = ObjectUtility.getRelativePackagePath(getClass());
 		String betaFilename = rootPath + "0_RecruitmentOccurrenceBeta.csv";
 		String omegaFilename = rootPath + "0_RecruitmentOccurrenceOmega.csv";
@@ -99,13 +121,14 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 			ParameterMap omegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
 			ParameterMap speciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
 			ParameterMap offsetListMap = ParameterLoader.loadVectorFromFile(1, offsetList);
-			for (IrisSpecies sp : IrisSpecies.values()) {
-				Matrix beta = betaMap.get(sp.ordinal() + 1);
-				SymmetricMatrix omega = omegaMap.get(sp.ordinal() + 1).squareSym();
-				Matrix speciesEffectMatches = speciesEffectMatchesMap.get(sp.ordinal() + 1);
-				Matrix offset = offsetListMap.get(sp.ordinal() + 1);
+			for (int spIndex = 0; spIndex < SpeciesList.size(); spIndex++) {
+				Matrix beta = betaMap.get(spIndex + 1); // index starts from 1 in file
+				SymmetricMatrix omega = omegaMap.get(spIndex + 1).squareSym(); // index starts from 1 in file
+				Matrix speciesEffectMatches = speciesEffectMatchesMap.get(spIndex + 1); // index starts from 1 in file
+				Matrix offset = offsetListMap.get(spIndex + 1); // index starts from 1 in file
 				boolean isOffsetEnabled = offset.getValueAt(0, 0) == 1d;
-				IrisRecruitmentOccurrenceInternalPredictor subPredictor = new IrisRecruitmentOccurrenceInternalPredictor(this,
+				Species sp = SpeciesList.get(spIndex);
+				Trillium2026RecruitmentOccurrenceInternalPredictor subPredictor = new Trillium2026RecruitmentOccurrenceInternalPredictor(this,
 						sp,
 						isParametersVariabilityEnabled, 
 						isRandomEffectsVariabilityEnabled,
@@ -121,14 +144,30 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 		}
 	}
 
-	IrisRecruitmentOccurrenceInternalPredictor getInternalPredictor(IrisSpecies species) {
+	Trillium2026RecruitmentOccurrenceInternalPredictor getInternalPredictor(Species species) {
+		if (!SpeciesLookupMap.containsValue(species)) {
+			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + " does not support the species " + species.getLatinName());
+		}
 		return internalPredictors.get(species);
 	}
-	
-	@Override
-	public double predictEventProbability(IrisRecruitmentPlot stand, IrisTree tree, Map<String, Object> parms) {
-		return getInternalPredictor(tree.getSpecies()).predictEventProbability(stand, tree, parms);
+
+	static Species getTrillium2026SpeciesFromLatinName(String latinName) {
+		if (!SpeciesLookupMap.containsKey(latinName)) {
+			throw new UnsupportedOperationException("The " + Trillium2026RecruitmentOccurrencePredictor.class.getSimpleName() + " does not support the species " + latinName);
+		}
+		return SpeciesLookupMap.get(latinName);
 	}
+
+	@Override
+	public double predictEventProbability(Trillium2026RecruitmentPlot stand, Trillium2026Tree tree, Map<String, Object> parms) {
+		return getInternalPredictor(tree.getTrillium2026TreeSpecies()).predictEventProbability(stand, tree, parms);
+	}
+
+	@Override
+	public List<Species> getEligibleSpecies() {return SpeciesList;}
+
+	@Override
+	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
 	
 	
 }

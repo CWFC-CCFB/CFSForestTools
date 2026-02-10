@@ -25,18 +25,28 @@ import java.util.Map;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import repicea.math.Matrix;
+import repicea.simulation.covariateproviders.plotlevel.BasalAreaBySpeciesTypeM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.SlopeInclinationPercentProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.AnnualFrostFreeDaysProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.AnnualGrowingDegreeDaysCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.LowestAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
 
 /**
  * An interface that ensures the Tree instance is compatible with Iris modules.
  * @author Mathieu Fortin - June 2023
  */
-public interface IrisCompatiblePlot extends GrowthStepLengthYrProvider,
+public interface IrisRecruitmentPlot extends GrowthStepLengthYrProvider,
 											SlopeInclinationPercentProvider,
 											DrainageGroupProvider,
-											OccupancyIndexCalculablePlot {
+											OccupancyIndexCalculablePlot,
+											AnnualGrowingDegreeDaysCelsiusProvider,
+											TotalAnnualPrecipitationMmProvider,
+											AnnualFrostFreeDaysProvider, 
+											LowestAnnualTemperatureCelsiusProvider,
+											BasalAreaBySpeciesTypeM2HaProvider {
 	
 	
 	public static enum SoilDepth {
@@ -122,30 +132,6 @@ public interface IrisCompatiblePlot extends GrowthStepLengthYrProvider,
 	}
 	
 	/**
-	 * Return the mean degree-days over the period.
-	 * @return a double
-	 */
-	public double getMeanDegreeDaysOverThePeriod(); 
-
-	/**
-	 * Return the mean precipitation (mm) over the period.
-	 * @return a double
-	 */
-	public double getMeanPrecipitationOverThePeriod(); 
-
-	/**
-	 * Return the average annual number of frost days over the period.
-	 * @return a double
-	 */
-	public double getMeanNumberFrostDaysOverThePeriod();
-	
-	/**
-	 * Return the average lowest annual temperature over the period.
-	 * @return a double
-	 */
-	public double getMeanLowestTemperatureOverThePeriod();
-
-	/**
 	 * Return the soil depth.
 	 * @return a SoilDepth enum variable
 	 */
@@ -169,18 +155,6 @@ public interface IrisCompatiblePlot extends GrowthStepLengthYrProvider,
 	 */
 	public SoilTexture getSoilTexture();
 		
-	/**
-	 * Return the basal area (m2/ha) of coniferous species.
-	 * @return a double
-	 */
-	public double getBasalAreaOfConiferousSpecies();
-	
-	/**
-	 * Return the basal area (m2/ha) of broaleaved species.
-	 * @return a double
-	 */
-	public double getBasalAreaOfBroadleavedSpecies();
-	
 	/**
 	 * Return the slope aspect in degree.
 	 * @return a double

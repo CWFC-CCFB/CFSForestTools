@@ -360,7 +360,7 @@ public class ParameterDispatcher {
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 13: // 1181 occurences
-				oXVector.setValueAt(0, pointer, dummySAB * stand.getTotalAnnualPrecipitationMm());
+				oXVector.setValueAt(0, pointer, dummySAB * stand.getTotalAnnualPrecipitationMm(Artemis2014CompatibleStand.Normals30YearTemporalResolution));
 				pointer++;
 				break;
 			case 14: // 36 918 occurences
@@ -435,11 +435,11 @@ public class ParameterDispatcher {
 				pointer++;
 				break;
 			case 41: // 10 469 occurences
-				oXVector.setValueAt(0, pointer, stand.getTotalAnnualPrecipitationMm());
+				oXVector.setValueAt(0, pointer, stand.getTotalAnnualPrecipitationMm(Artemis2014CompatibleStand.Normals30YearTemporalResolution));
 				pointer++;
 				break;
 			case 42: // 2366 occurences
-				fTmp = (stand.getTotalAnnualPrecipitationMm());
+				fTmp = (stand.getTotalAnnualPrecipitationMm(Artemis2014CompatibleStand.Normals30YearTemporalResolution));
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
 					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
 				}
@@ -477,11 +477,11 @@ public class ParameterDispatcher {
 				pointer++;
 				break;
 			case 50: // 1650 occurences
-				oXVector.setValueAt(0, pointer, stand.getMeanAnnualTemperatureCelsius());
+				oXVector.setValueAt(0, pointer, stand.getMeanAnnualTemperatureCelsius(Artemis2014CompatibleStand.Normals30YearTemporalResolution));
 				pointer++;
 				break;
 			case 51: // 3700 occurences
-				fTmp = (stand.getMeanAnnualTemperatureCelsius());
+				fTmp = (stand.getMeanAnnualTemperatureCelsius(Artemis2014CompatibleStand.Normals30YearTemporalResolution));
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
 					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
 				}

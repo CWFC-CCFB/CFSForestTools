@@ -26,7 +26,7 @@ import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjec
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmProvider;
 import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
 
-public interface IrisCompatibleTree extends BasalAreaLargerThanSubjectM2Provider,
+public interface IrisTree extends BasalAreaLargerThanSubjectM2Provider,
 													LightAllometryCalculableTree,
 													LnDbhCmProvider,
 													MonteCarloSimulationCompliantObject,

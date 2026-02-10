@@ -25,6 +25,7 @@ import java.util.List;
 import repicea.math.Matrix;
 import repicea.simulation.allometrycalculator.AllometryCalculator;
 import repicea.simulation.allometrycalculator.LightAllometryCalculableTree;
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 
 class Artemis2009CompatibleStandImpl implements Artemis2009CompatibleStand {
 
@@ -113,10 +114,10 @@ class Artemis2009CompatibleStandImpl implements Artemis2009CompatibleStand {
 	public int getDateYr() {return dateYr;}
 
 	@Override
-	public double getTotalAnnualPrecipitationMm() {return totalAnnualPrecipitationMm;}
+	public double getTotalAnnualPrecipitationMm(ClimateVariableTemporalResolution resolution) {return totalAnnualPrecipitationMm;}
 
 	@Override
-	public double getMeanAnnualTemperatureCelsius() {return meanAnnualTemperatureC;}
+	public double getMeanAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return meanAnnualTemperatureC;}
 
 	@Override
 	public double getElevationM() {return elevationM;}
