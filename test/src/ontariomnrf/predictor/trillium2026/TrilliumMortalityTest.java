@@ -32,13 +32,14 @@ import org.junit.Test;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
 public class TrilliumMortalityTest {
 
-	static class Trillium2026TreeImpl implements Trillium2026Tree, Trillium2026Plot {
+	static class Trillium2026TreeImpl implements Trillium2026Tree, Trillium2026MortalityPlot {
 
 		private final double growthStepLengthYr;
 		private final double meanTminJanuaryCelsius;
@@ -96,62 +97,16 @@ public class TrilliumMortalityTest {
 		public double getGrowthStepLengthYr() {return growthStepLengthYr;}
 
 		@Override
-		public double getTotalAnnualPrecipitationMm() {return 0d;}
+		public double getMeanMinimumJanuaryTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return meanTminJanuaryCelsius;}
 
 		@Override
-		public double getMeanAnnualTemperatureCelsius() {return 0d;}
+		public double getTotalPrecipitationFromMarchToMayMm(ClimateVariableTemporalResolution resolution) {return totalPrecMarchToMayMm;}
 
 		@Override
-		public double getMeanTminJanuaryCelsius() {return meanTminJanuaryCelsius;}
+		public double getMeanTemperatureFromJuneToAugustCelsius(ClimateVariableTemporalResolution resolution) {return meanTempJuneToAugustCelsius;}
 
 		@Override
-		public double getTotalPrecMarchToMayMm() {return totalPrecMarchToMayMm;}
-
-		@Override
-		public double getMeanTempJuneToAugustCelsius() {return meanTempJuneToAugustCelsius;}
-
-		@Override
-		public double getMeanTempAnomalyCelsius() {return 0d;}
-
-		@Override
-		public double getTotalRadiation() {return 0d;}
-
-		@Override
-		public double getMeanSummerVPD() {return 0d;}
-
-		@Override
-		public double getFrostFreeDays() {return 0d;}
-
-		@Override
-		public double getMeanTmaxJulyCelsius() {return 0d;}
-
-		@Override
-		public double getSMImean() {return 0d;}
-
-		@Override
-		public double getMaxTempAnomalyCelsius() {return 0d;}
-
-		@Override
-		public double getMeanSummerVPDDaylight() {return 0d;}
-
-		@Override
-		public double getTotalPrecJuneToAugustMm() {return totalPrecJuneToAugustMm;}
-
-		@Override
-		public double getTotalPrecipitationAnomalyMm() {return 0d;}
-
-		@Override
-		public double getCMI() {return 0d;}
-
-		@Override
-		public double getHighestTmaxCelsius() {return 0d;}
-
-		@Override
-		public double getDegreeDaysCelsius() {return 0d;}
-
-		@Override
-		public double getLowestTmin() {return 0d;}
-
+		public double getTotalPrecipitationFromJuneToAugustMm(ClimateVariableTemporalResolution resolution) {return totalPrecJuneToAugustMm;}
 
 		@Override
 		public double getDbhCm() {return dbhCm;}

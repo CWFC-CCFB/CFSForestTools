@@ -1,3 +1,22 @@
+/*
+ * This file is part of the CFSForesttools library.
+ *
+ * Copyright (C) 2026 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
+ */
 package ontariomnrf.predictor.trillium2026;
 
 import java.util.ArrayList;
@@ -10,12 +29,15 @@ import repicea.math.integral.GaussHermiteQuadrature;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.model.glm.LinkFunction.Type;
 
 @SuppressWarnings("serial")
-class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor<Trillium2026Plot, Trillium2026Tree> {
+class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor<Trillium2026MortalityPlot, Trillium2026Tree> {
 
+	private static final ClimateVariableTemporalResolution IntervalResolution = ClimateVariableTemporalResolution.IntervalAveraged;
+	
 	private static final int DEDLowerBound = 1960;
 	private static final int DEDUpperBound = 1985;
 	
@@ -77,7 +99,7 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 	}
 	
 	@Override
-	public synchronized double predictEventProbability(Trillium2026Plot plot, Trillium2026Tree tree, Map<String, Object> parms) {
+	public synchronized double predictEventProbability(Trillium2026MortalityPlot plot, Trillium2026Tree tree, Map<String, Object> parms) {
 		Matrix beta = getParametersForThisRealization(tree); 
 		double xBeta = getFixedEffectPrediction(beta, plot, tree);
 		linkFunction.setVariableValue(1, xBeta);
@@ -98,12 +120,12 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 		return prob;
 	}
 
-	double getFixedEffectPrediction(Matrix beta, Trillium2026Plot plot, Trillium2026Tree tree) {
+	double getFixedEffectPrediction(Matrix beta, Trillium2026MortalityPlot plot, Trillium2026Tree tree) {
 		oXVector.resetMatrix();
 		int index = 0;
 		double dbhCm = tree.getDbhCm();
 		double balM2Ha = tree.getBasalAreaLargerThanSubjectM2Ha();
-		double meanTminJanuary = plot.getMeanTminJanuaryCelsius();
+		double meanTminJanuary = plot.getMeanMinimumJanuaryTemperatureCelsius(IntervalResolution);
 		for (Integer effectId : effectList) {
 			EffectID eff = EffectID.values()[effectId];
 			switch(eff) {
@@ -133,16 +155,16 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 				oXVector.setValueAt(0, index++, meanTminJanuary);
 				break;
 			case MeanTempJuneToAugust:
-				oXVector.setValueAt(0, index++, plot.getMeanTempJuneToAugustCelsius());
+				oXVector.setValueAt(0, index++, plot.getMeanTemperatureFromJuneToAugustCelsius(IntervalResolution));
 				break;
 			case IDBH_x2:
 				oXVector.setValueAt(0, index++, tree.getSquaredDbhCm());
 				break;
 			case TotalPrecMarchToMay:
-				oXVector.setValueAt(0, index++, plot.getTotalPrecMarchToMayMm());
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromMarchToMayMm(IntervalResolution));
 				break;
 			case TotalPrecJuneToAugust:
-				oXVector.setValueAt(0, index++, plot.getTotalPrecJuneToAugustMm());
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromJuneToAugustMm(IntervalResolution));
 				break;
 			case logDBH_x:
 				oXVector.setValueAt(0, index++, tree.getLnDbhCm());

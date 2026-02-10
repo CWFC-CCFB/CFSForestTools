@@ -23,12 +23,14 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
+import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.Matrix;
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 
-final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
+final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 
-	class Iris2020CompatibleTestTreeImpl implements IrisCompatibleTree {
+	class Iris2020CompatibleTestTreeImpl implements IrisTree {
 		
 		final IrisSpecies species;
 		
@@ -64,9 +66,7 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 		public IrisSpecies getSpecies() {return species;}
 		
 	}
-	
-	
-	
+		
 	private final double growthStepLength;
 	private final double basalAreaM2HaConiferous;
 	private final double basalAreaM2HaBroadleaved;
@@ -80,15 +80,19 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	private final DisturbanceType upcomingDist;
 	private final DrainageGroup drainageGroup;
 	private final SoilTexture soilTexture;
-	private final double pred;
 	private final String id;
 	private final IrisSpecies species;
 	private final Matrix gSpGrMat;
-	private final double occIndex10km;
 	private final double frostDays;
 	private final double lowestTmin;
+	private final List<OccupancyIndexCalculablePlot> plots;
+	private final double latitudeDeg;
+	private final double longitudeDeg;
+	private int monteCarloRealizationId = 0;
 		
-	IrisCompatibleTestPlotImpl(String id,
+	IrisRecruitmentPlotImpl(String id,
+			double latitudeDeg,
+			double longitudeDeg,
 			double growthStepLength,
 			double basalAreaM2HaConiferous,
 			double basalAreaM2HaBroadleaved,
@@ -105,13 +109,14 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 			DrainageGroup drainageGroup,
 			SoilTexture soilTexture,
 			IrisSpecies species,
-			double pred, 
 			double gSpGr,
-			double occIndex10km) {
+			List<OccupancyIndexCalculablePlot> plots) {
 		if (drainageGroup == null) {
 			throw new InvalidParameterException("The drainage group cannot be null!");
 		}
 		this.id = id;
+		this.latitudeDeg = latitudeDeg;
+		this.longitudeDeg = longitudeDeg;
 		this.growthStepLength = growthStepLength;
 		this.basalAreaM2HaConiferous = basalAreaM2HaConiferous;
 		this.basalAreaM2HaBroadleaved = basalAreaM2HaBroadleaved;
@@ -128,10 +133,9 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 		this.drainageGroup = drainageGroup;
 		this.soilTexture = soilTexture;
 		this.species = species;
-		this.pred = pred;
 		gSpGrMat = new Matrix(1, IrisSpecies.values().length);
 		gSpGrMat.setValueAt(0, species.ordinal(), gSpGr);
-		this.occIndex10km = occIndex10km;
+		this.plots = plots;
 	}
 	
 	
@@ -140,7 +144,11 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	public String getSubjectId() {return id;}
 
 	@Override
-	public int getMonteCarloRealizationId() {return 0;}
+	public int getMonteCarloRealizationId() {return this.monteCarloRealizationId;}
+	
+	void setMonteCarloRealizationId(int id) {
+		this.monteCarloRealizationId = id;
+	}
 
 	@Override
 	public double getGrowthStepLengthYr() {return growthStepLength;}
@@ -152,10 +160,10 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	public int getDateYr() {return dateYr;}
 
 	@Override
-	public double getMeanDegreeDaysOverThePeriod() {return dd;}
+	public double getGrowingDegreeDaysCelsius(ClimateVariableTemporalResolution resolution) {return dd;}
 
 	@Override
-	public double getMeanPrecipitationOverThePeriod() {return prcp;}
+	public double getTotalAnnualPrecipitationMm(ClimateVariableTemporalResolution resolution) {return prcp;}
 
 	@Override
 	public SoilDepth getSoilDepth() {return soilDepth;}
@@ -172,40 +180,35 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	@Override
 	public SoilTexture getSoilTexture() {return soilTexture;}
 	
-	double getPredProb() {return pred;}
-
-	IrisCompatibleTree getTreeInstance() {
+	IrisTree getTreeInstance() {
 		return new Iris2020CompatibleTestTreeImpl(species); 
 	}
 
 	@Override
 	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {return gSpGrMat.getValueAt(0, species.ordinal());}
 
-
-
 	@Override
-	public double getBasalAreaOfConiferousSpecies() {return basalAreaM2HaConiferous;}
-
-	@Override
-	public double getBasalAreaOfBroadleavedSpecies() {return basalAreaM2HaBroadleaved;}
+	public double getBasalAreaM2HaForThisSpeciesType(SpeciesType type) {
+		return type == SpeciesType.ConiferousSpecies ?
+				basalAreaM2HaConiferous :
+					basalAreaM2HaBroadleaved;
+	}
 
 	@Override
 	public double getSlopeAspect() {return slopeAspect;}
 
 
 	@Override
-	public double getMeanNumberFrostDaysOverThePeriod() {return frostDays;}
+	public double getAnnualNbFrostFreeDays(ClimateVariableTemporalResolution resolution) {return frostDays;}
 
 	@Override
-	public double getMeanLowestTemperatureOverThePeriod() {return lowestTmin;}
-
-	protected double getOccupancyIndex10km(IrisSpecies species) {return occIndex10km;}
+	public double getLowestAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return lowestTmin;}
 
 	@Override
-	public double getLatitudeDeg() {return 0;}
+	public double getLatitudeDeg() {return latitudeDeg;}
 
 	@Override
-	public double getLongitudeDeg() {return 0;}
+	public double getLongitudeDeg() {return longitudeDeg;}
 
 	@Override
 	public double getElevationM() {return 0;}
@@ -215,7 +218,7 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 
 	@Override
 	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
-		return null;
+		return plots;
 	}
 	
 }

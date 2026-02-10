@@ -30,10 +30,10 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.DisturbanceType;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.SoilDepth;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.SoilTexture;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
+import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.DisturbanceType;
+import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.SoilDepth;
+import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.SoilTexture;
+import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
@@ -49,11 +49,11 @@ public class IrisRecruitmentTest {
 		DrainageGroupMatch.put("4hydrique", DrainageGroup.Hydric);
 	}
 
-	private static List<IrisCompatibleTestPlotImpl> TestPlotListForOccurrences;
-	private static List<IrisCompatibleTestPlotImpl> TestPlotListForNumbers;
-	private static List<IrisCompatiblePlotImpl> StandardPlotList;
+	private static List<IrisRecruitmentPlotImplWithKnownOccupancy> TestPlotListForOccurrences;
+	private static List<IrisRecruitmentPlotImplWithKnownOccupancy> TestPlotListForNumbers;
+	private static List<IrisRecruitmentPlotImpl> StandardPlotList;
 	
-	private static IrisCompatibleTestPlotImpl createTestPlotFromRecord(Object[] record) {
+	private static IrisRecruitmentPlotImplWithKnownOccupancy createTestPlotFromRecord(Object[] record) {
 		String plotId = record[0].toString();
 		String speciesName = record[4].toString();
 		IrisSpecies species = IrisSpecies.valueOf(speciesName);
@@ -79,7 +79,7 @@ public class IrisRecruitmentTest {
 		SoilDepth soilDepth = SoilDepth.valueOf(depthStr);
 		String drainageClass = record[21].toString();
 		double pred = Double.parseDouble(record[22].toString());
-		IrisCompatibleTestPlotImpl plot = new IrisCompatibleTestPlotImpl(plotId,
+		IrisRecruitmentPlotImplWithKnownOccupancy plot = new IrisRecruitmentPlotImplWithKnownOccupancy(plotId,
 				growthStepYr,
 				basalAreaM2HaConiferous,
 				basalAreaM2HaBroadleaved,
@@ -103,7 +103,7 @@ public class IrisRecruitmentTest {
 	}
 	
 	
-	private static IrisCompatiblePlotImpl createStandardPlotFromRecord(Object[] record) {
+	private static IrisRecruitmentPlotImpl createStandardPlotFromRecord(Object[] record) {
 		String plotId = record[0].toString();
 		double latitudeDeg = Double.parseDouble(record[2].toString());
 		double longitudeDeg = Double.parseDouble(record[3].toString());
@@ -130,7 +130,7 @@ public class IrisRecruitmentTest {
 		SoilDepth soilDepth = SoilDepth.valueOf(depthStr);
 		String drainageClass = record[21].toString();
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		IrisCompatiblePlotImpl plot = new IrisCompatiblePlotImpl(plotId,
+		IrisRecruitmentPlotImpl plot = new IrisRecruitmentPlotImpl(plotId,
 				latitudeDeg,
 				longitudeDeg,
 				growthStepYr,
@@ -157,8 +157,8 @@ public class IrisRecruitmentTest {
 	
 	@BeforeClass
 	public static void initialize() throws IOException {
-		TestPlotListForOccurrences = new ArrayList<IrisCompatibleTestPlotImpl>();
-		StandardPlotList = new ArrayList<IrisCompatiblePlotImpl>();
+		TestPlotListForOccurrences = new ArrayList<IrisRecruitmentPlotImplWithKnownOccupancy>();
+		StandardPlotList = new ArrayList<IrisRecruitmentPlotImpl>();
 		String filename = ObjectUtility.getPackagePath(IrisRecruitmentTest.class) + "0_RecruitmentOccurrenceValidationDataset.csv";
 		CSVReader reader = new CSVReader(filename);
 		Object[] record;
@@ -168,7 +168,7 @@ public class IrisRecruitmentTest {
 		}
 		reader.close();
 		
-		TestPlotListForNumbers = new ArrayList<IrisCompatibleTestPlotImpl>();
+		TestPlotListForNumbers = new ArrayList<IrisRecruitmentPlotImplWithKnownOccupancy>();
 		filename = ObjectUtility.getPackagePath(IrisRecruitmentTest.class) + "0_RecruitmentNumberValidationDataset.csv";
 		reader = new CSVReader(filename);
 		while ((record = reader.nextRecord()) != null) {
@@ -185,10 +185,10 @@ public class IrisRecruitmentTest {
 	@Test
 	public void test01OccurrencePredictionsAgainstRPredictions() throws IOException {
 		IrisRecruitmentOccurrencePredictor predictor = new IrisRecruitmentOccurrencePredictor(false, null); // deterministic
-		List<IrisCompatibleTestPlotImpl> plots = TestPlotListForOccurrences; 
+		List<IrisRecruitmentPlotImplWithKnownOccupancy> plots = TestPlotListForOccurrences; 
 		int nbTested = 0;
-		for (IrisCompatibleTestPlotImpl plot : plots) {
-			IrisCompatibleTree tree = plot.getTreeInstance();
+		for (IrisRecruitmentPlotImplWithKnownOccupancy plot : plots) {
+			IrisTree tree = plot.getTreeInstance();
 			double actual = predictor.predictEventProbability(plot, tree);
 			double expected = plot.getPredProb();
 			if (Math.abs(actual-expected) > 1E-8) {	
@@ -212,10 +212,10 @@ public class IrisRecruitmentTest {
 	public void test02MeanNumberPredictionsAgainstRPredictions() throws IOException {
 		IrisRecruitmentNumberPredictor predictor = new IrisRecruitmentNumberPredictor(false, 
 				new IrisRecruitmentOccurrencePredictor(false, null)); // deterministic
-		List<IrisCompatibleTestPlotImpl> plots = TestPlotListForNumbers; 
+		List<IrisRecruitmentPlotImplWithKnownOccupancy> plots = TestPlotListForNumbers; 
 		int nbTested = 0;
-		for (IrisCompatibleTestPlotImpl plot : plots) {
-			IrisCompatibleTree tree = plot.getTreeInstance();
+		for (IrisRecruitmentPlotImplWithKnownOccupancy plot : plots) {
+			IrisTree tree = plot.getTreeInstance();
 			double actual = predictor.predictNumberOfRecruits(plot, tree.getSpecies());
 			double expected = plot.getPredProb() + 1d; // adding one because 
 			Assert.assertEquals("Testing mean predicted number for plot " + plot.getSubjectId() + ", species " + tree.getSpecies().name(), 
@@ -237,9 +237,9 @@ public class IrisRecruitmentTest {
 		IrisRecruitmentNumberPredictor stoPredictor = new IrisRecruitmentNumberPredictor(false, false, true,
 				new IrisRecruitmentOccurrencePredictor(false, null)); // stochastic but with variability disabled for parameter estimates
 		int nbRealizations = 1000000;
-		List<IrisCompatibleTestPlotImpl> plots = TestPlotListForNumbers; 
-		IrisCompatibleTestPlotImpl plot = plots.get(0);
-		IrisCompatibleTree tree = plot.getTreeInstance();
+		List<IrisRecruitmentPlotImplWithKnownOccupancy> plots = TestPlotListForNumbers; 
+		IrisRecruitmentPlotImplWithKnownOccupancy plot = plots.get(0);
+		IrisTree tree = plot.getTreeInstance();
 		double detPred = detPredictor.predictNumberOfRecruits(plot, tree.getSpecies());
 		Matrix realizations = new Matrix(nbRealizations, 1);
 		for (int j = 0; j < nbRealizations; j++) {
@@ -270,14 +270,14 @@ public class IrisRecruitmentTest {
 	 */
 	@Test
 	public void test04StochasticImplementationOccurrencePredictions() throws IOException {
-		List<IrisCompatiblePlotImpl> plots = StandardPlotList; 
+		List<IrisRecruitmentPlotImpl> plots = StandardPlotList; 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		IrisRecruitmentOccurrencePredictor detPredictor = new IrisRecruitmentOccurrencePredictor(false, false, false, (List) plots); // deterministic
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		IrisRecruitmentOccurrencePredictor stoPredictor = new IrisRecruitmentOccurrencePredictor(false, true, false, (List) plots); // stochastic only in the occupancy index
 		int nbRealizations = 50000;
 		
-		IrisCompatiblePlotImpl plot = plots.get(1200); // black spruce 
+		IrisRecruitmentPlotImpl plot = plots.get(1200); // black spruce 
 		double detPred = detPredictor.predictEventProbability(plot, plot.getTreeInstance());
 		
 		Matrix realizations = new Matrix(nbRealizations, 1);
@@ -300,14 +300,14 @@ public class IrisRecruitmentTest {
 	 */
 	@Test
 	public void test05StochasticImplementationMeanNumberPredictions() throws IOException {
-		List<IrisCompatiblePlotImpl> plots = StandardPlotList; 
+		List<IrisRecruitmentPlotImpl> plots = StandardPlotList; 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		IrisRecruitmentNumberPredictor detPredictor = new IrisRecruitmentNumberPredictor(false, false, false, new IrisRecruitmentOccurrencePredictor(false, (List) plots)); // deterministic
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		IrisRecruitmentNumberPredictor stoPredictor = new IrisRecruitmentNumberPredictor(false, true, false, new IrisRecruitmentOccurrencePredictor(false, (List) plots)); // stochastic only in the occupancy index
 		int nbRealizations = 10000;
 		
-		IrisCompatiblePlotImpl plot = plots.get(1200); // black spruce 
+		IrisRecruitmentPlotImpl plot = plots.get(1200); // black spruce 
 		double detPred = detPredictor.predictNumberOfRecruits(plot, plot.getTreeInstance().getSpecies());
 		
 		Matrix realizations = new Matrix(nbRealizations, 1);

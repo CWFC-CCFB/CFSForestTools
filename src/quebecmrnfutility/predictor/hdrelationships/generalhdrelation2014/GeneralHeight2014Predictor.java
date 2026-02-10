@@ -30,6 +30,7 @@ import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.simulation.hdrelationships.HeightPredictor;
 import repicea.stats.StatisticalUtility.TypeMatrixR;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
@@ -50,7 +51,8 @@ import repicea.util.ObjectUtility;
  */
 public class GeneralHeight2014Predictor extends REpiceaPredictor implements HeightPredictor<Heightable2014Stand, Heightable2014Tree> {
 
-
+	final static ClimateVariableTemporalResolution Normals30YearTemporalResolution = ClimateVariableTemporalResolution.Normals30Year;
+	
 	protected static class BetaHeightableStandMonteCarlo implements MonteCarloSimulationCompliantObject {
 		private final int monteCarloRealization;
 		private String subjectID;

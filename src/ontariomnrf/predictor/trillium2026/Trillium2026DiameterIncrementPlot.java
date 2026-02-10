@@ -20,24 +20,32 @@
 package ontariomnrf.predictor.trillium2026;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
-import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.AnnualFrostFreeDaysProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.AnnualGrowingDegreeDaysCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.LowestAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanMaximumJulyTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanMinimumJanuaryTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanTemperatureFromJuneToAugustCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromJuneToAugustMmProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromMarchToMayMmProvider;
 
-public interface Trillium2026Plot extends MonteCarloSimulationCompliantObject,
+public interface Trillium2026DiameterIncrementPlot extends MonteCarloSimulationCompliantObject,
 											GrowthStepLengthYrProvider,
 											TotalAnnualPrecipitationMmProvider,
 											MeanAnnualTemperatureCelsiusProvider,
-											InterventionPlannedProvider,
-											DateYrProvider {
+											MeanMinimumJanuaryTemperatureCelsiusProvider,
+											TotalPrecipitationFromMarchToMayMmProvider,
+											TotalPrecipitationFromJuneToAugustMmProvider,
+											LowestAnnualTemperatureCelsiusProvider,
+											AnnualFrostFreeDaysProvider,
+											AnnualGrowingDegreeDaysCelsiusProvider,
+											MeanTemperatureFromJuneToAugustCelsiusProvider,
+											MeanMaximumJulyTemperatureCelsiusProvider {
 
-	
-	public double getMeanTminJanuaryCelsius();
-	public double getTotalPrecMarchToMayMm();
-	public double getMeanTempJuneToAugustCelsius(); 
-	public double getTotalPrecJuneToAugustMm();
+
 
 	/**
 	 * Mean temperature anomaly.<p>
@@ -48,8 +56,6 @@ public interface Trillium2026Plot extends MonteCarloSimulationCompliantObject,
 	
 	public double getTotalRadiation(); // add unit
 	public double getMeanSummerVPD();	// add unit
-	public double getFrostFreeDays();
-	public double getMeanTmaxJulyCelsius();
 	public double getSMImean();
 	
 	/**
@@ -70,9 +76,6 @@ public interface Trillium2026Plot extends MonteCarloSimulationCompliantObject,
 	
 	public double getCMI();
 	public double getHighestTmaxCelsius();
-	public double getDegreeDaysCelsius(); // add threshold is it 5C or 0C
-	public double getLowestTmin();
 
-	public default boolean isFromPlantation() {return false;}
 
 }

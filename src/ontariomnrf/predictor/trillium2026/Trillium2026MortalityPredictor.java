@@ -1,3 +1,22 @@
+/*
+ * This file is part of the CFSForesttools library.
+ *
+ * Copyright (C) 2026 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
+ */
 package ontariomnrf.predictor.trillium2026;
 
 import java.util.ArrayList;
@@ -24,7 +43,7 @@ import repicea.util.ObjectUtility;
  * </a>
  */
 @SuppressWarnings("serial")
-public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<Trillium2026Plot, Trillium2026Tree>
+public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<Trillium2026MortalityPlot, Trillium2026Tree>
 										implements REpiceaSpeciesCompliantObject {
 
 	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
@@ -74,7 +93,7 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 	}
 
 	@Override
-	public double predictEventProbability(Trillium2026Plot plot, Trillium2026Tree tree, Map<String, Object> parms) {
+	public double predictEventProbability(Trillium2026MortalityPlot plot, Trillium2026Tree tree, Map<String, Object> parms) {
 		Species species = tree.getTrillium2026TreeSpecies();
 		if (!SpeciesLookupMap.values().contains(species)) {
 			throw new UnsupportedOperationException("The mortality model of Trillium 2026 does not support species: " + species.getLatinName());
