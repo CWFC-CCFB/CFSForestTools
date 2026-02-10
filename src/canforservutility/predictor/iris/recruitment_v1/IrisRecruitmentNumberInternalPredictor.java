@@ -23,10 +23,10 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.DisturbanceType;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.SoilDepth;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.SoilTexture;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
+import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.DisturbanceType;
+import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.SoilDepth;
+import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.SoilTexture;
+import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.AbstractMathematicalFunctionWrapper;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -123,7 +123,7 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 	@Override
 	protected void init() {}
 
-	private void setOccupancyInXVector(IrisCompatiblePlot plot, IrisSpecies species, double occupancyIndex10km) {
+	private void setOccupancyInXVector(IrisRecruitmentPlot plot, IrisSpecies species, double occupancyIndex10km) {
 		for (int effectId : occupancyIndexVarIndices) {
 			setValueInXVector(effectId, plot, species, occupancyIndex10km); 
 		}
@@ -139,13 +139,13 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		}
 	}
 	
-	public synchronized double predictNumberOfRecruits(IrisCompatiblePlot plot, IrisSpecies species) {
+	public synchronized double predictNumberOfRecruits(IrisRecruitmentPlot plot, IrisSpecies species) {
 		Matrix beta = getParametersForThisRealization(plot);
 		constructXVector(plot, species);
 		
 		if (isUsingOccupancyIndex()) {
-			if (plot instanceof IrisCompatibleTestPlotImpl) { // occupancy is assumed to be known
-				double occupancyIndex10kmRandomDeviate = ((IrisCompatibleTestPlotImpl) plot).getOccupancyIndex10km(species);
+			if (plot instanceof IrisRecruitmentPlotWithKnownOccupancy) { // occupancy is assumed to be known
+				double occupancyIndex10kmRandomDeviate = ((IrisRecruitmentPlotWithKnownOccupancy) plot).getOccupancyIndex10km(species);
 				setOccupancyInXVector(plot, species, occupancyIndex10kmRandomDeviate);
 				return getNumber(beta);
 			}
@@ -168,7 +168,7 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 	
 	private boolean isUsingOccupancyIndex() {return !occupancyIndexVarIndices.isEmpty();}
 	
-	private void setValueInXVector(int effectId, IrisCompatiblePlot plot, IrisSpecies species, double occupancyIndex10km) {
+	private void setValueInXVector(int effectId, IrisRecruitmentPlot plot, IrisSpecies species, double occupancyIndex10km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
@@ -293,7 +293,7 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		}
 	}
 	
-	private void constructXVector(IrisCompatiblePlot plot, IrisSpecies species) {
+	private void constructXVector(IrisRecruitmentPlot plot, IrisSpecies species) {
 		oXVector.resetMatrix();
 		
 		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();

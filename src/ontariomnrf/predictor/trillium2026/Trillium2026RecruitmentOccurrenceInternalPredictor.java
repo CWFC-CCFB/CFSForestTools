@@ -1,8 +1,8 @@
 /*
  * This file is part of the CFSForesttools library.
  *
- * Copyright (C) 2020-2023 His Majesty the King in right of Canada
- * Author: Mathieu Fortin, Canadian Wood Fibre Centre, Canadian Forest Service
+ * Copyright (C) 2026 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,15 +33,16 @@ import repicea.math.integral.GaussLegendreQuadrature;
 import repicea.math.utility.GaussianUtility;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaBinaryEventPredictor;
-import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
+import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.model.glm.LinkFunction;
 
 @SuppressWarnings("serial")
-class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<Trillium2026Plot, Trillium2026Tree> {
+class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<Trillium2026RecruitmentPlot, Trillium2026Tree> {
 
-	
+	private static ClimateVariableTemporalResolution IntervalStartingBeforeInitialMeas = ClimateVariableTemporalResolution.IntervalAveragedStartingBeforeInitialMeasurement;
 	/**
 	 * A nested class for Trapezoidal integration in case random variability around the occupancy index is
 	 * disabled.
@@ -54,7 +55,7 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 		final double meanOccIndex;
 		final double varOccIndex;
 		
-		InternalMathFunction(Matrix xVector, Matrix beta, Trillium2026Plot plot, int indexVar, double meanOccIndex, double varOccIndex) {
+		InternalMathFunction(Matrix xVector, Matrix beta, Trillium2026RecruitmentPlot plot, int indexVar, double meanOccIndex, double varOccIndex) {
 			super(Type.CLogLog, new InternalStatisticalExpression(xVector, beta, plot, meanOccIndex));
 			this.xVector = xVector;
 			this.indexVar = indexVar;
@@ -75,10 +76,10 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 
 		final Matrix xVector;
 		final Matrix beta;
-		final Trillium2026Plot plot;
+		final Trillium2026RecruitmentPlot plot;
 		final double meanOccIndex;
 		
-		InternalStatisticalExpression(Matrix xVector, Matrix beta, Trillium2026Plot plot, double meanOccIndex) {
+		InternalStatisticalExpression(Matrix xVector, Matrix beta, Trillium2026RecruitmentPlot plot, double meanOccIndex) {
 			this.xVector = xVector;
 			this.beta = beta;
 			this.plot = plot;
@@ -110,14 +111,12 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 		
 	}
 
-
 	private final Trillium2026RecruitmentOccurrencePredictor owner;
 	private final List<Integer> effectList;
 	private final boolean offsetEnabled;
 	private final Map<String, Map<Integer, Map<Integer, GaussianEstimate>>> occupancyIndices; // 1st key plot id, 2nd key realization id, 3rd key dateYr
 	private final Map<String, Map<Integer, Map<Integer, Double>>> occupancyIndicesDeviates; // 1st key plot id, 2nd key realization id, 3rd key dateYr
 	private final List<Integer> occupancyIndexVarIndices; // effect Ids that include the occupancy index
-//	private final TrapezoidalRule tr;
 	private final Species species;
 	
 	protected Trillium2026RecruitmentOccurrenceInternalPredictor(Trillium2026RecruitmentOccurrencePredictor owner,
@@ -154,13 +153,13 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 	@Override
 	protected void init() {}
 	
-	private void setOccupancyInXVector(Trillium2026Plot plot, Species species, double occupancyIndex10km) {
+	private void setOccupancyInXVector(Trillium2026RecruitmentPlot plot, Species species, double occupancyIndex25km) {
 		for (int effectId : occupancyIndexVarIndices) {
-			setValueInXVector(effectId, plot, species, occupancyIndex10km); 
+			setValueInXVector(effectId, plot, species, occupancyIndex25km); 
 		}
 	}
 
-	private double getProb(Matrix beta, Trillium2026Plot plot) {
+	private double getProb(Matrix beta, Trillium2026RecruitmentPlot plot) {
 		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		if (offsetEnabled) {
 			xBeta += Math.log(plot.getGrowthStepLengthYr());
@@ -170,41 +169,45 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 	}
 	
 	@Override
-	public double predictEventProbability(Trillium2026Plot plot, Trillium2026Tree tree, Map<String, Object> parms) {
+	public double predictEventProbability(Trillium2026RecruitmentPlot plot, Trillium2026Tree tree, Map<String, Object> parms) {
 		return calculateEventProbability(plot, tree.getTrillium2026TreeSpecies());
 	}
 
-	protected synchronized double calculateEventProbability(Trillium2026Plot plot, Species species) {
+	protected synchronized double calculateEventProbability(Trillium2026RecruitmentPlot plot, Species species) {
 		Matrix beta = getParametersForThisRealization(plot);
 		constructXVector(plot, species);
 		if (isUsingOccupancyIndex()) {
-			if (plot instanceof IrisCompatibleTestPlotImpl) { // occupancy is assumed to be known
-				double occupancyIndex10kmRandomDeviate = ((IrisCompatibleTestPlotImpl) plot).getOccupancyIndex10km(species);
-				setOccupancyInXVector(plot, species, occupancyIndex10kmRandomDeviate);
+			if (plot instanceof Trillium2026RecruitmentPlotWithKnownOccupancy) { // occupancy is assumed to be known
+				double occupancyIndex25kmRandomDeviate = ((Trillium2026RecruitmentPlotWithKnownOccupancy) plot).getOccupancyIndex25km(species);
+				setOccupancyInXVector(plot, species, occupancyIndex25kmRandomDeviate);
 				return getProb(beta, plot);
 			}
 			if (isRandomEffectsVariabilityEnabled) {
-				double occupancyIndex10kmRandomDeviate = getOccupancyRandomDeviate(plot, species);
-				setOccupancyInXVector(plot, species, occupancyIndex10kmRandomDeviate);
+				double occupancyIndex25kmRandomDeviate = getOccupancyRandomDeviate(plot, species);
+				setOccupancyInXVector(plot, species, occupancyIndex25kmRandomDeviate);
 				return getProb(beta, plot);
 			} else {
-				double range = 3;
+				final double range = 3;
 				GaussianEstimate estimate = getOccupancyIndex(plot, species);
 				int indexVar = effectList.lastIndexOf(owner.OccupancyIndexEffects.get(0)); 
 				double meanOccIndex = estimate.getMean().getValueAt(0, 0);
 				double varOccIndex = estimate.getVariance().getValueAt(0, 0);
-				InternalMathFunction imf = new InternalMathFunction(oXVector, beta, plot, indexVar, meanOccIndex, varOccIndex);
-				
-				double std = Math.sqrt(varOccIndex);
-				double lowerBound = meanOccIndex - range * std;
-				double upperBound = meanOccIndex + range * std;
-				
-				GaussLegendreQuadrature glq = new GaussLegendreQuadrature(NumberOfPoints.N10);
-				glq.setLowerBound(lowerBound);
-				glq.setUpperBound(upperBound);
-				
-				double prob = glq.getIntegralApproximation(imf, indexVar, false);
-				return prob;
+				if (varOccIndex == 0d) { // there is no variability
+					return getProb(beta, plot);
+				} else {
+					InternalMathFunction imf = new InternalMathFunction(oXVector, beta, plot, indexVar, meanOccIndex, varOccIndex);
+					
+					double std = Math.sqrt(varOccIndex);
+					double lowerBound = meanOccIndex - range * std;
+					double upperBound = meanOccIndex + range * std;
+					
+					GaussLegendreQuadrature glq = new GaussLegendreQuadrature(NumberOfPoints.N10);
+					glq.setLowerBound(lowerBound);
+					glq.setUpperBound(upperBound);
+					
+					double prob = glq.getIntegralApproximation(imf, indexVar, false);
+					return prob;
+				}
 			}
 		} else { // not using occupancy index
 			return getProb(beta, plot);
@@ -213,7 +216,7 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 	
 	static List<Double> deviates = new ArrayList<Double>();
 	
-	double getOccupancyRandomDeviate(Trillium2026Plot plot, Species species) {
+	double getOccupancyRandomDeviate(Trillium2026RecruitmentPlot plot, Species species) {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		Map<Integer, Double> innerMap2 = getInnerMap2(plot, (Map) occupancyIndicesDeviates);
 		if (!innerMap2.containsKey(plot.getDateYr())) {
@@ -226,7 +229,7 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 
 	}
 	
-	private Map<Integer, ?> getInnerMap2(Trillium2026Plot plot, Map<String, Map<Integer, Map<Integer, ?>>> oMap) {
+	private Map<Integer, ?> getInnerMap2(Trillium2026RecruitmentPlot plot, Map<String, Map<Integer, Map<Integer, ?>>> oMap) {
 		if (isUsingOccupancyIndex()) {
 			if (!oMap.containsKey(plot.getSubjectId())) {
 				oMap.put(plot.getSubjectId(), new HashMap<Integer, Map<Integer, ?>>());
@@ -243,11 +246,11 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 		
 	}
 	
-	GaussianEstimate getOccupancyIndex(Trillium2026Plot plot, Species species) {
+	GaussianEstimate getOccupancyIndex(Trillium2026RecruitmentPlot plot, Species species) {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		Map<Integer, GaussianEstimate> innerMap2 = getInnerMap2(plot, (Map) occupancyIndices);
 		if (!innerMap2.containsKey(plot.getDateYr())) {
-			GaussianEstimate occIndex10kmEstimate = owner.occIndexCalculator.getOccupancyIndex(plot.getPlotsForOccupancyIndexCalculation(), plot, species, 10d); // max distance is 10 km for occupancy index  
+			GaussianEstimate occIndex10kmEstimate = owner.occIndexCalculator.getOccupancyIndex(plot.getPlotsForOccupancyIndexCalculation(), plot, species, 25d); // max distance is 25 km for occupancy index  
 			innerMap2.put(plot.getDateYr(), occIndex10kmEstimate);	
 		}
 		return innerMap2.get(plot.getDateYr());
@@ -255,7 +258,7 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 	
 	private boolean isUsingOccupancyIndex() {return !occupancyIndexVarIndices.isEmpty();}
 
-	private void setValueInXVector(int effectId, Trillium2026Plot plot, Species species, double occupancyIndex10km) {
+	private void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, Species species, double occupancyIndex10km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
@@ -265,22 +268,24 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 			oXVector.setValueAt(0, index, 1d);
 			break;
 		case 2: // DD
-			oXVector.setValueAt(0, index, plot.get.getMeanDegreeDaysOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalStartingBeforeInitialMeas));
 			break;
 		case 3: // Frost free days
-			oXVector.setValueAt(0, index, plot.getMeanNumberFrostDaysOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(IntervalStartingBeforeInitialMeas));
 			break;
 		case 4: // G_F
-			oXVector.setValueAt(0, index, plot.getBasalAreaOfBroadleavedSpecies());
+			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
 			break;
 		case 5: // G_F2
-			oXVector.setValueAt(0, index, plot.getBasalAreaOfBroadleavedSpecies() * plot.getBasalAreaOfBroadleavedSpecies());
+			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies) * 
+					plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
 			break;
 		case 6: // G_R
-			oXVector.setValueAt(0, index, plot.getBasalAreaOfConiferousSpecies());
+			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
 			break;
 		case 7: // G_R2
-			oXVector.setValueAt(0, index, plot.getBasalAreaOfConiferousSpecies() * plot.getBasalAreaOfConiferousSpecies());
+			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies) * 
+					plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
 			break;
 		case 8: // G_SpGr
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species));
@@ -293,10 +298,10 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 			oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 			break;
 		case 11: // lowest t min
-			oXVector.setValueAt(0, index, plot.getMeanLowestTemperatureOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(IntervalStartingBeforeInitialMeas));
 			break;
 		case 12: // MeanTminJanuary
-			oXVector.setValueAt(0, index, plot.getMeanLowestTemperatfffureOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getMeanMinimumJanuaryTemperatureCelsius(IntervalStartingBeforeInitialMeas));
 			break;
 		case 13: // occIndex25km
 			oXVector.setValueAt(0, index, occupancyIndex10km);
@@ -308,10 +313,10 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
 			break;
 		case 16: // TotalPrcp
-			oXVector.setValueAt(0, index, plot.getMeanPrecipitationOverThePeriod());
+			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(IntervalStartingBeforeInitialMeas));
 			break;
 		case 17: // TotalPrecMarchToMay
-			oXVector.setValueAt(0, index, plot.getTotalPrecMarchToMayMm());
+			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromMarchToMayMm(IntervalStartingBeforeInitialMeas));
 			break;
 		default:
 			throw new InvalidParameterException("The effect id " + effectId + " is unknown!");
@@ -321,7 +326,7 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 	/*
 	 * Construct the xVector without the occupancy index.
 	 */
-	private void constructXVector(Trillium2026Plot plot, Species species) {
+	private void constructXVector(Trillium2026RecruitmentPlot plot, Species species) {
 		oXVector.resetMatrix();
 		
 		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();

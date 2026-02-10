@@ -17,24 +17,24 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package canforservutility.predictor.iris.recruitment_v1;
+package ontariomnrf.predictor.trillium2026;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
 import repicea.math.Matrix;
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
-final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
+final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPlot {
 
-	class Iris2020CompatibleTestTreeImpl implements IrisCompatibleTree {
+	class Trillium2026TreeImpl implements Trillium2026Tree {
 		
-		final IrisSpecies species;
+		final Species species;
 		
-		Iris2020CompatibleTestTreeImpl(IrisSpecies species) {
+		Trillium2026TreeImpl(Species species) {
 			this.species = species;
 		}
 		
@@ -48,9 +48,6 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 		public double getSquaredDbhCm() {return 0;}
 
 		@Override
-		public double getStemBasalAreaM2() {return 0;}
-
-		@Override
 		public double getLnDbhCm() {return 0;}
 
 		@Override
@@ -60,80 +57,63 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 		public int getMonteCarloRealizationId() {return 0;}
 
 		@Override
-		public int getErrorTermIndex() {return 0;}
+		public Species getTrillium2026TreeSpecies() {return species;}
 
 		@Override
-		public IrisSpecies getSpecies() {return species;}
-		
+		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 	}
-	
-	
-	
+		
 	private final double growthStepLength;
 	private final double basalAreaM2HaConiferous;
 	private final double basalAreaM2HaBroadleaved;
-	private final double slopeInclination;
-	private final double slopeAspect;
 	private final int dateYr;
 	private final double dd;
 	private final double prcp;
-	private final SoilDepth soilDepth;
-	private final DisturbanceType pastDist;
-	private final DisturbanceType upcomingDist;
-	private final DrainageGroup drainageGroup;
-	private final SoilTexture soilTexture;
-	private final double pred;
 	private final String id;
-	private final IrisSpecies species;
+	final Species species;
 	private final Matrix gSpGrMat;
-	private final double occIndex10km;
 	private final double frostDays;
 	private final double lowestTmin;
+	private final List<OccupancyIndexCalculablePlot> plots;
+	private final double latitudeDeg;
+	private final double longitudeDeg;
+	private int monteCarloRealizationId = 0;
+	private double meanTminJanuary;
+	private double precMarchToMay;
 		
-	IrisCompatibleTestPlotImpl(String id,
+	Trillium2026RecruitmentPlotImpl(String id,
+			double latitudeDeg,
+			double longitudeDeg,
 			double growthStepLength,
 			double basalAreaM2HaConiferous,
 			double basalAreaM2HaBroadleaved,
-			double slopeInclination,
-			double slopeAspect,
 			int dateYr,
 			double dd,
 			double prcp,
 			double frostDays,
 			double lowestTmin,
-			SoilDepth soilDepth,
-			DisturbanceType upcomingDist,
-			DisturbanceType pastDist,
-			DrainageGroup drainageGroup,
-			SoilTexture soilTexture,
-			IrisSpecies species,
-			double pred, 
+			double meanTminJanuary,
+			double precMarchToMay,
+			Species species,
 			double gSpGr,
-			double occIndex10km) {
-		if (drainageGroup == null) {
-			throw new InvalidParameterException("The drainage group cannot be null!");
-		}
+			List<OccupancyIndexCalculablePlot> plots) {
 		this.id = id;
+		this.latitudeDeg = latitudeDeg;
+		this.longitudeDeg = longitudeDeg;
 		this.growthStepLength = growthStepLength;
 		this.basalAreaM2HaConiferous = basalAreaM2HaConiferous;
 		this.basalAreaM2HaBroadleaved = basalAreaM2HaBroadleaved;
-		this.slopeInclination = slopeInclination;
-		this.slopeAspect = slopeAspect;
 		this.dateYr = dateYr;
 		this.dd = dd;
 		this.prcp = prcp;
 		this.frostDays = frostDays;
 		this.lowestTmin = lowestTmin;
-		this.soilDepth = soilDepth;
-		this.pastDist = pastDist;
-		this.upcomingDist = upcomingDist;
-		this.drainageGroup = drainageGroup;
-		this.soilTexture = soilTexture;
+		this.meanTminJanuary = meanTminJanuary;
+		this.precMarchToMay = precMarchToMay;
 		this.species = species;
-		this.pred = pred;
-		gSpGrMat = new Matrix(1, IrisSpecies.values().length);
-		gSpGrMat.setValueAt(0, species.ordinal(), gSpGr);
-		this.occIndex10km = occIndex10km;
+		gSpGrMat = new Matrix(1, Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size());
+		gSpGrMat.setValueAt(0, Trillium2026RecruitmentOccurrencePredictor.SpeciesList.indexOf(species), gSpGr);
+		this.plots = plots;
 	}
 	
 	
@@ -142,13 +122,14 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	public String getSubjectId() {return id;}
 
 	@Override
-	public int getMonteCarloRealizationId() {return 0;}
+	public int getMonteCarloRealizationId() {return this.monteCarloRealizationId;}
+	
+	void setMonteCarloRealizationId(int id) {
+		this.monteCarloRealizationId = id;
+	}
 
 	@Override
 	public double getGrowthStepLengthYr() {return growthStepLength;}
-
-	@Override
-	public double getSlopeInclinationPercent() {return slopeInclination;}
 
 	@Override
 	public int getDateYr() {return dateYr;}
@@ -157,31 +138,17 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	public double getGrowingDegreeDaysCelsius(ClimateVariableTemporalResolution resolution) {return dd;}
 
 	@Override
-	public double getTotalAnnualPrecipitationMm(ClimateVariableTemporalResolution resolution)  {return prcp;}
+	public double getTotalAnnualPrecipitationMm(ClimateVariableTemporalResolution resolution) {return prcp;}
 
-	@Override
-	public SoilDepth getSoilDepth() {return soilDepth;}
-
-	@Override
-	public DrainageGroup getDrainageGroup() {return drainageGroup;}
-
-	@Override
-	public DisturbanceType getPastDisturbance() {return pastDist;}
-
-	@Override
-	public DisturbanceType getUpcomingDisturbance() {return upcomingDist;}
-
-	@Override
-	public SoilTexture getSoilTexture() {return soilTexture;}
 	
-	double getPredProb() {return pred;}
-
-	IrisCompatibleTree getTreeInstance() {
-		return new Iris2020CompatibleTestTreeImpl(species); 
+	Trillium2026Tree getTreeInstance() {
+		return new Trillium2026TreeImpl(species); 
 	}
 
 	@Override
-	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {return gSpGrMat.getValueAt(0, species.ordinal());}
+	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {
+		return gSpGrMat.getValueAt(0, Trillium2026RecruitmentOccurrencePredictor.SpeciesList.indexOf(species));
+	}
 
 	@Override
 	public double getBasalAreaM2HaForThisSpeciesType(SpeciesType type) {
@@ -191,21 +158,16 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 	}
 
 	@Override
-	public double getSlopeAspect() {return slopeAspect;}
-
-	@Override
 	public double getAnnualNbFrostFreeDays(ClimateVariableTemporalResolution resolution) {return frostDays;}
 
 	@Override
 	public double getLowestAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return lowestTmin;}
 
-	protected double getOccupancyIndex10km(IrisSpecies species) {return occIndex10km;}
+	@Override
+	public double getLatitudeDeg() {return latitudeDeg;}
 
 	@Override
-	public double getLatitudeDeg() {return 0;}
-
-	@Override
-	public double getLongitudeDeg() {return 0;}
+	public double getLongitudeDeg() {return longitudeDeg;}
 
 	@Override
 	public double getElevationM() {return 0;}
@@ -215,7 +177,17 @@ final class IrisCompatibleTestPlotImpl implements IrisCompatiblePlot {
 
 	@Override
 	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
-		return null;
+		return plots;
+	}
+
+	@Override
+	public double getMeanMinimumJanuaryTemperatureCelsius(ClimateVariableTemporalResolution resolution) {
+		return meanTminJanuary;
+	}
+
+	@Override
+	public double getTotalPrecipitationFromMarchToMayMm(ClimateVariableTemporalResolution resolution) {
+		return precMarchToMay;
 	}
 	
 }

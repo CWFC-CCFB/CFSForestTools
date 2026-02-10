@@ -41,7 +41,8 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - March 2025
  */
 @SuppressWarnings("serial")
-public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
+public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor 
+												implements REpiceaSpeciesCompliantObject {
 
 	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
 	static {
@@ -232,11 +233,11 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor imp
 	/**
 	 * Provide a diameter increment prediction.<p>
 	 * 
-	 * @param plot a Trillium2026Plot instance
+	 * @param plot a Trillium2026DiameterIncrementPlot instance
 	 * @param tree a Trillium2026Tree instance
 	 * @return the diameter increment (mm)
 	 */
-	public double predictGrowth(Trillium2026Plot plot, Trillium2026Tree tree) {
+	public double predictGrowth(Trillium2026DiameterIncrementPlot plot, Trillium2026Tree tree) {
 		Species species = tree.getTrillium2026TreeSpecies();
 		if (!SpeciesLookupMap.values().contains(species)) {
 			throw new UnsupportedOperationException("The diameter increment model of Trillium 2026 does not support species: " + species.getLatinName());

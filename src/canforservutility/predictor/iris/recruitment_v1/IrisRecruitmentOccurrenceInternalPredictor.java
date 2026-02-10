@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.DisturbanceType;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.SoilDepth;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatiblePlot.SoilTexture;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
+import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.DisturbanceType;
+import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.SoilDepth;
+import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.SoilTexture;
+import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -38,14 +38,13 @@ import repicea.math.utility.GaussianUtility;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
-//import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.model.glm.LinkFunction;
 
 @SuppressWarnings("serial")
-class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<IrisCompatiblePlot, IrisCompatibleTree> {
+class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<IrisRecruitmentPlot, IrisTree> {
 
 	private final static ClimateVariableTemporalResolution IntervalBeforeStartResolution = ClimateVariableTemporalResolution.IntervalAveragedStartingBeforeInitialMeasurement;
 	
@@ -61,7 +60,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 		final double meanOccIndex;
 		final double varOccIndex;
 		
-		InternalMathFunction(Matrix xVector, Matrix beta, IrisCompatiblePlot plot, int indexVar, double meanOccIndex, double varOccIndex) {
+		InternalMathFunction(Matrix xVector, Matrix beta, IrisRecruitmentPlot plot, int indexVar, double meanOccIndex, double varOccIndex) {
 			super(Type.CLogLog, new InternalStatisticalExpression(xVector, beta, plot, meanOccIndex));
 			this.xVector = xVector;
 			this.indexVar = indexVar;
@@ -82,10 +81,10 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 
 		final Matrix xVector;
 		final Matrix beta;
-		final IrisCompatiblePlot plot;
+		final IrisRecruitmentPlot plot;
 		final double meanOccIndex;
 		
-		InternalStatisticalExpression(Matrix xVector, Matrix beta, IrisCompatiblePlot plot, double meanOccIndex) {
+		InternalStatisticalExpression(Matrix xVector, Matrix beta, IrisRecruitmentPlot plot, double meanOccIndex) {
 			this.xVector = xVector;
 			this.beta = beta;
 			this.plot = plot;
@@ -161,13 +160,13 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	@Override
 	protected void init() {}
 	
-	private void setOccupancyInXVector(IrisCompatiblePlot plot, IrisSpecies species, double occupancyIndex10km) {
+	private void setOccupancyInXVector(IrisRecruitmentPlot plot, IrisSpecies species, double occupancyIndex10km) {
 		for (int effectId : occupancyIndexVarIndices) {
 			setValueInXVector(effectId, plot, species, occupancyIndex10km); 
 		}
 	}
 
-	private double getProb(Matrix beta, IrisCompatiblePlot plot) {
+	private double getProb(Matrix beta, IrisRecruitmentPlot plot) {
 		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		if (offsetEnabled) {
 			xBeta += Math.log(plot.getGrowthStepLengthYr());
@@ -177,16 +176,16 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	}
 	
 	@Override
-	public double predictEventProbability(IrisCompatiblePlot plot, IrisCompatibleTree tree, Map<String, Object> parms) {
+	public double predictEventProbability(IrisRecruitmentPlot plot, IrisTree tree, Map<String, Object> parms) {
 		return calculateEventProbability(plot, tree.getSpecies());
 	}
 
-	protected synchronized double calculateEventProbability(IrisCompatiblePlot plot, IrisSpecies species) {
+	protected synchronized double calculateEventProbability(IrisRecruitmentPlot plot, IrisSpecies species) {
 		Matrix beta = getParametersForThisRealization(plot);
 		constructXVector(plot, species);
 		if (isUsingOccupancyIndex()) {
-			if (plot instanceof IrisCompatibleTestPlotImpl) { // occupancy is assumed to be known
-				double occupancyIndex10kmRandomDeviate = ((IrisCompatibleTestPlotImpl) plot).getOccupancyIndex10km(species);
+			if (plot instanceof IrisRecruitmentPlotWithKnownOccupancy) { // occupancy is assumed to be known
+				double occupancyIndex10kmRandomDeviate = ((IrisRecruitmentPlotWithKnownOccupancy) plot).getOccupancyIndex10km(species);
 				setOccupancyInXVector(plot, species, occupancyIndex10kmRandomDeviate);
 				return getProb(beta, plot);
 			}
@@ -220,7 +219,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	
 	static List<Double> deviates = new ArrayList<Double>();
 	
-	double getOccupancyRandomDeviate(IrisCompatiblePlot plot, IrisSpecies species) {
+	double getOccupancyRandomDeviate(IrisRecruitmentPlot plot, IrisSpecies species) {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		Map<Integer, Double> innerMap2 = getInnerMap2(plot, (Map) occupancyIndicesDeviates);
 		if (!innerMap2.containsKey(plot.getDateYr())) {
@@ -233,7 +232,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 
 	}
 	
-	private Map<Integer, ?> getInnerMap2(IrisCompatiblePlot plot, Map<String, Map<Integer, Map<Integer, ?>>> oMap) {
+	private Map<Integer, ?> getInnerMap2(IrisRecruitmentPlot plot, Map<String, Map<Integer, Map<Integer, ?>>> oMap) {
 		if (isUsingOccupancyIndex()) {
 			if (!oMap.containsKey(plot.getSubjectId())) {
 				oMap.put(plot.getSubjectId(), new HashMap<Integer, Map<Integer, ?>>());
@@ -250,7 +249,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 		
 	}
 	
-	GaussianEstimate getOccupancyIndex(IrisCompatiblePlot plot, IrisSpecies species) {
+	GaussianEstimate getOccupancyIndex(IrisRecruitmentPlot plot, IrisSpecies species) {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		Map<Integer, GaussianEstimate> innerMap2 = getInnerMap2(plot, (Map) occupancyIndices);
 		if (!innerMap2.containsKey(plot.getDateYr())) {
@@ -263,7 +262,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	private boolean isUsingOccupancyIndex() {return !occupancyIndexVarIndices.isEmpty();}
 
 	// TODO MF20260209 That could be improved by internalizing the loop on the effects and avoiding calculating over and over again the same variables.
-	private void setValueInXVector(int effectId, IrisCompatiblePlot plot, IrisSpecies species, double occupancyIndex10km) {
+	private void setValueInXVector(int effectId, IrisRecruitmentPlot plot, IrisSpecies species, double occupancyIndex10km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
@@ -414,7 +413,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 	/*
 	 * Construct the xVector without the occupancy index.
 	 */
-	private void constructXVector(IrisCompatiblePlot plot, IrisSpecies species) {
+	private void constructXVector(IrisRecruitmentPlot plot, IrisSpecies species) {
 		oXVector.resetMatrix();
 		
 		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();

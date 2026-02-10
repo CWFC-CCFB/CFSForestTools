@@ -27,7 +27,7 @@ import java.util.Map;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculator;
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
+import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ParameterLoader;
@@ -40,7 +40,7 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - May 2020
  */
 @SuppressWarnings("serial")
-public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<IrisCompatiblePlot, IrisCompatibleTree> {
+public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<IrisRecruitmentPlot, IrisTree> {
 
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
 	static {
@@ -64,7 +64,10 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 	}
 	
 	/**
-	 * Constructor for test purposes
+	 * Constructor for test purposes. <p>
+	 * IMPORTANT: The random effect variability is only enabling the variability in 
+	 * the occupancy index.
+	 * 
 	 * @param isParameterVariabilityEnabled true to enable the parameter estimates variability
 	 * @param isRandomEffectsVariabilityEnabled true to enable the variability in the occupancy index
 	 * @param isResidualVariabilityEnabled true to enable the residual error variability
@@ -123,7 +126,7 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 	}
 	
 	@Override
-	public double predictEventProbability(IrisCompatiblePlot stand, IrisCompatibleTree tree, Map<String, Object> parms) {
+	public double predictEventProbability(IrisRecruitmentPlot stand, IrisTree tree, Map<String, Object> parms) {
 		return getInternalPredictor(tree.getSpecies()).predictEventProbability(stand, tree, parms);
 	}
 	

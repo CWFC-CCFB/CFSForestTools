@@ -23,14 +23,14 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
+import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.Matrix;
 import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 
-final class IrisCompatiblePlotImpl implements IrisCompatiblePlot {
+final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 
-	class Iris2020CompatibleTestTreeImpl implements IrisCompatibleTree {
+	class Iris2020CompatibleTestTreeImpl implements IrisTree {
 		
 		final IrisSpecies species;
 		
@@ -90,7 +90,7 @@ final class IrisCompatiblePlotImpl implements IrisCompatiblePlot {
 	private final double longitudeDeg;
 	private int monteCarloRealizationId = 0;
 		
-	IrisCompatiblePlotImpl(String id,
+	IrisRecruitmentPlotImpl(String id,
 			double latitudeDeg,
 			double longitudeDeg,
 			double growthStepLength,
@@ -180,7 +180,7 @@ final class IrisCompatiblePlotImpl implements IrisCompatiblePlot {
 	@Override
 	public SoilTexture getSoilTexture() {return soilTexture;}
 	
-	IrisCompatibleTree getTreeInstance() {
+	IrisTree getTreeInstance() {
 		return new Iris2020CompatibleTestTreeImpl(species); 
 	}
 

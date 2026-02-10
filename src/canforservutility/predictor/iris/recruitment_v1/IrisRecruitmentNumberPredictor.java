@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
+import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ParameterLoader;
@@ -115,7 +115,7 @@ public class IrisRecruitmentNumberPredictor extends REpiceaPredictor {
 	 * @param species an IrisSpecies enum
 	 * @return a double that is the number of recruits in the plot
 	 */
-	public double predictNumberOfRecruits(IrisCompatiblePlot plot, IrisSpecies species) {
+	public double predictNumberOfRecruits(IrisRecruitmentPlot plot, IrisSpecies species) {
 		return internalPredictors.get(species).predictNumberOfRecruits(plot, species);
 	}
 	
