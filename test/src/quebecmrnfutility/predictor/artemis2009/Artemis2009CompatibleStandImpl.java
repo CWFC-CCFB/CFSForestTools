@@ -25,7 +25,7 @@ import java.util.List;
 import repicea.math.Matrix;
 import repicea.simulation.allometrycalculator.AllometryCalculator;
 import repicea.simulation.allometrycalculator.LightAllometryCalculableTree;
-import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
 
 class Artemis2009CompatibleStandImpl implements Artemis2009CompatibleStand {
 

@@ -34,7 +34,7 @@ import repicea.math.integral.GaussHermiteQuadrature;
 import repicea.math.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
-import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.stats.LinearStatisticalExpression;
