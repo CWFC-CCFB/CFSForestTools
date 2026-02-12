@@ -21,7 +21,7 @@ package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.plotlevel.MeanQuadraticDiameterCmProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 

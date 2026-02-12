@@ -25,7 +25,7 @@ import java.util.List;
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.Matrix;
-import repicea.simulation.climate.REpiceaClimate.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 
 final class IrisRecruitmentPlotImplWithKnownOccupancy implements IrisRecruitmentPlot, IrisRecruitmentPlotWithKnownOccupancy {
