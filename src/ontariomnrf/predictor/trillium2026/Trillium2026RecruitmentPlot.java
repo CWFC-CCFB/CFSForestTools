@@ -25,23 +25,33 @@ import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaBySpeciesTypeM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
+import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;
+import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
+import repicea.simulation.covariateproviders.plotlevel.SlopeInclinationPercentProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.AnnualFrostFreeDaysProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.AnnualGrowingDegreeDaysCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.HighestAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.LowestAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanMinimumJanuaryTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromJuneToAugustMmProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromMarchToMayMmProvider;
 
 public interface Trillium2026RecruitmentPlot extends MonteCarloSimulationCompliantObject,
 											GrowthStepLengthYrProvider,
 											TotalAnnualPrecipitationMmProvider,
-											MeanMinimumJanuaryTemperatureCelsiusProvider,
 											TotalPrecipitationFromMarchToMayMmProvider,
+											TotalPrecipitationFromJuneToAugustMmProvider,
+											MeanMinimumJanuaryTemperatureCelsiusProvider,
 											LowestAnnualTemperatureCelsiusProvider,
+											HighestAnnualTemperatureCelsiusProvider,
 											AnnualFrostFreeDaysProvider,
 											AnnualGrowingDegreeDaysCelsiusProvider,
 											BasalAreaBySpeciesTypeM2HaProvider,
-											OccupancyIndexCalculablePlot {
+											OccupancyIndexCalculablePlot,
+											SlopeInclinationPercentProvider,
+											InterventionResultProvider,
+											InterventionPlannedProvider {
 
 
 

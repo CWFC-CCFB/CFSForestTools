@@ -80,7 +80,12 @@ final class Trillium2026RecruitmentPlotImplWithKnownOccupancy implements Trilliu
 	private final double lowestTmin;
 	private final double meanTminJanuary;
 	private final double totalPrecMarchToMay;
-		
+	private final double totalPrecJuneToAugust;
+	private final double highestTmax;
+	private final double slopePct;
+	private final boolean interventionResult;
+	private final boolean isGoingToBeHarvested;
+	
 	Trillium2026RecruitmentPlotImplWithKnownOccupancy(String id,
 			double growthStepLength,
 			double basalAreaM2HaConiferous,
@@ -92,9 +97,14 @@ final class Trillium2026RecruitmentPlotImplWithKnownOccupancy implements Trilliu
 			double lowestTmin,
 			double meanTminJanuary,
 			double totalPrecMarchToMay,
+			double totalPrecJuneToAugust,
+			double highestTmax,
 			Species species,
 			double pred, 
 			double gSpGr,
+			double slopePct,
+			boolean interventionResult,
+			boolean isGoingToBeHarvested,
 			double occIndex25km) {
 		this.id = id;
 		this.growthStepLength = growthStepLength;
@@ -107,11 +117,16 @@ final class Trillium2026RecruitmentPlotImplWithKnownOccupancy implements Trilliu
 		this.lowestTmin = lowestTmin;
 		this.meanTminJanuary = meanTminJanuary;
 		this.totalPrecMarchToMay = totalPrecMarchToMay;
+		this.totalPrecJuneToAugust = totalPrecJuneToAugust;
+		this.highestTmax = highestTmax;
 		this.species = species;
 		this.pred = pred;
 		gSpGrMat = new Matrix(1, Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size());
 		gSpGrMat.setValueAt(0, Trillium2026RecruitmentOccurrencePredictor.SpeciesList.indexOf(species), gSpGr);
 		this.occIndex25km = occIndex25km;
+		this.slopePct = slopePct;
+		this.interventionResult = interventionResult;
+		this.isGoingToBeHarvested = isGoingToBeHarvested;
 	}
 	
 	
@@ -186,6 +201,38 @@ final class Trillium2026RecruitmentPlotImplWithKnownOccupancy implements Trilliu
 	@Override
 	public double getTotalPrecipitationFromMarchToMayMm(ClimateVariableTemporalResolution resolution) {
 		return totalPrecMarchToMay;
+	}
+
+
+
+	@Override
+	public double getTotalPrecipitationFromJuneToAugustMm(ClimateVariableTemporalResolution resolution) {
+		return totalPrecJuneToAugust;
+	}
+
+	@Override
+	public double getHighestAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {
+		return highestTmax;
+	}
+
+
+	@Override
+	public double getSlopeInclinationPercent() {
+		return slopePct;
+	}
+
+
+
+	@Override
+	public boolean isInterventionResult() {
+		return interventionResult;
+	}
+
+
+
+	@Override
+	public boolean isGoingToBeHarvested() {
+		return isGoingToBeHarvested;
 	}
 	
 }

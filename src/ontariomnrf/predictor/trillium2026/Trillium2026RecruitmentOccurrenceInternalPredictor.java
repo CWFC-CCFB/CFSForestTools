@@ -258,17 +258,18 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 	
 	private boolean isUsingOccupancyIndex() {return !occupancyIndexVarIndices.isEmpty();}
 
-	private void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, Species species, double occupancyIndex10km) {
+	private void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, Species species, double occupancyIndex25km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
 		}
 		switch(effectId) {
-		case 1:	// intercept
-			oXVector.setValueAt(0, index, 1d);
-			break;
-		case 2: // DD
+		case 1:	// DD
 			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalStartingBeforeInitialMeas));
+			break;
+		case 2: // DD2
+			double dd = plot.getGrowingDegreeDaysCelsius(IntervalStartingBeforeInitialMeas);
+			oXVector.setValueAt(0, index, dd * dd);
 			break;
 		case 3: // Frost free days
 			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(IntervalStartingBeforeInitialMeas));
@@ -277,15 +278,15 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
 			break;
 		case 5: // G_F2
-			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies) * 
-					plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
+			double G_F = plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies);
+			oXVector.setValueAt(0, index, G_F * G_F);
 			break;
 		case 6: // G_R
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
 			break;
 		case 7: // G_R2
-			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies) * 
-					plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
+			double G_R = plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies);
+			oXVector.setValueAt(0, index, G_R * G_R);
 			break;
 		case 8: // G_SpGr
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species));
@@ -294,29 +295,63 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 			double g_spgr = plot.getBasalAreaM2HaForThisSpecies(species);
 			oXVector.setValueAt(0, index, g_spgr * g_spgr);
 			break;
-		case 10: // lnDt
+		case 10: // HighestTMax
+			oXVector.setValueAt(0, index, plot.getHighestAnnualTemperatureCelsius(IntervalStartingBeforeInitialMeas));
+			break;
+		case 11: // HighestTMax2
+			double highestTemp = plot.getHighestAnnualTemperatureCelsius(IntervalStartingBeforeInitialMeas);
+			oXVector.setValueAt(0, index, highestTemp * highestTemp);
+			break;
+		case 12: // intercept
+			oXVector.setValueAt(0, index, 1d);
+			break;
+		case 13: // isHarvested
+			oXVector.setValueAt(0, index, plot.isGoingToBeHarvested() ? 1d : 0d);
+			break;
+		case 14: // lnDt
 			oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 			break;
-		case 11: // lowest t min
+		case 15: // lowest t min
 			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(IntervalStartingBeforeInitialMeas));
 			break;
-		case 12: // MeanTminJanuary
+		case 16: // MeanTminJanuary
 			oXVector.setValueAt(0, index, plot.getMeanMinimumJanuaryTemperatureCelsius(IntervalStartingBeforeInitialMeas));
 			break;
-		case 13: // occIndex25km
-			oXVector.setValueAt(0, index, occupancyIndex10km);
+		case 17: // MeanTminJanuary
+			double minTempJan = plot.getMeanMinimumJanuaryTemperatureCelsius(IntervalStartingBeforeInitialMeas);
+			oXVector.setValueAt(0, index, minTempJan * minTempJan);
 			break;
-		case 14: // occIndex25km2
-			oXVector.setValueAt(0, index, occupancyIndex10km * occupancyIndex10km);
+		case 18: // occIndex25km
+			oXVector.setValueAt(0, index, occupancyIndex25km);
 			break;
-		case 15: // speciesThere
+		case 19: // slopepct
+			oXVector.setValueAt(0, index, plot.getSlopeInclinationPercent());
+			break;
+		case 20: // speciesThere
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
 			break;
-		case 16: // TotalPrcp
+		case 21: // occIndex25km2
+			oXVector.setValueAt(0, index, occupancyIndex25km * occupancyIndex25km);
+			break;
+		case 22: // TotalPrcp
 			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(IntervalStartingBeforeInitialMeas));
 			break;
-		case 17: // TotalPrecMarchToMay
+		case 23: // TotalPrcp2
+			double totalPrcp = plot.getTotalAnnualPrecipitationMm(IntervalStartingBeforeInitialMeas);
+			oXVector.setValueAt(0, index, totalPrcp * totalPrcp);
+			break;
+		case 24: // TotalPrecJuneToAugust
+			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromJuneToAugustMm(IntervalStartingBeforeInitialMeas));
+			break;
+		case 25: // TotalPrecJuneToAugust2
+			double precJuneToAug = plot.getTotalPrecipitationFromJuneToAugustMm(IntervalStartingBeforeInitialMeas);
+			oXVector.setValueAt(0, index, precJuneToAug * precJuneToAug);
+			break;
+		case 26: // TotalPrecMarchToMay
 			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromMarchToMayMm(IntervalStartingBeforeInitialMeas));
+			break;
+		case 27:
+			oXVector.setValueAt(0, index, plot.isInterventionResult() ? 1d : 0d);
 			break;
 		default:
 			throw new InvalidParameterException("The effect id " + effectId + " is unknown!");

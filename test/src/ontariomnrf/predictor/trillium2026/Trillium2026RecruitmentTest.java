@@ -43,7 +43,7 @@ public class Trillium2026RecruitmentTest {
 	private static Map<Species, List<Trillium2026RecruitmentPlotImplWithKnownOccupancy>> TestPlotListForOccurrences;
 //	private static List<IrisCompatibleTestPlotImpl> TestPlotListForNumbers;
 	private static Map<Species, List<Trillium2026RecruitmentPlotImpl>> StandardPlotMap;
-	private static List<Trillium2026RecruitmentPlotImpl> StandardPlotList;
+//	private static List<Trillium2026RecruitmentPlotImpl> StandardPlotList;
 	
 	private static Trillium2026RecruitmentPlotImplWithKnownOccupancy createTestPlotFromRecord(Object[] record, CSVHeader header) {
 		String plotId = record[header.getIndexOfThisField("uniquePlotID")].toString();
@@ -60,8 +60,15 @@ public class Trillium2026RecruitmentTest {
 		double meanTminJanuary = Double.parseDouble(record[header.getIndexOfThisField("MeanTminJanuary")].toString());
 		double prcp = Double.parseDouble(record[header.getIndexOfThisField("TotalPrcp")].toString());
 		double prcpMarchMay = Double.parseDouble(record[header.getIndexOfThisField("TotalPrecMarchToMay")].toString());
+		double prcpJuneAug = Double.parseDouble(record[header.getIndexOfThisField("TotalPrecJuneToAugust")].toString());
+		double highestTmax = Double.parseDouble(record[header.getIndexOfThisField("HitghestTmax")].toString());
 		double frostDays = Double.parseDouble(record[header.getIndexOfThisField("FrostFreeDay")].toString());
 		double pred = Double.parseDouble(record[header.getIndexOfThisField("pred")].toString());
+		
+		double slopePct = Double.parseDouble(record[header.getIndexOfThisField("slopePct_PDEM_mean")].toString());
+		int wasHarvested = Integer.parseInt(record[header.getIndexOfThisField("wasHarvested")].toString());
+		int isHarvested = Integer.parseInt(record[header.getIndexOfThisField("isHarvested")].toString());
+
 		Trillium2026RecruitmentPlotImplWithKnownOccupancy plot = new Trillium2026RecruitmentPlotImplWithKnownOccupancy(plotId,
 				growthStepYr,
 				basalAreaM2HaConiferous,
@@ -73,9 +80,14 @@ public class Trillium2026RecruitmentTest {
 				lowestTmin,
 				meanTminJanuary,
 				prcpMarchMay,
+				prcpJuneAug,
+				highestTmax,
 				species,
 				pred, 
 				gSpGr,
+				slopePct,
+				wasHarvested == 1,
+				isHarvested == 1,
 				occIndex25km);
 		return plot;
 	}
@@ -92,13 +104,19 @@ public class Trillium2026RecruitmentTest {
 		double basalAreaM2HaConiferous = Double.parseDouble(record[header.getIndexOfThisField("G_R")].toString());
 		double basalAreaM2HaBroadleaved = Double.parseDouble(record[header.getIndexOfThisField("G_F")].toString());
 		double gSpGr = Double.parseDouble(record[header.getIndexOfThisField("G_SpGr")].toString());
-//		double occIndex25km = Double.parseDouble(record[header.getIndexOfThisField("occIndex25km")].toString());
+		double occIndex25km = Double.parseDouble(record[header.getIndexOfThisField("occIndex25km")].toString());
 		double dd = Double.parseDouble(record[header.getIndexOfThisField("DD")].toString());
 		double lowestTmin = Double.parseDouble(record[header.getIndexOfThisField("LowestTmin")].toString());
 		double meanTminJanuary = Double.parseDouble(record[header.getIndexOfThisField("MeanTminJanuary")].toString());
 		double prcp = Double.parseDouble(record[header.getIndexOfThisField("TotalPrcp")].toString());
 		double prcpMarchMay = Double.parseDouble(record[header.getIndexOfThisField("TotalPrecMarchToMay")].toString());
+		double prcpJuneAug = Double.parseDouble(record[header.getIndexOfThisField("TotalPrecJuneToAugust")].toString());
+		double highestTmax = Double.parseDouble(record[header.getIndexOfThisField("HitghestTmax")].toString());
 		double frostDays = Double.parseDouble(record[header.getIndexOfThisField("FrostFreeDay")].toString());
+		double slopePct = Double.parseDouble(record[header.getIndexOfThisField("slopePct_PDEM_mean")].toString());
+		int wasHarvested = Integer.parseInt(record[header.getIndexOfThisField("wasHarvested")].toString());
+		int isHarvested = Integer.parseInt(record[header.getIndexOfThisField("isHarvested")].toString());
+		
 //		double pred = Double.parseDouble(record[header.getIndexOfThisField("pred")].toString());
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -115,9 +133,15 @@ public class Trillium2026RecruitmentTest {
 				lowestTmin,
 				meanTminJanuary,
 				prcpMarchMay,
+				prcpJuneAug,
+				highestTmax,
 				species,
 				gSpGr,
-				(List) StandardPlotList);
+				slopePct,
+				wasHarvested == 1,
+				isHarvested == 1,
+				occIndex25km,
+				(List) StandardPlotMap.get(species));
 		return plot;
 	}
 
@@ -126,23 +150,21 @@ public class Trillium2026RecruitmentTest {
 	public static void initialize() throws IOException {
 		TestPlotListForOccurrences = new HashMap<Species, List<Trillium2026RecruitmentPlotImplWithKnownOccupancy>>();
 		StandardPlotMap = new HashMap<Species, List<Trillium2026RecruitmentPlotImpl>>();
-		StandardPlotList = new ArrayList<Trillium2026RecruitmentPlotImpl>();
 		String filename = ObjectUtility.getPackagePath(Trillium2026RecruitmentTest.class) + "0_RecruitmentOccurrenceValidationDataset.csv";
 		CSVReader reader = new CSVReader(filename);
 		Object[] record;
 		while ((record = reader.nextRecord()) != null) {
 			Trillium2026RecruitmentPlotImplWithKnownOccupancy plotWithKnownOccupancy =  createTestPlotFromRecord(record, reader.getHeader());
-			if (!TestPlotListForOccurrences.containsKey(plotWithKnownOccupancy.species)) {
-				TestPlotListForOccurrences.put(plotWithKnownOccupancy.species, new ArrayList<Trillium2026RecruitmentPlotImplWithKnownOccupancy>());
+			Species sp = plotWithKnownOccupancy.species;
+			if (!TestPlotListForOccurrences.containsKey(sp)) {
+				TestPlotListForOccurrences.put(sp, new ArrayList<Trillium2026RecruitmentPlotImplWithKnownOccupancy>());
+			}
+			if (!StandardPlotMap.containsKey(sp)) {
+				StandardPlotMap.put(sp, new ArrayList<Trillium2026RecruitmentPlotImpl>());
 			}
 			TestPlotListForOccurrences.get(plotWithKnownOccupancy.species).add(plotWithKnownOccupancy);
-			
 			Trillium2026RecruitmentPlotImpl standardPlot = createStandardPlotFromRecord(record, reader.getHeader());
-			if (!StandardPlotMap.containsKey(standardPlot.species)) {
-				StandardPlotMap.put(standardPlot.species, new ArrayList<Trillium2026RecruitmentPlotImpl>());
-			}
 			StandardPlotMap.get(standardPlot.species).add(standardPlot);
-			StandardPlotList.add(standardPlot);
 		}
 		reader.close();
 		
@@ -162,6 +184,7 @@ public class Trillium2026RecruitmentTest {
 	 */
 	@Test
 	public void test01OccurrencePredictionsAgainstRPredictions() throws IOException {
+		System.out.println("Testing deterministic predictions against ground truth...");
 		Trillium2026RecruitmentOccurrencePredictor predictor = new Trillium2026RecruitmentOccurrencePredictor(false, null); // deterministic
 		Map<Species, List<Trillium2026RecruitmentPlotImplWithKnownOccupancy>> plots = TestPlotListForOccurrences; 
 		for (Species sp : plots.keySet()) {
@@ -171,17 +194,50 @@ public class Trillium2026RecruitmentTest {
 				Trillium2026Tree tree = plot.getTreeInstance();
 				double actual = predictor.predictEventProbability(plot, tree);
 				double expected = plot.getPredProb();
-				if (Math.abs(actual-expected) > 1E-8) {	
-					@SuppressWarnings("unused")
-					int u = 0;
-				}
+//				if (Math.abs(actual-expected) > 1E-8) {	
+//					@SuppressWarnings("unused")
+//					int u = 0;
+//				}
 				Assert.assertEquals("Testing probability for plot " + plot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
 						expected, 
 						actual, 
 						1E-8);
 				nbTested++;
 			}
-			System.out.println("Species " + sp.getLatinName() + "; Number of successfully tested plots = " + nbTested + " / " + innerList.size());
+			System.out.println("    Species " + sp.getLatinName() + "; Number of successfully tested plots = " + nbTested + " / " + innerList.size());
+		}
+	}
+
+	
+	/*
+	 * Validation test for occurrence using R validation dataset.
+	 * This test can only be put in place if the original list of plots is used to
+	 * estimate the occupancy index.
+	 */
+	@Test
+	public void test02OccupancyIndexCalculation() throws IOException {
+		System.out.println("Testing occupancy indices...");
+		Map<Species, List<Trillium2026RecruitmentPlotImpl>> plots = StandardPlotMap; 
+		for (Species sp : plots.keySet()) {
+			List<Trillium2026RecruitmentPlotImpl> innerList = plots.get(sp);
+			Trillium2026RecruitmentOccurrencePredictor predictor = new Trillium2026RecruitmentOccurrencePredictor(false, Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex()); // deterministic
+			int nbTested = 0;
+			for (Trillium2026RecruitmentPlotImpl plot : innerList) {
+				Trillium2026Tree tree = plot.getTreeInstance();
+				GaussianEstimate occIndex = predictor.getInternalPredictor(sp).getOccupancyIndex(plot, sp);
+				double actual = occIndex.getMean().getValueAt(0, 0);
+				double expected = plot.occupancyIndex;
+				if (Math.abs(actual-expected) > 1E-8) {	
+					@SuppressWarnings("unused")
+					int u = 0;
+				}
+				Assert.assertEquals("Testing occupancy index for plot " + plot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
+						expected, 
+						actual, 
+						1E-8);
+				nbTested++;
+			}
+			System.out.println("    Species " + sp.getLatinName() + "; Number of successfully tested plots = " + nbTested + " / " + innerList.size());
 		}
 	}
 
@@ -249,32 +305,27 @@ public class Trillium2026RecruitmentTest {
 	/*
 	 * Validation test for stochastic implementation of occurrence part with unknown occupancy index.
 	 */
-	@Ignore // TODO FP MF20260210 re-enable this test when the full dataset is available.
+	@Ignore
 	@Test
 	public void test04StochasticImplementationOccurrencePredictions() throws IOException {
 		Map<Species, List<Trillium2026RecruitmentPlotImpl>> plots = StandardPlotMap; 
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Trillium2026RecruitmentOccurrencePredictor detPredictor = new Trillium2026RecruitmentOccurrencePredictor(false, (List) StandardPlotList); // deterministic
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Trillium2026RecruitmentOccurrencePredictor stoPredictor = new Trillium2026RecruitmentOccurrencePredictor(false, true, false, (List) StandardPlotList); // stochastic only in the occupancy index
-		int nbRealizations = 50000;
+		int nbRealizations = 10000;
 
 		for (Species sp : StandardPlotMap.keySet()) {
-			if (sp == Species.Pinus_banksiana) {
-				int u = 0;
-			}
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			Trillium2026RecruitmentOccurrencePredictor detPredictor = new Trillium2026RecruitmentOccurrencePredictor(false, (List) StandardPlotMap.get(sp)); // deterministic
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			Trillium2026RecruitmentOccurrencePredictor stoPredictor = new Trillium2026RecruitmentOccurrencePredictor(false, true, false, (List) StandardPlotMap.get(sp)); // stochastic only in the occupancy index
+//			if (sp == Species.Pinus_banksiana) {
+//				int u = 0;
+//			}
 			System.out.println("Processing species " + sp.getLatinName() + "..."); 
 			Trillium2026RecruitmentPlotImpl plot = null;
 			for (int i = 0; i < plots.get(sp).size(); i++) {
 				Trillium2026RecruitmentPlotImpl tmpPlot = plots.get(sp).get(i);
 				if (tmpPlot.getBasalAreaM2HaForThisSpecies(sp) > 0) {
-					GaussianEstimate estimate = detPredictor.getInternalPredictor(sp).getOccupancyIndex(tmpPlot, sp);
-					// This condition below is required since we don't have the full 
-					// dataset used to fit the model. Consequently there are some NaN.
-					if (!Double.isNaN(estimate.getMean().getValueAt(0, 0))) {
-						plot = tmpPlot;
-						break;
-					}
+					plot = tmpPlot;
+					break;
 				}
 			}
 			
@@ -336,11 +387,8 @@ public class Trillium2026RecruitmentTest {
 		if (TestPlotListForOccurrences != null) {
 			TestPlotListForOccurrences.clear();
 		}
-//		if (TestPlotListForNumbers != null) {
-//			TestPlotListForNumbers.clear();
-//		}
-		if (StandardPlotList != null) {
-			StandardPlotList.clear();
+		if (StandardPlotMap != null) {
+			StandardPlotMap.clear();
 		}
 	}
 

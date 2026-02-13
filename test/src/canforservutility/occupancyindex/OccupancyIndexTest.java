@@ -51,7 +51,7 @@ public class OccupancyIndexTest {
 //			double weight = Double.parseDouble(record[3].toString());
 			int dateYr = Integer.parseInt(record[4].toString());
 			double baHaSpecies = Double.parseDouble(record[5].toString());
-			plots.add(new SimpleOccupancyIndexCalculablePlot(id, latitudeDeg, longitudeDeg, dateYr, baHaSpecies));
+			plots.add(new SimpleOccupancyIndexCalculablePlot(id, latitudeDeg, longitudeDeg, dateYr, IrisSpecies.ERS, baHaSpecies));
 		}
 		r.close();
 	}

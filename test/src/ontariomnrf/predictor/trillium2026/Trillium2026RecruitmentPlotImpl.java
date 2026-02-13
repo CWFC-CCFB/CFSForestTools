@@ -19,6 +19,7 @@
  */
 package ontariomnrf.predictor.trillium2026;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
@@ -80,6 +81,12 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	private int monteCarloRealizationId = 0;
 	private double meanTminJanuary;
 	private double precMarchToMay;
+	private final double totalPrecJuneToAugust;
+	private final double highestTmax;
+	private final double slopePct;
+	private final boolean interventionResult;
+	private final boolean isGoingToBeHarvested;
+	protected final double occupancyIndex;
 		
 	Trillium2026RecruitmentPlotImpl(String id,
 			double latitudeDeg,
@@ -94,9 +101,18 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 			double lowestTmin,
 			double meanTminJanuary,
 			double precMarchToMay,
+			double totalPrecJuneToAugust,
+			double highestTmax,
 			Species species,
 			double gSpGr,
+			double slopePct,
+			boolean interventionResult,
+			boolean isGoingToBeHarvested,
+			double occupancyIndex,
 			List<OccupancyIndexCalculablePlot> plots) {
+		if (plots == null) {
+			throw new InvalidParameterException("The plots argument should not be null!");
+		}
 		this.id = id;
 		this.latitudeDeg = latitudeDeg;
 		this.longitudeDeg = longitudeDeg;
@@ -110,10 +126,16 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		this.lowestTmin = lowestTmin;
 		this.meanTminJanuary = meanTminJanuary;
 		this.precMarchToMay = precMarchToMay;
+		this.totalPrecJuneToAugust = totalPrecJuneToAugust;
+		this.highestTmax = highestTmax;
 		this.species = species;
 		gSpGrMat = new Matrix(1, Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size());
 		gSpGrMat.setValueAt(0, Trillium2026RecruitmentOccurrencePredictor.SpeciesList.indexOf(species), gSpGr);
-		this.plots = plots;
+		this.slopePct = slopePct;
+		this.interventionResult = interventionResult;
+		this.isGoingToBeHarvested = isGoingToBeHarvested;
+		this.plots = Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex();
+		this.occupancyIndex = occupancyIndex;
 	}
 	
 	
@@ -188,6 +210,38 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	@Override
 	public double getTotalPrecipitationFromMarchToMayMm(ClimateVariableTemporalResolution resolution) {
 		return precMarchToMay;
+	}
+
+
+
+	@Override
+	public double getTotalPrecipitationFromJuneToAugustMm(ClimateVariableTemporalResolution resolution) {
+		return totalPrecJuneToAugust;
+	}
+
+	@Override
+	public double getHighestAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {
+		return highestTmax;
+	}
+
+
+	@Override
+	public double getSlopeInclinationPercent() {
+		return slopePct;
+	}
+
+
+
+	@Override
+	public boolean isInterventionResult() {
+		return interventionResult;
+	}
+
+
+
+	@Override
+	public boolean isGoingToBeHarvested() {
+		return isGoingToBeHarvested;
 	}
 	
 }
