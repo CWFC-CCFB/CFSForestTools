@@ -167,12 +167,12 @@ public class OccupancyIndexCalculator {
 	 * @return the distance (km)
 	 */
 	protected double getDistanceKmBetweenThesePlots(OccupancyIndexCalculablePlot plot1, OccupancyIndexCalculablePlot plot2) {
-		int index1 = plotsId.get(plot1.getSubjectId());
-		if (index1 == -1) {
+		Integer index1 = plotsId.get(plot1.getSubjectId());
+		if (index1 == null || index1 == -1) {
 			throw new InvalidParameterException("The plot1 argument is not found in the plot list!");
 		}
-		int index2 = plotsId.get(plot2.getSubjectId());
-		if (index2 == -1) {
+		Integer index2 = plotsId.get(plot2.getSubjectId());
+		if (index2 == null || index2 == -1) {
 			throw new InvalidParameterException("The plot2 argument is not found in the plot list!");
 		}
 		double distanceKm = distances.getValueAt(index1, index2);

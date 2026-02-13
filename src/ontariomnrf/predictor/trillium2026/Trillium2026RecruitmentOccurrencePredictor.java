@@ -132,9 +132,6 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 				if (sp != null) {
 					String id = record[header.getIndexOfThisField("uniquePlotID")].toString();
 					int dateYr = ((Number) Double.parseDouble(record[header.getIndexOfThisField("year.x")].toString())).intValue();
-					if (id.equals("GY_4_1")) {
-						int u = 0;
-					}
 					if (!occMap.containsKey(id)) {
 						occMap.put(id, new HashMap<Integer,SimpleOccupancyIndexCalculablePlot>());
 					}
