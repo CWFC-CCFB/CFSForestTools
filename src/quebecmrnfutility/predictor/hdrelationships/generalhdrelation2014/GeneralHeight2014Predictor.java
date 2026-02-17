@@ -26,11 +26,14 @@ import java.util.Map;
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.Heightable2014Tree.Hd2014Species;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.hdrelationships.HeightPredictor;
 import repicea.stats.StatisticalUtility.TypeMatrixR;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
@@ -49,9 +52,15 @@ import repicea.util.ObjectUtility;
  * la recherche forestiere. Note de recherche forestiere no 146. 31 p.
  * </a>
  */
-public class GeneralHeight2014Predictor extends REpiceaPredictor implements HeightPredictor<Heightable2014Stand, Heightable2014Tree> {
+public class GeneralHeight2014Predictor extends REpiceaPredictor implements HeightPredictor<Heightable2014Stand, Heightable2014Tree>, 
+																			ClimateSensitivePredictor {
 
-	final static ClimateVariableTemporalResolution Normals30YearTemporalResolution = ClimateVariableTemporalResolution.Normals30Year;
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
+				Heightable2014Stand.class, 
+				Heightable2014Stand.ClimateVariableResolution);
+	}
 	
 	protected static class BetaHeightableStandMonteCarlo implements MonteCarloSimulationCompliantObject {
 		private final int monteCarloRealization;
@@ -167,7 +176,8 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 		try {
 			for (Hd2014Species species : Hd2014Species.values()) {		
 				GeneralHeight2014InternalPredictor internalPredictor = new GeneralHeight2014InternalPredictor(species, 
-						isParametersVariabilityEnabled);
+						isParametersVariabilityEnabled,
+						this);
 				internalPredictors.put(species, internalPredictor);
 				String path = ObjectUtility.getRelativePackagePath(getClass()) + species.name().toLowerCase() + "/";
 				String suffix = species.name().toUpperCase().concat(".csv");
@@ -284,6 +294,11 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 			height = 3.0d;
 		}
 		return height;
+	}
+
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
 	}
 
 	

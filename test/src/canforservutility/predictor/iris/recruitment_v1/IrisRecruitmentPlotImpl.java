@@ -25,7 +25,7 @@ import java.util.List;
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.Matrix;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 
 final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
@@ -160,10 +160,10 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 	public int getDateYr() {return dateYr;}
 
 	@Override
-	public double getGrowingDegreeDaysCelsius(ClimateVariableTemporalResolution resolution) {return dd;}
+	public double getGrowingDegreeDaysCelsius(REpiceaClimateVariableInformation info) {return dd;}
 
 	@Override
-	public double getTotalAnnualPrecipitationMm(ClimateVariableTemporalResolution resolution) {return prcp;}
+	public double getTotalAnnualPrecipitationMm(REpiceaClimateVariableInformation info) {return prcp;}
 
 	@Override
 	public SoilDepth getSoilDepth() {return soilDepth;}
@@ -199,10 +199,10 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 
 
 	@Override
-	public double getAnnualNbFrostFreeDays(ClimateVariableTemporalResolution resolution) {return frostDays;}
+	public double getAnnualNbFrostDays(REpiceaClimateVariableInformation info) {return frostDays;}
 
 	@Override
-	public double getLowestAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return lowestTmin;}
+	public double getLowestAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {return lowestTmin;}
 
 	@Override
 	public double getLatitudeDeg() {return latitudeDeg;}

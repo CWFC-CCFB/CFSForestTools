@@ -32,7 +32,7 @@ import org.junit.Test;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
@@ -97,16 +97,16 @@ public class TrilliumMortalityTest {
 		public double getGrowthStepLengthYr() {return growthStepLengthYr;}
 
 		@Override
-		public double getMeanMinimumJanuaryTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return meanTminJanuaryCelsius;}
+		public double getMeanMinimumJanuaryTemperatureCelsius(REpiceaClimateVariableInformation resolution) {return meanTminJanuaryCelsius;}
 
 		@Override
-		public double getTotalPrecipitationFromMarchToMayMm(ClimateVariableTemporalResolution resolution) {return totalPrecMarchToMayMm;}
+		public double getTotalPrecipitationFromMarchToMayMm(REpiceaClimateVariableInformation resolution) {return totalPrecMarchToMayMm;}
 
 		@Override
-		public double getMeanTemperatureFromJuneToAugustCelsius(ClimateVariableTemporalResolution resolution) {return meanTempJuneToAugustCelsius;}
+		public double getMeanTemperatureFromJuneToAugustCelsius(REpiceaClimateVariableInformation resolution) {return meanTempJuneToAugustCelsius;}
 
 		@Override
-		public double getTotalPrecipitationFromJuneToAugustMm(ClimateVariableTemporalResolution resolution) {return totalPrecJuneToAugustMm;}
+		public double getTotalPrecipitationFromJuneToAugustMm(REpiceaClimateVariableInformation resolution) {return totalPrecJuneToAugustMm;}
 
 		@Override
 		public double getDbhCm() {return dbhCm;}

@@ -32,7 +32,7 @@ import org.junit.Test;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
@@ -137,61 +137,61 @@ public class TrilliumDiameterIncrementTest {
 		public double getGrowthStepLengthYr() {return growthStepLengthYr;}
 
 		@Override
-		public double getTotalAnnualPrecipitationMm(ClimateVariableTemporalResolution resolution) {return totalAnnualPrecipitationMm;}
+		public double getTotalAnnualPrecipitationMm(REpiceaClimateVariableInformation resolution) {return totalAnnualPrecipitationMm;}
 
 		@Override
-		public double getMeanAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return meanAnnualTemperatureCelsius;}
+		public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation resolution) {return meanAnnualTemperatureCelsius;}
 
 		@Override
-		public double getMeanMinimumJanuaryTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return meanTminJanuaryCelsius;}
+		public double getMeanMinimumJanuaryTemperatureCelsius(REpiceaClimateVariableInformation resolution) {return meanTminJanuaryCelsius;}
 
 		@Override
-		public double getTotalPrecipitationFromMarchToMayMm(ClimateVariableTemporalResolution resolution) {return totalPrecMarchToMayMm;}
+		public double getTotalPrecipitationFromMarchToMayMm(REpiceaClimateVariableInformation resolution) {return totalPrecMarchToMayMm;}
 
 		@Override
-		public double getMeanTemperatureFromJuneToAugustCelsius(ClimateVariableTemporalResolution resolution) {return meanTempJuneToAugustCelsius;}
+		public double getMeanTemperatureFromJuneToAugustCelsius(REpiceaClimateVariableInformation resolution) {return meanTempJuneToAugustCelsius;}
 
 		@Override
 		public double getMeanTempAnomalyCelsius() {return t_anom;}
 
 		@Override
-		public double getTotalRadiation() {return totalRadiation;}
+		public double getTotalAnnualRadiationMjM2(REpiceaClimateVariableInformation info) {return totalRadiation;}
 
 		@Override
-		public double getMeanSummerVPD() {return meanSummerVPD;}
+		public double getMeanVPDFromJuneToAugustHPa(REpiceaClimateVariableInformation info) {return meanSummerVPD;}
 
 		@Override
-		public double getAnnualNbFrostFreeDays(ClimateVariableTemporalResolution resolution) {return frostFreeDays;}
+		public double getAnnualNbFrostFreeDays(REpiceaClimateVariableInformation info) {return frostFreeDays;}
 
 		@Override
-		public double getMeanMaximumJulyTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return meanTmaxJulyCelsius;}
+		public double getMeanMaximumJulyTemperatureCelsius(REpiceaClimateVariableInformation info) {return meanTmaxJulyCelsius;}
 
 		@Override
-		public double getSMImean() {return SMImean;}
+		public double getMeanAnnualSMIPercent(REpiceaClimateVariableInformation info) {return SMImean;}
 
 		@Override
 		public double getMaxTempAnomalyCelsius() {return Mx_anom;}
 
 		@Override
-		public double getMeanSummerVPDDaylight() {return meanSummerVPDDaylight;}
+		public double getMeanVPDDaylightFromJuneToAugustHPa(REpiceaClimateVariableInformation info) {return meanSummerVPDDaylight;}
 
 		@Override
-		public double getTotalPrecipitationFromJuneToAugustMm(ClimateVariableTemporalResolution resolution) {return totalPrecJuneToAugustMm;}
+		public double getTotalPrecipitationFromJuneToAugustMm(REpiceaClimateVariableInformation info) {return totalPrecJuneToAugustMm;}
 
 		@Override
 		public double getTotalPrecipitationAnomalyMm() {return P_anom;}
 
 		@Override
-		public double getCMI() {return CMI;}
+		public double getMeanAnnualCMICm(REpiceaClimateVariableInformation info) {return CMI;}
 
 		@Override
-		public double getHighestTmaxCelsius() {return highestTmaxCelsius;}
+		public double getHighestAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {return highestTmaxCelsius;}
 
 		@Override
-		public double getGrowingDegreeDaysCelsius(ClimateVariableTemporalResolution resolution) {return degreeDaysCelsius;}
+		public double getGrowingDegreeDaysCelsius(REpiceaClimateVariableInformation resolution) {return degreeDaysCelsius;}
 
 		@Override
-		public double getLowestAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return lowestTmin;}
+		public double getLowestAnnualTemperatureCelsius(REpiceaClimateVariableInformation resolution) {return lowestTmin;}
 
 
 		@Override

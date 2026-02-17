@@ -24,12 +24,21 @@ import java.util.Map;
 
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.Index;
 
 @SuppressWarnings("serial")
-public class Artemis2009DiameterIncrementPredictor extends REpiceaPredictor {
+public class Artemis2009DiameterIncrementPredictor extends REpiceaPredictor implements ClimateSensitivePredictor {
+
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, Artemis2009CompatibleStand.class, Artemis2009CompatibleStand.ClimateVariableResolution);
+	}
 
 	protected static final String ModuleName = "accroissement"; 
 
@@ -55,7 +64,7 @@ public class Artemis2009DiameterIncrementPredictor extends REpiceaPredictor {
 
 			if (beta != null && omegaVectorForm != null) {
 				String vegpotName = vegpotIndex.get(vegpotID);
-				internalPredictor = new Artemis2009DiameterIncrementInternalPredictor(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled);
+				internalPredictor = new Artemis2009DiameterIncrementInternalPredictor(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, this);
 				internalPredictors.put(vegpotName, internalPredictor);
 				internalPredictor.setBeta(beta, omegaVectorForm.squareSym());
 				internalPredictor.setEffectList(effectList);
@@ -80,6 +89,11 @@ public class Artemis2009DiameterIncrementPredictor extends REpiceaPredictor {
 			predictedGrowth[0] = 3 * stand.getGrowthStepLengthYr();
 		}
 		return predictedGrowth;
+	}
+
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
 	}
 
 }

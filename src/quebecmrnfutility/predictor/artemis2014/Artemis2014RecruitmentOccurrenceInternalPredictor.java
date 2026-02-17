@@ -34,16 +34,19 @@ import repicea.simulation.SASParameterEstimates;
 @SuppressWarnings("serial")
 class Artemis2014RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<Artemis2014CompatibleStand, Artemis2014CompatibleTree> {
 
-	private List<Integer> effectList;
+	private final List<Integer> effectList;
+	private final Artemis2014RecruitmentOccurrencePredictor owner;
 	
-	protected Artemis2014RecruitmentOccurrenceInternalPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	protected Artemis2014RecruitmentOccurrenceInternalPredictor(boolean isParametersVariabilityEnabled, 
+			boolean isResidualVariabilityEnabled,
+			Artemis2014RecruitmentOccurrencePredictor owner) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this model
-		init();
+		effectList = new ArrayList<Integer>();
+		this.owner = owner;
 	}
 
-	protected void init() {
-		effectList = new ArrayList<Integer>();
-	}
+	@Override
+	protected void init() {}
 	
 	protected void setBeta(Matrix beta, SymmetricMatrix omega) {
 		ModelParameterEstimates estimate = new SASParameterEstimates(beta, omega);
@@ -60,7 +63,7 @@ class Artemis2014RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEve
 	@Override
 	public synchronized double predictEventProbability(Artemis2014CompatibleStand stand, Artemis2014CompatibleTree tree, Map<String, Object> parms) {
 		Matrix beta = getParametersForThisRealization(stand);
-		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2014RecruitmentOccurrencePredictor.ModuleName, effectList);
+		ParameterDispatcher.getInstance().constructXVector(owner, oXVector, stand, tree, Artemis2014RecruitmentOccurrencePredictor.ModuleName, effectList);
 //		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
 		double recruitmentProbability = Math.exp(xBeta)/(1.0 + Math.exp(xBeta));

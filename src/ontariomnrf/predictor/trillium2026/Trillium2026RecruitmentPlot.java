@@ -23,6 +23,7 @@ import java.util.List;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaBySpeciesTypeM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;
@@ -53,7 +54,7 @@ public interface Trillium2026RecruitmentPlot extends MonteCarloSimulationComplia
 											InterventionResultProvider,
 											InterventionPlannedProvider {
 
-
+	static final Resolution ClimateVariableResolution = Resolution.IntervalAveragedStarting20YrsBeforeFinalMeasurement;
 
 
 	/**

@@ -34,16 +34,19 @@ import repicea.simulation.SASParameterEstimates;
 @SuppressWarnings("serial")
 class Artemis2014MortalityInternalPredictor extends REpiceaBinaryEventPredictor<Artemis2014CompatibleStand, Artemis2014CompatibleTree> {
 
-	private List<Integer> effectList;
+	private final List<Integer> effectList;
+	private final Artemis2014MortalityPredictor owner;
 	
-	protected Artemis2014MortalityInternalPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	protected Artemis2014MortalityInternalPredictor(boolean isParametersVariabilityEnabled, 
+			boolean isResidualVariabilityEnabled,
+			Artemis2014MortalityPredictor owner) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this model
-		init();
+		effectList = new ArrayList<Integer>();
+		this.owner = owner;
 	}
 
-	protected void init() {
-		effectList = new ArrayList<Integer>();
-	}
+	@Override
+	protected void init() {}
 
 	
 	protected void setBeta(Matrix beta, SymmetricMatrix omega) {
@@ -61,7 +64,7 @@ class Artemis2014MortalityInternalPredictor extends REpiceaBinaryEventPredictor<
 	@Override
 	public synchronized double predictEventProbability(Artemis2014CompatibleStand stand, Artemis2014CompatibleTree tree, Map<String, Object> parms) {
 		Matrix beta = getParametersForThisRealization(stand);
-		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2014MortalityPredictor.ModuleName, effectList);
+		ParameterDispatcher.getInstance().constructXVector(owner, oXVector, stand, tree, Artemis2014MortalityPredictor.ModuleName, effectList);
 //		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
 		double deathProbability = 1.0 - Math.exp(- Math.exp(xBeta));

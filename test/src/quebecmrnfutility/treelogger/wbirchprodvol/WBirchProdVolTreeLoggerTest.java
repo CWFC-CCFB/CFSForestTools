@@ -26,12 +26,12 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import repicea.math.Matrix;
 import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesPredictor;
 import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesPredictorTest;
 import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesStandImpl;
-import repicea.simulation.treelogger.WoodPiece;
 import quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolTreeLoggerParameters.ProductID;
+import repicea.math.Matrix;
+import repicea.simulation.treelogger.WoodPiece;
 
 public class WBirchProdVolTreeLoggerTest {
 

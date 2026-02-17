@@ -31,6 +31,7 @@ import java.util.Set;
 
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.util.Index;
@@ -216,7 +217,7 @@ public class ParameterDispatcher {
 		return product;
 	}
 	
-	protected void constructXVector(Matrix oXVector, Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree, String moduleName, List<Integer> effectList) {		
+	protected void constructXVector(ClimateSensitivePredictor predictor, Matrix oXVector, Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree, String moduleName, List<Integer> effectList) {		
 		oXVector.resetMatrix();
 		
 		int pointer = 0;
@@ -289,7 +290,7 @@ public class ParameterDispatcher {
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 41: // 10 469 occurences
-				oXVector.setValueAt(0, pointer, stand.getTotalAnnualPrecipitationMm(Artemis2009CompatibleStand.Normals30YearTemporalResolution));
+				oXVector.setValueAt(0, pointer, stand.getTotalAnnualPrecipitationMm(predictor, Artemis2009CompatibleStand.ClimateVariableResolution));
 				pointer ++;
 				break;
 			case 34: // 7436 occurences
@@ -340,7 +341,7 @@ public class ParameterDispatcher {
 				pointer ++;
 				break;
 			case 51: // 3700 occurences
-				fTmp = stand.getMeanAnnualTemperatureCelsius(Artemis2009CompatibleStand.Normals30YearTemporalResolution);
+				fTmp = stand.getMeanAnnualTemperatureCelsius(predictor, Artemis2009CompatibleStand.ClimateVariableResolution);
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
 					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
 				}
@@ -351,7 +352,7 @@ public class ParameterDispatcher {
 				pointer ++;
 				break;
 			case 42: // 2366 occurences
-				fTmp = stand.getTotalAnnualPrecipitationMm(Artemis2009CompatibleStand.Normals30YearTemporalResolution);
+				fTmp = stand.getTotalAnnualPrecipitationMm(predictor, Artemis2009CompatibleStand.ClimateVariableResolution);
 				for (int ii = 0; ii < dummyEssence.m_iCols; ii++) {
 					oXVector.setValueAt(0, ii + pointer, dummyEssence.getValueAt(0, ii) * fTmp);
 				}
@@ -364,7 +365,7 @@ public class ParameterDispatcher {
 				pointer += dummyEssence.m_iCols;
 				break;
 			case 50: // 1650 occurences
-				oXVector.setValueAt(0, pointer, stand.getMeanAnnualTemperatureCelsius(Artemis2009CompatibleStand.Normals30YearTemporalResolution));
+				oXVector.setValueAt(0, pointer, stand.getMeanAnnualTemperatureCelsius(predictor, Artemis2009CompatibleStand.ClimateVariableResolution));
 				pointer ++;
 				break;
 			case 13: // 1181 occurences
@@ -372,7 +373,7 @@ public class ParameterDispatcher {
 				if (tree.getSpeciesGroupName().compareTo("SAB") == 0) {
 					dummySAB = 1;
 				}
-				oXVector.setValueAt(0, pointer, dummySAB * stand.getTotalAnnualPrecipitationMm(Artemis2009CompatibleStand.Normals30YearTemporalResolution));
+				oXVector.setValueAt(0, pointer, dummySAB * stand.getTotalAnnualPrecipitationMm(predictor, Artemis2009CompatibleStand.ClimateVariableResolution));
 				pointer ++;
 				break;
 			case 2: // 1006 occurences

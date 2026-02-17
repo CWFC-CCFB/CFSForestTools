@@ -28,9 +28,13 @@ import java.util.Map;
 import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.ObjectUtility;
 
 /**
@@ -38,7 +42,13 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - June 2023
  */
 @SuppressWarnings("serial")
-public class IrisRecruitmentNumberPredictor extends REpiceaPredictor {
+public class IrisRecruitmentNumberPredictor extends REpiceaPredictor implements ClimateSensitivePredictor {
+
+	
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, IrisRecruitmentPlot.class, IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution);
+	}
 
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
 	static {
@@ -126,4 +136,10 @@ public class IrisRecruitmentNumberPredictor extends REpiceaPredictor {
 	double getInvThetaParameterEstimate(IrisSpecies species) {
 		return internalPredictors.get(species).invTheta;
 	}
+	
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
+	}
+
 }

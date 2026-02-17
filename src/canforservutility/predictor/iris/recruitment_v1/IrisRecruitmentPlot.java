@@ -29,7 +29,7 @@ import repicea.simulation.covariateproviders.plotlevel.BasalAreaBySpeciesTypeM2H
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.SlopeInclinationPercentProvider;
-import repicea.simulation.covariateproviders.plotlevel.climate.AnnualFrostFreeDaysProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.AnnualFrostDaysProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.AnnualGrowingDegreeDaysCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.LowestAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
@@ -44,7 +44,7 @@ public interface IrisRecruitmentPlot extends GrowthStepLengthYrProvider,
 											OccupancyIndexCalculablePlot,
 											AnnualGrowingDegreeDaysCelsiusProvider,
 											TotalAnnualPrecipitationMmProvider,
-											AnnualFrostFreeDaysProvider, 
+											AnnualFrostDaysProvider, 
 											LowestAnnualTemperatureCelsiusProvider,
 											BasalAreaBySpeciesTypeM2HaProvider {
 	

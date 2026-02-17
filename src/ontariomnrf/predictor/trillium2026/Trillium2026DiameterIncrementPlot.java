@@ -20,15 +20,22 @@
 package ontariomnrf.predictor.trillium2026;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.AnnualFrostFreeDaysProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.AnnualGrowingDegreeDaysCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.HighestAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.LowestAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualClimateMoistureIndexCmProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualSoilMoistureIndexPercentProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanMaximumJulyTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanMinimumJanuaryTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanTemperatureFromJuneToAugustCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanVapourPressureDeficitDaylightFromJuneToAugustHPaProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanVapourPressureDeficitFromJuneToAugustHPaProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualRadiationMjM2Provider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromJuneToAugustMmProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromMarchToMayMmProvider;
 
@@ -43,39 +50,37 @@ public interface Trillium2026DiameterIncrementPlot extends MonteCarloSimulationC
 											AnnualFrostFreeDaysProvider,
 											AnnualGrowingDegreeDaysCelsiusProvider,
 											MeanTemperatureFromJuneToAugustCelsiusProvider,
-											MeanMaximumJulyTemperatureCelsiusProvider {
+											MeanMaximumJulyTemperatureCelsiusProvider,
+											HighestAnnualTemperatureCelsiusProvider,
+											MeanVapourPressureDeficitFromJuneToAugustHPaProvider,
+											MeanVapourPressureDeficitDaylightFromJuneToAugustHPaProvider,
+											TotalAnnualRadiationMjM2Provider,
+											MeanAnnualClimateMoistureIndexCmProvider,
+											MeanAnnualSoilMoistureIndexPercentProvider {
 
-
-
+	static final Resolution ClimateVariableResolution = Resolution.IntervalAveraged;
+	
 	/**
 	 * Mean temperature anomaly.<p>
-	 * That is the difference between the normals and the interval-averaged temperature
+	 * That is the difference between the 1961-1990 normals and the interval-averaged temperature
 	 * @return a double
 	 */
-	public double getMeanTempAnomalyCelsius(); 
-	
-	public double getTotalRadiation(); // add unit
-	public double getMeanSummerVPD();	// add unit
-	public double getSMImean();
+	public double getMeanTempAnomalyCelsius();
 	
 	/**
 	 * Mean maximum temperature anomaly.<p>
-	 * That is the difference between the normals and the interval-averaged temperature.
+	 * That is the difference between the 1961-1990 normals and the interval-averaged temperature.
 	 * @return a double
 	 */
 	public double getMaxTempAnomalyCelsius();
-	
-	public double getMeanSummerVPDDaylight();
 
 	/**
 	 * Total precipitation anomaly.<p>
-	 * That is the difference between the normals and the interval-averaged temperature.
+	 * That is the difference between the 1961-1990 normals and the interval-averaged temperature.
 	 * @return a double
 	 */
 	public double getTotalPrecipitationAnomalyMm();
 	
-	public double getCMI();
-	public double getHighestTmaxCelsius();
 
 
 }

@@ -37,7 +37,6 @@ import repicea.math.integral.GaussLegendreQuadrature;
 import repicea.math.utility.GaussianUtility;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaBinaryEventPredictor;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.stats.estimates.GaussianEstimate;
@@ -46,8 +45,6 @@ import repicea.stats.model.glm.LinkFunction;
 @SuppressWarnings("serial")
 class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<IrisRecruitmentPlot, IrisTree> {
 
-	private final static ClimateVariableTemporalResolution IntervalBeforeStartResolution = ClimateVariableTemporalResolution.IntervalAveragedStartingBeforeInitialMeasurement;
-	
 	/**
 	 * A nested class for Trapezoidal integration in case random variability around the occupancy index is
 	 * disabled.
@@ -273,15 +270,19 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 			oXVector.setValueAt(0, index, 1d);
 			break;
 		case 2: // DD
-			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution));
+			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(owner, 
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution));
 			break;
 		case 3: // DD:TotalPrcp
-			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution) * 
-					plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution));
+			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution) *
+					plot.getTotalAnnualPrecipitationMm(owner,
+							IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution));
 			break;
 		case 4: // DD2
-			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution) * 
-					plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution));
+			double DD = plot.getGrowingDegreeDaysCelsius(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution);
+			oXVector.setValueAt(0, index,  DD * DD);
 			break;
 		case 5: // 
 			if (plot.getSoilDepth() == SoilDepth.Thick) {
@@ -354,7 +355,8 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 			}
 			break;
 		case 19: // 
-			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(IntervalBeforeStartResolution));
+			oXVector.setValueAt(0, index, plot.getAnnualNbFrostDays(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution));
 			break;
 		case 20: // G_F
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
@@ -381,7 +383,8 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 			oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 			break;
 		case 28: // lowest t min
-			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(IntervalBeforeStartResolution));
+			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution));
 			break;
 		case 29: // occIndex10km
 			oXVector.setValueAt(0, index, occupancyIndex10km);
@@ -399,11 +402,13 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 			oXVector.setValueAt(0, index, plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970);
 			break;
 		case 34: // TotalPrcp
-			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution));
+			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution));
 			break;
 		case 35: // TotalPrcp2
-			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution) * 
-					plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution));
+			double totalPrcp = plot.getTotalAnnualPrecipitationMm(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution);
+			oXVector.setValueAt(0, index, totalPrcp * totalPrcp); 
 			break;
 		default:
 			throw new InvalidParameterException("The effect id " + effectId + " is unknown!");
@@ -423,6 +428,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 			setValueInXVector(effectId, plot, species, 0d); // occupancy index set to 0 for now
 		}
 	}
+
 
 
 }

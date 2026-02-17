@@ -28,10 +28,13 @@ import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009.Heighta
 import repicea.math.DiagonalMatrix;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
@@ -52,9 +55,15 @@ import repicea.util.ObjectUtility;
  * la recherche forestiere. Memoire de recherche forestiere no 153. 22 p.
  * </a>
  */
-public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<Heightable2009Stand, Heightable2009Tree> {
-	
-	final static ClimateVariableTemporalResolution Normals30YearTemporalResolution = ClimateVariableTemporalResolution.Normals30Year;
+public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<Heightable2009Stand, Heightable2009Tree> 
+												implements ClimateSensitivePredictor {
+
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
+				Heightable2009Stand.class, 
+				Heightable2009Stand.ClimateVariableResolution);
+	}
 
 	private static final long serialVersionUID = 20100804L;
 
@@ -203,7 +212,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 			System.out.println("Error in HD relationship: The basal area of the plot has not been calculated yet!");
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
-		double averageTemp = stand.getMeanAnnualTemperatureCelsius(Normals30YearTemporalResolution);
+		double averageTemp = stand.getMeanAnnualTemperatureCelsius(this, Heightable2009Stand.ClimateVariableResolution);
 		DrainageGroup drainageGroup = getDrainageGroup(stand);
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();
@@ -293,6 +302,11 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	@Override
 	protected Collection<Heightable2009Tree> getTreesFromStand(Heightable2009Stand stand) {
 		return stand.getTrees(StatusClass.alive);
+	}
+
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
 	}
 	
 

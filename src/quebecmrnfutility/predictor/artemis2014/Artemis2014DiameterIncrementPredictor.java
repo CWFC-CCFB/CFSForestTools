@@ -27,8 +27,12 @@ import java.util.Map;
 
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.Index;
 
 /**
@@ -36,8 +40,16 @@ import repicea.util.Index;
  * @author Denis Hache and Hugues Power - 2014, Mathieu Fortin - November 2025
  */
 @SuppressWarnings("serial")
-public class Artemis2014DiameterIncrementPredictor extends REpiceaPredictor {
+public class Artemis2014DiameterIncrementPredictor extends REpiceaPredictor implements ClimateSensitivePredictor {
 
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
+				Artemis2014CompatibleStand.class, 
+				Artemis2014CompatibleStand.ClimateVariableResolution);
+	}
+
+	
 	protected static final String ModuleName = "accroissement"; 
 
 	private static final double MAX_ANNUAL_INCREMENT = 1.21;
@@ -64,7 +76,7 @@ public class Artemis2014DiameterIncrementPredictor extends REpiceaPredictor {
 
 			if (beta != null && omegaVectorForm != null) {
 				String vegpotName = vegpotIndex.get(vegpotID);
-				internalPredictor = new Artemis2014DiameterIncrementInternalPredictor(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled);
+				internalPredictor = new Artemis2014DiameterIncrementInternalPredictor(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, this);
 				internalPredictors.put(vegpotName, internalPredictor);
 				internalPredictor.setBeta(beta, omegaVectorForm.squareSym());
 				internalPredictor.setEffectList(effectList);
@@ -89,6 +101,11 @@ public class Artemis2014DiameterIncrementPredictor extends REpiceaPredictor {
 			predictedGrowth[0] = MAX_ANNUAL_INCREMENT * stand.getGrowthStepLengthYr();
 		}
 		return predictedGrowth;
+	}
+
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
 	}
 
 }

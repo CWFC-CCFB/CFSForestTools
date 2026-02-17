@@ -22,9 +22,9 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcForestRegionProvider.QcForestRegion;
 import repicea.io.javacsv.CSVReader;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider.LandOwnership;
-import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcForestRegionProvider.QcForestRegion;
 import repicea.util.ObjectUtility;
 
 /**

@@ -22,7 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import repicea.math.Matrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.Index;
 
 /**
@@ -30,7 +34,13 @@ import repicea.util.Index;
  * @author Mathieu Fortin - July 2014
  */
 @SuppressWarnings("serial")
-public final class Artemis2009MortalityPredictor extends REpiceaBinaryEventPredictor<Artemis2009CompatibleStand, Artemis2009CompatibleTree> {
+public final class Artemis2009MortalityPredictor extends REpiceaBinaryEventPredictor<Artemis2009CompatibleStand, Artemis2009CompatibleTree> 
+													implements ClimateSensitivePredictor {
+
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, Artemis2009CompatibleStand.class, Artemis2009CompatibleStand.ClimateVariableResolution);
+	}
 
 	protected static final String ModuleName = "mortalite"; 
 
@@ -59,7 +69,7 @@ public final class Artemis2009MortalityPredictor extends REpiceaBinaryEventPredi
 
 			if (beta != null && omegaVectorForm != null) {
 				String vegpotName = vegpotIndex.get(vegpotID);
-				internalPredictor = new Artemis2009MortalityInternalPredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled);
+				internalPredictor = new Artemis2009MortalityInternalPredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled, this);
 				internalPredictors.put(vegpotName, internalPredictor);
 				internalPredictor.setBeta(beta, omegaVectorForm.squareSym());
 				internalPredictor.setEffectList(effectList);
@@ -76,13 +86,10 @@ public final class Artemis2009MortalityPredictor extends REpiceaBinaryEventPredi
 			return -1d;
 		}
 	}
+
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
+	}
 	
-//	@Override
-//	public void clearDeviates() {
-//		for (Artemis2009MortalityInternalPredictor p : internalPredictors.values()) {
-//			p.clearDeviates();
-//		}
-//	}
-
-
 }

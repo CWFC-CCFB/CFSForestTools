@@ -25,14 +25,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import canforservutility.occupancyindex.OccupancyIndexCalculator;
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
+import canforservutility.occupancyindex.OccupancyIndexCalculator;
 import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.ObjectUtility;
 
 /**
@@ -40,7 +44,16 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - May 2020
  */
 @SuppressWarnings("serial")
-public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<IrisRecruitmentPlot, IrisTree> {
+public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<IrisRecruitmentPlot, IrisTree> 
+												implements ClimateSensitivePredictor {
+
+	static final Resolution RecruitmentClimateVariableResolution = Resolution.IntervalAveragedStarting20YrsBeforeFinalMeasurement;
+
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, IrisRecruitmentPlot.class, RecruitmentClimateVariableResolution);
+	}
+
 
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
 	static {
@@ -130,5 +143,9 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 		return getInternalPredictor(tree.getSpecies()).predictEventProbability(stand, tree, parms);
 	}
 	
-	
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
+	}
+
 }
