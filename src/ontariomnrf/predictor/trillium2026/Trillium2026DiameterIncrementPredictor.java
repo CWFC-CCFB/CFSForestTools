@@ -33,8 +33,12 @@ import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.BioSimModel;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanMaximumAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.species.REpiceaSpeciesCompliantObject;
@@ -55,6 +59,12 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
 				Trillium2026DiameterIncrementPlot.class, 
 				Trillium2026DiameterIncrementPlot.ClimateVariableResolution);
+		CLIMATE_INFO.get(MeanAnnualTemperatureCelsiusProvider.class).put(Resolution.Normals30Year, 
+				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "TN")); // TODO MF20260217 Should be T and not TN here
+		CLIMATE_INFO.get(MeanMaximumAnnualTemperatureCelsiusProvider.class).put(Resolution.Normals30Year, 
+				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "TX")); 
+		CLIMATE_INFO.get(TotalAnnualPrecipitationMmProvider.class).put(Resolution.Normals30Year, 
+				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "P")); 
 	}
 
 	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();

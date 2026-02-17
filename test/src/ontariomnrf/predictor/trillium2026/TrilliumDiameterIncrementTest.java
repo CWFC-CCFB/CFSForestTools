@@ -152,7 +152,7 @@ public class TrilliumDiameterIncrementTest {
 		public double getMeanTemperatureFromJuneToAugustCelsius(REpiceaClimateVariableInformation resolution) {return meanTempJuneToAugustCelsius;}
 
 		@Override
-		public double getMeanTempAnomalyCelsius() {return t_anom;}
+		public double getMeanTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {return t_anom;}
 
 		@Override
 		public double getTotalAnnualRadiationMjM2(REpiceaClimateVariableInformation info) {return totalRadiation;}
@@ -170,7 +170,7 @@ public class TrilliumDiameterIncrementTest {
 		public double getMeanAnnualSMIPercent(REpiceaClimateVariableInformation info) {return SMImean;}
 
 		@Override
-		public double getMaxTempAnomalyCelsius() {return Mx_anom;}
+		public double getMaxTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {return Mx_anom;}
 
 		@Override
 		public double getMeanVPDDaylightFromJuneToAugustHPa(REpiceaClimateVariableInformation info) {return meanSummerVPDDaylight;}
@@ -179,7 +179,7 @@ public class TrilliumDiameterIncrementTest {
 		public double getTotalPrecipitationFromJuneToAugustMm(REpiceaClimateVariableInformation info) {return totalPrecJuneToAugustMm;}
 
 		@Override
-		public double getTotalPrecipitationAnomalyMm() {return P_anom;}
+		public double getTotalPrecipitationAnomalyMm(Trillium2026DiameterIncrementPredictor owner) {return P_anom;}
 
 		@Override
 		public double getMeanAnnualCMICm(REpiceaClimateVariableInformation info) {return CMI;}
@@ -212,6 +212,11 @@ public class TrilliumDiameterIncrementTest {
 		@Override
 		public double getSquaredDbhCm() {
 			return getDbhCm() * getDbhCm();
+		}
+
+		@Override
+		public double getMeanMaximumAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {
+			return 0;
 		}
 
 	}

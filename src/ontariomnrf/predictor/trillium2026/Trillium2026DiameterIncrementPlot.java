@@ -29,6 +29,7 @@ import repicea.simulation.covariateproviders.plotlevel.climate.LowestAnnualTempe
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualClimateMoistureIndexCmProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualSoilMoistureIndexPercentProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanMaximumAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanMaximumJulyTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanMinimumJanuaryTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanTemperatureFromJuneToAugustCelsiusProvider;
@@ -56,30 +57,43 @@ public interface Trillium2026DiameterIncrementPlot extends MonteCarloSimulationC
 											MeanVapourPressureDeficitDaylightFromJuneToAugustHPaProvider,
 											TotalAnnualRadiationMjM2Provider,
 											MeanAnnualClimateMoistureIndexCmProvider,
-											MeanAnnualSoilMoistureIndexPercentProvider {
+											MeanAnnualSoilMoistureIndexPercentProvider,
+											MeanMaximumAnnualTemperatureCelsiusProvider {
 
 	static final Resolution ClimateVariableResolution = Resolution.IntervalAveraged;
 	
 	/**
 	 * Mean temperature anomaly.<p>
 	 * That is the difference between the 1961-1990 normals and the interval-averaged temperature
+	 * @param owner a Trillium2026DiameterIncrementPredictor instance
 	 * @return a double
 	 */
-	public double getMeanTempAnomalyCelsius();
+	public default double getMeanTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {
+		return getMeanAnnualTemperatureCelsius(owner, Resolution.Normals30Year) - 
+				getMeanAnnualTemperatureCelsius(owner, ClimateVariableResolution);
+	};
 	
 	/**
 	 * Mean maximum temperature anomaly.<p>
 	 * That is the difference between the 1961-1990 normals and the interval-averaged temperature.
+	 * @param owner a Trillium2026DiameterIncrementPredictor instance
 	 * @return a double
 	 */
-	public double getMaxTempAnomalyCelsius();
+	public default double getMaxTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {
+		return getMeanMaximumAnnualTemperatureCelsius(owner, Resolution.Normals30Year) - 
+				getMeanMaximumAnnualTemperatureCelsius(owner, ClimateVariableResolution);	
+	}
 
 	/**
 	 * Total precipitation anomaly.<p>
 	 * That is the difference between the 1961-1990 normals and the interval-averaged temperature.
+	 * @param owner a Trillium2026DiameterIncrementPredictor instance
 	 * @return a double
 	 */
-	public double getTotalPrecipitationAnomalyMm();
+	public default double getTotalPrecipitationAnomalyMm(Trillium2026DiameterIncrementPredictor owner) {
+		return getTotalAnnualPrecipitationMm(owner, Resolution.Normals30Year) -
+				getTotalAnnualPrecipitationMm(owner, ClimateVariableResolution);
+	}
 	
 
 

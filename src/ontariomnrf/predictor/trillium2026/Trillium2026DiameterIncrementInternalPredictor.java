@@ -156,7 +156,7 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 				oXVector.setValueAt(0, index++, plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case MeanTempAnomaly:
-				oXVector.setValueAt(0, index++, plot.getMeanTempAnomalyCelsius());
+				oXVector.setValueAt(0, index++, plot.getMeanTempAnomalyCelsius(owner));
 				break;
 			case DBH_x_BAL:
 				oXVector.setValueAt(0, index++, tree.getBasalAreaLargerThanSubjectM2Ha() * tree.getDbhCm());
@@ -177,7 +177,7 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 				oXVector.setValueAt(0, index++, plot.getMeanAnnualSMIPercent(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case MaxTempAnomaly:
-				oXVector.setValueAt(0, index++, plot.getMaxTempAnomalyCelsius());
+				oXVector.setValueAt(0, index++, plot.getMaxTempAnomalyCelsius(owner));
 				break;
 			case MeanSummerVPDDaylight:
 				oXVector.setValueAt(0, index++, plot.getMeanVPDDaylightFromJuneToAugustHPa(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
@@ -186,7 +186,7 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break; 
 			case PrecAnomaly:
-				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationAnomalyMm());
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationAnomalyMm(owner));
 				break;
 			case CMI:
 				oXVector.setValueAt(0, index++, plot.getMeanAnnualCMICm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
