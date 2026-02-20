@@ -62,7 +62,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 				Trillium2026RecruitmentPlot.ClimateVariableResolution);
 	}
 
-	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
+	static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
 	static List<Species> SpeciesList;
 	static {
 		Species[] species = new Species[] {Species.Abies_balsamea, Species.Acer_rubrum, Species.Acer_saccharum, 
@@ -88,7 +88,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	private static List<OccupancyIndexCalculablePlot> ReferencePlotsForOccupancyIndexCalculation;
 	
 	final OccupancyIndexCalculator occIndexCalculator;
-	private Map<Species, Trillium2026RecruitmentOccurrenceInternalPredictor> internalPredictors;
+	private final Map<Species, Trillium2026RecruitmentOccurrenceInternalPredictor> internalPredictors;
 	
 //	private List<SimpleOccupancyIndexCalculablePlot, <, Map<>>
 	
@@ -119,6 +119,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 			boolean isResidualVariabilityEnabled,
 			List<OccupancyIndexCalculablePlot> plots) {
 		super(isParameterVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);		
+		internalPredictors = new HashMap<Species, Trillium2026RecruitmentOccurrenceInternalPredictor>();
 		init();
 		if (plots != null) {
 			List<OccupancyIndexCalculablePlot> completeList = new ArrayList<OccupancyIndexCalculablePlot>();
@@ -199,7 +200,6 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 			}
 		}
 		try {
-			internalPredictors = new HashMap<Species, Trillium2026RecruitmentOccurrenceInternalPredictor>();
 			for (int spIndex = 0; spIndex < SpeciesList.size(); spIndex++) {
 				Matrix beta = BetaMap.get(spIndex + 1); // index starts from 1 in file
 				SymmetricMatrix omega = OmegaMap.get(spIndex + 1).squareSym(); // index starts from 1 in file

@@ -119,6 +119,10 @@ public class Heightable2014StandImpl implements Heightable2014Stand {
 	}
 
 
+	@Override
+	public String getId() {return subjectID;}
+
+
 //	@Override
 //	public List<HDRelationshipStand> getAllHDStands() {
 //		List<HDRelationshipStand> stands = new ArrayList<HDRelationshipStand>();

@@ -221,18 +221,31 @@ final class Trillium2026RecruitmentPlotImplWithKnownOccupancy implements Trilliu
 		return slopePct;
 	}
 
-
-
 	@Override
 	public boolean isInterventionResult() {
 		return interventionResult;
 	}
 
-
-
 	@Override
 	public boolean isGoingToBeHarvested() {
 		return isGoingToBeHarvested;
+	}
+
+	@Override
+	public String getId() {return id;}
+
+	@Override
+	public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+
+	@Override
+	public double getMeanMaximumJulyTemperatureCelsius(REpiceaClimateVariableInformation info) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 }

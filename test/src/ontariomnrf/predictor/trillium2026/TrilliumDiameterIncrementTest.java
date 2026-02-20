@@ -219,6 +219,9 @@ public class TrilliumDiameterIncrementTest {
 			return 0;
 		}
 
+		@Override
+		public String getId() {return null;}
+
 	}
 
 	

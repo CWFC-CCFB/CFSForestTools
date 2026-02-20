@@ -220,5 +220,9 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
 		return plots;
 	}
+
+
+	@Override
+	public String getId() {return id;}
 	
 }

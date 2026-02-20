@@ -33,6 +33,8 @@ import repicea.simulation.covariateproviders.plotlevel.climate.AnnualFrostFreeDa
 import repicea.simulation.covariateproviders.plotlevel.climate.AnnualGrowingDegreeDaysCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.HighestAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.LowestAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanMaximumJulyTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanMinimumJanuaryTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromJuneToAugustMmProvider;
@@ -44,6 +46,8 @@ public interface Trillium2026RecruitmentPlot extends MonteCarloSimulationComplia
 											TotalPrecipitationFromMarchToMayMmProvider,
 											TotalPrecipitationFromJuneToAugustMmProvider,
 											MeanMinimumJanuaryTemperatureCelsiusProvider,
+											MeanAnnualTemperatureCelsiusProvider,
+											MeanMaximumJulyTemperatureCelsiusProvider,
 											LowestAnnualTemperatureCelsiusProvider,
 											HighestAnnualTemperatureCelsiusProvider,
 											AnnualFrostFreeDaysProvider,

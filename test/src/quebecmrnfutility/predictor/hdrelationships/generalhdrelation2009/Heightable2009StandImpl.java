@@ -137,6 +137,9 @@ public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadrat
 		return DrainageGroup.Mesic;			// mesic for the sake of simplicity
 	}
 
+	@Override
+	public String getId() {return subjectID;}
+
 
 //	@Override
 //	public List<HDRelationshipStand> getAllHDStands() {

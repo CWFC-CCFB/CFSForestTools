@@ -243,5 +243,26 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	public boolean isGoingToBeHarvested() {
 		return isGoingToBeHarvested;
 	}
+
+
+
+	@Override
+	public String getId() {return id;}
+
+
+
+	@Override
+	public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+
+	@Override
+	public double getMeanMaximumJulyTemperatureCelsius(REpiceaClimateVariableInformation info) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 }

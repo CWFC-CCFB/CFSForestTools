@@ -218,5 +218,8 @@ final class IrisRecruitmentPlotImplWithKnownOccupancy implements IrisRecruitment
 	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
 		return null;
 	}
+
+	@Override
+	public String getId() {return id;}
 	
 }

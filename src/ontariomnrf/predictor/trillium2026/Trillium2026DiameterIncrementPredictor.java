@@ -60,7 +60,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 				Trillium2026DiameterIncrementPlot.class, 
 				Trillium2026DiameterIncrementPlot.ClimateVariableResolution);
 		CLIMATE_INFO.get(MeanAnnualTemperatureCelsiusProvider.class).put(Resolution.Normals30Year, 
-				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "TN")); // TODO MF20260217 Should be T and not TN here
+				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "T")); 
 		CLIMATE_INFO.get(MeanMaximumAnnualTemperatureCelsiusProvider.class).put(Resolution.Normals30Year, 
 				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "TX")); 
 		CLIMATE_INFO.get(TotalAnnualPrecipitationMmProvider.class).put(Resolution.Normals30Year, 

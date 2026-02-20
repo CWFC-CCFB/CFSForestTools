@@ -138,6 +138,9 @@ public class TrilliumMortalityTest {
 		@Override
 		public boolean isFromPlantation() {return planted;}
 
+		@Override
+		public String getId() {return null;}
+
 	}
 
 
