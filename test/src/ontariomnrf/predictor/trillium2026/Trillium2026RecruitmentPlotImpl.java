@@ -87,6 +87,9 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	private final boolean interventionResult;
 	private final boolean isGoingToBeHarvested;
 	protected final double occupancyIndex;
+	private final double meanAnnualTemperature;
+	private final double meanMaxJulyTemperature;
+
 		
 	Trillium2026RecruitmentPlotImpl(String id,
 			double latitudeDeg,
@@ -109,7 +112,9 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 			boolean interventionResult,
 			boolean isGoingToBeHarvested,
 			double occupancyIndex,
-			List<OccupancyIndexCalculablePlot> plots) {
+			List<OccupancyIndexCalculablePlot> plots,
+			double meanAnnualTemperature,
+			double meanMaxJulyTemperature) {
 		if (plots == null) {
 			throw new InvalidParameterException("The plots argument should not be null!");
 		}
@@ -136,6 +141,8 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		this.isGoingToBeHarvested = isGoingToBeHarvested;
 		this.plots = Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex();
 		this.occupancyIndex = occupancyIndex;
+		this.meanAnnualTemperature = meanAnnualTemperature;
+		this.meanMaxJulyTemperature = meanMaxJulyTemperature;
 	}
 	
 	
@@ -253,16 +260,14 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 
 	@Override
 	public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {
-		// TODO Auto-generated method stub
-		return 0;
+		return meanAnnualTemperature;
 	}
 
 
 
 	@Override
 	public double getMeanMaximumJulyTemperatureCelsius(REpiceaClimateVariableInformation info) {
-		// TODO Auto-generated method stub
-		return 0;
+		return meanMaxJulyTemperature;
 	}
 	
 }

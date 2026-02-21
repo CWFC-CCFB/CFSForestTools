@@ -85,6 +85,8 @@ final class Trillium2026RecruitmentPlotImplWithKnownOccupancy implements Trilliu
 	private final double slopePct;
 	private final boolean interventionResult;
 	private final boolean isGoingToBeHarvested;
+	private final double meanAnnualTemperature;
+	private final double meanMaxJulyTemperature;
 	
 	Trillium2026RecruitmentPlotImplWithKnownOccupancy(String id,
 			double growthStepLength,
@@ -105,7 +107,9 @@ final class Trillium2026RecruitmentPlotImplWithKnownOccupancy implements Trilliu
 			double slopePct,
 			boolean interventionResult,
 			boolean isGoingToBeHarvested,
-			double occIndex25km) {
+			double occIndex25km,
+			double meanAnnualTemperature,
+			double meanMaxJulyTemperature) {
 		this.id = id;
 		this.growthStepLength = growthStepLength;
 		this.basalAreaM2HaConiferous = basalAreaM2HaConiferous;
@@ -127,6 +131,8 @@ final class Trillium2026RecruitmentPlotImplWithKnownOccupancy implements Trilliu
 		this.slopePct = slopePct;
 		this.interventionResult = interventionResult;
 		this.isGoingToBeHarvested = isGoingToBeHarvested;
+		this.meanAnnualTemperature = meanAnnualTemperature;
+		this.meanMaxJulyTemperature = meanMaxJulyTemperature;
 	}
 	
 	
@@ -236,16 +242,12 @@ final class Trillium2026RecruitmentPlotImplWithKnownOccupancy implements Trilliu
 
 	@Override
 	public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {
-		// TODO Auto-generated method stub
-		return 0;
+		return meanAnnualTemperature;
 	}
-
-
 
 	@Override
 	public double getMeanMaximumJulyTemperatureCelsius(REpiceaClimateVariableInformation info) {
-		// TODO Auto-generated method stub
-		return 0;
+		return meanMaxJulyTemperature;
 	}
 	
 }
