@@ -20,11 +20,10 @@
 package canforservutility.predictor.iris.recruitment_v1;
 
 import java.security.InvalidParameterException;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
-import repicea.math.Matrix;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 
@@ -81,11 +80,12 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 	private final DrainageGroup drainageGroup;
 	private final SoilTexture soilTexture;
 	private final String id;
-	private final IrisSpecies species;
-	private final Matrix gSpGrMat;
+//	private final IrisSpecies species;
+	private final Map<IrisSpecies, Double> gSpGrMat;
+	private final Map<IrisSpecies, Double> predMap;
+	private final Map<IrisSpecies, Double> occupancyMap;
 	private final double frostDays;
 	private final double lowestTmin;
-	private final List<OccupancyIndexCalculablePlot> plots;
 	private final double latitudeDeg;
 	private final double longitudeDeg;
 	private int monteCarloRealizationId = 0;
@@ -110,7 +110,8 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 			SoilTexture soilTexture,
 			IrisSpecies species,
 			double gSpGr,
-			List<OccupancyIndexCalculablePlot> plots) {
+			double occupancyIndex,
+			double pred) {
 		if (drainageGroup == null) {
 			throw new InvalidParameterException("The drainage group cannot be null!");
 		}
@@ -132,12 +133,18 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 		this.upcomingDist = upcomingDist;
 		this.drainageGroup = drainageGroup;
 		this.soilTexture = soilTexture;
-		this.species = species;
-		gSpGrMat = new Matrix(1, IrisSpecies.values().length);
-		gSpGrMat.setValueAt(0, species.ordinal(), gSpGr);
-		this.plots = plots;
+		gSpGrMat = new HashMap<IrisSpecies, Double>();
+		predMap = new HashMap<IrisSpecies, Double>();
+		occupancyMap = new HashMap<IrisSpecies, Double>();
+		updateMap(species, gSpGr, occupancyIndex, pred);
 	}
+
 	
+	void updateMap(IrisSpecies species, double gSpGr, double occupancy, double pred) {
+		gSpGrMat.put(species, gSpGr);
+		occupancyMap.put(species, occupancy);
+		predMap.put(species, pred);
+	}
 	
 
 	@Override
@@ -180,12 +187,15 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 	@Override
 	public SoilTexture getSoilTexture() {return soilTexture;}
 	
-	IrisTree getTreeInstance() {
+	IrisTree getTreeInstance(IrisSpecies species) {
 		return new Iris2020CompatibleTestTreeImpl(species); 
 	}
 
 	@Override
-	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {return gSpGrMat.getValueAt(0, species.ordinal());}
+	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {
+		Double value = gSpGrMat.get(species);
+		return value != null ? value : -1;
+	}
 
 	@Override
 	public double getBasalAreaM2HaForThisSpeciesType(SpeciesType type) {
@@ -216,13 +226,22 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 	@Override
 	public double getAreaHa() {return 0.04;}
 
-	@Override
-	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
-		return plots;
-	}
+//	@Override
+//	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
+//		return plots;
+//	}
 
 
 	@Override
 	public String getId() {return id;}
-	
+
+
+	@Override
+	public Object getOccupancyForThisSpecies(Enum<?> sp) {
+		return occupancyMap.get(sp);
+	}
+
+	double getPredForThisSpecies(Enum<?> sp) {
+		return predMap.get(sp);
+	}
 }

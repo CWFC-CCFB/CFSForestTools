@@ -20,122 +20,36 @@
 package ontariomnrf.predictor.trillium2026;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import repicea.math.AbstractMathematicalFunction;
+import canforservutility.simulation.REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancyIndex;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
-import repicea.math.integral.AbstractGaussQuadrature.NumberOfPoints;
-import repicea.math.integral.GaussHermiteQuadrature;
-import repicea.math.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.simulation.ModelParameterEstimates;
-import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.species.REpiceaSpecies.Species;
-import repicea.stats.estimates.GaussianEstimate;
-import repicea.stats.model.glm.LinkFunction;
 
 @SuppressWarnings("serial")
-class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<Trillium2026RecruitmentPlot, Trillium2026Tree> {
-
-	/**
-	 * A nested class for Gauss-Hermite integration in case random variability around the occupancy index is
-	 * disabled.
-	 * @author Mathieu Fortin - February 2026
-	 */
-	class InternalMathFunction extends LinkFunction implements GaussHermiteQuadratureCompatibleFunction<Double> {
-
-		private double standardDeviation;
-		
-		InternalMathFunction() {
-			super(Type.CLogLog, new InternalStatisticalExpression());
-		}
-
-		void setMembers(Matrix beta, Trillium2026RecruitmentPlot plot, double meanOccIndex, double varOccIndex) {
-			((InternalStatisticalExpression) this.getOriginalFunction()).setMembers(beta, plot, meanOccIndex);
-			this.standardDeviation = Math.sqrt(varOccIndex);
-		}
-		
-		@Override
-		public double convertFromGaussToOriginal(double x, double mu, int covarianceIndexI, int covarianceIndexJ) {
-			return mu + Math.sqrt(2d) * x * standardDeviation;
-		}
-
-	}
-	
-	class InternalStatisticalExpression extends AbstractMathematicalFunction {
-
-		private Matrix beta;
-		private Trillium2026RecruitmentPlot plot;
-		private double meanOccIndex;
-		
-		InternalStatisticalExpression() {}
-		
-		void setMembers(Matrix beta, Trillium2026RecruitmentPlot plot, double meanOccIndex) {
-			this.beta = beta;
-			this.plot = plot;
-			this.meanOccIndex = meanOccIndex;
-		}
-		
-		@Override
-		public Double getValue() {
-			double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
-			if (offsetEnabled) {
-				xBeta += Math.log(plot.getGrowthStepLengthYr());
-			}
-			return xBeta;
-		}
-		
-		@Override
-		public void setVariableValue(int variableIndex, double variableValue) {
-			Trillium2026RecruitmentOccurrenceInternalPredictor.this.setOccupancyInXVector(plot, Trillium2026RecruitmentOccurrenceInternalPredictor.this.species, variableValue);
-		}		
-
-		@Override
-		public double getVariableValue(int variableIndex) {return meanOccIndex;}
-		
-		@Override
-		public Matrix getGradient() {return null;}
-
-		@Override
-		public SymmetricMatrix getHessian() {return null;}
-	}
+class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancyIndex<Trillium2026RecruitmentPlot, Trillium2026Tree> {
 
 	private final Trillium2026RecruitmentOccurrencePredictor owner;
-	private final List<Integer> effectList;
-	private final boolean offsetEnabled;
-	private final Map<String, Map<Integer, Map<Integer, GaussianEstimate>>> occupancyIndices; // 1st key plot id, 2nd key realization id, 3rd key dateYr
-	private final Map<String, Map<Integer, Map<Integer, Double>>> occupancyIndicesDeviates; // 1st key plot id, 2nd key realization id, 3rd key dateYr
-	private final List<Integer> occupancyIndexVarIndices; // effect Ids that include the occupancy index
-	final Species species;
-	private final GaussHermiteQuadrature ghq;
-	private final InternalMathFunction imf;
+
 
 	
 	protected Trillium2026RecruitmentOccurrenceInternalPredictor(Trillium2026RecruitmentOccurrencePredictor owner,
 			Species species,
 			boolean isParametersVariabilityEnabled, 
-			boolean isOccupancyIndexVariabilityEnabled, 
 			boolean isResidualVariabilityEnabled, 
 			boolean offsetEnabled, 
 			Matrix beta,
 			SymmetricMatrix omega,
 			Matrix effectMat) {
-		super(isParametersVariabilityEnabled, isOccupancyIndexVariabilityEnabled, isResidualVariabilityEnabled);	// isOccupancyIndexVariabilityEnabled is stored as an interval random effect 
+		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled, species, offsetEnabled);	
 		this.owner = owner;
-		this.species = species;
-		this.offsetEnabled = offsetEnabled;
-		imf = new InternalMathFunction();
-		ghq = new GaussHermiteQuadrature(NumberOfPoints.N5);
 		ModelParameterEstimates estimate = new ModelParameterEstimates(beta, omega);
 		setParameterEstimates(estimate);
 		oXVector = new Matrix(1, estimate.getMean().m_iRows);
 		
-		effectList = new ArrayList<Integer>();
-		occupancyIndexVarIndices = new ArrayList<Integer>();
 		for (int i = 0; i < effectMat.m_iRows; i++) {
 			int effectId = (int) effectMat.getValueAt(i, 0);
 			effectList.add(effectId);
@@ -143,109 +57,26 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 				occupancyIndexVarIndices.add(effectId);
 			}
 		}
-		occupancyIndices = new HashMap<String, Map<Integer, Map<Integer, GaussianEstimate>>>();
-		occupancyIndicesDeviates = new HashMap<String, Map<Integer, Map<Integer, Double>>>();
 	}
 
 	@Override
 	protected void init() {}
-	
-	private void setOccupancyInXVector(Trillium2026RecruitmentPlot plot, Species species, double occupancyIndex25km) {
-		for (int effectId : occupancyIndexVarIndices) {
-			setValueInXVector(effectId, plot, species, occupancyIndex25km); 
-		}
-	}
-
-	private double getProb(Matrix beta, Trillium2026RecruitmentPlot plot) {
-		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
-		if (offsetEnabled) {
-			xBeta += Math.log(plot.getGrowthStepLengthYr());
-		}
-		double recruitmentProbability = 1d - Math.exp(-Math.exp(xBeta));
-		return recruitmentProbability;
-	}
 	
 	@Override
 	public double predictEventProbability(Trillium2026RecruitmentPlot plot, Trillium2026Tree tree, Map<String, Object> parms) {
 		return calculateEventProbability(plot, tree.getTrillium2026TreeSpecies());
 	}
 
-	protected synchronized double calculateEventProbability(Trillium2026RecruitmentPlot plot, Species species) {
-		Matrix beta = getParametersForThisRealization(plot);
-		constructXVector(plot, species); // the occupancy index slots are not populated at this point
-		if (isUsingOccupancyIndex()) {
-			if (plot instanceof Trillium2026RecruitmentPlotWithKnownOccupancy) { // occupancy is assumed to be known
-				double occupancyIndex25kmRandomDeviate = ((Trillium2026RecruitmentPlotWithKnownOccupancy) plot).getOccupancyIndex25km(species);
-				setOccupancyInXVector(plot, species, occupancyIndex25kmRandomDeviate);
-				return getProb(beta, plot);
-			}
-			if (isRandomEffectsVariabilityEnabled) {
-				double occupancyIndex25kmRandomDeviate = getOccupancyRandomDeviate(plot, species);
-				setOccupancyInXVector(plot, species, occupancyIndex25kmRandomDeviate);
-				return getProb(beta, plot);
-			} else {
-				GaussianEstimate estimate = getOccupancyIndex(plot, species);
-				double meanOccIndex = estimate.getMean().getValueAt(0, 0);
-				double varOccIndex = estimate.getVariance().getValueAt(0, 0);
-				if (varOccIndex == 0d) { // there is no variability
-					setOccupancyInXVector(plot, species, meanOccIndex);
-					return getProb(beta, plot);
-				} else {
-					imf.setMembers(beta, plot, meanOccIndex, varOccIndex);
-					double prob = ghq.getIntegralApproximation(imf, 0, false);
-					return prob;
-				}
-			}
-		} else { // not using occupancy index
-			return getProb(beta, plot);
-		}
+	@Override
+	protected double getProb(Matrix beta, Trillium2026RecruitmentPlot plot) {
+		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+		xBeta += addOffsetIfNeeded(plot);
+		double recruitmentProbability = 1d - Math.exp(-Math.exp(xBeta));
+		return recruitmentProbability;
 	}
-	
-	static List<Double> deviates = new ArrayList<Double>();
-	
-	double getOccupancyRandomDeviate(Trillium2026RecruitmentPlot plot, Species species) {
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		Map<Integer, Double> innerMap2 = getInnerMap2(plot, (Map) occupancyIndicesDeviates);
-		if (!innerMap2.containsKey(plot.getDateYr())) {
-			GaussianEstimate estimate = getOccupancyIndex(plot, species);
-			double deviate = estimate.getRandomDeviate().getValueAt(0, 0);
-			deviates.add(deviate);
-			innerMap2.put(plot.getDateYr(), deviate);	
-		}
-		return innerMap2.get(plot.getDateYr());
 
-	}
-	
-	private Map<Integer, ?> getInnerMap2(Trillium2026RecruitmentPlot plot, Map<String, Map<Integer, Map<Integer, ?>>> oMap) {
-		if (isUsingOccupancyIndex()) {
-			if (!oMap.containsKey(plot.getSubjectId())) {
-				oMap.put(plot.getSubjectId(), new HashMap<Integer, Map<Integer, ?>>());
-			}
-			Map<Integer, Map<Integer, ?>> innerMap = oMap.get(plot.getSubjectId());
-			if (!innerMap.containsKey(plot.getMonteCarloRealizationId())) {
-				innerMap.put(plot.getMonteCarloRealizationId(), new HashMap<Integer, Object>());
-			}
-			Map<Integer, ?> innerMap2 = innerMap.get(plot.getMonteCarloRealizationId());
-			return innerMap2;
-		} else {
-			return null;
-		}
-		
-	}
-	
-	GaussianEstimate getOccupancyIndex(Trillium2026RecruitmentPlot plot, Species species) {
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		Map<Integer, GaussianEstimate> innerMap2 = getInnerMap2(plot, (Map) occupancyIndices);
-		if (!innerMap2.containsKey(plot.getDateYr())) {
-			GaussianEstimate occIndex10kmEstimate = owner.occIndexCalculator.getOccupancyIndex(plot.getPlotsForOccupancyIndexCalculation(), plot, species, 25d); // max distance is 25 km for occupancy index  
-			innerMap2.put(plot.getDateYr(), occIndex10kmEstimate);	
-		}
-		return innerMap2.get(plot.getDateYr());
-	}
-	
-	private boolean isUsingOccupancyIndex() {return !occupancyIndexVarIndices.isEmpty();}
-
-	private void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, Species species, double occupancyIndex25km) {
+	@Override
+	protected void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, Enum<?> species, double occupancyIndex25km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
@@ -345,18 +176,11 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEv
 		}
 	}
 
-	/*
-	 * Construct the xVector without the occupancy index.
-	 */
-	private void constructXVector(Trillium2026RecruitmentPlot plot, Species species) {
-		oXVector.resetMatrix();
-		
-		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();
-		effectListWithoutOccIndex.addAll(effectList);
-		effectListWithoutOccIndex.removeAll(occupancyIndexVarIndices);
-		for (int effectId : effectListWithoutOccIndex) {
-			setValueInXVector(effectId, plot, species, 0d); // occupancy index set to 0 for now
-		}
+	@Override
+	protected double addOffsetIfNeeded(Trillium2026RecruitmentPlot plot) {
+		return offsetEnabled ? 
+				Math.log(plot.getGrowthStepLengthYr()) :
+					0;
 	}
 
 

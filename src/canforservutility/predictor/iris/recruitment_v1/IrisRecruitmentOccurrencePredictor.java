@@ -19,14 +19,12 @@
  */
 package canforservutility.predictor.iris.recruitment_v1;
 
-import java.security.InvalidParameterException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
-import canforservutility.occupancyindex.OccupancyIndexCalculator;
 import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -47,6 +45,13 @@ import repicea.util.ObjectUtility;
 public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<IrisRecruitmentPlot, IrisTree> 
 												implements ClimateSensitivePredictor {
 
+	static ParameterMap BetaMap;
+	static ParameterMap OmegaMap;
+	static ParameterMap SpeciesEffectMatchesMap;
+	static ParameterMap OffsetListMap;
+
+	
+	
 	static final Resolution RecruitmentClimateVariableResolution = Resolution.IntervalAveragedStarting20YrsBeforeFinalMeasurement;
 
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
@@ -61,76 +66,61 @@ public class IrisRecruitmentOccurrencePredictor extends REpiceaBinaryEventPredic
 		OccupancyIndexEffects.add(32);
 	}
 
-	private Map<IrisSpecies, IrisRecruitmentOccurrenceInternalPredictor> internalPredictors;
+	private final Map<IrisSpecies, IrisRecruitmentOccurrenceInternalPredictor> internalPredictors;
 
-	final OccupancyIndexCalculator occIndexCalculator;
-	
-	
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled true to enable the stochastic mode
-	 * @param plots a List of IrisProtoPlot instances that are all the plots to be considered in the calculation of the
-	 * occupancy index.
 	 */
-	public IrisRecruitmentOccurrencePredictor(boolean isVariabilityEnabled, List<OccupancyIndexCalculablePlot> plots) {
-		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled, plots);		// random effect variability is associated with occupancy index measurement error
+	public IrisRecruitmentOccurrencePredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled);		// random effect variability is associated with occupancy index measurement error
 	}
 	
 	/**
 	 * Constructor for test purposes. <p>
-	 * IMPORTANT: The random effect variability is only enabling the variability in 
-	 * the occupancy index.
 	 * 
 	 * @param isParameterVariabilityEnabled true to enable the parameter estimates variability
-	 * @param isRandomEffectsVariabilityEnabled true to enable the variability in the occupancy index
 	 * @param isResidualVariabilityEnabled true to enable the residual error variability
-	 * @param plots a List of IrisProtoPlot instances that are all the plots to be considered in the calculation of the
-	 * occupancy index.
 	 */
-	protected IrisRecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
-			boolean isRandomEffectsVariabilityEnabled, 
-			boolean isResidualVariabilityEnabled,
-			List<OccupancyIndexCalculablePlot> plots) {
-		super(isParameterVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);		
+	protected IrisRecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		
+		internalPredictors = new HashMap<IrisSpecies, IrisRecruitmentOccurrenceInternalPredictor>();
 		init();
-		occIndexCalculator = plots != null ? 
-				new OccupancyIndexCalculator(plots) : 
-					null;
 	}
 
 	@Override
-	protected void init() {
-		internalPredictors = new HashMap<IrisSpecies, IrisRecruitmentOccurrenceInternalPredictor>();
-		String rootPath = ObjectUtility.getRelativePackagePath(getClass());
-		String betaFilename = rootPath + "0_RecruitmentOccurrenceBeta.csv";
-		String omegaFilename = rootPath + "0_RecruitmentOccurrenceOmega.csv";
-		String speciesEffectMatchesFilename = rootPath + "0_RecruitmentOccurrenceSpeciesEffectMatches.csv";
-		String offsetList = rootPath + "0_RecruitmentOccurrenceOffsetList.csv";
-		
-		try {
-			ParameterMap betaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
-			ParameterMap omegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
-			ParameterMap speciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
-			ParameterMap offsetListMap = ParameterLoader.loadVectorFromFile(1, offsetList);
-			for (IrisSpecies sp : IrisSpecies.values()) {
-				Matrix beta = betaMap.get(sp.ordinal() + 1);
-				SymmetricMatrix omega = omegaMap.get(sp.ordinal() + 1).squareSym();
-				Matrix speciesEffectMatches = speciesEffectMatchesMap.get(sp.ordinal() + 1);
-				Matrix offset = offsetListMap.get(sp.ordinal() + 1);
-				boolean isOffsetEnabled = offset.getValueAt(0, 0) == 1d;
-				IrisRecruitmentOccurrenceInternalPredictor subPredictor = new IrisRecruitmentOccurrenceInternalPredictor(this,
-						sp,
-						isParametersVariabilityEnabled, 
-						isRandomEffectsVariabilityEnabled,
-						isResidualVariabilityEnabled, 
-						isOffsetEnabled, 
-						beta, 
-						omega, 
-						speciesEffectMatches);
-				internalPredictors.put(sp, subPredictor);
+	protected synchronized void init() {
+		if (BetaMap == null) {
+			String rootPath = ObjectUtility.getRelativePackagePath(getClass());
+			String betaFilename = rootPath + "0_RecruitmentOccurrenceBeta.csv";
+			String omegaFilename = rootPath + "0_RecruitmentOccurrenceOmega.csv";
+			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentOccurrenceSpeciesEffectMatches.csv";
+			String offsetList = rootPath + "0_RecruitmentOccurrenceOffsetList.csv";
+			
+			try {
+				BetaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
+				OmegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
+				SpeciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
+				OffsetListMap = ParameterLoader.loadVectorFromFile(1, offsetList);
+			} catch (IOException e) {
+				throw new UnsupportedOperationException(e);
 			}
-		} catch (Exception e) {
-			throw new InvalidParameterException("Unable to load the parameters in the module of recruitment occurrence in Iris 2020!");
+		}
+		for (IrisSpecies sp : IrisSpecies.values()) {
+			Matrix beta = BetaMap.get(sp.ordinal() + 1);
+			SymmetricMatrix omega = OmegaMap.get(sp.ordinal() + 1).squareSym();
+			Matrix speciesEffectMatches = SpeciesEffectMatchesMap.get(sp.ordinal() + 1);
+			Matrix offset = OffsetListMap.get(sp.ordinal() + 1);
+			boolean isOffsetEnabled = offset.getValueAt(0, 0) == 1d;
+			IrisRecruitmentOccurrenceInternalPredictor subPredictor = new IrisRecruitmentOccurrenceInternalPredictor(this,
+					sp,
+					isParametersVariabilityEnabled, 
+					isResidualVariabilityEnabled, 
+					isOffsetEnabled, 
+					beta, 
+					omega, 
+					speciesEffectMatches);
+			internalPredictors.put(sp, subPredictor);
 		}
 	}
 

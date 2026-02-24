@@ -20,10 +20,10 @@
 package canforservutility.predictor.iris.recruitment_v1;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
+import canforservutility.simulation.RecruitmentPlotWithOccupancy;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaBySpeciesTypeM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
@@ -46,7 +46,8 @@ public interface IrisRecruitmentPlot extends GrowthStepLengthYrProvider,
 											TotalAnnualPrecipitationMmProvider,
 											AnnualFrostDaysProvider, 
 											LowestAnnualTemperatureCelsiusProvider,
-											BasalAreaBySpeciesTypeM2HaProvider {
+											BasalAreaBySpeciesTypeM2HaProvider,
+											RecruitmentPlotWithOccupancy {
 	
 	
 	public static enum SoilDepth {
@@ -161,9 +162,9 @@ public interface IrisRecruitmentPlot extends GrowthStepLengthYrProvider,
 	 */
 	public double getSlopeAspect();
 
-	/**
-	 * Return the list of plots to use to calculate the occupancy index.
-	 * @return a List of IrisProtoPlot instances
-	 */
-	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation();
+//	/**
+//	 * Return the list of plots to use to calculate the occupancy index.
+//	 * @return a List of IrisProtoPlot instances
+//	 */
+//	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation();
 }

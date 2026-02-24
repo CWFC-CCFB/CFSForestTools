@@ -20,129 +20,39 @@
 package canforservutility.predictor.iris.recruitment_v1;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.DisturbanceType;
 import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.SoilDepth;
 import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.SoilTexture;
 import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
-import repicea.math.AbstractMathematicalFunction;
+import canforservutility.simulation.REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancyIndex;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
-import repicea.math.integral.AbstractGaussQuadrature.NumberOfPoints;
-import repicea.math.integral.GaussLegendreQuadrature;
-import repicea.math.utility.GaussianUtility;
 import repicea.simulation.ModelParameterEstimates;
-import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
-import repicea.stats.estimates.GaussianEstimate;
-import repicea.stats.model.glm.LinkFunction;
 
 @SuppressWarnings("serial")
-class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredictor<IrisRecruitmentPlot, IrisTree> {
-
-	/**
-	 * A nested class for Trapezoidal integration in case random variability around the occupancy index is
-	 * disabled.
-	 * @author Mathieu Fortin - June 2023
-	 */
-	class InternalMathFunction extends LinkFunction {
-
-		final Matrix xVector;
-		final int indexVar;
-		final double meanOccIndex;
-		final double varOccIndex;
-		
-		InternalMathFunction(Matrix xVector, Matrix beta, IrisRecruitmentPlot plot, int indexVar, double meanOccIndex, double varOccIndex) {
-			super(Type.CLogLog, new InternalStatisticalExpression(xVector, beta, plot, meanOccIndex));
-			this.xVector = xVector;
-			this.indexVar = indexVar;
-			this.meanOccIndex = meanOccIndex;
-			this.varOccIndex = varOccIndex;
-		}
-
-		@Override
-		public Double getValue() {
-			double prob = super.getValue();
-			double currentOccIndex = xVector.getValueAt(0, indexVar);
-			double density = GaussianUtility.getProbabilityDensity(currentOccIndex, meanOccIndex, varOccIndex);
-			return prob * density;
-		}
-	}
-	
-	class InternalStatisticalExpression extends AbstractMathematicalFunction {
-
-		final Matrix xVector;
-		final Matrix beta;
-		final IrisRecruitmentPlot plot;
-		final double meanOccIndex;
-		
-		InternalStatisticalExpression(Matrix xVector, Matrix beta, IrisRecruitmentPlot plot, double meanOccIndex) {
-			this.xVector = xVector;
-			this.beta = beta;
-			this.plot = plot;
-			this.meanOccIndex = meanOccIndex;
-		}
-		
-		@Override
-		public Double getValue() {
-			double xBeta = xVector.multiply(beta).getValueAt(0, 0);
-			if (IrisRecruitmentOccurrenceInternalPredictor.this.offsetEnabled) {
-				xBeta += Math.log(plot.getGrowthStepLengthYr());
-			}
-			return xBeta;
-		}
-		
-		@Override
-		public void setVariableValue(int variableIndex, double variableValue) {
-			IrisRecruitmentOccurrenceInternalPredictor.this.setOccupancyInXVector(plot, IrisRecruitmentOccurrenceInternalPredictor.this.species, variableValue);
-		}		
-
-		@Override
-		public double getVariableValue(int variableIndex) {return meanOccIndex;}
-		
-		@Override
-		public Matrix getGradient() {return null;}
-
-		@Override
-		public SymmetricMatrix getHessian() {return null;}
-		
-	}
-
+class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancyIndex<IrisRecruitmentPlot, IrisTree> {
 
 	private final IrisRecruitmentOccurrencePredictor owner;
-	private final List<Integer> effectList;
-	private final boolean offsetEnabled;
-	private final Map<String, Map<Integer, Map<Integer, GaussianEstimate>>> occupancyIndices; // 1st key plot id, 2nd key realization id, 3rd key dateYr
-	private final Map<String, Map<Integer, Map<Integer, Double>>> occupancyIndicesDeviates; // 1st key plot id, 2nd key realization id, 3rd key dateYr
-	private final List<Integer> occupancyIndexVarIndices; // effect Ids that include the occupancy index
-//	private final TrapezoidalRule tr;
-	private final IrisSpecies species;
 	
 	protected IrisRecruitmentOccurrenceInternalPredictor(IrisRecruitmentOccurrencePredictor owner,
 			IrisSpecies species,
 			boolean isParametersVariabilityEnabled, 
-			boolean isOccupancyIndexVariabilityEnabled, 
 			boolean isResidualVariabilityEnabled, 
 			boolean offsetEnabled, 
 			Matrix beta,
 			SymmetricMatrix omega,
 			Matrix effectMat) {
-		super(isParametersVariabilityEnabled, isOccupancyIndexVariabilityEnabled, isResidualVariabilityEnabled);	// isOccupancyIndexVariabilityEnabled is stored as an interval random effect 
+		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled, species, offsetEnabled);	
 		this.owner = owner;
-		this.species = species;
-		this.offsetEnabled = offsetEnabled;
 		
 		ModelParameterEstimates estimate = new ModelParameterEstimates(beta, omega);
 		setParameterEstimates(estimate);
 		oXVector = new Matrix(1, estimate.getMean().m_iRows);
 		
-		effectList = new ArrayList<Integer>();
-		occupancyIndexVarIndices = new ArrayList<Integer>();
 		for (int i = 0; i < effectMat.m_iRows; i++) {
 			int effectId = (int) effectMat.getValueAt(i, 0);
 			effectList.add(effectId);
@@ -150,116 +60,27 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 				occupancyIndexVarIndices.add(effectId);
 			}
 		}
-		occupancyIndices = new HashMap<String, Map<Integer, Map<Integer, GaussianEstimate>>>();
-		occupancyIndicesDeviates = new HashMap<String, Map<Integer, Map<Integer, Double>>>();
 	}
 
 	@Override
 	protected void init() {}
-	
-	private void setOccupancyInXVector(IrisRecruitmentPlot plot, IrisSpecies species, double occupancyIndex10km) {
-		for (int effectId : occupancyIndexVarIndices) {
-			setValueInXVector(effectId, plot, species, occupancyIndex10km); 
-		}
-	}
-
-	private double getProb(Matrix beta, IrisRecruitmentPlot plot) {
-		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
-		if (offsetEnabled) {
-			xBeta += Math.log(plot.getGrowthStepLengthYr());
-		}
-		double recruitmentProbability = 1d - Math.exp(-Math.exp(xBeta));
-		return recruitmentProbability;
-	}
 	
 	@Override
 	public double predictEventProbability(IrisRecruitmentPlot plot, IrisTree tree, Map<String, Object> parms) {
 		return calculateEventProbability(plot, tree.getSpecies());
 	}
 
-	protected synchronized double calculateEventProbability(IrisRecruitmentPlot plot, IrisSpecies species) {
-		Matrix beta = getParametersForThisRealization(plot);
-		constructXVector(plot, species);
-		if (isUsingOccupancyIndex()) {
-			if (plot instanceof IrisRecruitmentPlotWithKnownOccupancy) { // occupancy is assumed to be known
-				double occupancyIndex10kmRandomDeviate = ((IrisRecruitmentPlotWithKnownOccupancy) plot).getOccupancyIndex10km(species);
-				setOccupancyInXVector(plot, species, occupancyIndex10kmRandomDeviate);
-				return getProb(beta, plot);
-			}
-			if (isRandomEffectsVariabilityEnabled) {
-				double occupancyIndex10kmRandomDeviate = getOccupancyRandomDeviate(plot, species);
-				setOccupancyInXVector(plot, species, occupancyIndex10kmRandomDeviate);
-				return getProb(beta, plot);
-			} else {
-				double range = 3;
-				GaussianEstimate estimate = getOccupancyIndex(plot, species);
-				int indexVar = effectList.lastIndexOf(owner.OccupancyIndexEffects.get(0)); 
-				double meanOccIndex = estimate.getMean().getValueAt(0, 0);
-				double varOccIndex = estimate.getVariance().getValueAt(0, 0);
-				InternalMathFunction imf = new InternalMathFunction(oXVector, beta, plot, indexVar, meanOccIndex, varOccIndex);
-				
-				double std = Math.sqrt(varOccIndex);
-				double lowerBound = meanOccIndex - range * std;
-				double upperBound = meanOccIndex + range * std;
-				
-				GaussLegendreQuadrature glq = new GaussLegendreQuadrature(NumberOfPoints.N10);
-				glq.setLowerBound(lowerBound);
-				glq.setUpperBound(upperBound);
-				
-				double prob = glq.getIntegralApproximation(imf, indexVar, false);
-				return prob;
-			}
-		} else { // not using occupancy index
-			return getProb(beta, plot);
-		}
+	@Override
+	protected double getProb(Matrix beta, IrisRecruitmentPlot plot) {
+		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+		xBeta += addOffsetIfNeeded(plot);
+		double recruitmentProbability = 1d - Math.exp(-Math.exp(xBeta));
+		return recruitmentProbability;
 	}
-	
-	static List<Double> deviates = new ArrayList<Double>();
-	
-	double getOccupancyRandomDeviate(IrisRecruitmentPlot plot, IrisSpecies species) {
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		Map<Integer, Double> innerMap2 = getInnerMap2(plot, (Map) occupancyIndicesDeviates);
-		if (!innerMap2.containsKey(plot.getDateYr())) {
-			GaussianEstimate estimate = getOccupancyIndex(plot, species);
-			double deviate = estimate.getRandomDeviate().getValueAt(0, 0);
-			deviates.add(deviate);
-			innerMap2.put(plot.getDateYr(), deviate);	
-		}
-		return innerMap2.get(plot.getDateYr());
-
-	}
-	
-	private Map<Integer, ?> getInnerMap2(IrisRecruitmentPlot plot, Map<String, Map<Integer, Map<Integer, ?>>> oMap) {
-		if (isUsingOccupancyIndex()) {
-			if (!oMap.containsKey(plot.getSubjectId())) {
-				oMap.put(plot.getSubjectId(), new HashMap<Integer, Map<Integer, ?>>());
-			}
-			Map<Integer, Map<Integer, ?>> innerMap = oMap.get(plot.getSubjectId());
-			if (!innerMap.containsKey(plot.getMonteCarloRealizationId())) {
-				innerMap.put(plot.getMonteCarloRealizationId(), new HashMap<Integer, Object>());
-			}
-			Map<Integer, ?> innerMap2 = innerMap.get(plot.getMonteCarloRealizationId());
-			return innerMap2;
-		} else {
-			return null;
-		}
-		
-	}
-	
-	GaussianEstimate getOccupancyIndex(IrisRecruitmentPlot plot, IrisSpecies species) {
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		Map<Integer, GaussianEstimate> innerMap2 = getInnerMap2(plot, (Map) occupancyIndices);
-		if (!innerMap2.containsKey(plot.getDateYr())) {
-			GaussianEstimate occIndex10kmEstimate = owner.occIndexCalculator.getOccupancyIndex(plot.getPlotsForOccupancyIndexCalculation(), plot, species, 10d); // max distance is 10 km for occupancy index  
-			innerMap2.put(plot.getDateYr(), occIndex10kmEstimate);	
-		}
-		return innerMap2.get(plot.getDateYr());
-	}
-	
-	private boolean isUsingOccupancyIndex() {return !occupancyIndexVarIndices.isEmpty();}
 
 	// TODO MF20260209 That could be improved by internalizing the loop on the effects and avoiding calculating over and over again the same variables.
-	private void setValueInXVector(int effectId, IrisRecruitmentPlot plot, IrisSpecies species, double occupancyIndex10km) {
+	@Override
+	protected void setValueInXVector(int effectId, IrisRecruitmentPlot plot, Enum<?> species, double occupancyIndex10km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
@@ -415,18 +236,10 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaBinaryEventPredi
 		}
 	}
 
-	/*
-	 * Construct the xVector without the occupancy index.
-	 */
-	private void constructXVector(IrisRecruitmentPlot plot, IrisSpecies species) {
-		oXVector.resetMatrix();
-		
-		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();
-		effectListWithoutOccIndex.addAll(effectList);
-		effectListWithoutOccIndex.removeAll(occupancyIndexVarIndices);
-		for (int effectId : effectListWithoutOccIndex) {
-			setValueInXVector(effectId, plot, species, 0d); // occupancy index set to 0 for now
-		}
+
+	@Override
+	protected double addOffsetIfNeeded(IrisRecruitmentPlot plot) {
+		return offsetEnabled ? Math.log(plot.getGrowthStepLengthYr()) : 0d;
 	}
 
 

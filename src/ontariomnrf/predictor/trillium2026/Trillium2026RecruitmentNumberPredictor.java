@@ -73,7 +73,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */
 	public Trillium2026RecruitmentNumberPredictor(boolean isVariabilityEnabled, Trillium2026RecruitmentOccurrencePredictor occurrencePredictor) {
-		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled, occurrencePredictor);		
+		this(isVariabilityEnabled, isVariabilityEnabled, occurrencePredictor);		
 	}
 
 	/**
@@ -84,10 +84,9 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */
 	protected Trillium2026RecruitmentNumberPredictor(boolean isParameterVariabilityEnabled, 
-			boolean isRandomEffectsVariabilityEnabled,
 			boolean isResidualVariabilityEnabled, 
 			Trillium2026RecruitmentOccurrencePredictor occurrencePredictor) {
-		super(isParameterVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);		// no random effect in this module
+		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this module
 		internalPredictors = new HashMap<Species, Trillium2026RecruitmentNumberInternalPredictor>();
 		init();
 		this.occurrencePredictor = occurrencePredictor;
@@ -120,7 +119,6 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 				Trillium2026RecruitmentNumberInternalPredictor subPredictor = new Trillium2026RecruitmentNumberInternalPredictor(this,
 						sp,
 						isParametersVariabilityEnabled, 
-						isRandomEffectsVariabilityEnabled,
 						isResidualVariabilityEnabled, 
 						thetaMat.getValueAt(0, 0),
 						beta, 

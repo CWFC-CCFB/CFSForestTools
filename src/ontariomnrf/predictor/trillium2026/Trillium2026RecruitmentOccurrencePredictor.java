@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
-import canforservutility.occupancyindex.OccupancyIndexCalculator;
 import canforservutility.occupancyindex.SimpleOccupancyIndexCalculablePlot;
 import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
@@ -87,7 +86,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	private static ParameterMap OffsetListMap;
 	private static List<OccupancyIndexCalculablePlot> ReferencePlotsForOccupancyIndexCalculation;
 	
-	final OccupancyIndexCalculator occIndexCalculator;
+//	final OccupancyIndexCalculator occIndexCalculator;
 	private final Map<Species, Trillium2026RecruitmentOccurrenceInternalPredictor> internalPredictors;
 	
 //	private List<SimpleOccupancyIndexCalculablePlot, <, Map<>>
@@ -95,11 +94,9 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled true to enable the stochastic mode
-	 * @param plots a List of IrisProtoPlot instances that are all the plots to be considered in the calculation of the
-	 * occupancy index.
 	 */
-	public Trillium2026RecruitmentOccurrencePredictor(boolean isVariabilityEnabled, List<OccupancyIndexCalculablePlot> plots) {
-		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled, plots);		// random effect variability is associated with occupancy index measurement error
+	public Trillium2026RecruitmentOccurrencePredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled);		
 	}
 	
 	/**
@@ -111,28 +108,24 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	 * @param isParameterVariabilityEnabled true to enable the parameter estimates variability
 	 * @param isRandomEffectsVariabilityEnabled true to enable the variability in the occupancy index
 	 * @param isResidualVariabilityEnabled true to enable the residual error variability
-	 * @param plots a List of IrisProtoPlot instances that are all the plots to be considered in the calculation of the
-	 * occupancy index.
 	 */
 	protected Trillium2026RecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
-			boolean isRandomEffectsVariabilityEnabled, 
-			boolean isResidualVariabilityEnabled,
-			List<OccupancyIndexCalculablePlot> plots) {
-		super(isParameterVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);		
+			boolean isResidualVariabilityEnabled) {
+		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		
 		internalPredictors = new HashMap<Species, Trillium2026RecruitmentOccurrenceInternalPredictor>();
 		init();
-		if (plots != null) {
-			List<OccupancyIndexCalculablePlot> completeList = new ArrayList<OccupancyIndexCalculablePlot>();
-			completeList.addAll(ReferencePlotsForOccupancyIndexCalculation);
-			completeList.addAll(plots);
-			occIndexCalculator = new OccupancyIndexCalculator(plots);
-		} else {
-			occIndexCalculator = null;
-		}
+//		if (plots != null) {
+//			List<OccupancyIndexCalculablePlot> completeList = new ArrayList<OccupancyIndexCalculablePlot>();
+//			completeList.addAll(ReferencePlotsForOccupancyIndexCalculation);
+//			completeList.addAll(plots);
+//			occIndexCalculator = new OccupancyIndexCalculator(plots, nbRealizations);
+//		} else {
+//			occIndexCalculator = null;
+//		}
 	}
 
 	
-	private Map<String, Map<Integer, SimpleOccupancyIndexCalculablePlot>> readRefOccupancyIndex(String filename) throws IOException {
+	private static Map<String, Map<Integer, SimpleOccupancyIndexCalculablePlot>> readRefOccupancyIndex(String filename) throws IOException {
 		Map<String, Map<Integer, SimpleOccupancyIndexCalculablePlot>> occMap = new HashMap<String, Map<Integer, SimpleOccupancyIndexCalculablePlot>>(); 
 		CSVReader reader = null;
 		try {
@@ -168,11 +161,27 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 		return occMap;
 	}
 
-	static List<OccupancyIndexCalculablePlot> getReferencePlotsForOccupancyIndex() {
+	/**
+	 * Provide a set of plots from the G&Y program to assess the occupancy index.
+	 * @return a List of OccupancyIndexCalculablePlot instances
+	 */
+	public static List<OccupancyIndexCalculablePlot> getReferencePlotsForOccupancyIndex() {
+		List<OccupancyIndexCalculablePlot> copyList = new ArrayList<OccupancyIndexCalculablePlot>();
 		if (ReferencePlotsForOccupancyIndexCalculation == null) {
-			new Trillium2026RecruitmentOccurrencePredictor(false, null);
+			String rootPath = ObjectUtility.getRelativePackagePath(Trillium2026RecruitmentOccurrencePredictor.class);
+			String refOccupancyIndex = rootPath + "0_recruitmentRefOccupancyIndex.csv";
+			try {
+				Map<String, Map<Integer,SimpleOccupancyIndexCalculablePlot>> occMap = readRefOccupancyIndex(refOccupancyIndex);
+				ReferencePlotsForOccupancyIndexCalculation = new ArrayList<OccupancyIndexCalculablePlot>();
+				for (Map<Integer,SimpleOccupancyIndexCalculablePlot> innerMap : occMap.values()) {
+					ReferencePlotsForOccupancyIndexCalculation.addAll(innerMap.values());
+				}
+			} catch (IOException e) {
+				throw new RuntimeException("Unable to read reference plots for occupancy index calculation!");
+			}
 		}
-		return ReferencePlotsForOccupancyIndexCalculation;
+		copyList.addAll(ReferencePlotsForOccupancyIndexCalculation);
+		return copyList;
 	}
 	
 	@Override
@@ -183,18 +192,12 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 			String omegaFilename = rootPath + "0_RecruitmentOccurrenceOmega.csv";
 			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentOccurrenceSpeciesEffectMatches.csv";
 			String offsetList = rootPath + "0_RecruitmentOccurrenceOffsetList.csv";
-			String refOccupancyIndex = rootPath + "0_recruitmentRefOccupancyIndex.csv";
 			try {
 				BetaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
 				OmegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
 				SpeciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
 				OffsetListMap = ParameterLoader.loadVectorFromFile(1, offsetList);
 				
-				Map<String, Map<Integer,SimpleOccupancyIndexCalculablePlot>> occMap = readRefOccupancyIndex(refOccupancyIndex);
-				ReferencePlotsForOccupancyIndexCalculation = new ArrayList<OccupancyIndexCalculablePlot>();
-				for (Map<Integer,SimpleOccupancyIndexCalculablePlot> innerMap : occMap.values()) {
-					ReferencePlotsForOccupancyIndexCalculation.addAll(innerMap.values());
-				}
 			} catch (IOException e) {
 				throw new RuntimeException("Unable to read parameters from files!");
 			}
@@ -210,7 +213,6 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 				Trillium2026RecruitmentOccurrenceInternalPredictor subPredictor = new Trillium2026RecruitmentOccurrenceInternalPredictor(this,
 						sp,
 						isParametersVariabilityEnabled, 
-						isRandomEffectsVariabilityEnabled,
 						isResidualVariabilityEnabled, 
 						isOffsetEnabled, 
 						beta, 

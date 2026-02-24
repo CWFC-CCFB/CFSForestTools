@@ -19,11 +19,10 @@
  */
 package ontariomnrf.predictor.trillium2026;
 
-import java.security.InvalidParameterException;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
-import repicea.math.Matrix;
+import canforservutility.occupancyindex.OccupancyIndexCalculator;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
@@ -64,6 +63,13 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 	}
 		
+	
+	static enum Mode {
+		Known,
+		Estimated,
+		Deviate;
+	}
+	
 	private final double growthStepLength;
 	private final double basalAreaM2HaConiferous;
 	private final double basalAreaM2HaBroadleaved;
@@ -72,10 +78,10 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	private final double prcp;
 	private final String id;
 	final Species species;
-	private final Matrix gSpGrMat;
+	private final Map<Species, Double> gSpGrMat;
 	private final double frostDays;
 	private final double lowestTmin;
-	private final List<OccupancyIndexCalculablePlot> plots;
+//	private final List<OccupancyIndexCalculablePlot> plots;
 	private final double latitudeDeg;
 	private final double longitudeDeg;
 	private int monteCarloRealizationId = 0;
@@ -86,10 +92,12 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	private final double slopePct;
 	private final boolean interventionResult;
 	private final boolean isGoingToBeHarvested;
-	protected final double occupancyIndex;
+	protected final Map<Species, Double> occupancyIndexMap;
 	private final double meanAnnualTemperature;
 	private final double meanMaxJulyTemperature;
-
+	private final Map<Species, Double> predMap;
+	private final OccupancyIndexCalculator occIndexCalc;
+	private Mode mode;
 		
 	Trillium2026RecruitmentPlotImpl(String id,
 			double latitudeDeg,
@@ -112,12 +120,14 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 			boolean interventionResult,
 			boolean isGoingToBeHarvested,
 			double occupancyIndex,
-			List<OccupancyIndexCalculablePlot> plots,
+//			List<OccupancyIndexCalculablePlot> plots,
 			double meanAnnualTemperature,
-			double meanMaxJulyTemperature) {
-		if (plots == null) {
-			throw new InvalidParameterException("The plots argument should not be null!");
-		}
+			double meanMaxJulyTemperature,
+			double pred,
+			OccupancyIndexCalculator occIndexCalc) {
+//		if (plots == null) {
+//			throw new InvalidParameterException("The plots argument should not be null!");
+//		}
 		this.id = id;
 		this.latitudeDeg = latitudeDeg;
 		this.longitudeDeg = longitudeDeg;
@@ -134,18 +144,26 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		this.totalPrecJuneToAugust = totalPrecJuneToAugust;
 		this.highestTmax = highestTmax;
 		this.species = species;
-		gSpGrMat = new Matrix(1, Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size());
-		gSpGrMat.setValueAt(0, Trillium2026RecruitmentOccurrencePredictor.SpeciesList.indexOf(species), gSpGr);
+		gSpGrMat = new HashMap<Species, Double>();
+		gSpGrMat.put(species, gSpGr);
 		this.slopePct = slopePct;
 		this.interventionResult = interventionResult;
 		this.isGoingToBeHarvested = isGoingToBeHarvested;
-		this.plots = Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex();
-		this.occupancyIndex = occupancyIndex;
+		this.occupancyIndexMap = new HashMap<Species, Double>();
+		occupancyIndexMap.put(species, occupancyIndex);
 		this.meanAnnualTemperature = meanAnnualTemperature;
 		this.meanMaxJulyTemperature = meanMaxJulyTemperature;
+		predMap = new HashMap<Species, Double>();
+		predMap.put(species, pred);
+		this.occIndexCalc = occIndexCalc;
+		mode = Mode.Known;
 	}
 	
-	
+	void update(Species sp, double gSpGr, double occupancyIndex, double pred) {
+		gSpGrMat.put(sp, gSpGr);
+		occupancyIndexMap.put(sp, occupancyIndex);
+		predMap.put(sp, pred);
+	}
 
 	@Override
 	public String getSubjectId() {return id;}
@@ -170,13 +188,14 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	public double getTotalAnnualPrecipitationMm(REpiceaClimateVariableInformation resolution) {return prcp;}
 
 	
-	Trillium2026Tree getTreeInstance() {
-		return new Trillium2026TreeImpl(species); 
+	Trillium2026Tree getTreeInstance(Species sp) {
+		return new Trillium2026TreeImpl(sp); 
 	}
 
 	@Override
 	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {
-		return gSpGrMat.getValueAt(0, Trillium2026RecruitmentOccurrencePredictor.SpeciesList.indexOf(species));
+		Double value = gSpGrMat.get(species);
+		return value != null ? value : -1;
 	}
 
 	@Override
@@ -204,10 +223,10 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	@Override
 	public double getAreaHa() {return 0.04;}
 
-	@Override
-	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
-		return plots;
-	}
+//	@Override
+//	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
+//		return plots;
+//	}
 
 	@Override
 	public double getMeanMinimumJanuaryTemperatureCelsius(REpiceaClimateVariableInformation resolution) {
@@ -218,8 +237,6 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	public double getTotalPrecipitationFromMarchToMayMm(REpiceaClimateVariableInformation resolution) {
 		return precMarchToMay;
 	}
-
-
 
 	@Override
 	public double getTotalPrecipitationFromJuneToAugustMm(REpiceaClimateVariableInformation resolution) {
@@ -237,14 +254,10 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		return slopePct;
 	}
 
-
-
 	@Override
 	public boolean isInterventionResult() {
 		return interventionResult;
 	}
-
-
 
 	@Override
 	public boolean isGoingToBeHarvested() {
@@ -252,22 +265,40 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	}
 
 
-
 	@Override
 	public String getId() {return id;}
-
-
 
 	@Override
 	public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {
 		return meanAnnualTemperature;
 	}
 
-
-
 	@Override
 	public double getMeanMaximumJulyTemperatureCelsius(REpiceaClimateVariableInformation info) {
 		return meanMaxJulyTemperature;
+	}
+
+	@Override
+	public Object getOccupancyForThisSpecies(Enum<?> sp) {
+		switch(mode) {
+		case Known:
+			return occupancyIndexMap.get(sp);
+		case Estimated:
+			return occIndexCalc.getOccupancyIndex(this, sp, 25); 
+		case Deviate:
+			double deviate = occIndexCalc.getOccupancyIndex(this, sp, 25).getRandomDeviate().getValueAt(0, 0);
+			return deviate;
+		default:
+			throw new UnsupportedOperationException("The mode " + mode.name() + " is not supported!");
+		}
+	}
+	
+	Double getPred(Species sp) {
+		return predMap.get(sp);
+	}
+	
+	void setMode(Mode mode) {
+		this.mode = mode;
 	}
 	
 }

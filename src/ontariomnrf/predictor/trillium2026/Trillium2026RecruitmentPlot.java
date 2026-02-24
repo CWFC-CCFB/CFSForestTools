@@ -19,9 +19,8 @@
  */
 package ontariomnrf.predictor.trillium2026;
 
-import java.util.List;
-
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
+import canforservutility.simulation.RecruitmentPlotWithOccupancy;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaBySpeciesTypeM2HaProvider;
@@ -56,16 +55,9 @@ public interface Trillium2026RecruitmentPlot extends MonteCarloSimulationComplia
 											OccupancyIndexCalculablePlot,
 											SlopeInclinationPercentProvider,
 											InterventionResultProvider,
-											InterventionPlannedProvider {
+											InterventionPlannedProvider,
+											RecruitmentPlotWithOccupancy {
 
 	static final Resolution ClimateVariableResolution = Resolution.IntervalAveragedStarting20YrsBeforeFinalMeasurement;
-
-
-	/**
-	 * Return the list of plots to use to calculate the occupancy index.
-	 * @return a List of IrisProtoPlot instances
-	 */
-	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation();
-
 
 }
