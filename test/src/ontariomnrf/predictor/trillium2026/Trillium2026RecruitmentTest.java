@@ -114,7 +114,7 @@ public class Trillium2026RecruitmentTest {
 		String speciesName = record[header.getIndexOfThisField("speciesGr")].toString();
 		Species species = Trillium2026RecruitmentOccurrencePredictor.getTrillium2026SpeciesFromLatinName(speciesName);
 		int dateYr = ((Number) Double.parseDouble(record[header.getIndexOfThisField("year.x")].toString())).intValue();
-		double growthStepYr = Double.parseDouble(record[header.getIndexOfThisField("dt")].toString());
+		int growthStepYr = Integer.parseInt(record[header.getIndexOfThisField("dt")].toString());
 		double basalAreaM2HaConiferous = Double.parseDouble(record[header.getIndexOfThisField("G_R")].toString());
 		double basalAreaM2HaBroadleaved = Double.parseDouble(record[header.getIndexOfThisField("G_F")].toString());
 		double gSpGr = Double.parseDouble(record[header.getIndexOfThisField("G_SpGr")].toString());

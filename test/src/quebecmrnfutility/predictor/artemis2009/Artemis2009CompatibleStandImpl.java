@@ -147,7 +147,7 @@ class Artemis2009CompatibleStandImpl implements Artemis2009CompatibleStand {
 	public boolean isGoingToBeDefoliated() {return isGoingToBeDefoliated;}
 
 	@Override
-	public double getGrowthStepLengthYr() {return 10;}
+	public int getGrowthStepLengthYr() {return 10;}
 
 	@Override
 	public boolean isInitialStand() {return true;}

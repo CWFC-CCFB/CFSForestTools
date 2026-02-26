@@ -66,7 +66,7 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 		
 	}
 		
-	private final double growthStepLength;
+	private final int growthStepLength;
 	private final double basalAreaM2HaConiferous;
 	private final double basalAreaM2HaBroadleaved;
 	private final double slopeInclination;
@@ -93,7 +93,7 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 	IrisRecruitmentPlotImpl(String id,
 			double latitudeDeg,
 			double longitudeDeg,
-			double growthStepLength,
+			int growthStepLength,
 			double basalAreaM2HaConiferous,
 			double basalAreaM2HaBroadleaved,
 			double slopeInclination,
@@ -158,7 +158,7 @@ final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {
 	}
 
 	@Override
-	public double getGrowthStepLengthYr() {return growthStepLength;}
+	public int getGrowthStepLengthYr() {return growthStepLength;}
 
 	@Override
 	public double getSlopeInclinationPercent() {return slopeInclination;}

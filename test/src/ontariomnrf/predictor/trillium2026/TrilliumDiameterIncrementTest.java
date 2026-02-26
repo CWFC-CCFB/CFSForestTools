@@ -41,7 +41,7 @@ public class TrilliumDiameterIncrementTest {
 
 	static class Trillium2026TreeImpl implements Trillium2026Tree, Trillium2026DiameterIncrementPlot {
 
-		private final double growthStepLengthYr;
+		private final int growthStepLengthYr;
 		private final double totalAnnualPrecipitationMm;
 		private final double meanAnnualTemperatureCelsius;
 		private final double meanTminJanuaryCelsius;
@@ -68,7 +68,7 @@ public class TrilliumDiameterIncrementTest {
 		protected final double predTransformed;
 		private int mcReal;
 		
-		Trillium2026TreeImpl(double growthStepLengthYr,
+		Trillium2026TreeImpl(int growthStepLengthYr,
 				double totalAnnualPrecipitationMm,
 				double meanAnnualTemperatureCelsius,
 				double meanTminJanuaryCelsius,
@@ -134,7 +134,7 @@ public class TrilliumDiameterIncrementTest {
 		public int getMonteCarloRealizationId() {return mcReal;}
 
 		@Override
-		public double getGrowthStepLengthYr() {return growthStepLengthYr;}
+		public int getGrowthStepLengthYr() {return growthStepLengthYr;}
 
 		@Override
 		public double getTotalAnnualPrecipitationMm(REpiceaClimateVariableInformation resolution) {return totalAnnualPrecipitationMm;}
@@ -236,7 +236,7 @@ public class TrilliumDiameterIncrementTest {
 			reader = new CSVReader(filename);
 			Object[] record;
 			while ((record = reader.nextRecord()) != null) {
-				double growthStepLengthYr = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("dt")].toString());
+				int growthStepLengthYr = Integer.parseInt(record[reader.getHeader().getIndexOfThisField("dt")].toString());
 				if (growthStepLengthYr > 1) {
 					double totalAnnualPrecipitationMm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("TotalPrcp")].toString());
 					double meanAnnualTemperatureCelsius = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("MeanTair")].toString());

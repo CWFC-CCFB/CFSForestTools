@@ -70,7 +70,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		Deviate;
 	}
 	
-	private final double growthStepLength;
+	private final int growthStepLength;
 	private final double basalAreaM2HaConiferous;
 	private final double basalAreaM2HaBroadleaved;
 	private final int dateYr;
@@ -102,7 +102,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	Trillium2026RecruitmentPlotImpl(String id,
 			double latitudeDeg,
 			double longitudeDeg,
-			double growthStepLength,
+			int growthStepLength,
 			double basalAreaM2HaConiferous,
 			double basalAreaM2HaBroadleaved,
 			int dateYr,
@@ -176,7 +176,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	}
 
 	@Override
-	public double getGrowthStepLengthYr() {return growthStepLength;}
+	public int getGrowthStepLengthYr() {return growthStepLength;}
 
 	@Override
 	public int getDateYr() {return dateYr;}

@@ -58,7 +58,7 @@ public class IrisRecruitmentTest {
 		String speciesName = record[header.getIndexOfThisField("speciesGr")].toString();
 		IrisSpecies species = IrisSpecies.valueOf(speciesName);
 		int dateYr = Integer.parseInt(record[header.getIndexOfThisField("year.x")].toString());
-		double growthStepYr = Double.parseDouble(record[header.getIndexOfThisField("dt")].toString());
+		int growthStepYr = Integer.parseInt(record[header.getIndexOfThisField("dt")].toString());
 		double basalAreaM2HaConiferous = Double.parseDouble(record[header.getIndexOfThisField("G_R")].toString());
 		double basalAreaM2HaBroadleaved = Double.parseDouble(record[header.getIndexOfThisField("G_F")].toString());
 		double gSpGr = Double.parseDouble(record[header.getIndexOfThisField("G_SpGr")].toString());
