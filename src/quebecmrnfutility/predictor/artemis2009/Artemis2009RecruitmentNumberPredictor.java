@@ -26,7 +26,7 @@ import repicea.math.Matrix;
 import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
-import repicea.simulation.climate.REpiceaClimateVariableInformation.BioSimClimateVariable;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.Index;
@@ -36,7 +36,10 @@ public class Artemis2009RecruitmentNumberPredictor extends REpiceaPredictor impl
 
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
 	static {
-		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, Artemis2009CompatibleStand.class, Artemis2009CompatibleStand.ClimateVariableResolution);
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
+				Artemis2009CompatibleStand.class, 
+				Artemis2009CompatibleStand.ClimateVariableResolution, 
+				EvaluationDate.EndOfInterval);
 	}
 	
 	protected static boolean Override80Limit = false;

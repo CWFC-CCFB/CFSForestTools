@@ -32,6 +32,7 @@ import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.hdrelationships.HeightPredictor;
@@ -59,7 +60,8 @@ public class GeneralHeight2014Predictor extends REpiceaPredictor implements Heig
 	static {
 		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
 				Heightable2014Stand.class, 
-				Heightable2014Stand.ClimateVariableResolution);
+				Heightable2014Stand.ClimateVariableResolution, 
+				EvaluationDate.Now);
 	}
 	
 	protected static class BetaHeightableStandMonteCarlo implements MonteCarloSimulationCompliantObject {

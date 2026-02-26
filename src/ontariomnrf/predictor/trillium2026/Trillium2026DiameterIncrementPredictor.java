@@ -34,6 +34,7 @@ import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.BioSimModel;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
@@ -58,13 +59,13 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	static {
 		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
 				Trillium2026DiameterIncrementPlot.class, 
-				Trillium2026DiameterIncrementPlot.ClimateVariableResolution);
+				Trillium2026DiameterIncrementPlot.ClimateVariableResolution, EvaluationDate.EndOfInterval);
 		CLIMATE_INFO.get(MeanAnnualTemperatureCelsiusProvider.class).put(Resolution.Normals30Year, 
-				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "T")); 
+				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "T", EvaluationDate.Now)); 
 		CLIMATE_INFO.get(MeanMaximumAnnualTemperatureCelsiusProvider.class).put(Resolution.Normals30Year, 
-				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "TX")); 
+				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "TX", EvaluationDate.Now)); 
 		CLIMATE_INFO.get(TotalAnnualPrecipitationMmProvider.class).put(Resolution.Normals30Year, 
-				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "P")); 
+				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "P", EvaluationDate.Now)); 
 	}
 
 	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();

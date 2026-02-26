@@ -38,6 +38,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
@@ -58,7 +59,8 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	static {
 		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
 				Trillium2026RecruitmentPlot.class, 
-				Trillium2026RecruitmentPlot.ClimateVariableResolution);
+				Trillium2026RecruitmentPlot.ClimateVariableResolution,
+				EvaluationDate.EndOfInterval);
 	}
 
 	static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();

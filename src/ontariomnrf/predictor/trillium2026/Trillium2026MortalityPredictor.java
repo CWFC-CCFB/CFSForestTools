@@ -29,6 +29,7 @@ import repicea.io.javacsv.CSVReader;
 import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
@@ -55,7 +56,8 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 	static {
 		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
 				Trillium2026MortalityPlot.class, 
-				Trillium2026MortalityPlot.ClimateVariableResolution);
+				Trillium2026MortalityPlot.ClimateVariableResolution,
+				EvaluationDate.EndOfInterval);
 	}
 
 	

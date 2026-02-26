@@ -33,6 +33,7 @@ import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
@@ -62,7 +63,8 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	static {
 		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
 				Heightable2009Stand.class, 
-				Heightable2009Stand.ClimateVariableResolution);
+				Heightable2009Stand.ClimateVariableResolution, 
+				EvaluationDate.Now);
 	}
 
 	private static final long serialVersionUID = 20100804L;

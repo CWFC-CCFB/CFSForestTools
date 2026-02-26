@@ -33,6 +33,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.ObjectUtility;
@@ -47,7 +48,7 @@ public class IrisRecruitmentNumberPredictor extends REpiceaPredictor implements 
 	
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
 	static {
-		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, IrisRecruitmentPlot.class, IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution);
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, IrisRecruitmentPlot.class, IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution, EvaluationDate.EndOfInterval);
 	}
 
 	static ParameterMap BetaMap;

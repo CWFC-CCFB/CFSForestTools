@@ -33,6 +33,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
@@ -50,7 +51,8 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	static {
 		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
 				Trillium2026RecruitmentPlot.class, 
-				Trillium2026RecruitmentPlot.ClimateVariableResolution);
+				Trillium2026RecruitmentPlot.ClimateVariableResolution,
+				EvaluationDate.EndOfInterval);
 	}
 
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();

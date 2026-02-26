@@ -1,3 +1,22 @@
+/*
+ * This file is part of the CFSForesttools library.
+ *
+ * Copyright (C) 2026 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
+ */
 package canforservutility.simulation;
 
 import java.util.ArrayList;
@@ -15,6 +34,12 @@ import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.model.glm.LinkFunction;
 import repicea.stats.model.glm.LinkFunction.Type;
 
+/**
+ * An abstract class to support the abundance part of recruitment models using 
+ * occupancy
+ * @param <S> a Plot type that implements the RecruitmentPlotWithOccupancy interface
+ * @author Mathieu Fortin - February 2026
+ */
 @SuppressWarnings("serial")
 public abstract class REpiceaRecruitmentNumberInternalPredictorWithOccupancyIndex<S extends RecruitmentPlotWithOccupancy>
 								extends REpiceaPredictor {
