@@ -26,6 +26,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import quebecmrnfutility.treelogger.meristreelogger.MerisTreeLoggerParameters.MerisTypeMatrix;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
 
@@ -54,10 +56,17 @@ public class MerisTreeLoggerTest {
 		public String getSpeciesName() {return speciesName;}
 
 		@Override
-		public double getBarkProportionOfWoodVolume() {return 0.08;}
+		public double getDbhCm() {return dbhCm;}
 
 		@Override
-		public double getDbhCm() {return dbhCm;}
+		public double getBarkProportionOfWoodVolume(SpeciesLocale locale) {
+			return 0.08;
+		}
+
+		@Override
+		public SpeciesLocale getSpeciesLocale() {
+			return SpeciesLocale.Quebec;
+		}
 		
 	}
 	
@@ -89,7 +98,8 @@ public class MerisTreeLoggerTest {
 	public void test02ImportFromFileHappyPath() {
 		MerisTreeLoggerParameters parms = Singleton.getTreeLoggerParameters();
 		String filename = ObjectUtility.getPackagePath(getClass()) + "Matrice_DAEF_exemple.csv";
-		parms.importFromFile(filename);
+		MerisTypeMatrix newMatrix = parms.readFromFile(filename);
+		parms.currentMatrix.replaceBy(newMatrix);
 		Map<?,?> m = parms.getLogCategories();
 		Assert.assertEquals("Testing number of species", 2, m.size());
 		parms.initializeDefaultLogCategories();

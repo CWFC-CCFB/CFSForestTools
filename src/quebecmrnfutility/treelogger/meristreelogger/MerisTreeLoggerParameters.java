@@ -27,20 +27,32 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
+import quebecmrnfutility.GeneralSettings;
 import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.treelogger.TreeLoggerParameters;
 import repicea.simulation.treelogger.TreeLoggerParametersDialog;
 import repicea.util.ObjectUtility;
+import repicea.util.REpiceaTranslator;
+import repicea.util.REpiceaTranslator.Language;
 
 @SuppressWarnings("serial")
 public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLogCategory>{
 
 	private static List<String> ReservedFieldNames = Arrays.asList(new String[] {"ESSENCE","DHP","GROUPE"});
 	private static String DefaultCode = "DEFAUT";
+
+	private static List<String> SpeciesList = Arrays.asList(new String[] {"BOG", "BOJ", "BOP", "CAC", "CAF", 
+						"CET", "CHB", "CHE", "CHG", "CHR", "EPB", "EPN", "EPO", "EPR", "ERA", "ERN", "ERR",
+						"ERS", "FRA", "FRN", "FRP", "HEG", "MEH", "MEJ", "MEL", "MEU", "NOC", "ORA", "ORR", 
+						"ORT", "OSV", "PEB", "PED", "PEG", "PEH", "PET", "PIB", "PID", "PIG", "PIR", "PIS", 
+						"PRU", "SAB", "THO", "TIL"});
 	
 	private transient MerisTreeLoggerParametersDialog guiInterface;
 	
@@ -73,6 +85,18 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 				MerisTreeLoggerParameters.this.getLogCategories().put(speciesGroup, logCategoriesMap.get(speciesGroup));
 			}
 		}
+		
+		List<String> getMissingSpeciesCodes() {
+			List<String> missingSpeciesCodes = new ArrayList<String>();
+			Set<String> keys = splittingMatrix.keySet();
+			for (String c : SpeciesList) {
+				if (!keys.contains(c)) {
+					missingSpeciesCodes.add(c);
+				}
+			}
+			return missingSpeciesCodes;
+		}
+		
 		
 		List<MerisWoodPiece> processTree(MerisLoggableTree tree) {
 			List<MerisWoodPiece> pieces  = new ArrayList<MerisWoodPiece>();
@@ -135,7 +159,7 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 		String path = ObjectUtility.getRelativePackagePath(getClass());
 //		String filepath = path + "Matrice_DAEF_exemple.csv";
 		String filepath = path + "DAEF_extract_MRPP.csv";
-		importFromFile(filepath);
+		currentMatrix.replaceBy(readFromFile(filepath));
 	}
 
 	private static List<String> extractBasicLogCategoryNames(CSVReader reader) {
@@ -159,9 +183,9 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 	}
 	
 
-	void importFromFile(String filename) {
+	MerisTypeMatrix readFromFile(String filename) {
 		MerisTypeMatrix importedMatrix = internalImportFromFile(filename);
-		currentMatrix.replaceBy(importedMatrix);
+		return importedMatrix;
 	}
 	
 	private synchronized MerisTypeMatrix internalImportFromFile(String filepath) {
@@ -177,11 +201,16 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 			int indexSpeciesGroup = getIndexOfThisField(reader, ReservedFieldNames.get(2));
 			while ((record = reader.nextRecord()) != null) {
 				String speciesCode = record[indexSpeciesCode].toString().trim().toUpperCase();
+				if (!SpeciesList.contains(speciesCode)) {
+					throw new UnsupportedOperationException("The matrix must contain all the following species:" + System.lineSeparator() +
+							SpeciesList.toString());
+				}
 				int diameterClass = Integer.parseInt(record[indexDiameterClass].toString());
 				String speciesGroup = record[indexSpeciesGroup].toString().trim().toUpperCase();
 				if (!merisMatrix.splittingMatrix.containsKey(speciesCode)) {
 					merisMatrix.splittingMatrix.put(speciesCode, new TreeMap<Integer, RowEntry>());
 				}
+				Species sp = GeneralSettings.SPECIES_LOOKUP_MAP.get(speciesCode);
 				Map<Integer, RowEntry> rowCollection = merisMatrix.splittingMatrix.get(speciesCode);
 				if (rowCollection.containsKey(diameterClass)) {
 					throw new UnsupportedOperationException("The file seems to contain twice the diameter class " + diameterClass + " for species " + speciesCode);
@@ -204,7 +233,7 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 					}
 					double proportion = Double.parseDouble(record[indexForThisField].toString());
 					if (proportion > 0d) {
-						MerisTreeLogCategory logCategory = new MerisTreeLogCategory(basicLogCategoryName, speciesGroup, isBarkOneOfLogCategories);
+						MerisTreeLogCategory logCategory = new MerisTreeLogCategory(basicLogCategoryName, speciesGroup, sp.getSpeciesType(), isBarkOneOfLogCategories);
 						values.setValueAt(0, 
 								merisMatrix.logCategoryNames.indexOf(basicLogCategoryName), 
 								Double.parseDouble(record[indexForThisField].toString()));
@@ -248,6 +277,7 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 	}
 
 	public static void main(String[] args) {
+		REpiceaTranslator.setCurrentLanguage(Language.French);
 		MerisTreeLoggerParameters o = new MerisTreeLoggerParameters();
 		o.initializeDefaultLogCategories();
 		o.showUI(null);

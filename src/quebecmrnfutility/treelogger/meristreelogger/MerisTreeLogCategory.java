@@ -23,6 +23,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.treelogger.LogCategory;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.WoodPiece;
@@ -39,6 +40,7 @@ public class MerisTreeLogCategory extends LogCategory {
 	final List<String> speciesListInThisGroup;
 	final boolean isBark;
 	final boolean barkIsOneCategory;
+	final SpeciesType speciesType;
 		
 	/**
 	 * Constructor.
@@ -46,9 +48,10 @@ public class MerisTreeLogCategory extends LogCategory {
 	 * @param speciesGroup
 	 * @param barkIsOneCategory if this boolean is set to true, then we assume that the matrix split the bark into a category
 	 */
-	MerisTreeLogCategory(String logCategoryName, String speciesGroup, boolean barkIsOneCategory) {
+	MerisTreeLogCategory(String logCategoryName, String speciesCode, SpeciesType speciesType, boolean barkIsOneCategory) {
 		super(logCategoryName, false);
-		setSpecies(speciesGroup);
+		setSpecies(speciesCode);
+		this.speciesType = speciesType;
 		this.barkIsOneCategory = barkIsOneCategory;
 		isBark = isBarkInName(logCategoryName);
 		speciesListInThisGroup = new ArrayList<String>();
@@ -78,16 +81,32 @@ public class MerisTreeLogCategory extends LogCategory {
 		return guiInterface != null ? guiInterface.isVisible() : false;
 	}
 
+	/*
+	 * Useless for this TreeLogger
+	 */
 	@Override
 	public double getYieldFromThisPiece(WoodPiece piece) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException("The extractFromTree method is not supported by this class: " + getClass().getName());
+	}
+
+	/*
+	 * Useless for this TreeLogger
+	 */
+	@Override
+	protected List<? extends WoodPiece> extractFromTree(LoggableTree tree, Object... parms) {
+		throw new UnsupportedOperationException("The extractFromTree method is not supported by this class: " + getClass().getName());
 	}
 
 	@Override
-	protected List<? extends WoodPiece> extractFromTree(LoggableTree tree, Object... parms) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getGroupName() {
+		String speciesTypePrefix = speciesType == SpeciesType.BroadleavedSpecies ?
+				" (Feuillus)" :
+					" (Conif\u00E8res)";
+		return getName().concat(speciesTypePrefix);
 	}
-
+	
+//	@Override
+//	public String getName() {
+//		return super.getName() + "_" + ((Species) getSpecies()).getSpeciesType().name();  
+//	}
 }

@@ -28,6 +28,7 @@ import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009.Heighta
 import quebecmrnfutility.predictor.thinners.formerofficialharvestmodule.FormerOfficialHarvestableTree.FormerOfficialHarvestableSpecies;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree.VolSpecies;
 import repicea.simulation.covariateproviders.plotlevel.LandUseProvider.LandUse;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
@@ -225,6 +226,67 @@ public class GeneralSettings {
 		SPECIES_LIST.put("SOD", new SpeciesMatch(Hd2009Species.BOP, VolSpecies.BOG, FormerOfficialHarvestableSpecies.F_1));
 		SPECIES_LIST.put("THO", new SpeciesMatch(Hd2009Species.THO, VolSpecies.THO, FormerOfficialHarvestableSpecies.THO));
 		SPECIES_LIST.put("TIL", new SpeciesMatch(Hd2009Species.TIL, VolSpecies.TIL, FormerOfficialHarvestableSpecies.F_0));
+	}
+
+	
+	public static Map<String, Species> SPECIES_LOOKUP_MAP = new HashMap<String, Species>();
+	static {
+		SPECIES_LOOKUP_MAP.put("BOG", Species.Betula_populifolia);
+		SPECIES_LOOKUP_MAP.put("BOJ", Species.Betula_alleghaniensis);
+		SPECIES_LOOKUP_MAP.put("BOP", Species.Betula_papyrifera);
+		SPECIES_LOOKUP_MAP.put("CAC", Species.Carya_cordiformis);
+		SPECIES_LOOKUP_MAP.put("CAF", Species.Carya_ovata);
+		SPECIES_LOOKUP_MAP.put("CAR", Species.Carpinus_caroliniana);
+		SPECIES_LOOKUP_MAP.put("CEO", Species.Celtis_occidentalis);
+		SPECIES_LOOKUP_MAP.put("CET", Species.Prunus_serotina);
+		SPECIES_LOOKUP_MAP.put("CHB", Species.Quercus_alba);
+		SPECIES_LOOKUP_MAP.put("CHE", Species.Quercus_bicolor);
+		SPECIES_LOOKUP_MAP.put("CHG", Species.Quercus_macrocarpa);
+		SPECIES_LOOKUP_MAP.put("CHR", Species.Quercus_rubra);
+		SPECIES_LOOKUP_MAP.put("CRA", Species.Crategus_spp);
+		SPECIES_LOOKUP_MAP.put("EPB", Species.Picea_glauca);
+		SPECIES_LOOKUP_MAP.put("EPR", Species.Picea_rubens);
+		SPECIES_LOOKUP_MAP.put("EPN", Species.Picea_mariana);
+		SPECIES_LOOKUP_MAP.put("EPO", Species.Picea_abies);
+		SPECIES_LOOKUP_MAP.put("ERA", Species.Acer_saccharinum);
+		SPECIES_LOOKUP_MAP.put("ERG", Species.Acer_negundo);
+		SPECIES_LOOKUP_MAP.put("ERN", Species.Acer_nigrum);
+		SPECIES_LOOKUP_MAP.put("ERR", Species.Acer_rubrum);
+		SPECIES_LOOKUP_MAP.put("ERP", Species.Acer_pensylvanicum);
+		SPECIES_LOOKUP_MAP.put("ERS", Species.Acer_saccharum);
+		SPECIES_LOOKUP_MAP.put("FRA", Species.Fraxinus_americana);
+		SPECIES_LOOKUP_MAP.put("FRN", Species.Fraxinus_nigra);
+		SPECIES_LOOKUP_MAP.put("FRP", Species.Fraxinus_pensylvanica);
+		SPECIES_LOOKUP_MAP.put("HEG", Species.Fagus_grandifolia);
+		SPECIES_LOOKUP_MAP.put("JUV", Species.Juniperus_virginiana);
+		SPECIES_LOOKUP_MAP.put("MAS", Species.Malus_spp);
+		SPECIES_LOOKUP_MAP.put("MEJ", Species.Larix_kaempferi);
+		SPECIES_LOOKUP_MAP.put("MEL", Species.Larix_laricina);
+		SPECIES_LOOKUP_MAP.put("MEU", Species.Larix_decidua);
+		SPECIES_LOOKUP_MAP.put("MEH", Species.Larix_X);
+		SPECIES_LOOKUP_MAP.put("NOC", Species.Juglans_cinerea);
+		SPECIES_LOOKUP_MAP.put("ORA", Species.Ulmus_americana);
+		SPECIES_LOOKUP_MAP.put("ORR", Species.Ulmus_rubra);
+		SPECIES_LOOKUP_MAP.put("ORT", Species.Ulmus_thomasii);
+		SPECIES_LOOKUP_MAP.put("OSV", Species.Ostrya_virginiana);
+		SPECIES_LOOKUP_MAP.put("PET", Species.Populus_tremuloides);
+		SPECIES_LOOKUP_MAP.put("PED", Species.Populus_deltoides);
+		SPECIES_LOOKUP_MAP.put("PEG", Species.Populus_grandidentata);
+		SPECIES_LOOKUP_MAP.put("PEB", Species.Populus_balsamifera);
+		SPECIES_LOOKUP_MAP.put("PEH", Species.Populus_X);
+		SPECIES_LOOKUP_MAP.put("PID", Species.Pinus_rigida);
+		SPECIES_LOOKUP_MAP.put("PIG", Species.Pinus_banksiana);
+		SPECIES_LOOKUP_MAP.put("PIB", Species.Pinus_strobus);
+		SPECIES_LOOKUP_MAP.put("PIR", Species.Pinus_resinosa);
+		SPECIES_LOOKUP_MAP.put("PIS", Species.Pinus_sylvestris);
+		SPECIES_LOOKUP_MAP.put("PRP", Species.Prunus_pensylvanica);
+		SPECIES_LOOKUP_MAP.put("PRU", Species.Tsuga_canadensis);
+		SPECIES_LOOKUP_MAP.put("SAB", Species.Abies_balsamea);
+		SPECIES_LOOKUP_MAP.put("SAL", Species.Salix_spp);
+		SPECIES_LOOKUP_MAP.put("SOA", Species.Sorbus_americana);
+		SPECIES_LOOKUP_MAP.put("SOD", Species.Sorbus_decora);
+		SPECIES_LOOKUP_MAP.put("THO", Species.Thuja_occidentalis);
+		SPECIES_LOOKUP_MAP.put("TIL", Species.Tilia_americana);
 	}
 
 

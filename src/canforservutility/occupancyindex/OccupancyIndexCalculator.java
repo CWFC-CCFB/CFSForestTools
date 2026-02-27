@@ -124,7 +124,7 @@ public class OccupancyIndexCalculator implements Cloneable {
 	 * matrix. Only the first entry of the set of plots with the same subjectId
 	 * is considered in the calculation of the distance matrix.<p>
 	 * The constructor first sets the distances. Then, the occupancy index can be 
-	 * obtained through the {@link OccupancyIndexCalculator#getOccupancyIndex(List, OccupancyIndexCalculablePlot, Enum, double)} 
+	 * obtained through the OccupancyIndexCalculator.getOccupancyIndex(List, OccupancyIndexCalculablePlot, Enum, double) 
 	 * method.
 	 * 
 	 * @param plots a List of OccupancyIndexCalculablePlot instances
@@ -198,7 +198,7 @@ public class OccupancyIndexCalculator implements Cloneable {
 	 * matrix. Only the first entry of the set of plots with the same subjectId
 	 * is considered in the calculation of the distance matrix.<p>
 	 * The constructor first sets the distances. Then, the occupancy index can be 
-	 * obtained through the {@link OccupancyIndexCalculator#getOccupancyIndex(List, OccupancyIndexCalculablePlot, Enum, double)} 
+	 * obtained through the OccupancyIndexCalculator.getOccupancyIndex(List, OccupancyIndexCalculablePlot, Enum, double) 
 	 * method.<p>
 	 * This constructor assumes minimum and maximum year differences of 0 and 10, respectively.
 	 * 
@@ -280,7 +280,6 @@ public class OccupancyIndexCalculator implements Cloneable {
 	 * @param thisPlot the plot of interest
 	 * @param species an enum standing for the species
 	 * @param radiusKm the radius (km) of the area upon which the occupancy is calculated
-	 * @param dateCache a Map in which the subsets of the sample are stored
 	 * @return a GaussiEstimate instance, the mean and variance of which are NaN if the variance
 	 * cannot be calculated, i.e. if there is only one plot within the radius.
 	 */

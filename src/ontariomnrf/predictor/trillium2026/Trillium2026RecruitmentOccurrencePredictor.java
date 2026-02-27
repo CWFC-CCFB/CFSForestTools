@@ -108,7 +108,6 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	 * the occupancy index.
 	 *
 	 * @param isParameterVariabilityEnabled true to enable the parameter estimates variability
-	 * @param isRandomEffectsVariabilityEnabled true to enable the variability in the occupancy index
 	 * @param isResidualVariabilityEnabled true to enable the residual error variability
 	 */
 	protected Trillium2026RecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
@@ -116,14 +115,6 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		
 		internalPredictors = new HashMap<Species, Trillium2026RecruitmentOccurrenceInternalPredictor>();
 		init();
-//		if (plots != null) {
-//			List<OccupancyIndexCalculablePlot> completeList = new ArrayList<OccupancyIndexCalculablePlot>();
-//			completeList.addAll(ReferencePlotsForOccupancyIndexCalculation);
-//			completeList.addAll(plots);
-//			occIndexCalculator = new OccupancyIndexCalculator(plots, nbRealizations);
-//		} else {
-//			occIndexCalculator = null;
-//		}
 	}
 
 	
@@ -164,7 +155,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	}
 
 	/**
-	 * Provide a set of plots from the G&Y program to assess the occupancy index.
+	 * Provide a set of plots from the G&amp;Y program to assess the occupancy index.
 	 * @return a List of OccupancyIndexCalculablePlot instances
 	 */
 	public static List<OccupancyIndexCalculablePlot> getReferencePlotsForOccupancyIndex() {

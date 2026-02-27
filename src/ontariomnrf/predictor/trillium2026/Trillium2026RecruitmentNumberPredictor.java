@@ -81,7 +81,6 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	/**
 	 * Protected constructor for test purposes.
 	 * @param isParameterVariabilityEnabled true to enable the variability in the parameter estimates
-	 * @param isRandomEffectsVariabilityEnabled true to enable the random effect variability
 	 * @param isResidualVariabilityEnabled true to enable the residual variability
 	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */

@@ -21,12 +21,14 @@ package quebecmrnfutility.treelogger.meristreelogger;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 
+import quebecmrnfutility.treelogger.meristreelogger.MerisTreeLoggerParameters.MerisTypeMatrix;
 import repicea.app.SettingMemory;
 import repicea.gui.CommonGuiUtility;
 import repicea.gui.CommonGuiUtility.FileChooserOutput;
@@ -42,7 +44,9 @@ import repicea.util.REpiceaTranslator.TextableEnum;
 public class MerisTreeLoggerParametersDialog extends TreeLoggerParametersDialog<MerisTreeLogCategory> {
 
 	private static enum MessageID implements TextableEnum {
-		ImportFromCSVFile("Import", "Importer");
+		ImportFromCSVFile("Import", "Importer"),
+		MissingSpecies("The matrix is incomplete. These species are missing: ", "La matrice est incompl\u00E8te. Les esp\u00E8ces suivantes sont manquantes : "),
+		SureToContinue("Are you sure you want to continue?", "Etes-vous s\u00FBr de vouloir continuer?");
 
 		MessageID(String englishText, String frenchText) {
 			setText(englishText, frenchText);
@@ -125,8 +129,21 @@ public class MerisTreeLoggerParametersDialog extends TreeLoggerParametersDialog<
 					JFileChooser.OPEN_DIALOG);		// false : not restricted
 
 			if (fileChooserOutput.isValid()) {
-				((MerisTreeLoggerParameters) getTreeLoggerParameters()).importFromFile(fileChooserOutput.getFilename());
-
+				MerisTypeMatrix matrixToBeImported = ((MerisTreeLoggerParameters) getTreeLoggerParameters()).readFromFile(fileChooserOutput.getFilename());
+				List<String> missingSpeciesCodes = matrixToBeImported.getMissingSpeciesCodes();
+				if (!missingSpeciesCodes.isEmpty()) {
+					int response = JOptionPane.showConfirmDialog(this, 
+							MessageID.MissingSpecies.toString() + System.lineSeparator() +
+							missingSpeciesCodes.toString() + System.lineSeparator() +
+							MessageID.SureToContinue.toString(), 
+							UIControlManager.InformationMessageTitle.Warning.toString(), 
+							JOptionPane.OK_CANCEL_OPTION, 
+							JOptionPane.WARNING_MESSAGE);
+					if (response != 0) {
+						return;
+					}
+				}
+				((MerisTreeLoggerParameters) getTreeLoggerParameters()).currentMatrix.replaceBy(matrixToBeImported);
 				postLoadingAction();
 				firePropertyChange(REpiceaAWTProperty.JustLoaded, null, this);
 				if (settings != null) {
