@@ -40,7 +40,6 @@ import repicea.util.ObjectUtility;
 
 public class GeneralHeight2009PredictorTest {
 
-
 	static Map<String, Heightable2009Stand> standMap;
 
 	/*

@@ -20,14 +20,15 @@ package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014;
 
 import java.util.Collection;
 
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalRegionProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
 import repicea.simulation.covariateproviders.plotlevel.ElevationMProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
-import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
-import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.SpruceBudwormDefoliatedProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
 import repicea.simulation.hdrelationships.HDRelationshipStand;
 
 
@@ -41,6 +42,8 @@ public interface Heightable2014Stand extends HDRelationshipStand,
 										SpruceBudwormDefoliatedProvider,
 										TotalAnnualPrecipitationMmProvider {
 	
+	static final Resolution ClimateVariableResolution = Resolution.Normals30Year;
+
 	/**
 	 * This method returns the mean quadratic diameter for the stand. 
 	 * @return the mean quadratic diameter in cm

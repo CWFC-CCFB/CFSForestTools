@@ -21,6 +21,7 @@ package quebecmrnfutility.predictor.artemis2009;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.AreaHaProvider;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
@@ -29,11 +30,11 @@ import repicea.simulation.covariateproviders.plotlevel.GeographicalCoordinatesPr
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
-import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
-import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.MeanQuadraticDiameterCmProvider;
 import repicea.simulation.covariateproviders.plotlevel.PotentialVegetationProvider;
 import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
 
 public interface Artemis2009CompatibleStand extends PotentialVegetationProvider, 
 													InterventionResultProvider, 
@@ -50,7 +51,8 @@ public interface Artemis2009CompatibleStand extends PotentialVegetationProvider,
 													GrowthStepLengthYrProvider,
 													InterventionPlannedProvider {
 	
-	
+	static final Resolution ClimateVariableResolution = Resolution.Normals30Year;
+
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 	

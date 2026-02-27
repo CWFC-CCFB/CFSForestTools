@@ -34,16 +34,18 @@ import repicea.stats.StatisticalUtility;
 @SuppressWarnings("serial")
 class Artemis2014RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 
-	private List<Integer> effectList;
+	private final List<Integer> effectList;
+	private final Artemis2014RecruitmentNumberPredictor owner;
 	
-	protected Artemis2014RecruitmentNumberInternalPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	protected Artemis2014RecruitmentNumberInternalPredictor(boolean isParametersVariabilityEnabled, 
+			boolean isResidualVariabilityEnabled,
+			Artemis2014RecruitmentNumberPredictor owner) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this model
-		init();
+		effectList = new ArrayList<Integer>();
+		this.owner = owner;
 	}
 
-	protected void init() {
-		effectList = new ArrayList<Integer>();
-	}
+	protected void init() {}
 	
 	protected void setBeta(Matrix beta, SymmetricMatrix omega) {
 		ModelParameterEstimates estimate = new SASParameterEstimates(beta, omega);
@@ -63,7 +65,7 @@ class Artemis2014RecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		double dispersion = getParameterEstimates().getMean().getValueAt(beta.m_iRows - 1, 0);		// MF20190627 This line could cause a bug. In stochastic mode the dispersion could be negative 
 		beta.setValueAt(beta.m_iRows - 1, 0, 1d);    // last element is replaced by 1 to account for the offset variable	
 	
-		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2014RecruitmentNumberPredictor.ModuleName, effectList);
+		ParameterDispatcher.getInstance().constructXVector(owner, oXVector, stand, tree, Artemis2014RecruitmentNumberPredictor.ModuleName, effectList);
 //		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
 		double predictedValue = Math.exp(xBeta);

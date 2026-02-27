@@ -24,76 +24,76 @@ package canforservutility.predictor.biomass.lambert2005;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
-import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaPredictor;
-import repicea.util.ObjectUtility;
+import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 
 /**
  * Implement the biomass models in Lambert et al. (2005) for each individual species.
- * @author <ul><li>Jean-Francois Lavoie 2021 <li>Mathieu Fortin February 2026 (refactoring)</ul>
+ * @author <ul><li>Jean-Francois Lavoie 2021 <li>Mathieu Fortin January 2026 (refactoring)</ul>
  * @see <a href=https://doi.org/10.1139/x05-112> Lambert, M.-C., C.-H. Ung, and F. Raulier. 2005. Canadian
  * national tree aboveground biomass equations. Canadian Journal of Forest Research 35(8): 1996-2018 
  * </a>
  */
 @SuppressWarnings("serial")
-public class Lambert2005BiomassPredictor extends REpiceaPredictor {
+public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
 	
-	
-	static final Map<String, Lambert2005Species> ENGLISH_TO_LATIN_LOOKUP_MAP = new HashMap<String, Lambert2005Species>();
+	static final Map<String, Species> ENGLISH_TO_LATIN_LOOKUP_MAP = new HashMap<String, Species>();
 	static {
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Balsam Fir", Lambert2005Species.AbiesBalsamea);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Balsam Poplar", Lambert2005Species.PopulusBalsamifera);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Black Ash", Lambert2005Species.FraxinusNigra);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Black Cherry", Lambert2005Species.PrunusSerotina);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Black Spruce", Lambert2005Species.PiceaMariana);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Eastern Hemlock", Lambert2005Species.TsugaCanadensis);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Eastern White Cedar", Lambert2005Species.ThujaOccidentalis);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Eastern White Pine", Lambert2005Species.PinusStrobus);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Grey Birch", Lambert2005Species.BetulaPopulifolia);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Lodgepole Pine", Lambert2005Species.PinusContorta);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Pine", Lambert2005Species.PinusResinosa);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Silver Maple", Lambert2005Species.AcerSaccharinum);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Sugar Maple", Lambert2005Species.AcerSaccharum);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Tamarack Larch", Lambert2005Species.LarixLaricina);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Birch", Lambert2005Species.BetulaPapyrifera);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Oak", Lambert2005Species.QuercusAlba);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Spruce", Lambert2005Species.PiceaGlauca);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("feuillu", Lambert2005Species.Broadleaved);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("resineux", Lambert2005Species.Coniferous);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("all", Lambert2005Species.Any);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Alpine Fir", Lambert2005Species.AbiesLasiocarpa);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Basswood", Lambert2005Species.TiliaAmericana);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Beech", Lambert2005Species.FagusGrandifolia);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Eastern Red Cedar", Lambert2005Species.JuniperusVirginiana);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Hickory", Lambert2005Species.CaryaSp);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Hop-Hornbeam", Lambert2005Species.OstryaVirginiana);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Jack Pine", Lambert2005Species.PinusBanksiana);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Largetooth Aspen", Lambert2005Species.PopulusGrandidentata);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Ash", Lambert2005Species.FraxinusPennsylvanica);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Maple", Lambert2005Species.AcerRubrum);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Oak", Lambert2005Species.QuercusRubra);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Spruce", Lambert2005Species.PiceaRubens);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Trembling Aspen", Lambert2005Species.PopulusTremuloides);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Ash", Lambert2005Species.FraxinusAmericana);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Elm", Lambert2005Species.UlmusAmericana);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Yellow Birch", Lambert2005Species.BetulaAlleghaniensis);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Balsam Fir", Species.Abies_balsamea);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Balsam Poplar", Species.Populus_balsamifera);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Black Ash", Species.Fraxinus_nigra);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Black Cherry", Species.Prunus_serotina);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Black Spruce", Species.Picea_mariana);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Eastern Hemlock", Species.Tsuga_canadensis);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Eastern White Cedar", Species.Thuja_occidentalis);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Eastern White Pine", Species.Pinus_strobus);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Grey Birch", Species.Betula_populifolia);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Lodgepole Pine", Species.Pinus_contorta);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Pine", Species.Pinus_resinosa);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Silver Maple", Species.Acer_saccharinum);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Sugar Maple", Species.Acer_saccharum);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Tamarack Larch", Species.Larix_laricina);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Birch", Species.Betula_papyrifera);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Oak", Species.Quercus_alba);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Spruce", Species.Picea_glauca);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("feuillu", Species.Other_broadleaved);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("resineux", Species.Other_coniferous);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("all", Species.Other);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Alpine Fir", Species.Abies_lasiocarpa);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Basswood", Species.Tilia_americana);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Beech", Species.Fagus_grandifolia);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Eastern Red Cedar", Species.Juniperus_virginiana);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Hickory", Species.Carya_spp);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Hop-Hornbeam", Species.Ostrya_virginiana);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Jack Pine", Species.Pinus_banksiana);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Largetooth Aspen", Species.Populus_grandidentata);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Ash", Species.Fraxinus_pensylvanica);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Maple", Species.Acer_rubrum);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Oak", Species.Quercus_rubra);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Spruce", Species.Picea_rubens);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Trembling Aspen", Species.Populus_tremuloides);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Ash", Species.Fraxinus_americana);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("White Elm", Species.Ulmus_americana);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Yellow Birch", Species.Betula_alleghaniensis);
 	}
 	
-	final static String SPECIES_FIELD = "ess";
-	private final static String PARM_NAME_FIELD = "Parameter";
-	private final static String ESTIMATE_FIELD = "Estimate";
-	private final static String DEPENDENT_FIELD = "Dependent";
-	private final static String EQUATION_FIELD = "Equation";
-	private final static List<String> S_FIELDS = Arrays.asList(new String[]{"s1", "s2", "s3", "s4", "s5", "s6", "s7"});
+	static final Map<String, Species> Species_LookupMap = new HashMap<String, Species>();
+	static {
+		for (Species sp : ENGLISH_TO_LATIN_LOOKUP_MAP.values()) {
+			Species_LookupMap.put(sp.getLatinName().trim().toLowerCase(), sp);
+		}
+	}
 	
-	public enum BiomassCompartment {
+	public static enum BiomassCompartment {
 		/**
 		 * Wood between 0.30 cm in height and minimum diameter of 9 cm.
 		 */
@@ -142,13 +142,13 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 			this.fieldName = fieldName;
 		}		
 		
-		private static List<String> getWeightLabels() {
+		static List<String> getWeightLabels() {
 			List<BiomassCompartment> compartments = Arrays.asList(BiomassCompartment.values());
 			List<String> weightLabels = compartments.stream().map(p -> p.name().toLowerCase().concat("2")).collect(Collectors.toList());
 			return weightLabels;
 		}
 		
-		private static List<String> getErrorCovarianceEquationLabels() {
+		static List<String> getErrorCovarianceEquationLabels() {
 			List<BiomassCompartment> compartments = Arrays.asList(BiomassCompartment.values());
 			List<String> errCovNames = compartments.stream().map(p -> p.name().toLowerCase()).collect(Collectors.toList());
 			return errCovNames;
@@ -157,8 +157,6 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 
 	private static List<String> PARMS_PREFIX = Arrays.asList(new String[] {"a","b","c"});
 	
-	final static List<String> ESTIMATED_WEIGHT_LABELS = BiomassCompartment.getWeightLabels();
-	final static List<String> ERROR_COVARIANCE_EQUATION_LABELS = BiomassCompartment.getErrorCovarianceEquationLabels();
 	
 	/**
 	 * Define the version of the model.
@@ -207,7 +205,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 	}
 	
 	
-	final Map<ModelVersion, Map<Lambert2005Species, Lambert2005BiomassInternalPredictor>> internalPredictors;
+	final Map<ModelVersion, Map<Species, Lambert2005BiomassInternalPredictor>> internalPredictors;
 
 	/**
 	 * Default constructor for deterministic simulations.
@@ -227,31 +225,24 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 	protected Lambert2005BiomassPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
 
-		internalPredictors = new HashMap<ModelVersion, Map<Lambert2005Species, Lambert2005BiomassInternalPredictor>>();
+		internalPredictors = new HashMap<ModelVersion, Map<Species, Lambert2005BiomassInternalPredictor>>();
 		init();
 	}
 
 	@Override
 	protected void init() {
 		try {
-
-			String path = ObjectUtility.getRelativePackagePath(getClass());
-			
-			for (String prefix : new String[] {"0", "1"}) {
-//			for (String prefix : new String[] {"0"}) {
-				ModelVersion v = prefix.equals("0") ? ModelVersion.Complete : ModelVersion.Reduced;
-				String parmsFilename = path + prefix + "_parms.csv";
-				readParameterFile(parmsFilename, v);	
-				String covbFilename = path + prefix + "_covb.csv";
-				readParameterCovarianceFile(covbFilename, v);
-				String estwFilename = path + prefix + "_estw.csv";
-				readEstimatedWeightsFile(estwFilename, v);
-				String covFilename = path + prefix + "_cov.csv";
-				readErrorCovarianceFile(covFilename, v);					
-			}
-			for (ModelVersion v : this.internalPredictors.keySet()) {
-				for (Lambert2005BiomassInternalPredictor predictorValue : internalPredictors.get(v).values()) {
-					predictorValue.init();
+			for (ModelVersion v : ModelVersion.values()) {
+				for (Species sp : ENGLISH_TO_LATIN_LOOKUP_MAP.values()) {
+					if (!internalPredictors.containsKey(v)) {
+						internalPredictors.put(v, new HashMap<Species, Lambert2005BiomassInternalPredictor>());
+					}
+					Map<Species, Lambert2005BiomassInternalPredictor> innerMap = internalPredictors.get(v);
+					innerMap.put(sp, new Lambert2005BiomassInternalPredictor(v, 
+							sp, 
+							isParametersVariabilityEnabled,
+							isResidualVariabilityEnabled,
+							BiomassParameterLoader.getInstance()));
 				}
 			}
 		} catch (Exception e) {
@@ -259,179 +250,22 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		}		
 	}
 	
-	
-	private Lambert2005Species getLambertSpecies(Object[] record, int indexSpeciesField, ModelVersion v) {
+	static Species getLambertSpecies(Object[] record, int indexSpeciesField, ModelVersion v) {
 		String speciesStr = record[indexSpeciesField].toString();
 		if (!ENGLISH_TO_LATIN_LOOKUP_MAP.containsKey(speciesStr)) {
-			throw new InvalidParameterException("This species cannot be matched to a Latin name: " + speciesStr);
+			throw new InvalidParameterException("This species cannot be matched to a Species enum: " + speciesStr);
 		}
-		Lambert2005Species species = ENGLISH_TO_LATIN_LOOKUP_MAP.get(speciesStr);
+		Species species = ENGLISH_TO_LATIN_LOOKUP_MAP.get(speciesStr);
 		return species;
 	}
-	
-	private void readParameterFile(String filename, ModelVersion v)	{
-		CSVReader reader = null;
-		
-		try {
-			reader = new CSVReader(filename);
-			Object[] record;
-			double value;
-			String paramName;			
-			
-			Lambert2005BiomassInternalPredictor currentInternalPredictor = null; 
 
-			int indexSpeciesField = reader.getHeader().getIndexOfThisField(SPECIES_FIELD);
-			int indexParmNameField = reader.getHeader().getIndexOfThisField(PARM_NAME_FIELD);
-			int indexEstimateField = reader.getHeader().getIndexOfThisField(ESTIMATE_FIELD);
-			
-			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = getLambertSpecies(record, indexSpeciesField, v);
-				// here we create one internal predictor per species and version encountered
-				paramName = record[indexParmNameField].toString();
-				value = Double.parseDouble(record[indexEstimateField].toString());
-
-				if (!internalPredictors.containsKey(v)) {
-					internalPredictors.put(v, new HashMap<Lambert2005Species, Lambert2005BiomassInternalPredictor>());
-				}
-				
-				Map<Lambert2005Species, Lambert2005BiomassInternalPredictor> innerMap = internalPredictors.get(v);
-				
-				if (!innerMap.containsKey(currentSpecies)) {	// create the internalPredictor
-					innerMap.put(currentSpecies, new Lambert2005BiomassInternalPredictor(v, currentSpecies, this.isParametersVariabilityEnabled, this.isResidualVariabilityEnabled));
-				}
-
-				currentInternalPredictor = innerMap.get(currentSpecies);					
-
-				// populate the internalPredictor
-				// Note : some values might be missing from the CSV file, and a value of 0.0 should be used in that case.
-				// This is why we read from the CSV file and write every found value to the predictor which has been initialized with 0.0 values.
-				int paramIndex = ModelVersion.getParmNames(v).indexOf(paramName);						
-				if (paramIndex == -1) {
-					reader.close();
-					throw new InvalidParameterException("The parameter name " + paramName + "cannot be found in this version of the model " + v.name());
-				}
-				currentInternalPredictor.setParameterEstimate(paramIndex, value);						
-			}
-			
-			reader.close();
-		} catch (Exception e) {
-			if (reader != null) {
-				reader.close();
-			}
-			System.out.println("Lambert2005BiomassPredictor.readParameterFile() : Unable to read " + filename + ".  Details : " + e.getMessage());
+	static Species findEligibleSpeciesUsingLatinName(String latinName) {
+		String formattedLatinName = latinName.trim().toLowerCase();
+		Species species = Species_LookupMap.get(formattedLatinName);
+		if (species == null) {
+			throw new UnsupportedOperationException("This species cannot be match with a Species enum: " + latinName);
 		}
-	}
-	
-	private void readParameterCovarianceFile(String filename, ModelVersion v)	{
-		CSVReader reader = null;
-		
-		try {
-			reader = new CSVReader(filename);
-			Object[] record;
-			String parmName;								 		
-			
-			int indexSpeciesField = reader.getHeader().getIndexOfThisField(SPECIES_FIELD);
-			int indexParmNameField = reader.getHeader().getIndexOfThisField(PARM_NAME_FIELD);
-
-			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = getLambertSpecies(record, indexSpeciesField, v);
-				parmName = record[indexParmNameField].toString();
-				List<String> parmNames = ModelVersion.getParmNames(v);
-				int indexParm = parmNames.indexOf(parmName);
-				double values[] = new double[parmNames.size()];
-				
-				for (String pName : parmNames) {
-					int fieldIndex = reader.getHeader().getIndexOfThisField(pName);
-					int indexInArray = parmNames.indexOf(pName);
-					try {
-						values[indexInArray] = Double.parseDouble(record[fieldIndex].toString());
-					} catch (NumberFormatException e)  { 			
-						if (!e.getMessage().equals("empty String")) {
-							reader.close();
-							throw e; 
-						}
-					}
-				}
-								
-				Lambert2005BiomassInternalPredictor currentInternalPredictor = internalPredictors.get(v).get(currentSpecies);
-				
-				// populate the internalPredictor cov values
-				// Note : some values might be missing from the CSV file, and a value of 0.0 should be used in that case.
-				// This is why we read from the CSV file and write every found value to the predictor which has been initialized with 0.0 values.
-				currentInternalPredictor.setParameterCovariance(indexParm, values);						
-			}
-			
-			reader.close();
-		} catch (Exception e) {
-			if (reader != null) {
-				reader.close();
-			}
-			System.out.println("Lambert2005BiomassPredictor.readParameterCovarianceFile() : Unable to read " + filename + ".  Details : " + e.getMessage());
-		}
-	}
-	
-	private void readEstimatedWeightsFile(String filename, ModelVersion v)	{
-		CSVReader reader = null;
-		
-		try {
-			reader = new CSVReader(filename);
-			Object[] record;
-			double value;
-			
-			int indexSpeciesField = reader.getHeader().getIndexOfThisField(SPECIES_FIELD);
-			int indexDependentField = reader.getHeader().getIndexOfThisField(DEPENDENT_FIELD);
-			int indexEstimateField = reader.getHeader().getIndexOfThisField(ESTIMATE_FIELD);
-											 				
-			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = getLambertSpecies(record, indexSpeciesField, v);
-				String weightName = record[indexDependentField].toString();									
-				int indexWeight = ESTIMATED_WEIGHT_LABELS.indexOf(weightName);
-				value = Double.parseDouble(record[indexEstimateField].toString());
-				// all internal predictors should be already known here
-				Lambert2005BiomassInternalPredictor currentInternalPredictor = internalPredictors.get(v).get(currentSpecies);
-				currentInternalPredictor.setEstimatedWeight(indexWeight, value);						
-			}
-			
-			reader.close();
-		} catch (Exception e) {
-			if (reader != null) {
-				reader.close();
-			}
-			System.out.println("Lambert2005BiomassPredictor.readEstimatedWeightsFile() : Unable to read " + filename + ".  Details : " + e.getMessage());
-		}
-	}
-	
-	private void readErrorCovarianceFile(String filename, ModelVersion v)	{
-		CSVReader reader = null;
-		
-		try {
-			reader = new CSVReader(filename);
-			Object[] record;
-			
-			int indexSpeciesField = reader.getHeader().getIndexOfThisField(SPECIES_FIELD);
-			int indexEquationField = reader.getHeader().getIndexOfThisField(EQUATION_FIELD);
-
-			while ((record = reader.nextRecord()) != null) {
-				Lambert2005Species currentSpecies = getLambertSpecies(record, indexSpeciesField, v);
-				String equationName = record[indexEquationField].toString();									
-				int indexEquation = ERROR_COVARIANCE_EQUATION_LABELS.indexOf(equationName);
-				double values[] = new double[S_FIELDS.size()];
-				for (String sf : S_FIELDS) {
-					int indexInFile = reader.getHeader().getIndexOfThisField(sf);
-					int indexInArray = S_FIELDS.indexOf(sf);
-					values[indexInArray] = Double.parseDouble(record[indexInFile].toString());					
-				}
-				Lambert2005BiomassInternalPredictor currentInternalPredictor = internalPredictors.get(v).get(currentSpecies);
-				currentInternalPredictor.setErrorCovariance(indexEquation, values);						
-			}
-			
-			reader.close();
-		} catch (Exception e) {
-			if (reader != null) {
-				reader.close();
-			}
-			System.out.println("Lambert2005BiomassPredictor.readErrorCovarianceFile() : Unable to read " + filename + ".  Details : " + e.getMessage());
-		}
+		return species;
 	}
 	
 	/**
@@ -443,7 +277,11 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 	 */
 	public Matrix predictBiomassKg(Lambert2005Tree tree) {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
-		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(tree.getLambert2005Species());
+		Species species = tree.getLambert2005Species();
+		if (!Species_LookupMap.containsValue(species)) {
+			throw new UnsupportedOperationException("The species " + species.getLatinName() + " is not supported in Lambert et al.'s biomass model!");
+		}
+		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(species);
 		return predictor.predictBiomass(tree);
 	}
 
@@ -464,9 +302,9 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 			throw new InvalidParameterException("If not null, the heightM argument must be positive!");
 		}
 		ModelVersion v = heightM != null ? ModelVersion.Complete : ModelVersion.Reduced;
-		Lambert2005Species species = Lambert2005Species.valueOf(speciesLatin); 
+		Species species = findEligibleSpeciesUsingLatinName(speciesLatin);
 		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(species);
-		return predictor.predictTotalBiomassMg(species, dbhCm, heightM == null ? 0d : heightM);
+		return predictor.predictTotalBiomassMg(dbhCm, heightM == null ? 0d : heightM);
 	}
 
 	/**
@@ -483,5 +321,15 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
 		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(tree.getLambert2005Species());
 		return predictor.getWeight(tree);
-	}	
+	}
+
+	@Override
+	public List<Species> getEligibleSpecies() {
+		List<Species> speciesList = new ArrayList<Species>(Species_LookupMap.values());
+		Collections.sort(speciesList);
+		return speciesList;
+	}
+
+	@Override
+	public SpeciesLocale getScope() {return SpeciesLocale.Canada;}	
 }

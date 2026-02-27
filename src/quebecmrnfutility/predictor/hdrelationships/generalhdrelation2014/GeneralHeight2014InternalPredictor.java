@@ -41,15 +41,17 @@ import repicea.stats.estimates.GaussianErrorTermEstimate;
 class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heightable2014Stand, Heightable2014Tree> {
 
 	private final Hd2014Species species;
+	private final GeneralHeight2014Predictor owner;
 	private Map<String, Matrix> subDomainDummyMap;
 	private Map<String, Matrix> vegPotDummyMap;
 	private Map<String, Matrix> ecoTypeDummyMap;
 	private Map<String, Matrix> disturbanceDummyMap;
 	private List<Effect> effectList;
 	
-	protected GeneralHeight2014InternalPredictor(Hd2014Species species, boolean isVariabilityEnabled) {
+	protected GeneralHeight2014InternalPredictor(Hd2014Species species, boolean isVariabilityEnabled, GeneralHeight2014Predictor owner) {
 		super(isVariabilityEnabled);
 		this.species = species;
+		this.owner = owner;
 	}
 
 
@@ -120,7 +122,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 			System.out.println("Error in HD relationship: The basal area of the plot has not been calculated yet!");
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
-		double averageTemp = stand.getMeanAnnualTemperatureCelsius();	
+		double averageTemp = stand.getMeanAnnualTemperatureCelsius(owner, Heightable2014Stand.ClimateVariableResolution);	
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();
 		boolean isDefoliated = stand.isSBWDefoliated();
@@ -201,7 +203,7 @@ class GeneralHeight2014InternalPredictor extends HDRelationshipPredictor<Heighta
 				oXVector.setValueAt(0, pointeur++, lnDbh * averageTemp);
 				break;
 			case LogDbh_pTot:
-				oXVector.setValueAt(0, pointeur++, lnDbh * stand.getTotalAnnualPrecipitationMm());
+				oXVector.setValueAt(0, pointeur++, lnDbh * stand.getTotalAnnualPrecipitationMm(owner, Heightable2014Stand.ClimateVariableResolution));
 				break;
 //			case LogDbh_Dens:
 //				oXVector.m_afData[0][pointeur++] = lnDbh * stand.getNumberOfStemsHa();

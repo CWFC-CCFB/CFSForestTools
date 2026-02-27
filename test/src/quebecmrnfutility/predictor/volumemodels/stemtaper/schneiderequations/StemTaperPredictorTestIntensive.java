@@ -26,9 +26,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
 import repicea.io.FormatReader;

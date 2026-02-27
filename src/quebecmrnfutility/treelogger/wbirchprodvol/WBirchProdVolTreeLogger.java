@@ -21,13 +21,13 @@ package quebecmrnfutility.treelogger.wbirchprodvol;
 import java.io.IOException;
 import java.util.List;
 
-import repicea.math.Matrix;
 import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesPredictor;
 import quebecmrnfutility.predictor.volumemodels.wbirchloggrades.WBirchLogGradesStand;
+import quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolTreeLoggerParameters.ProductID;
+import repicea.math.Matrix;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
-import quebecmrnfutility.treelogger.wbirchprodvol.WBirchProdVolTreeLoggerParameters.ProductID;
 
 public class WBirchProdVolTreeLogger extends TreeLogger<WBirchProdVolTreeLoggerParameters, WBirchProdVolLoggableTree> {
 

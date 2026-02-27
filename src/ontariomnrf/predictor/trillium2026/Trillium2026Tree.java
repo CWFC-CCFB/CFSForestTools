@@ -19,97 +19,25 @@
  */
 package ontariomnrf.predictor.trillium2026;
 
-import java.security.InvalidParameterException;
-import java.util.HashMap;
-import java.util.Map;
-
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2Provider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
+import repicea.simulation.covariateproviders.treelevel.LnDbhCmProvider;
+import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 public interface Trillium2026Tree extends MonteCarloSimulationCompliantObject,
 											DbhCmProvider,
+											LnDbhCmProvider,
+											SquaredDbhCmProvider,
 											BasalAreaLargerThanSubjectM2Provider 	{
-
-	public static enum Trillium2026TreeSpecies { //32 species or species groups
-		AbiesBalsamea,
-		AcerPensylvanicum,
-		AcerRubrum,
-		AcerSaccharinum,
-		AcerSaccharum,
-		BetulaAlleghaniensis,
-		BetulaPapyrifera,
-		CaryaSpp,
-		FagusGrandifolia,
-		FraxinusAmericana,
-		FraxinusNigra,
-		FraxinusPennsylvanica,
-		JuglansSpp,				// To be merged with meridional species
-		LarixLaricina,
-		LiriodendronTulipifera, // To be merged with meridional species
-		OstryaVirginiana,
-		PiceaMariana,
-		PiceaGlauca,
-		PinusBanksiana,
-		PinusResinosa,
-		PinusStrobus,
-		PopulusBalsamifera,
-		PopulusGrandidentata,
-		PopulusTremuloides,
-		PrunusPensylvanica,
-		PrunusSerotina,
-		QuercusRubra,
-		QuercusSpp,				// To be merged with meridional species
-		ThujaOccidentalis,
-		TiliaAmericana,
-		TsugaCanadensis,
-		UlmusSpp,
-		Shrubs,
-		MeridionalSpecies; 		// should further include Quercus spp, Juglans spp, Liriodendro tulipifera, Pinus rigida, Sassafras albidum
-		
-		private static Map<String, Trillium2026TreeSpecies> MatchingTrilliumSpeciesMap;
-		private static Map<String, Trillium2026TreeSpecies> SppGroupMap;
-		
-		private static synchronized Map<String, Trillium2026TreeSpecies> getMatchingTrilliumSpeciesMap() {
-			if (MatchingTrilliumSpeciesMap == null) {
-				MatchingTrilliumSpeciesMap = new HashMap<String, Trillium2026TreeSpecies>();
-				SppGroupMap = new HashMap<String, Trillium2026TreeSpecies>();
-				for (Trillium2026TreeSpecies sp : Trillium2026TreeSpecies.values()) {
-					String lowercaseName = sp.name().toLowerCase();
-					MatchingTrilliumSpeciesMap.put(lowercaseName, sp);
-					if (lowercaseName.endsWith("spp")) {
-						SppGroupMap.put(lowercaseName.substring(0, lowercaseName.indexOf("spp")), sp);
-					}
-				}
-			}
-			return MatchingTrilliumSpeciesMap;
-		}
-		
-		/**
-		 * Find the enum corresponding to a species name.
-		 * @param speciesLatinName the species name
-		 * @return a Trillium2026TreeSpecies enum
-		 */
-		public static Trillium2026TreeSpecies getTrilliumSpecies(String speciesLatinName) {
-			if (speciesLatinName == null) {
-				throw new InvalidParameterException("The code argument cannot be null!");
-			}
-			
-			String formattedCode = speciesLatinName.replace(" ", "").replace(".", "p").toLowerCase();
-			Trillium2026TreeSpecies species = getMatchingTrilliumSpeciesMap().get(formattedCode);
-			if (species != null) {
-				return species;
-			} else {
-				for (String genus : SppGroupMap.keySet()) {
-					if (formattedCode.startsWith(genus)) {
-						return SppGroupMap.get(genus);
-					}
-				}
-			}
-			return null;
-		}
-	}
 	
+	/**
+	 * Provide a Species instance that must be
+	 * compatible with the model. <p>
+	 * 
+	 * @return an REpiceaSpecies.Species enum
+	 */
+	public Species getTrillium2026TreeSpecies();
 	
-	public Trillium2026TreeSpecies getTrillium2026TreeSpecies();
 }

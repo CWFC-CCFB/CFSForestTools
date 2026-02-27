@@ -21,6 +21,9 @@ package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+
+
 public class Heightable2014StandImpl implements Heightable2014Stand {
 
 	final String subjectID;
@@ -70,7 +73,7 @@ public class Heightable2014StandImpl implements Heightable2014Stand {
 	}
 
 	@Override
-	public double getMeanAnnualTemperatureCelsius() {
+	public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation resolution) {
 		return meanAnnualTemperatureC;
 	}
 
@@ -99,13 +102,8 @@ public class Heightable2014StandImpl implements Heightable2014Stand {
 		return isDefoliated;
 	}
 
-//	@Override
-//	public double getNumberOfStemsHa() {
-//		return numberOfStemsHa;
-//	}
-
 	@Override
-	public double getTotalAnnualPrecipitationMm() {
+	public double getTotalAnnualPrecipitationMm(REpiceaClimateVariableInformation resolution) {
 		return totalAnnualPrecipitationMm;
 	}
 
@@ -119,6 +117,10 @@ public class Heightable2014StandImpl implements Heightable2014Stand {
 	public Collection getTrees() {
 		return trees;
 	}
+
+
+	@Override
+	public String getId() {return subjectID;}
 
 
 //	@Override

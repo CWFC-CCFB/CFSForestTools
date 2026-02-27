@@ -1,8 +1,8 @@
 /*
  * This file is part of the CFSForesttools library
  *
- * Copyright (C) 2021 Her Majesty the Queen in right of Canada
- * Author: Jean-Francois Lavoie
+ * Copyright (C) 2021-26 His Majesty the King in right of Canada
+ * Author: Jean-Francois Lavoie and Mathieu Fortin
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,7 +35,6 @@ import org.junit.Test;
 
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005Tree.Lambert2005Species;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.MerchantableVolumePredictor;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableStand;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableStandImpl;
@@ -44,6 +43,8 @@ import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.util.ObjectUtility;
 
 public class Lambert2005BiomassPredictorTest {
@@ -74,23 +75,22 @@ public class Lambert2005BiomassPredictorTest {
 	
 	@Test	
 	public void test01BiomassPredictionsWithCompleteModel() throws IOException {
-				
 		Lambert2005BiomassPredictor predictor = new Lambert2005BiomassPredictor(false, false);
-		
+
 		// read csv file
 		String path = ObjectUtility.getRelativePackagePath(getClass());
 		String parmsFilename = path + "0_pred_res.csv";
 		CSVReader reader = new CSVReader(parmsFilename);
-		
+
 		Object[] record;
-		
+
 		int csvLine = 2;
-		
+
 		while ((record = reader.nextRecord()) != null) {
-			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			String species = record[reader.getHeader().getIndexOfThisField(BiomassParameterLoader.SPECIES_FIELD)].toString();
 			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
 			double hm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(HEIGHT_FIELD)].toString());
-			
+
 			Matrix groundtruth = new Matrix(PRED_FIELDS.size(),1);
 			for (String f : PRED_FIELDS) {
 				int indexInFile = reader.getHeader().getIndexOfThisField(f);
@@ -98,23 +98,19 @@ public class Lambert2005BiomassPredictorTest {
 						0, 
 						Double.parseDouble(record[indexInFile].toString()));
 			}
-						
+
 			Lambert2005Tree tree = new Lambert2005TreeCompleteImpl(
 					Lambert2005BiomassPredictor.ENGLISH_TO_LATIN_LOOKUP_MAP.get(species),
 					dbhcm, 
 					hm);
-			
+
 			Matrix prediction = predictor.predictBiomassKg(tree);
-											
-//			System.out.println("Species : " + species); 
-//			System.out.println("Ground Truth : " + groundtruth.toString());
-//			System.out.println("Prediction : " + prediction.toString());
-			
+
 			for (int i = 0; i < PRED_FIELDS.size(); i++) {
 				String message ="Comparing prediction " + PRED_FIELDS.get(i) + " at line " + csvLine; 
 				Assert.assertEquals(message, groundtruth.getValueAt(i, 0), prediction.getValueAt(i, 0), 1E-6);
 			}
-			
+
 			csvLine++;
 		}
 		reader.close();			
@@ -133,13 +129,13 @@ public class Lambert2005BiomassPredictorTest {
 		
 		int csvLine = 2;
 		
-		Map<Lambert2005Species, List<Integer>> differentLines = new HashMap<Lambert2005Species, List<Integer>>();
+		Map<REpiceaSpecies, List<Integer>> differentLines = new HashMap<REpiceaSpecies, List<Integer>>();
 		
 		while ((record = reader.nextRecord()) != null) {
-			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			String species = record[reader.getHeader().getIndexOfThisField(BiomassParameterLoader.SPECIES_FIELD)].toString();
 			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
 			double hm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(HEIGHT_FIELD)].toString());
-			
+
 			Matrix groundtruth = new Matrix(PRED_FIELDS.size(),1);
 			for (String f : PRED_FIELDS) {
 				int indexInFile = reader.getHeader().getIndexOfThisField(f);
@@ -163,38 +159,30 @@ public class Lambert2005BiomassPredictorTest {
 						0, 
 						Double.parseDouble(record[indexInFile].toString()));
 			}
-			
+
 			Lambert2005Tree tree = new Lambert2005TreeCompleteImpl(
 					Lambert2005BiomassPredictor.ENGLISH_TO_LATIN_LOOKUP_MAP.get(species),
 					dbhcm, 
 					hm);
-			
+
 			Matrix prediction = predictor.predictBiomassKg(tree);
-			
+
 			Matrix w = predictor.getWeight(tree);					
-			
+
 			Matrix m1 = om.subtract(prediction).elementWiseDivide(w);
-			
-//			System.out.println("Processing line " + csvLine);
-//			System.out.println("Species : " + species); 
-//			System.out.println("Ground Truth : " + res.toString());
-//			System.out.println("Residual  : " + m1.toString());
-								
+				
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(1E-6)) {
-				Lambert2005Species speciesEnum = tree.getLambert2005Species(); 
+				REpiceaSpecies speciesEnum = tree.getLambert2005Species(); 
 				if (!differentLines.containsKey(speciesEnum)) {
 					differentLines.put(speciesEnum, new ArrayList<Integer>());
 				}
 				differentLines.get(speciesEnum).add(csvLine);				
 			}			
-			
+
 			csvLine++;
 		}
 		
-//		for (Integer i : differentLines) {
-//			System.out.println("Found differences at CSV line " + i);
-//		}
 		int nbDifferences = 0;
 		for (List<Integer> diffForAParticularSpecies : differentLines.values()) {
 			nbDifferences += diffForAParticularSpecies.size();
@@ -209,25 +197,25 @@ public class Lambert2005BiomassPredictorTest {
 		
 		reader.close();		
 	}
-	
+
 	@Test	
 	public void test03BiomassPredictionsWithReducedModel() throws IOException {
-				
+
 		Lambert2005BiomassPredictor predictor = new Lambert2005BiomassPredictor(false, false);
-		
+
 		// read csv file
 		String path = ObjectUtility.getRelativePackagePath(getClass());
 		String parmsFilename = path + "1_pred_res.csv";
 		CSVReader reader = new CSVReader(parmsFilename);
-		
+
 		Object[] record;
-		
+
 		int csvLine = 2;
-		
+
 		while ((record = reader.nextRecord()) != null) {
-			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			String species = record[reader.getHeader().getIndexOfThisField(BiomassParameterLoader.SPECIES_FIELD)].toString();
 			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
-			
+
 			Matrix groundtruth = new Matrix(PRED_FIELDS.size(),1);
 			for (String f : PRED_FIELDS) {
 				int indexInFile = reader.getHeader().getIndexOfThisField(f);
@@ -235,22 +223,18 @@ public class Lambert2005BiomassPredictorTest {
 						0, 
 						Double.parseDouble(record[indexInFile].toString()));
 			}
-						
+
 			Lambert2005Tree tree = new Lambert2005TreeReducedImpl(
 					Lambert2005BiomassPredictor.ENGLISH_TO_LATIN_LOOKUP_MAP.get(species),
 					dbhcm);
-			
+
 			Matrix prediction = predictor.predictBiomassKg(tree);
-											
-//			System.out.println("Species : " + species); 
-//			System.out.println("Ground Truth : " + groundtruth.toString());
-//			System.out.println("Prediction : " + prediction.toString());
-			
+
 			for (int i = 0; i < PRED_FIELDS.size(); i++) {
 				String message ="Comparing prediction " + PRED_FIELDS.get(i) + " at line " + csvLine; 
 				Assert.assertEquals(message, groundtruth.getValueAt(i, 0), prediction.getValueAt(i, 0), 1E-6);
 			}
-			
+
 			csvLine++;
 		}
 		reader.close();			
@@ -271,10 +255,10 @@ public class Lambert2005BiomassPredictorTest {
 		
 		int csvLine = 2;
 		
-		Map<Lambert2005Species, List<Integer>> differentLines = new HashMap<Lambert2005Species, List<Integer>>();
+		Map<REpiceaSpecies, List<Integer>> differentLines = new HashMap<REpiceaSpecies, List<Integer>>();
 		
 		while ((record = reader.nextRecord()) != null) {
-			String species = record[reader.getHeader().getIndexOfThisField(Lambert2005BiomassPredictor.SPECIES_FIELD)].toString();
+			String species = record[reader.getHeader().getIndexOfThisField(BiomassParameterLoader.SPECIES_FIELD)].toString();
 			double dbhcm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField(DBH_FIELD)].toString());
 			
 			Matrix groundtruth = new Matrix(PRED_FIELDS.size(),1);
@@ -311,14 +295,9 @@ public class Lambert2005BiomassPredictorTest {
 			
 			Matrix m1 = om.subtract(prediction).elementWiseDivide(w);
 			
-//			System.out.println("Processing line " + csvLine);
-//			System.out.println("Species : " + species); 
-//			System.out.println("Ground Truth : " + res.toString());
-//			System.out.println("Residual  : " + m1.toString());
-								
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(0.5)) {
-				Lambert2005Species speciesEnum = tree.getLambert2005Species(); 
+				REpiceaSpecies speciesEnum = tree.getLambert2005Species(); 
 				if (!differentLines.containsKey(speciesEnum)) {
 					differentLines.put(speciesEnum, new ArrayList<Integer>());
 				}
@@ -328,9 +307,6 @@ public class Lambert2005BiomassPredictorTest {
 			csvLine++;
 		}
 		
-//		for (Integer i : differentLines) {
-//			System.out.println("Found differences at CSV line " + i);
-//		}
 		int nbDifferences = 0;
 		for (List<Integer> diffForAParticularSpecies : differentLines.values()) {
 			nbDifferences += diffForAParticularSpecies.size();
@@ -348,12 +324,12 @@ public class Lambert2005BiomassPredictorTest {
 
 	@Test
 	public void test05ParameterVariability() throws InterruptedException {
-		Lambert2005Tree tree = new Lambert2005TreeReducedImpl(Lambert2005Species.AbiesBalsamea, 20);
+		Lambert2005Tree tree = new Lambert2005TreeReducedImpl(Species.Abies_balsamea, 20);
 		Lambert2005BiomassPredictor predictor = new Lambert2005BiomassPredictor(true);
 		List<String> errorList = new ArrayList<String>();
 		for (ModelVersion v : predictor.internalPredictors.keySet()) {
-			Map<Lambert2005Species, Lambert2005BiomassInternalPredictor> innerMap = predictor.internalPredictors.get(v);
-			for (Lambert2005Species s : innerMap.keySet()) {
+			Map<Species, Lambert2005BiomassInternalPredictor> innerMap = predictor.internalPredictors.get(v);
+			for (Species s : innerMap.keySet()) {
 				try { 
 				Matrix betaThisReal = innerMap.get(s).testParametersForThisRealization(tree);
 				Matrix betaMean = innerMap.get(s).testMeanParameters();
@@ -375,28 +351,28 @@ public class Lambert2005BiomassPredictorTest {
 	@Test
 	public void test06DeterministicFastTrackCompleteVersion() {
 		Lambert2005BiomassPredictor pred = new Lambert2005BiomassPredictor();
-		double observed = pred.predictTotalBiomassMg("AbiesBalsamea", 27.7, 22.1);
+		double observed = pred.predictTotalBiomassMg("Abies balsamea", 27.7, 22.1);
 		Assert.assertEquals("Comparing fasttrack 3-parm model", 0.2632655726, observed, 1E-8);
 	}
 	
 	@Test
 	public void test07DeterministicFastTrackReducedVersion() {
 		Lambert2005BiomassPredictor pred = new Lambert2005BiomassPredictor();
-		double observed = pred.predictTotalBiomassMg("AbiesLasiocarpa", 33.1);
+		double observed = pred.predictTotalBiomassMg("Abies lasiocarpa", 33.1);
 		Assert.assertEquals("Comparing fasttrack 2-parm model", 0.38409593131, observed, 1E-8);
 	}
 	
 	static class Tree extends VolumableTreeImpl implements Lambert2005Tree {
 
-		final Lambert2005Species lambertSpecies;
+		final Species lambertSpecies;
 		
-		public Tree(String speciesName, Lambert2005Species lambertSpecies, double dbhCm, double heightM) {
+		public Tree(String speciesName, Species lambertSpecies, double dbhCm, double heightM) {
 			super(speciesName, dbhCm, heightM);
 			this.lambertSpecies = lambertSpecies;
 		}
 
 		@Override
-		public Lambert2005Species getLambert2005Species() {return lambertSpecies;}
+		public Species getLambert2005Species() {return lambertSpecies;}
 
 		@Override
 		public String getSubjectId() {return null;}
@@ -413,18 +389,17 @@ public class Lambert2005BiomassPredictorTest {
 	public static void main(String[] args) {
 		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
 		Lambert2005BiomassPredictor bioPred = new Lambert2005BiomassPredictor();
-		Lambert2005Species species = Lambert2005Species.PopulusTremuloides;
-		REpiceaSpecies.Species repiceaSpecies = REpiceaSpecies.Species.Populus_spp;
+		Species species = Species.Populus_tremuloides;
 		VolumableStand p = new VolumableStandImpl();
 		Tree t = new Tree("PET", species, 20, 15);
 		double volumeM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t) * 0.001;
-		double overbarkCommercialVolumeM3 = volumeM3 * (1 + repiceaSpecies.getBarkProportionOfWoodVolume());
+		double overbarkCommercialVolumeM3 = volumeM3 * (1 + species.getBarkProportionOfWoodVolume(SpeciesLocale.Quebec));
 		double totalAbovegroundbiomassMg = bioPred.predictBiomassKg(t).getValueAt(BiomassCompartment.TOTAL.ordinal(), 0) * 0.001;
-		double basicWoodDensity = repiceaSpecies.getBasicWoodDensity();
+		double basicWoodDensity = species.getBasicWoodDensity(SpeciesLocale.Quebec);
 		double totalAbovegroundVolumeM3 = totalAbovegroundbiomassMg / basicWoodDensity;
 		double possibleExpansionFactor = totalAbovegroundVolumeM3 / overbarkCommercialVolumeM3;
 		System.out.println("DBH = " + t.getDbhCm() + "; Height = " + t.getHeightM() + "; BEF = " + possibleExpansionFactor);
-		int u = 0;
+//		int u = 0;
 	}
 	
 }

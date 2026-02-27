@@ -19,18 +19,23 @@
  */
 package canforservutility.predictor.iris.recruitment_v1;
 
-import java.security.InvalidParameterException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import canforservutility.predictor.iris.recruitment_v1.IrisCompatibleTree.IrisSpecies;
+import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.ObjectUtility;
 
 /**
@@ -38,7 +43,17 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - June 2023
  */
 @SuppressWarnings("serial")
-public class IrisRecruitmentNumberPredictor extends REpiceaPredictor {
+public class IrisRecruitmentNumberPredictor extends REpiceaPredictor implements ClimateSensitivePredictor {
+
+	
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, IrisRecruitmentPlot.class, IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution, EvaluationDate.EndOfInterval);
+	}
+
+	static ParameterMap BetaMap;
+	static ParameterMap OmegaMap;
+	static ParameterMap SpeciesEffectMatchesMap;
 
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
 	static {
@@ -56,56 +71,56 @@ public class IrisRecruitmentNumberPredictor extends REpiceaPredictor {
 	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */
 	public IrisRecruitmentNumberPredictor(boolean isVariabilityEnabled, IrisRecruitmentOccurrencePredictor occurrencePredictor) {
-		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled, occurrencePredictor);		
+		this(isVariabilityEnabled, isVariabilityEnabled, occurrencePredictor);		
 	}
 
 	/**
 	 * Protected constructor for test purposes.
 	 * @param isParameterVariabilityEnabled true to enable the variability in the parameter estimates
-	 * @param isRandomEffectsVariabilityEnabled true to enable the random effect variability
 	 * @param isResidualVariabilityEnabled true to enable the residual variability
 	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */
 	protected IrisRecruitmentNumberPredictor(boolean isParameterVariabilityEnabled, 
-			boolean isRandomEffectsVariabilityEnabled,
 			boolean isResidualVariabilityEnabled, 
 			IrisRecruitmentOccurrencePredictor occurrencePredictor) {
-		super(isParameterVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);		// no random effect in this module
+		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this module
 		internalPredictors = new HashMap<IrisSpecies, IrisRecruitmentNumberInternalPredictor>();
 		init();
 		this.occurrencePredictor = occurrencePredictor;
 	}
 
 	@Override
-	protected void init() {
-		String rootPath = ObjectUtility.getRelativePackagePath(getClass());
-		String betaFilename = rootPath + "0_RecruitmentNumberBeta.csv";
-		String omegaFilename = rootPath + "0_RecruitmentNumberOmega.csv";
-		String speciesEffectMatchesFilename = rootPath + "0_RecruitmentNumberSpeciesEffectMatches.csv";
-		
-		try {
-			ParameterMap betaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
-			ParameterMap omegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
-			ParameterMap speciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
-			for (IrisSpecies sp : IrisSpecies.values()) {
-				Matrix beta = betaMap.get(sp.ordinal() + 1);
-				SymmetricMatrix omega = omegaMap.get(sp.ordinal() + 1).squareSym();
-				Matrix thetaMat = beta.getSubMatrix(beta.m_iRows - 1, beta.m_iRows - 1, 0, 0);  // theta was concatenated to beta in R
-				beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0);  // drop theta from beta
-				Matrix speciesEffectMatches = speciesEffectMatchesMap.get(sp.ordinal() + 1);
-				speciesEffectMatches = speciesEffectMatches.getSubMatrix(0, speciesEffectMatches.m_iRows - 2, 0, 0); // remove the last effect which is theta
-				IrisRecruitmentNumberInternalPredictor subPredictor = new IrisRecruitmentNumberInternalPredictor(this,
-						isParametersVariabilityEnabled, 
-						isRandomEffectsVariabilityEnabled,
-						isResidualVariabilityEnabled, 
-						thetaMat.getValueAt(0, 0),
-						beta, 
-						omega,
-						speciesEffectMatches);
-				internalPredictors.put(sp, subPredictor);
+	protected synchronized void init() {
+		if (BetaMap == null) {
+			String rootPath = ObjectUtility.getRelativePackagePath(getClass());
+			String betaFilename = rootPath + "0_RecruitmentNumberBeta.csv";
+			String omegaFilename = rootPath + "0_RecruitmentNumberOmega.csv";
+			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentNumberSpeciesEffectMatches.csv";
+			try {
+				BetaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
+				OmegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
+				SpeciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
+			} catch (IOException e) {
+				throw new UnsupportedOperationException(e);
 			}
-		} catch (Exception e) {
-			throw new InvalidParameterException("Unable to load the parameters in the module of recruitment occurrence in Iris 2020!");
+		}
+		
+		for (IrisSpecies sp : IrisSpecies.values()) {
+			Matrix beta = BetaMap.get(sp.ordinal() + 1);
+			SymmetricMatrix omega = OmegaMap.get(sp.ordinal() + 1).squareSym();
+			Matrix thetaMat = beta.getSubMatrix(beta.m_iRows - 1, beta.m_iRows - 1, 0, 0);  // theta was concatenated to beta in R
+			beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0);  // drop theta from beta
+			Matrix speciesEffectMatches = SpeciesEffectMatchesMap.get(sp.ordinal() + 1);
+			speciesEffectMatches = speciesEffectMatches.getSubMatrix(0, speciesEffectMatches.m_iRows - 2, 0, 0); // remove the last effect which is theta
+			IrisRecruitmentNumberInternalPredictor subPredictor = new IrisRecruitmentNumberInternalPredictor(this,
+					isParametersVariabilityEnabled, 
+					isResidualVariabilityEnabled, 
+					thetaMat.getValueAt(0, 0),
+					beta, 
+					omega,
+					speciesEffectMatches,
+					sp);
+			internalPredictors.put(sp, subPredictor);
 		}
 	}
 
@@ -115,7 +130,7 @@ public class IrisRecruitmentNumberPredictor extends REpiceaPredictor {
 	 * @param species an IrisSpecies enum
 	 * @return a double that is the number of recruits in the plot
 	 */
-	public double predictNumberOfRecruits(IrisCompatiblePlot plot, IrisSpecies species) {
+	public double predictNumberOfRecruits(IrisRecruitmentPlot plot, IrisSpecies species) {
 		return internalPredictors.get(species).predictNumberOfRecruits(plot, species);
 	}
 	
@@ -126,4 +141,10 @@ public class IrisRecruitmentNumberPredictor extends REpiceaPredictor {
 	double getInvThetaParameterEstimate(IrisSpecies species) {
 		return internalPredictors.get(species).invTheta;
 	}
+	
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
+	}
+
 }
