@@ -22,8 +22,10 @@ package quebecmrnfutility.treelogger.meristreelogger;
 import java.awt.Container;
 import java.awt.Window;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +36,6 @@ import quebecmrnfutility.GeneralSettings;
 import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
-import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.treelogger.TreeLoggerParameters;
 import repicea.simulation.treelogger.TreeLoggerParametersDialog;
@@ -45,14 +46,27 @@ import repicea.util.REpiceaTranslator.Language;
 @SuppressWarnings("serial")
 public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLogCategory>{
 
-	private static List<String> ReservedFieldNames = Arrays.asList(new String[] {"ESSENCE","DHP","GROUPE"});
-	private static String DefaultCode = "DEFAUT";
+	private static final List<String> ReservedFieldNames = Arrays.asList(new String[] {"ESSENCE","DHP","GROUPE"});
+//	private static String DefaultCode = "DEFAUT";
 
-	private static List<String> SpeciesList = Arrays.asList(new String[] {"BOG", "BOJ", "BOP", "CAC", "CAF", 
+	private static final List<String> SpeciesList = Arrays.asList(new String[] {"BOG", "BOJ", "BOP", "CAC", "CAF", 
 						"CET", "CHB", "CHE", "CHG", "CHR", "EPB", "EPN", "EPO", "EPR", "ERA", "ERN", "ERR",
 						"ERS", "FRA", "FRN", "FRP", "HEG", "MEH", "MEJ", "MEL", "MEU", "NOC", "ORA", "ORR", 
 						"ORT", "OSV", "PEB", "PED", "PEG", "PEH", "PET", "PIB", "PID", "PIG", "PIR", "PIS", 
 						"PRU", "SAB", "THO", "TIL"});
+	
+	private static final Map<String, String> OtherSpeciesLookupMap = new HashMap<String, String>();
+	static {
+		OtherSpeciesLookupMap.put("CHX", "CHR");
+		OtherSpeciesLookupMap.put("EPX", "EPN");
+		OtherSpeciesLookupMap.put("PEU", "PET");
+		OtherSpeciesLookupMap.put("F0R", "CAC");
+		OtherSpeciesLookupMap.put("FEU", "CAC");
+		OtherSpeciesLookupMap.put("F_0", "CAC");
+		OtherSpeciesLookupMap.put("F_1", "PET"); // intolerant hardwood
+		OtherSpeciesLookupMap.put("PIN", "PIB");
+		OtherSpeciesLookupMap.put("RES", "PRU");
+	}
 	
 	private transient MerisTreeLoggerParametersDialog guiInterface;
 	
@@ -101,10 +115,13 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 		List<MerisWoodPiece> processTree(MerisLoggableTree tree) {
 			List<MerisWoodPiece> pieces  = new ArrayList<MerisWoodPiece>();
 			String speciesCode = tree.getSpeciesName().trim().toUpperCase();
-			speciesCode = splittingMatrix.containsKey(speciesCode) ? 
+			String formattedSpeciesCode = splittingMatrix.containsKey(speciesCode) ? 
 					speciesCode : 
-						DefaultCode;
-			TreeMap<Integer, RowEntry> rowCollections = splittingMatrix.get(speciesCode);
+						OtherSpeciesLookupMap.get(speciesCode);
+			if (formattedSpeciesCode == null) {
+				throw new InvalidParameterException("This species code is not supported by MerisTreeLogger: " + speciesCode);
+			}
+			TreeMap<Integer, RowEntry> rowCollections = splittingMatrix.get(formattedSpeciesCode);
 			if (tree.getDbhCm() < 9.1) {
 				return pieces;
 			} else {

@@ -24,5 +24,4 @@ import repicea.simulation.treelogger.LoggableTree;
 
 public interface MerisLoggableTree extends LoggableTree, DbhCmProvider {
 	
-
 }
