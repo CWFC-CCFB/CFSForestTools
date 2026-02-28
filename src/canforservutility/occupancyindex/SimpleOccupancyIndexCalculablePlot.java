@@ -19,6 +19,10 @@
  */
 package canforservutility.occupancyindex;
 
+import java.security.InvalidParameterException;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An implementation of the OccupancyIndexCalculablePlot interface.
  * 
@@ -30,21 +34,77 @@ public class SimpleOccupancyIndexCalculablePlot implements OccupancyIndexCalcula
 	private final double latitudeDeg;
 	private final double longitudeDeg;
 	private final int dateYr;
-	private final double baHaSpecies;
+	private final Map<Enum<?>, Double> baHaSpeciesMap;
+//	private final double baHaSpecies;
 	double distanceKm;
+
 	
-	public SimpleOccupancyIndexCalculablePlot(String id, 
+	/**
+	 * Basic constructor.
+	 * @param id plotId
+	 * @param latitudeDeg latitude
+	 * @param longitudeDeg longitude
+	 * @param dateYr date of measurement
+	 */
+	protected SimpleOccupancyIndexCalculablePlot(String id, 
 			double latitudeDeg, 
 			double longitudeDeg,
-			int dateYr,
-			double baHaSpecies) {
+			int dateYr) {
 		this.id = id;
 		this.latitudeDeg = latitudeDeg;
 		this.longitudeDeg = longitudeDeg; 
 		this.dateYr = dateYr;
-		this.baHaSpecies = baHaSpecies;
+		this.baHaSpeciesMap = new HashMap<Enum<?>, Double>();
+	}
+
+	/**
+	 * Constructor for a single species.
+	 * @param id plotId
+	 * @param latitudeDeg latitude
+	 * @param longitudeDeg longitude
+	 * @param dateYr date of measurement
+	 * @param species an Enum variable standing for the species
+	 * @param baHaSpecies the species basal area in the plot (m2/ha)
+	 */
+	public SimpleOccupancyIndexCalculablePlot(String id, 
+			double latitudeDeg, 
+			double longitudeDeg,
+			int dateYr,
+			Enum<?> species,
+			double baHaSpecies) {
+		this(id, latitudeDeg, longitudeDeg, dateYr);
+		setBasalArea(species, baHaSpecies);
+	}
+
+	/**
+	 * Set a basal area entry for a particular species.
+	 * @param species an Enum variable standing for the species
+	 * @param baHaSpecies the species basal area in the plot (m2/ha)
+	 */
+	public void setBasalArea(Enum<?> species, double baHaSpecies) {
+		baHaSpeciesMap.put(species, baHaSpecies);
 	}
 	
+	/**
+	 * Constructor for a single species.
+	 * @param id plotId
+	 * @param latitudeDeg latitude
+	 * @param longitudeDeg longitude
+	 * @param dateYr date of measurement
+	 * @param speciesBasalAreaMap a Map with Species enum as key and basal area (m2/ha) as value
+	 */
+	public SimpleOccupancyIndexCalculablePlot(String id, 
+			double latitudeDeg, 
+			double longitudeDeg,
+			int dateYr,
+			Map<Enum<?>,Double> speciesBasalAreaMap) {
+		this(id, latitudeDeg, longitudeDeg, dateYr);
+		if (speciesBasalAreaMap == null || speciesBasalAreaMap.isEmpty()) {
+			throw new InvalidParameterException("The speciesBasalAreaMap argument should be a non empty map!");
+		}
+		baHaSpeciesMap.putAll(speciesBasalAreaMap);
+	}
+
 	@Override
 	public String getSubjectId() {return id;}
 
@@ -68,7 +128,9 @@ public class SimpleOccupancyIndexCalculablePlot implements OccupancyIndexCalcula
 	public int getDateYr() {return dateYr;}
 	
 	@Override
-	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {return baHaSpecies;}
+	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {
+		return baHaSpeciesMap.get(species);
+	}
 
 	@Override 
 	public double getAreaHa() {return 0.04;}

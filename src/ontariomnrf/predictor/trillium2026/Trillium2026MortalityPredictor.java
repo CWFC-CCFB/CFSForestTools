@@ -26,7 +26,12 @@ import java.util.List;
 import java.util.Map;
 
 import repicea.io.javacsv.CSVReader;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.species.REpiceaSpeciesCompliantObject;
@@ -44,8 +49,18 @@ import repicea.util.ObjectUtility;
  */
 @SuppressWarnings("serial")
 public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<Trillium2026MortalityPlot, Trillium2026Tree>
-										implements REpiceaSpeciesCompliantObject {
+										implements REpiceaSpeciesCompliantObject,
+													ClimateSensitivePredictor {
 
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
+				Trillium2026MortalityPlot.class, 
+				Trillium2026MortalityPlot.ClimateVariableResolution,
+				EvaluationDate.EndOfInterval);
+	}
+
+	
 	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
 	static {
 		Species[] species = new Species[] {Species.Abies_balsamea, Species.Acer_pensylvanicum, Species.Acer_rubrum,
@@ -137,7 +152,8 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 					EffectLists.get(sp),
 					CoefLists.get(sp),
 					VCovLists.get(sp),
-					RanefVarLists.get(sp)));
+					RanefVarLists.get(sp),
+					this));
 		}
 	}
 
@@ -174,4 +190,9 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
+
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
+	}
 }

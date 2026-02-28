@@ -35,10 +35,12 @@ import repicea.stats.estimates.GaussianEstimate;
 class Artemis2009DiameterIncrementInternalPredictor extends REpiceaPredictor { 
 
 	private final List<Integer> effectList;
+	private final Artemis2009DiameterIncrementPredictor owner;
 	
-	protected Artemis2009DiameterIncrementInternalPredictor(boolean isParametersVariabilityEnabled,	boolean isOtherRandomEffectsVariabilityEnabled) {
+	protected Artemis2009DiameterIncrementInternalPredictor(boolean isParametersVariabilityEnabled,	boolean isOtherRandomEffectsVariabilityEnabled, Artemis2009DiameterIncrementPredictor owner) {
 		super(isParametersVariabilityEnabled, isOtherRandomEffectsVariabilityEnabled, isOtherRandomEffectsVariabilityEnabled);
 		effectList = new ArrayList<Integer>();
+		this.owner = owner;
 	}
 
 	protected void setBeta(Matrix beta, SymmetricMatrix omega) {
@@ -55,7 +57,7 @@ class Artemis2009DiameterIncrementInternalPredictor extends REpiceaPredictor {
 
 	protected synchronized double[] predictGrowth(Artemis2009CompatibleStand stand, Artemis2009CompatibleTree tree) {
 		Matrix beta = getParametersForThisRealization(stand);
-		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2009DiameterIncrementPredictor.ModuleName, effectList);
+		ParameterDispatcher.getInstance().constructXVector(owner, oXVector, stand, tree, Artemis2009DiameterIncrementPredictor.ModuleName, effectList);
 //		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
 		double pred;

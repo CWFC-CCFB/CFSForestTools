@@ -21,7 +21,7 @@ package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.covariateproviders.plotlevel.MeanQuadraticDiameterCmProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
@@ -74,7 +74,7 @@ public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadrat
 	}
 
 	@Override
-	public double getMeanAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {
+	public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation resolution) {
 		return meanAnnualTemperatureC;
 	}
 
@@ -136,6 +136,9 @@ public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadrat
 	public DrainageGroup getDrainageGroup() {
 		return DrainageGroup.Mesic;			// mesic for the sake of simplicity
 	}
+
+	@Override
+	public String getId() {return subjectID;}
 
 
 //	@Override

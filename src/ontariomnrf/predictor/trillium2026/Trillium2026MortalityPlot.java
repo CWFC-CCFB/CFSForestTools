@@ -20,6 +20,7 @@
 package ontariomnrf.predictor.trillium2026;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;
@@ -37,7 +38,8 @@ public interface Trillium2026MortalityPlot extends MonteCarloSimulationCompliant
 											DateYrProvider,
 											MeanTemperatureFromJuneToAugustCelsiusProvider {
 
-
+	static final Resolution ClimateVariableResolution = Resolution.IntervalAveraged;
+	
 	public default boolean isFromPlantation() {return false;}
 
 }

@@ -32,7 +32,7 @@ import org.junit.Test;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
@@ -41,7 +41,7 @@ public class TrilliumDiameterIncrementTest {
 
 	static class Trillium2026TreeImpl implements Trillium2026Tree, Trillium2026DiameterIncrementPlot {
 
-		private final double growthStepLengthYr;
+		private final int growthStepLengthYr;
 		private final double totalAnnualPrecipitationMm;
 		private final double meanAnnualTemperatureCelsius;
 		private final double meanTminJanuaryCelsius;
@@ -68,7 +68,7 @@ public class TrilliumDiameterIncrementTest {
 		protected final double predTransformed;
 		private int mcReal;
 		
-		Trillium2026TreeImpl(double growthStepLengthYr,
+		Trillium2026TreeImpl(int growthStepLengthYr,
 				double totalAnnualPrecipitationMm,
 				double meanAnnualTemperatureCelsius,
 				double meanTminJanuaryCelsius,
@@ -134,64 +134,64 @@ public class TrilliumDiameterIncrementTest {
 		public int getMonteCarloRealizationId() {return mcReal;}
 
 		@Override
-		public double getGrowthStepLengthYr() {return growthStepLengthYr;}
+		public int getGrowthStepLengthYr() {return growthStepLengthYr;}
 
 		@Override
-		public double getTotalAnnualPrecipitationMm(ClimateVariableTemporalResolution resolution) {return totalAnnualPrecipitationMm;}
+		public double getTotalAnnualPrecipitationMm(REpiceaClimateVariableInformation resolution) {return totalAnnualPrecipitationMm;}
 
 		@Override
-		public double getMeanAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return meanAnnualTemperatureCelsius;}
+		public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation resolution) {return meanAnnualTemperatureCelsius;}
 
 		@Override
-		public double getMeanMinimumJanuaryTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return meanTminJanuaryCelsius;}
+		public double getMeanMinimumJanuaryTemperatureCelsius(REpiceaClimateVariableInformation resolution) {return meanTminJanuaryCelsius;}
 
 		@Override
-		public double getTotalPrecipitationFromMarchToMayMm(ClimateVariableTemporalResolution resolution) {return totalPrecMarchToMayMm;}
+		public double getTotalPrecipitationFromMarchToMayMm(REpiceaClimateVariableInformation resolution) {return totalPrecMarchToMayMm;}
 
 		@Override
-		public double getMeanTemperatureFromJuneToAugustCelsius(ClimateVariableTemporalResolution resolution) {return meanTempJuneToAugustCelsius;}
+		public double getMeanTemperatureFromJuneToAugustCelsius(REpiceaClimateVariableInformation resolution) {return meanTempJuneToAugustCelsius;}
 
 		@Override
-		public double getMeanTempAnomalyCelsius() {return t_anom;}
+		public double getMeanTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {return t_anom;}
 
 		@Override
-		public double getTotalRadiation() {return totalRadiation;}
+		public double getTotalAnnualRadiationMjM2(REpiceaClimateVariableInformation info) {return totalRadiation;}
 
 		@Override
-		public double getMeanSummerVPD() {return meanSummerVPD;}
+		public double getMeanVPDFromJuneToAugustHPa(REpiceaClimateVariableInformation info) {return meanSummerVPD;}
 
 		@Override
-		public double getAnnualNbFrostFreeDays(ClimateVariableTemporalResolution resolution) {return frostFreeDays;}
+		public double getAnnualNbFrostFreeDays(REpiceaClimateVariableInformation info) {return frostFreeDays;}
 
 		@Override
-		public double getMeanMaximumJulyTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return meanTmaxJulyCelsius;}
+		public double getMeanMaximumJulyTemperatureCelsius(REpiceaClimateVariableInformation info) {return meanTmaxJulyCelsius;}
 
 		@Override
-		public double getSMImean() {return SMImean;}
+		public double getMeanAnnualSMIPercent(REpiceaClimateVariableInformation info) {return SMImean;}
 
 		@Override
-		public double getMaxTempAnomalyCelsius() {return Mx_anom;}
+		public double getMaxTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {return Mx_anom;}
 
 		@Override
-		public double getMeanSummerVPDDaylight() {return meanSummerVPDDaylight;}
+		public double getMeanVPDDaylightFromJuneToAugustHPa(REpiceaClimateVariableInformation info) {return meanSummerVPDDaylight;}
 
 		@Override
-		public double getTotalPrecipitationFromJuneToAugustMm(ClimateVariableTemporalResolution resolution) {return totalPrecJuneToAugustMm;}
+		public double getTotalPrecipitationFromJuneToAugustMm(REpiceaClimateVariableInformation info) {return totalPrecJuneToAugustMm;}
 
 		@Override
-		public double getTotalPrecipitationAnomalyMm() {return P_anom;}
+		public double getTotalPrecipitationAnomalyMm(Trillium2026DiameterIncrementPredictor owner) {return P_anom;}
 
 		@Override
-		public double getCMI() {return CMI;}
+		public double getMeanAnnualCMICm(REpiceaClimateVariableInformation info) {return CMI;}
 
 		@Override
-		public double getHighestTmaxCelsius() {return highestTmaxCelsius;}
+		public double getHighestAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {return highestTmaxCelsius;}
 
 		@Override
-		public double getGrowingDegreeDaysCelsius(ClimateVariableTemporalResolution resolution) {return degreeDaysCelsius;}
+		public double getGrowingDegreeDaysCelsius(REpiceaClimateVariableInformation resolution) {return degreeDaysCelsius;}
 
 		@Override
-		public double getLowestAnnualTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return lowestTmin;}
+		public double getLowestAnnualTemperatureCelsius(REpiceaClimateVariableInformation resolution) {return lowestTmin;}
 
 
 		@Override
@@ -214,6 +214,14 @@ public class TrilliumDiameterIncrementTest {
 			return getDbhCm() * getDbhCm();
 		}
 
+		@Override
+		public double getMeanMaximumAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {
+			return 0;
+		}
+
+		@Override
+		public String getId() {return null;}
+
 	}
 
 	
@@ -228,7 +236,7 @@ public class TrilliumDiameterIncrementTest {
 			reader = new CSVReader(filename);
 			Object[] record;
 			while ((record = reader.nextRecord()) != null) {
-				double growthStepLengthYr = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("dt")].toString());
+				int growthStepLengthYr = Integer.parseInt(record[reader.getHeader().getIndexOfThisField("dt")].toString());
 				if (growthStepLengthYr > 1) {
 					double totalAnnualPrecipitationMm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("TotalPrcp")].toString());
 					double meanAnnualTemperatureCelsius = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("MeanTair")].toString());

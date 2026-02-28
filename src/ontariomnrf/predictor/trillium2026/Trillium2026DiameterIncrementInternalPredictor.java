@@ -27,14 +27,12 @@ import java.util.Map;
 import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.StatisticalUtility;
 
 @SuppressWarnings("serial")
 final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredictor {
 
-	private static final ClimateVariableTemporalResolution IntervalResolution = ClimateVariableTemporalResolution.IntervalAveraged;
 
 	static enum Effect {
 		Intercept,
@@ -149,64 +147,64 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 				oXVector.setValueAt(0, index++, plot.getGrowthStepLengthYr());
 				break;
 			case MeanTminJanuary:
-				oXVector.setValueAt(0, index++, plot.getMeanMinimumJanuaryTemperatureCelsius(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case TotalPrecMarchToMay:
-				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromMarchToMayMm(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case MeanTempJuneToAugust: 
-				oXVector.setValueAt(0, index++, plot.getMeanTemperatureFromJuneToAugustCelsius(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case MeanTempAnomaly:
-				oXVector.setValueAt(0, index++, plot.getMeanTempAnomalyCelsius());
+				oXVector.setValueAt(0, index++, plot.getMeanTempAnomalyCelsius(owner));
 				break;
 			case DBH_x_BAL:
 				oXVector.setValueAt(0, index++, tree.getBasalAreaLargerThanSubjectM2Ha() * tree.getDbhCm());
 				break;
 			case TotalRadiation:
-				oXVector.setValueAt(0, index++, plot.getTotalRadiation());
+				oXVector.setValueAt(0, index++, plot.getTotalAnnualRadiationMjM2(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case MeanSummerVPD:
-				oXVector.setValueAt(0, index++, plot.getMeanSummerVPD());
+				oXVector.setValueAt(0, index++, plot.getMeanVPDFromJuneToAugustHPa(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case FrostFreeDay:
-				oXVector.setValueAt(0, index++, plot.getAnnualNbFrostFreeDays(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getAnnualNbFrostFreeDays(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case MeanTmaxJuly:
-				oXVector.setValueAt(0, index++, plot.getMeanMaximumJulyTemperatureCelsius(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getMeanMaximumJulyTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case SMImean:
-				oXVector.setValueAt(0, index++, plot.getSMImean());
+				oXVector.setValueAt(0, index++, plot.getMeanAnnualSMIPercent(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case MaxTempAnomaly:
-				oXVector.setValueAt(0, index++, plot.getMaxTempAnomalyCelsius());
+				oXVector.setValueAt(0, index++, plot.getMaxTempAnomalyCelsius(owner));
 				break;
 			case MeanSummerVPDDaylight:
-				oXVector.setValueAt(0, index++, plot.getMeanSummerVPDDaylight());
+				oXVector.setValueAt(0, index++, plot.getMeanVPDDaylightFromJuneToAugustHPa(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case TotalPrecJuneToAugust:
-				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromJuneToAugustMm(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break; 
 			case PrecAnomaly:
-				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationAnomalyMm());
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationAnomalyMm(owner));
 				break;
 			case CMI:
-				oXVector.setValueAt(0, index++, plot.getCMI());
+				oXVector.setValueAt(0, index++, plot.getMeanAnnualCMICm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case HighestTmax:
-				oXVector.setValueAt(0, index++, plot.getHighestTmaxCelsius());
+				oXVector.setValueAt(0, index++, plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case TotalPrcp:
-				oXVector.setValueAt(0, index++, plot.getTotalAnnualPrecipitationMm(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getTotalAnnualPrecipitationMm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case MeanTair:
-				oXVector.setValueAt(0, index++, plot.getMeanAnnualTemperatureCelsius(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getMeanAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case DD:
-				oXVector.setValueAt(0, index++, plot.getGrowingDegreeDaysCelsius(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getGrowingDegreeDaysCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			case LowestTmin:
-				oXVector.setValueAt(0, index++, plot.getLowestAnnualTemperatureCelsius(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			}
 		}

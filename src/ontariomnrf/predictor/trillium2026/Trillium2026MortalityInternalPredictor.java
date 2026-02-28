@@ -29,15 +29,12 @@ import repicea.math.integral.GaussHermiteQuadrature;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaBinaryEventPredictor;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.model.glm.LinkFunction.Type;
 
 @SuppressWarnings("serial")
 class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor<Trillium2026MortalityPlot, Trillium2026Tree> {
 
-	private static final ClimateVariableTemporalResolution IntervalResolution = ClimateVariableTemporalResolution.IntervalAveraged;
-	
 	private static final int DEDLowerBound = 1960;
 	private static final int DEDUpperBound = 1985;
 	
@@ -63,6 +60,7 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 	private final boolean hasPlotRandomEffect;
 	private final EmbeddedLinkFunction linkFunction;
 	private final GaussHermiteQuadrature ghq;
+	private final Trillium2026MortalityPredictor owner;
 	
 	protected Trillium2026MortalityInternalPredictor(boolean isParametersVariabilityEnabled,
 			boolean isRandomEffectsVariabilityEnabled, 
@@ -70,10 +68,12 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 			List<Double> effectList,
 			List<Double> coefList,
 			List<Double> vcovList,
-			List<Double> ranefVar) {
+			List<Double> ranefVar,
+			Trillium2026MortalityPredictor owner) {
 		super(isParametersVariabilityEnabled, 
 				ranefVar != null && isRandomEffectsVariabilityEnabled, // random effect variability cannot be enabled in the model has no random effects
 				isResidualVariabilityEnabled);
+		this.owner = owner;
 		hasPlotRandomEffect = ranefVar != null;
 		this.effectList = new ArrayList<Integer>();
 		for (Double effect : effectList) {
@@ -125,7 +125,7 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 		int index = 0;
 		double dbhCm = tree.getDbhCm();
 		double balM2Ha = tree.getBasalAreaLargerThanSubjectM2Ha();
-		double meanTminJanuary = plot.getMeanMinimumJanuaryTemperatureCelsius(IntervalResolution);
+		double meanTminJanuary = plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026MortalityPlot.ClimateVariableResolution);
 		for (Integer effectId : effectList) {
 			EffectID eff = EffectID.values()[effectId];
 			switch(eff) {
@@ -155,16 +155,16 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 				oXVector.setValueAt(0, index++, meanTminJanuary);
 				break;
 			case MeanTempJuneToAugust:
-				oXVector.setValueAt(0, index++, plot.getMeanTemperatureFromJuneToAugustCelsius(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026MortalityPlot.ClimateVariableResolution));
 				break;
 			case IDBH_x2:
 				oXVector.setValueAt(0, index++, tree.getSquaredDbhCm());
 				break;
 			case TotalPrecMarchToMay:
-				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromMarchToMayMm(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026MortalityPlot.ClimateVariableResolution));
 				break;
 			case TotalPrecJuneToAugust:
-				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromJuneToAugustMm(IntervalResolution));
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026MortalityPlot.ClimateVariableResolution));
 				break;
 			case logDBH_x:
 				oXVector.setValueAt(0, index++, tree.getLnDbhCm());

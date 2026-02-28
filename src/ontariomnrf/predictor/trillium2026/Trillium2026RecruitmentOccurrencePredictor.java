@@ -19,6 +19,7 @@
  */
 package ontariomnrf.predictor.trillium2026;
 
+import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,12 +28,19 @@ import java.util.List;
 import java.util.Map;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
-import canforservutility.occupancyindex.OccupancyIndexCalculator;
+import canforservutility.occupancyindex.SimpleOccupancyIndexCalculablePlot;
+import repicea.io.javacsv.CSVHeader;
+import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaBinaryEventPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.species.REpiceaSpeciesCompliantObject;
@@ -44,44 +52,53 @@ import repicea.util.ObjectUtility;
  */
 @SuppressWarnings("serial")
 public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<Trillium2026RecruitmentPlot, Trillium2026Tree> 
-														implements REpiceaSpeciesCompliantObject {
+														implements REpiceaSpeciesCompliantObject, ClimateSensitivePredictor {
 
-	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
+	
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
+				Trillium2026RecruitmentPlot.class, 
+				Trillium2026RecruitmentPlot.ClimateVariableResolution,
+				EvaluationDate.EndOfInterval);
+	}
+
+	static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
 	static List<Species> SpeciesList;
-//	private static Map<Integer, Species> SpeciesIndexMap = new HashMap<Integer, Species>();
 	static {
 		Species[] species = new Species[] {Species.Abies_balsamea, Species.Acer_rubrum, Species.Acer_saccharum, 
 				Species.Betula_alleghaniensis, Species.Betula_papyrifera, Species.Fagus_grandifolia, 
-				Species.Picea_glauca, Species.Picea_mariana, Species.Pinus_banksiana,
-				Species.Pinus_strobus, Species.Populus_tremuloides};
-//		int index = 1;
+				Species.Ostrya_virginiana, Species.Picea_glauca, Species.Picea_mariana, 
+				Species.Pinus_banksiana, Species.Pinus_strobus, Species.Populus_tremuloides};
 		for (Species sp : species) {
-			SpeciesLookupMap.put(sp.getLatinName(), sp);
-//			SpeciesIndexMap.put(index++, sp);
+			SpeciesLookupMap.put(sp.getLatinName().trim().toLowerCase(), sp);
 		}
 		SpeciesList = Arrays.asList(species);
 	}
-	
-	
+
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
 	static {
-		OccupancyIndexEffects.add(13);
-		OccupancyIndexEffects.add(14);
+		OccupancyIndexEffects.add(18);
+		OccupancyIndexEffects.add(21);
 	}
 
-	private Map<Species, Trillium2026RecruitmentOccurrenceInternalPredictor> internalPredictors;
-
-	final OccupancyIndexCalculator occIndexCalculator;
+	private static ParameterMap BetaMap;
+	private static ParameterMap OmegaMap;
+	private static ParameterMap SpeciesEffectMatchesMap;
+	private static ParameterMap OffsetListMap;
+	private static List<OccupancyIndexCalculablePlot> ReferencePlotsForOccupancyIndexCalculation;
 	
+//	final OccupancyIndexCalculator occIndexCalculator;
+	private final Map<Species, Trillium2026RecruitmentOccurrenceInternalPredictor> internalPredictors;
+	
+//	private List<SimpleOccupancyIndexCalculablePlot, <, Map<>>
 	
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled true to enable the stochastic mode
-	 * @param plots a List of IrisProtoPlot instances that are all the plots to be considered in the calculation of the
-	 * occupancy index.
 	 */
-	public Trillium2026RecruitmentOccurrencePredictor(boolean isVariabilityEnabled, List<OccupancyIndexCalculablePlot> plots) {
-		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled, plots);		// random effect variability is associated with occupancy index measurement error
+	public Trillium2026RecruitmentOccurrencePredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled);		
 	}
 	
 	/**
@@ -91,47 +108,104 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	 * the occupancy index.
 	 *
 	 * @param isParameterVariabilityEnabled true to enable the parameter estimates variability
-	 * @param isRandomEffectsVariabilityEnabled true to enable the variability in the occupancy index
 	 * @param isResidualVariabilityEnabled true to enable the residual error variability
-	 * @param plots a List of IrisProtoPlot instances that are all the plots to be considered in the calculation of the
-	 * occupancy index.
 	 */
 	protected Trillium2026RecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
-			boolean isRandomEffectsVariabilityEnabled, 
-			boolean isResidualVariabilityEnabled,
-			List<OccupancyIndexCalculablePlot> plots) {
-		super(isParameterVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);		
+			boolean isResidualVariabilityEnabled) {
+		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		
+		internalPredictors = new HashMap<Species, Trillium2026RecruitmentOccurrenceInternalPredictor>();
 		init();
-		occIndexCalculator = plots != null ? 
-				new OccupancyIndexCalculator(plots) : 
-					null;
 	}
 
-	@Override
-	protected void init() {
-		internalPredictors = new HashMap<Species, Trillium2026RecruitmentOccurrenceInternalPredictor>();
-		String rootPath = ObjectUtility.getRelativePackagePath(getClass());
-		String betaFilename = rootPath + "0_RecruitmentOccurrenceBeta.csv";
-		String omegaFilename = rootPath + "0_RecruitmentOccurrenceOmega.csv";
-		String speciesEffectMatchesFilename = rootPath + "0_RecruitmentOccurrenceSpeciesEffectMatches.csv";
-		String offsetList = rootPath + "0_RecruitmentOccurrenceOffsetList.csv";
-		
+	
+	private static Map<String, Map<Integer, SimpleOccupancyIndexCalculablePlot>> readRefOccupancyIndex(String filename) throws IOException {
+		Map<String, Map<Integer, SimpleOccupancyIndexCalculablePlot>> occMap = new HashMap<String, Map<Integer, SimpleOccupancyIndexCalculablePlot>>(); 
+		CSVReader reader = null;
 		try {
-			ParameterMap betaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
-			ParameterMap omegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
-			ParameterMap speciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
-			ParameterMap offsetListMap = ParameterLoader.loadVectorFromFile(1, offsetList);
+			reader = new CSVReader(filename);
+			Object[] record;
+			CSVHeader header = reader.getHeader();
+			while((record = reader.nextRecord()) != null) {
+				String speciesStr = record[header.getIndexOfThisField("SpecGroup")].toString();
+				Species sp = SpeciesLookupMap.get(speciesStr.trim().toLowerCase());
+				if (sp != null) {
+					String id = record[header.getIndexOfThisField("uniquePlotID")].toString();
+					int dateYr = ((Number) Double.parseDouble(record[header.getIndexOfThisField("year.x")].toString())).intValue();
+					if (!occMap.containsKey(id)) {
+						occMap.put(id, new HashMap<Integer,SimpleOccupancyIndexCalculablePlot>());
+					}
+					Map<Integer, SimpleOccupancyIndexCalculablePlot> innerMap = occMap.get(id);
+					if (!innerMap.containsKey(dateYr)) {
+						double latitude = Double.parseDouble(record[header.getIndexOfThisField("latitudeDeg")].toString());
+						double longitude = Double.parseDouble(record[header.getIndexOfThisField("longitudeDeg")].toString());
+						double basalAreaM2Ha = Double.parseDouble(record[header.getIndexOfThisField("G_SpGr")].toString());
+						innerMap.put(dateYr, new SimpleOccupancyIndexCalculablePlot(id, latitude, longitude, dateYr, sp, basalAreaM2Ha));
+					} else {
+						double basalAreaM2Ha = Double.parseDouble(record[header.getIndexOfThisField("G_SpGr")].toString());
+						innerMap.get(dateYr).setBasalArea(sp, basalAreaM2Ha);
+					}
+				}
+			}
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+		return occMap;
+	}
+
+	/**
+	 * Provide a set of plots from the G&amp;Y program to assess the occupancy index.
+	 * @return a List of OccupancyIndexCalculablePlot instances
+	 */
+	public static List<OccupancyIndexCalculablePlot> getReferencePlotsForOccupancyIndex() {
+		List<OccupancyIndexCalculablePlot> copyList = new ArrayList<OccupancyIndexCalculablePlot>();
+		if (ReferencePlotsForOccupancyIndexCalculation == null) {
+			String rootPath = ObjectUtility.getRelativePackagePath(Trillium2026RecruitmentOccurrencePredictor.class);
+			String refOccupancyIndex = rootPath + "0_recruitmentRefOccupancyIndex.csv";
+			try {
+				Map<String, Map<Integer,SimpleOccupancyIndexCalculablePlot>> occMap = readRefOccupancyIndex(refOccupancyIndex);
+				ReferencePlotsForOccupancyIndexCalculation = new ArrayList<OccupancyIndexCalculablePlot>();
+				for (Map<Integer,SimpleOccupancyIndexCalculablePlot> innerMap : occMap.values()) {
+					ReferencePlotsForOccupancyIndexCalculation.addAll(innerMap.values());
+				}
+			} catch (IOException e) {
+				throw new RuntimeException("Unable to read reference plots for occupancy index calculation!");
+			}
+		}
+		copyList.addAll(ReferencePlotsForOccupancyIndexCalculation);
+		return copyList;
+	}
+	
+	@Override
+	protected synchronized void init() {
+		if (BetaMap == null) {
+			String rootPath = ObjectUtility.getRelativePackagePath(getClass());
+			String betaFilename = rootPath + "0_RecruitmentOccurrenceBeta.csv";
+			String omegaFilename = rootPath + "0_RecruitmentOccurrenceOmega.csv";
+			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentOccurrenceSpeciesEffectMatches.csv";
+			String offsetList = rootPath + "0_RecruitmentOccurrenceOffsetList.csv";
+			try {
+				BetaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
+				OmegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
+				SpeciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
+				OffsetListMap = ParameterLoader.loadVectorFromFile(1, offsetList);
+				
+			} catch (IOException e) {
+				throw new RuntimeException("Unable to read parameters from files!");
+			}
+		}
+		try {
 			for (int spIndex = 0; spIndex < SpeciesList.size(); spIndex++) {
-				Matrix beta = betaMap.get(spIndex + 1); // index starts from 1 in file
-				SymmetricMatrix omega = omegaMap.get(spIndex + 1).squareSym(); // index starts from 1 in file
-				Matrix speciesEffectMatches = speciesEffectMatchesMap.get(spIndex + 1); // index starts from 1 in file
-				Matrix offset = offsetListMap.get(spIndex + 1); // index starts from 1 in file
+				Matrix beta = BetaMap.get(spIndex + 1); // index starts from 1 in file
+				SymmetricMatrix omega = OmegaMap.get(spIndex + 1).squareSym(); // index starts from 1 in file
+				Matrix speciesEffectMatches = SpeciesEffectMatchesMap.get(spIndex + 1); // index starts from 1 in file
+				Matrix offset = OffsetListMap.get(spIndex + 1); // index starts from 1 in file
 				boolean isOffsetEnabled = offset.getValueAt(0, 0) == 1d;
 				Species sp = SpeciesList.get(spIndex);
 				Trillium2026RecruitmentOccurrenceInternalPredictor subPredictor = new Trillium2026RecruitmentOccurrenceInternalPredictor(this,
 						sp,
 						isParametersVariabilityEnabled, 
-						isRandomEffectsVariabilityEnabled,
 						isResidualVariabilityEnabled, 
 						isOffsetEnabled, 
 						beta, 
@@ -144,6 +218,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 		}
 	}
 
+	
 	Trillium2026RecruitmentOccurrenceInternalPredictor getInternalPredictor(Species species) {
 		if (!SpeciesLookupMap.containsValue(species)) {
 			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + " does not support the species " + species.getLatinName());
@@ -152,10 +227,11 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	}
 
 	static Species getTrillium2026SpeciesFromLatinName(String latinName) {
-		if (!SpeciesLookupMap.containsKey(latinName)) {
+		String formattedName = latinName.trim().toLowerCase();
+		if (!SpeciesLookupMap.containsKey(formattedName)) {
 			throw new UnsupportedOperationException("The " + Trillium2026RecruitmentOccurrencePredictor.class.getSimpleName() + " does not support the species " + latinName);
 		}
-		return SpeciesLookupMap.get(latinName);
+		return SpeciesLookupMap.get(formattedName);
 	}
 
 	@Override
@@ -168,6 +244,11 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
+
+	@Override
+	public  Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
+	}
 	
 	
 }

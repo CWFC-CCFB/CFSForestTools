@@ -26,7 +26,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import repicea.math.Matrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.Index;
 
 /**
@@ -34,7 +39,16 @@ import repicea.util.Index;
  * @author Denis Hache and Hugues Power - 2014, Mathieu Fortin - November 2025
  */
 @SuppressWarnings("serial")
-public class Artemis2014RecruitmentNumberPredictor extends REpiceaPredictor {
+public class Artemis2014RecruitmentNumberPredictor extends REpiceaPredictor implements ClimateSensitivePredictor {
+	
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
+				Artemis2014CompatibleStand.class, 
+				Artemis2014CompatibleStand.ClimateVariableResolution, 
+				EvaluationDate.EndOfInterval);
+	}
+
 	protected static boolean Override80Limit = false;
 
 	protected static final String ModuleName = "recrutement_b"; 
@@ -68,7 +82,7 @@ public class Artemis2014RecruitmentNumberPredictor extends REpiceaPredictor {
 
 			if (beta != null && omegaVectorForm != null) {
 				String vegpotName = vegpotIndex.get(vegpotID);
-				internalPredictor = new Artemis2014RecruitmentNumberInternalPredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled);
+				internalPredictor = new Artemis2014RecruitmentNumberInternalPredictor(isParametersVariabilityEnabled, isResidualVariabilityEnabled, this);
 				internalPredictors.put(vegpotName, internalPredictor);
 				internalPredictor.setBeta(beta, omegaVectorForm.squareSym());
 				internalPredictor.setEffectList(effectList);
@@ -89,6 +103,11 @@ public class Artemis2014RecruitmentNumberPredictor extends REpiceaPredictor {
 			throw new InvalidParameterException("The potential vegetation of this plot is either missing or not considered in the recruit number submodel!");
 		}
 		return internalPredictors.get(potentialVegetationCode).predictNumberOfRecruits(stand, tree);
+	}
+
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
 	}
 	
 }

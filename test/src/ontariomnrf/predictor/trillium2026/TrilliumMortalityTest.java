@@ -32,7 +32,7 @@ import org.junit.Test;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
@@ -41,7 +41,7 @@ public class TrilliumMortalityTest {
 
 	static class Trillium2026TreeImpl implements Trillium2026Tree, Trillium2026MortalityPlot {
 
-		private final double growthStepLengthYr;
+		private final int growthStepLengthYr;
 		private final double meanTminJanuaryCelsius;
 		private final double meanTempJuneToAugustCelsius;
 		private final double totalPrecMarchToMayMm;
@@ -56,7 +56,7 @@ public class TrilliumMortalityTest {
 		private final boolean dummyHarvest;
 		private final boolean planted;
 		
-		Trillium2026TreeImpl(double growthStepLengthYr,
+		Trillium2026TreeImpl(int growthStepLengthYr,
 				double meanTminJanuaryCelsius,
 				double totalPrecMarchToMayMm,
 				double meanTempJuneToAugustCelsius,
@@ -94,19 +94,19 @@ public class TrilliumMortalityTest {
 		public int getMonteCarloRealizationId() {return mcReal;}
 
 		@Override
-		public double getGrowthStepLengthYr() {return growthStepLengthYr;}
+		public int getGrowthStepLengthYr() {return growthStepLengthYr;}
 
 		@Override
-		public double getMeanMinimumJanuaryTemperatureCelsius(ClimateVariableTemporalResolution resolution) {return meanTminJanuaryCelsius;}
+		public double getMeanMinimumJanuaryTemperatureCelsius(REpiceaClimateVariableInformation resolution) {return meanTminJanuaryCelsius;}
 
 		@Override
-		public double getTotalPrecipitationFromMarchToMayMm(ClimateVariableTemporalResolution resolution) {return totalPrecMarchToMayMm;}
+		public double getTotalPrecipitationFromMarchToMayMm(REpiceaClimateVariableInformation resolution) {return totalPrecMarchToMayMm;}
 
 		@Override
-		public double getMeanTemperatureFromJuneToAugustCelsius(ClimateVariableTemporalResolution resolution) {return meanTempJuneToAugustCelsius;}
+		public double getMeanTemperatureFromJuneToAugustCelsius(REpiceaClimateVariableInformation resolution) {return meanTempJuneToAugustCelsius;}
 
 		@Override
-		public double getTotalPrecipitationFromJuneToAugustMm(ClimateVariableTemporalResolution resolution) {return totalPrecJuneToAugustMm;}
+		public double getTotalPrecipitationFromJuneToAugustMm(REpiceaClimateVariableInformation resolution) {return totalPrecJuneToAugustMm;}
 
 		@Override
 		public double getDbhCm() {return dbhCm;}
@@ -138,6 +138,9 @@ public class TrilliumMortalityTest {
 		@Override
 		public boolean isFromPlantation() {return planted;}
 
+		@Override
+		public String getId() {return null;}
+
 	}
 
 
@@ -152,7 +155,7 @@ public class TrilliumMortalityTest {
 			reader = new CSVReader(filename);
 			Object[] record;
 			while ((record = reader.nextRecord()) != null) {
-				double growthStepLengthYr = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("dt")].toString());
+				int growthStepLengthYr = Integer.parseInt(record[reader.getHeader().getIndexOfThisField("dt")].toString());
 				double meanTminJanuaryCelsius = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("MeanTminJanuary")].toString());
 				double totalPrecMarchToMayMm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("TotalPrecMarchToMay")].toString());
 				double meanTempJuneToAugustCelsius = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("MeanTempJuneToAugust")].toString());

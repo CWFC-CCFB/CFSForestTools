@@ -38,17 +38,19 @@ import repicea.stats.StatisticalUtility;
 @SuppressWarnings("serial")
 class Artemis2014RecruitDiameterInternalPredictor extends REpiceaPredictor {
 
-	private List<Integer> effectList;
+	private final List<Integer> effectList;
+	private final Artemis2014RecruitDiameterPredictor owner;
 
-	protected Artemis2014RecruitDiameterInternalPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	protected Artemis2014RecruitDiameterInternalPredictor(boolean isParametersVariabilityEnabled, 
+			boolean isResidualVariabilityEnabled,
+			Artemis2014RecruitDiameterPredictor owner) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this model
-		init();
-	}
-
-	protected void init() {
 		effectList = new ArrayList<Integer>();
+		this.owner = owner;
 	}
 
+	@Override
+	protected void init() {}
 	
 	protected void setBeta(Matrix beta, SymmetricMatrix omega) {
 		ModelParameterEstimates estimate = new SASParameterEstimates(beta, omega);
@@ -68,7 +70,7 @@ class Artemis2014RecruitDiameterInternalPredictor extends REpiceaPredictor {
 		final double dispersion = beta.getValueAt(beta.m_iRows-1, 0);	// last element (dispersion) is taken out of the vector
 		beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0); 	// vector is resized to omit the last element (dispersion)
 
-		ParameterDispatcher.getInstance().constructXVector(oXVector, stand, tree, Artemis2014MortalityPredictor.ModuleName, effectList);
+		ParameterDispatcher.getInstance().constructXVector(owner, oXVector, stand, tree, Artemis2014MortalityPredictor.ModuleName, effectList);
 //		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		final double xBeta = ParameterDispatcher.getInstance().getProduct(oXVector, beta);
 		

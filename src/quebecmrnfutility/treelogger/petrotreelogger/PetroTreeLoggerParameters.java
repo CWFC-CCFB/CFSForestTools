@@ -43,6 +43,7 @@ public final class PetroTreeLoggerParameters extends TreeLoggerParameters<PetroT
 	/**
 	 * This method is already called in the super constructor
 	 */
+	@Override
 	public void initializeDefaultLogCategories() {
 		getLogCategories().clear();
 		

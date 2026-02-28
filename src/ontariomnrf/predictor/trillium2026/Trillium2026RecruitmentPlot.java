@@ -19,38 +19,45 @@
  */
 package ontariomnrf.predictor.trillium2026;
 
-import java.util.List;
-
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
+import canforservutility.simulation.RecruitmentPlotWithOccupancy;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaBySpeciesTypeM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
+import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;
+import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
+import repicea.simulation.covariateproviders.plotlevel.SlopeInclinationPercentProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.AnnualFrostFreeDaysProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.AnnualGrowingDegreeDaysCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.HighestAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.LowestAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanMaximumJulyTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanMinimumJanuaryTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromJuneToAugustMmProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromMarchToMayMmProvider;
 
 public interface Trillium2026RecruitmentPlot extends MonteCarloSimulationCompliantObject,
 											GrowthStepLengthYrProvider,
 											TotalAnnualPrecipitationMmProvider,
-											MeanMinimumJanuaryTemperatureCelsiusProvider,
 											TotalPrecipitationFromMarchToMayMmProvider,
+											TotalPrecipitationFromJuneToAugustMmProvider,
+											MeanMinimumJanuaryTemperatureCelsiusProvider,
+											MeanAnnualTemperatureCelsiusProvider,
+											MeanMaximumJulyTemperatureCelsiusProvider,
 											LowestAnnualTemperatureCelsiusProvider,
+											HighestAnnualTemperatureCelsiusProvider,
 											AnnualFrostFreeDaysProvider,
 											AnnualGrowingDegreeDaysCelsiusProvider,
 											BasalAreaBySpeciesTypeM2HaProvider,
-											OccupancyIndexCalculablePlot {
+											OccupancyIndexCalculablePlot,
+											SlopeInclinationPercentProvider,
+											InterventionResultProvider,
+											InterventionPlannedProvider,
+											RecruitmentPlotWithOccupancy {
 
-
-
-
-	/**
-	 * Return the list of plots to use to calculate the occupancy index.
-	 * @return a List of IrisProtoPlot instances
-	 */
-	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation();
-
+	static final Resolution ClimateVariableResolution = Resolution.IntervalAveragedStarting20YrsBeforeFinalMeasurement;
 
 }

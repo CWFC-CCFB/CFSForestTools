@@ -20,93 +20,43 @@
 package canforservutility.predictor.iris.recruitment_v1;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.List;
 
 import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.DisturbanceType;
 import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.SoilDepth;
 import canforservutility.predictor.iris.recruitment_v1.IrisRecruitmentPlot.SoilTexture;
 import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
-import repicea.math.AbstractMathematicalFunctionWrapper;
+import canforservutility.simulation.REpiceaRecruitmentNumberInternalPredictorWithOccupancyIndex;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
-import repicea.math.integral.GaussHermiteQuadrature;
-import repicea.math.integral.GaussHermiteQuadrature.GaussHermiteQuadratureCompatibleFunction;
 import repicea.simulation.ModelParameterEstimates;
-import repicea.simulation.REpiceaPredictor;
-import repicea.simulation.climate.REpiceaClimateManager.ClimateVariableTemporalResolution;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
-import repicea.stats.LinearStatisticalExpression;
 import repicea.stats.StatisticalUtility;
-import repicea.stats.estimates.GaussianEstimate;
-import repicea.stats.model.glm.LinkFunction;
-import repicea.stats.model.glm.LinkFunction.Type;
 
 @SuppressWarnings("serial")
-class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
+class IrisRecruitmentNumberInternalPredictor extends REpiceaRecruitmentNumberInternalPredictorWithOccupancyIndex<IrisRecruitmentPlot> {
 
-	private final static ClimateVariableTemporalResolution IntervalBeforeStartResolution = ClimateVariableTemporalResolution.IntervalAveragedStartingBeforeInitialMeasurement;
-
-	/**
-	 * A nested class for Gauss-Hermite quadrature in case the random variability around occupancy index is
-	 * disabled.
-	 * @author Mathieu Fortin - June 2023
-	 */
-	class GaussHermiteImpl extends AbstractMathematicalFunctionWrapper implements GaussHermiteQuadratureCompatibleFunction<Double> {
-		
-		private final double c;
-		
-		GaussHermiteImpl(Matrix xVector, Matrix beta, double sigma2) {
-			super(new LinkFunction(Type.Log, new LinearStatisticalExpression()));
-			getOriginalFunction().setVariables(xVector);
-			getOriginalFunction().setParameters(beta);
-			this.c = Math.sqrt(2 * sigma2);
-		}
-
-		@Override
-		public double convertFromGaussToOriginal(double x, double mu, int covarianceIndexI, int covarianceIndexJ) {
-			return c*x + mu;
-		}
-
-		@Override
-		public Double getValue() {
-			double mu = getOriginalFunction().getValue();
-			return mu + 1;
-		}
-
-		@Override
-		public Matrix getGradient() {return null;}
-
-		@Override
-		public SymmetricMatrix getHessian() {return null;}
-	}
 	
 	
 	private final IrisRecruitmentNumberPredictor owner;
-	private final List<Integer> effectList;
 	protected final double theta; // as produced by R
 	protected final double invTheta; //
-	private final List<Integer> occupancyIndexVarIndices; // effect Ids that include the occupancy index
-	private final GaussHermiteQuadrature ghq;
 	
 	protected IrisRecruitmentNumberInternalPredictor(IrisRecruitmentNumberPredictor owner,
 			boolean isParametersVariabilityEnabled, 
-			boolean isRandomEffectsVariabilityEnabled,
 			boolean isResidualVariabilityEnabled, 
 			double thetaParm,
 			Matrix beta,
 			SymmetricMatrix omega,
-			Matrix effectMat) {
-		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);		// random effect stands for occupancy index variability
+			Matrix effectMat,
+			IrisSpecies species) {
+		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled, species);		// random effect stands for occupancy index variability
 		this.owner = owner;
 		
 		ModelParameterEstimates estimate = new ModelParameterEstimates(beta, omega);
 		setParameterEstimates(estimate);
 		oXVector = new Matrix(1, estimate.getMean().m_iRows);
 		
-		effectList = new ArrayList<Integer>();
-		occupancyIndexVarIndices = new ArrayList<Integer>();
 		for (int i = 0; i < effectMat.m_iRows; i++) {
 			int effectId = (int) effectMat.getValueAt(i, 0);
 			effectList.add(effectId);
@@ -117,19 +67,13 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		
 		this.theta = thetaParm;
 		this.invTheta = 1d/this.theta;
-		ghq = new GaussHermiteQuadrature(); // a default 5-point Gauss-Hermite quadrature
 	}
 
 	@Override
 	protected void init() {}
 
-	private void setOccupancyInXVector(IrisRecruitmentPlot plot, IrisSpecies species, double occupancyIndex10km) {
-		for (int effectId : occupancyIndexVarIndices) {
-			setValueInXVector(effectId, plot, species, occupancyIndex10km); 
-		}
-	}
-
-	private double getNumber(Matrix beta) {
+	@Override
+	protected double getNumber(Matrix beta) {
 		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		double mu = Math.exp(xBeta);
 		if (isResidualVariabilityEnabled) {
@@ -139,36 +83,8 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 		}
 	}
 	
-	public synchronized double predictNumberOfRecruits(IrisRecruitmentPlot plot, IrisSpecies species) {
-		Matrix beta = getParametersForThisRealization(plot);
-		constructXVector(plot, species);
-		
-		if (isUsingOccupancyIndex()) {
-			if (plot instanceof IrisRecruitmentPlotWithKnownOccupancy) { // occupancy is assumed to be known
-				double occupancyIndex10kmRandomDeviate = ((IrisRecruitmentPlotWithKnownOccupancy) plot).getOccupancyIndex10km(species);
-				setOccupancyInXVector(plot, species, occupancyIndex10kmRandomDeviate);
-				return getNumber(beta);
-			}
-			if (isRandomEffectsVariabilityEnabled) {
-				double occupancyIndex10kmRandomDeviate = owner.occurrencePredictor.getInternalPredictor(species).getOccupancyRandomDeviate(plot, species);
-				setOccupancyInXVector(plot, species, occupancyIndex10kmRandomDeviate);
-				return getNumber(beta);
-			} else {
-				GaussianEstimate estimate = owner.occurrencePredictor.getInternalPredictor(species).getOccupancyIndex(plot, species);
-				setOccupancyInXVector(plot, species, estimate.getMean().getValueAt(0, 0)); // we set the variable to its mean before performing the quadrature
-				GaussHermiteImpl ghi = new GaussHermiteImpl(oXVector, beta, estimate.getVariance().getValueAt(0, 0));
-				double ghqApproximation = ghq.getIntegralApproximation(ghi, effectList.indexOf(IrisRecruitmentNumberPredictor.OccupancyIndexEffects.get(0)), false);
-				return ghqApproximation;
-			}
-		} else { // not using occupancy index
-			return getNumber(beta);
-		}
-	}
-
-	
-	private boolean isUsingOccupancyIndex() {return !occupancyIndexVarIndices.isEmpty();}
-	
-	private void setValueInXVector(int effectId, IrisRecruitmentPlot plot, IrisSpecies species, double occupancyIndex10km) {
+	@Override
+	protected void setValueInXVector(int effectId, IrisRecruitmentPlot plot, Enum<?> species, double occupancyIndex10km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
@@ -179,11 +95,13 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 			oXVector.setValueAt(0, index, 1d);
 			break;
 		case 2: // DD
-			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution));
+			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution));
 			break;
 		case 3: // DD2
-			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution) * 
-					plot.getGrowingDegreeDaysCelsius(IntervalBeforeStartResolution));
+			double DD = plot.getGrowingDegreeDaysCelsius(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution);
+			oXVector.setValueAt(0, index, DD * DD);
 			break;
 		case 4: // dt
 			oXVector.setValueAt(0, index, plot.getGrowthStepLengthYr());
@@ -244,7 +162,8 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 			}
 			break;
 		case 16: // FrostDay
-			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(IntervalBeforeStartResolution));
+			oXVector.setValueAt(0, index, plot.getAnnualNbFrostDays(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution));
 			break;
 		case 17: // G_F
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
@@ -267,7 +186,8 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 			oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 			break;
 		case 24: // LowestTmin
-			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(IntervalBeforeStartResolution));
+			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution));
 			break;
 		case 25: // occIndex10km
 			oXVector.setValueAt(0, index, occupancyIndex10km);
@@ -282,28 +202,16 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaPredictor {
 			oXVector.setValueAt(0, index, plot.getDateYr() + plot.getGrowthStepLengthYr() - 1970);
 			break;
 		case 30: // TotalPrcp
-			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution));
+			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution));
 			break;
 		case 31: // TotalPrcp * TotalPrcp
-			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution) * 
-					plot.getTotalAnnualPrecipitationMm(IntervalBeforeStartResolution));
+			double totalPrcp = plot.getTotalAnnualPrecipitationMm(owner,
+					IrisRecruitmentOccurrencePredictor.RecruitmentClimateVariableResolution);
+			oXVector.setValueAt(0, index, totalPrcp * totalPrcp);
 			break;
 		default:
 			throw new InvalidParameterException("The effect id " + effectId + " is unknown!");
 		}
 	}
-	
-	private void constructXVector(IrisRecruitmentPlot plot, IrisSpecies species) {
-		oXVector.resetMatrix();
-		
-		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();
-		effectListWithoutOccIndex.addAll(effectList);
-		effectListWithoutOccIndex.removeAll(occupancyIndexVarIndices);
-		for (int effectId : effectListWithoutOccIndex) {
-			setValueInXVector(effectId, plot, species, 0d); // occupancy index set to 0 for now
-		}
-	}
-
-
-
 }

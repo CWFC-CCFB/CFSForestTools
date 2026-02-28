@@ -29,8 +29,17 @@ import ontariomnrf.predictor.trillium2026.Trillium2026DiameterIncrementInternalP
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.BioSimModel;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanMaximumAnnualTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.species.REpiceaSpeciesCompliantObject;
@@ -42,7 +51,22 @@ import repicea.util.ObjectUtility;
  */
 @SuppressWarnings("serial")
 public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor 
-												implements REpiceaSpeciesCompliantObject {
+												implements REpiceaSpeciesCompliantObject,
+												ClimateSensitivePredictor {
+
+	
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
+				Trillium2026DiameterIncrementPlot.class, 
+				Trillium2026DiameterIncrementPlot.ClimateVariableResolution, EvaluationDate.EndOfInterval);
+		CLIMATE_INFO.get(MeanAnnualTemperatureCelsiusProvider.class).put(Resolution.Normals30Year, 
+				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "T", EvaluationDate.Now)); 
+		CLIMATE_INFO.get(MeanMaximumAnnualTemperatureCelsiusProvider.class).put(Resolution.Normals30Year, 
+				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "TX", EvaluationDate.Now)); 
+		CLIMATE_INFO.get(TotalAnnualPrecipitationMmProvider.class).put(Resolution.Normals30Year, 
+				new REpiceaClimateVariableInformation(Resolution.Normals30Year, BioSimModel.Normals1961_1990, "P", EvaluationDate.Now)); 
+	}
 
 	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
 	static {
@@ -262,4 +286,9 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
+
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
+	}
 }
