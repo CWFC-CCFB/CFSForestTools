@@ -43,6 +43,10 @@ import repicea.util.REpiceaTranslator.TextableEnum;
 @SuppressWarnings("serial")
 public class MerisTreeLoggerParametersDialog extends TreeLoggerParametersDialog<MerisTreeLogCategory> {
 
+	static {
+		UIControlManager.setTitle(MerisTreeLoggerParametersDialog.class, "MERIS Tree Logger", "Module de billonnage MERIS");
+	}
+	
 	private static enum MessageID implements TextableEnum {
 		ImportFromCSVFile("Import", "Importer"),
 		MissingSpecies("The matrix is incomplete. These species are missing: ", "La matrice est incompl\u00E8te. Les esp\u00E8ces suivantes sont manquantes : "),
@@ -73,6 +77,7 @@ public class MerisTreeLoggerParametersDialog extends TreeLoggerParametersDialog<
 		mnFile.add(new JSeparator());
 		mnFile.add(importButton); 
 		importButton.setEnabled(getTreeLoggerParameters().getGUIPermission().isEnablingGranted());
+		setTitle(UIControlManager.getTitle(getClass()));
 	}
 
 	@Override
