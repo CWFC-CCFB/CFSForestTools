@@ -33,6 +33,7 @@ import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
@@ -64,6 +65,11 @@ public class TrilliumDiameterIncrementTest {
 		private final double dbhCm;
 		private final double BAL;
 		private final Species species;
+		private final double meanTmin;
+		private final double meanTmax;
+		private final double tX;
+		private final double tM;
+		private final double p;
 		protected final double pred;
 		protected final double predTransformed;
 		private int mcReal;
@@ -91,6 +97,11 @@ public class TrilliumDiameterIncrementTest {
 				double dbhCm,
 				double BAL,
 				Species species, 
+				double meanTmin,
+				double meanTmax,
+				double tX,
+				double tM,
+				double p,
 				double pred,
 				double predTransformed,
 				int dateYr,
@@ -120,6 +131,11 @@ public class TrilliumDiameterIncrementTest {
 			this.species = species;
 			this.pred = pred;
 			this.predTransformed = predTransformed;
+			this.meanTmin = meanTmin;
+			this.meanTmax = meanTmax;
+			this.tX = tX;
+			this.tM = tM;
+			this.p = p;
 		}
 		
 		@Override
@@ -137,10 +153,26 @@ public class TrilliumDiameterIncrementTest {
 		public int getGrowthStepLengthYr() {return growthStepLengthYr;}
 
 		@Override
-		public double getTotalAnnualPrecipitationMm(REpiceaClimateVariableInformation resolution) {return totalAnnualPrecipitationMm;}
+		public double getTotalAnnualPrecipitationMm(REpiceaClimateVariableInformation resolution) {
+			if (resolution.resolution == Resolution.IntervalAveraged) {
+				return totalAnnualPrecipitationMm;
+			} else if (resolution.resolution == Resolution.Normals30Year) {
+				return p;
+			} else {
+				throw new UnsupportedOperationException("This resolution has not been implemented: " + resolution.resolution.name());
+			}
+		}
 
 		@Override
-		public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation resolution) {return meanAnnualTemperatureCelsius;}
+		public double getMeanAnnualTemperatureCelsius(REpiceaClimateVariableInformation resolution) {
+			if (resolution.resolution == Resolution.IntervalAveraged) {
+				return meanAnnualTemperatureCelsius;
+			} else if (resolution.resolution == Resolution.Normals30Year) {
+				return tM;
+			} else {
+				throw new UnsupportedOperationException("This resolution has not been implemented: " + resolution.resolution.name());
+			}
+		}
 
 		@Override
 		public double getMeanMinimumJanuaryTemperatureCelsius(REpiceaClimateVariableInformation resolution) {return meanTminJanuaryCelsius;}
@@ -151,8 +183,8 @@ public class TrilliumDiameterIncrementTest {
 		@Override
 		public double getMeanTemperatureFromJuneToAugustCelsius(REpiceaClimateVariableInformation resolution) {return meanTempJuneToAugustCelsius;}
 
-		@Override
-		public double getMeanTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {return t_anom;}
+//		@Override
+//		public double getMeanTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {return t_anom;}
 
 		@Override
 		public double getTotalAnnualRadiationMjM2(REpiceaClimateVariableInformation info) {return totalRadiation;}
@@ -169,8 +201,8 @@ public class TrilliumDiameterIncrementTest {
 		@Override
 		public double getMeanAnnualSMIPercent(REpiceaClimateVariableInformation info) {return SMImean;}
 
-		@Override
-		public double getMaxTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {return Mx_anom;}
+//		@Override
+//		public double getMaxTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {return Mx_anom;}
 
 		@Override
 		public double getMeanVPDDaylightFromJuneToAugustHPa(REpiceaClimateVariableInformation info) {return meanSummerVPDDaylight;}
@@ -178,8 +210,8 @@ public class TrilliumDiameterIncrementTest {
 		@Override
 		public double getTotalPrecipitationFromJuneToAugustMm(REpiceaClimateVariableInformation info) {return totalPrecJuneToAugustMm;}
 
-		@Override
-		public double getTotalPrecipitationAnomalyMm(Trillium2026DiameterIncrementPredictor owner) {return P_anom;}
+//		@Override
+//		public double getTotalPrecipitationAnomalyMm(Trillium2026DiameterIncrementPredictor owner) {return P_anom;}
 
 		@Override
 		public double getMeanAnnualCMICm(REpiceaClimateVariableInformation info) {return CMI;}
@@ -216,11 +248,22 @@ public class TrilliumDiameterIncrementTest {
 
 		@Override
 		public double getMeanMaximumAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {
-			return 0;
+			if (info.resolution == Resolution.IntervalAveraged) {
+				return meanTmax;
+			} else if (info.resolution == Resolution.Normals30Year) {
+				return tX;
+			} else {
+				throw new UnsupportedOperationException("This resolution has not been implemented: " + info.resolution.name());
+			}
 		}
 
 		@Override
 		public String getId() {return null;}
+
+		@Override
+		public double getMeanMinimumAnnualTemperatureCelsius(REpiceaClimateVariableInformation arg0) {
+			return meanTmin;
+		}
 
 	}
 
@@ -258,6 +301,12 @@ public class TrilliumDiameterIncrementTest {
 					double degreeDaysCelsius = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("DD")].toString());
 					double lowestTmin = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("LowestTmin")].toString());
 					double dbhCm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("DBH.x")].toString());
+					double meanTmin = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("MeanTmin")].toString());
+					double meanTmax = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("MeanTmax")].toString());
+					double tX = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("TX")].toString());
+					double tM = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("TM")].toString());
+					double p = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("P")].toString());
+					
 //					double dbhCm2 = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("DBH.y")].toString());
 //					double dDbhCm = dbhCm2 - dbhCm;
 //					double transformedY = Math.log(dDbhCm + Math.sqrt(dDbhCm * dDbhCm + 1));
@@ -290,7 +339,12 @@ public class TrilliumDiameterIncrementTest {
 							lowestTmin,
 							dbhCm,
 							BAL,
-							species, 
+							species,
+							meanTmin,
+							meanTmax,
+							tX,
+							tM,
+							p,
 							pred, 
 							predTransformed,
 							dateYr,

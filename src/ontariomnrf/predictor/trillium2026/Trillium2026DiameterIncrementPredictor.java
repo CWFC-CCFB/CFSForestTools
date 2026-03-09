@@ -248,6 +248,9 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 				EffectMap.put(sp, new ArrayList<Effect>());
 				for (String effectStr : localEffectMap.get(sp)) {
 					Effect effect = Trillium2026DiameterIncrementInternalPredictor.EffectMap.get(effectStr);
+					if (effect == null) {
+						int u = 0;
+					}
 					EffectMap.get(sp).add(effect);
 				}
 			}

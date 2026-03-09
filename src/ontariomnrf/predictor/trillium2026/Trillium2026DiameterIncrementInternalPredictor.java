@@ -56,7 +56,9 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		CMI, 
 		HighestTmax, 
 		TotalPrcp, 
+		MeanTmin,
 		MeanTair, 
+		MeanTmax,
 		DD, 
 		LowestTmin;
 	}
@@ -84,7 +86,9 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		EffectMap.put("CMI", Effect.CMI);
 		EffectMap.put("HitghestTmax", Effect.HighestTmax);
 		EffectMap.put("TotalPrcp", Effect.TotalPrcp);
+		EffectMap.put("MeanTmin", Effect.MeanTmin);
 		EffectMap.put("MeanTair", Effect.MeanTair);
+		EffectMap.put("MeanTmax", Effect.MeanTmax);
 		EffectMap.put("DD", Effect.DD);
 		EffectMap.put("LowestTmin", Effect.LowestTmin);
 	}
@@ -206,6 +210,14 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 			case LowestTmin:
 				oXVector.setValueAt(0, index++, plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
+			case MeanTmin:
+				oXVector.setValueAt(0, index++, plot.getMeanMinimumAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case MeanTmax:
+				oXVector.setValueAt(0, index++, plot.getMeanMaximumAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			default:
+				throw new UnsupportedOperationException("This effect has not been implemented yet: " + effect.name());
 			}
 		}
 	}

@@ -31,6 +31,7 @@ import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualSoilMoi
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanMaximumAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanMaximumJulyTemperatureCelsiusProvider;
+import repicea.simulation.covariateproviders.plotlevel.climate.MeanMinimumAnnualTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanMinimumJanuaryTemperatureCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanTemperatureFromJuneToAugustCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.MeanVapourPressureDeficitDaylightFromJuneToAugustHPaProvider;
@@ -58,7 +59,8 @@ public interface Trillium2026DiameterIncrementPlot extends MonteCarloSimulationC
 											TotalAnnualRadiationMjM2Provider,
 											MeanAnnualClimateMoistureIndexCmProvider,
 											MeanAnnualSoilMoistureIndexPercentProvider,
-											MeanMaximumAnnualTemperatureCelsiusProvider {
+											MeanMaximumAnnualTemperatureCelsiusProvider,
+											MeanMinimumAnnualTemperatureCelsiusProvider {
 
 	static final Resolution ClimateVariableResolution = Resolution.IntervalAveraged;
 	
