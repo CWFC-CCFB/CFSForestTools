@@ -94,7 +94,7 @@ public class OccupancyIndexCalculator implements Cloneable {
 	private final NearestNeighborEntryList nearestNeighbors;
 
 	List<OccupancyIndexCalculablePlot> plotRegistry;
-	private Map<Enum<?>, Map<String, GaussianEstimate>> staticModeCacheMap; // species, plotId, occupancy index
+	private Map<Enum<?>, Map<Integer, Map<String, GaussianEstimate>>> cacheMap; // species, plotId, occupancy index
 
 	private final boolean isStatic; 
 
@@ -104,11 +104,16 @@ public class OccupancyIndexCalculator implements Cloneable {
 			OccupancyIndexCalculator clone = (OccupancyIndexCalculator) super.clone();
 			clone.plotRegistry = new ArrayList<OccupancyIndexCalculablePlot>();
 			clone.plotRegistry.addAll(plotRegistry);
-			clone.staticModeCacheMap = new HashMap<Enum<?>, Map<String, GaussianEstimate>>();
+			clone.cacheMap = new HashMap<Enum<?>, Map<Integer, Map<String, GaussianEstimate>>>();
 			if (isStatic) {
-				for (Enum<?> sp : staticModeCacheMap.keySet()) {
-					clone.staticModeCacheMap.put(sp, new HashMap<String, GaussianEstimate>());
-					clone.staticModeCacheMap.get(sp).putAll(staticModeCacheMap.get(sp));
+				for (Enum<?> sp : cacheMap.keySet()) {
+					clone.cacheMap.put(sp, new HashMap<Integer, Map<String, GaussianEstimate>>());
+					Map<Integer, Map<String, GaussianEstimate>> innerMap = cacheMap.get(sp);
+					Map<Integer, Map<String, GaussianEstimate>> cloneInnerMap = clone.cacheMap.get(sp);
+					for (Integer dateYr : innerMap.keySet()) {
+						cloneInnerMap.put(dateYr, new HashMap<String, GaussianEstimate>());
+						cloneInnerMap.get(dateYr).putAll(innerMap.get(dateYr));
+					}
 				}
 			}
 			return clone;
@@ -188,7 +193,7 @@ public class OccupancyIndexCalculator implements Cloneable {
 			nearestNeighbors.add(new NearestNeighborEntry(p.getSubjectId(), minForThisPlot));
 		}
 		Collections.sort(nearestNeighbors);
-		staticModeCacheMap = new HashMap<Enum<?>, Map<String, GaussianEstimate>>();
+		cacheMap = new HashMap<Enum<?>, Map<Integer, Map<String, GaussianEstimate>>>();
 	}
 
 	/**
@@ -272,6 +277,16 @@ public class OccupancyIndexCalculator implements Cloneable {
 		return occurred ? 1 : 0;
 	}
 
+	private boolean isCached(Enum<?> species, int dateYr, String plotId) {
+		if (cacheMap.containsKey(species)) {
+			if (cacheMap.get(species).containsKey(dateYr)) {
+				return cacheMap.get(species).get(dateYr).containsKey(plotId);
+			} 
+		}
+		return false;
+	}
+	
+	
 	/**
 	 * Provide an estimate of the occupancy index. <p>
 	 * The method implements the design-based estimators. If there is only one plot in the
@@ -289,8 +304,9 @@ public class OccupancyIndexCalculator implements Cloneable {
 
 		String plotId = thisPlot.getSubjectId();
 		GaussianEstimate occupancyEstimate;
-		if (staticModeCacheMap.containsKey(species) && staticModeCacheMap.get(species).containsKey(plotId)) {
-			return staticModeCacheMap.get(species).get(plotId);
+		int cachedDateYr = isStatic ? -1 : thisPlot.getDateYr();
+		if (isCached(species, cachedDateYr, plotId)) {
+			return cacheMap.get(species).get(cachedDateYr).get(plotId);
 		} else {
 			List<OccupancyIndexCalculablePlot> plotsWithinLast10Yrs = plotRegistry.
 					stream().
@@ -330,12 +346,14 @@ public class OccupancyIndexCalculator implements Cloneable {
 				}
 				occupancyEstimate = new GaussianEstimate(estimate.getMean(), estimate.getVariance());
 			}
-			if (isStatic) {
-				if (!staticModeCacheMap.containsKey(species)) {
-					staticModeCacheMap.put(species, new HashMap<String, GaussianEstimate>());
-				}
-				staticModeCacheMap.get(species).put(plotId, occupancyEstimate);
+			if (!cacheMap.containsKey(species)) {
+				cacheMap.put(species, new HashMap<Integer, Map<String, GaussianEstimate>>());
 			}
+			Map<Integer, Map<String, GaussianEstimate>> innerMap = cacheMap.get(species);
+			if (!innerMap.containsKey(cachedDateYr)) {
+				innerMap.put(cachedDateYr, new HashMap<String, GaussianEstimate>());
+			} 
+			innerMap.get(cachedDateYr).put(plotId, occupancyEstimate);
 			return occupancyEstimate;
 		} 
 	}

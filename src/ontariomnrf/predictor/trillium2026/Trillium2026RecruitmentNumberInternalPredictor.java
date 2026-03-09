@@ -69,9 +69,11 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 	protected void init() {}
 
 	@Override
-	protected double getNumber(Matrix beta) {
-		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
-		double mu = Math.exp(xBeta);
+	protected double getNumber(double mu, boolean onTransformedScale) {
+//		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
+		if (onTransformedScale) {
+			mu = Math.exp(mu); // we back transform
+		}
 		if (isResidualVariabilityEnabled) {
 			return StatisticalUtility.getRandom().nextNegativeBinomial(mu, invTheta) + 1;
 		} else {

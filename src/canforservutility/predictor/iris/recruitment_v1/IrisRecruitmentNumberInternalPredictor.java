@@ -73,9 +73,10 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaRecruitmentNumberInt
 	protected void init() {}
 
 	@Override
-	protected double getNumber(Matrix beta) {
-		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
-		double mu = Math.exp(xBeta);
+	protected double getNumber(double mu, boolean onTransformedScale) {
+		if (onTransformedScale) {
+			mu = Math.exp(mu);
+		}
 		if (isResidualVariabilityEnabled) {
 			return StatisticalUtility.getRandom().nextNegativeBinomial(mu, invTheta) + 1;
 		} else {

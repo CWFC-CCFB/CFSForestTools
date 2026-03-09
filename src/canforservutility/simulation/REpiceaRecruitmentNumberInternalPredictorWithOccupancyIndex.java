@@ -68,7 +68,7 @@ public abstract class REpiceaRecruitmentNumberInternalPredictorWithOccupancyInde
 		@Override
 		public Double getValue() {
 			double mu = getOriginalFunction().getValue();
-			return mu + 1;
+			return mu;
 		}
 
 		@Override
@@ -106,19 +106,20 @@ public abstract class REpiceaRecruitmentNumberInternalPredictorWithOccupancyInde
 				GaussianEstimate estimate = (GaussianEstimate) occupancy;
 				double meanOccIndex = estimate.getMean().getValueAt(0, 0);
 				double varOccIndex = estimate.getVariance().getValueAt(0, 0);
+				// TODO MF20260309 the occupancy index should return a deviate
 				setOccupancyInXVector(plot, species, meanOccIndex); // we set the variable to its mean before performing the quadrature
 				GaussHermiteImpl ghi = new GaussHermiteImpl(oXVector, beta, varOccIndex); // TODO MF20260224 this should be a member of the class
 				double ghqApproximation = ghq.getIntegralApproximation(ghi, effectList.indexOf(occupancyIndexVarIndices.get(0)), false);
-				return ghqApproximation;
+				return getNumber(ghqApproximation, false);
 			} else if (occupancy instanceof Double) {
 				double occupancyIndex25kmRandomDeviate = (Double) occupancy;
 				setOccupancyInXVector(plot, species, occupancyIndex25kmRandomDeviate);
-				return getNumber(beta);
+				return getNumber(oXVector.multiply(beta).getValueAt(0, 0), true);
 			} else {
 				throw new UnsupportedOperationException("Occupance should be a GaussianEstimate instance or a double, but was :" + occupancy.getClass().getName());
 			}
 		} else { // not using occupancy index
-			return getNumber(beta);
+			return getNumber(oXVector.multiply(beta).getValueAt(0, 0), true);
 		}
 	}
 
@@ -144,6 +145,6 @@ public abstract class REpiceaRecruitmentNumberInternalPredictorWithOccupancyInde
 
 	protected abstract void setValueInXVector(int effectId, S plot, Enum<?> species, double d);
 
-	protected abstract double getNumber(Matrix beta);
+	protected abstract double getNumber(double mu, boolean onTransformedScale);
 
 }
