@@ -66,20 +66,53 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
 	static List<Species> SpeciesList;
 	static {
-		Species[] species = new Species[] {Species.Abies_balsamea, Species.Acer_rubrum, Species.Acer_saccharum, 
-				Species.Betula_alleghaniensis, Species.Betula_papyrifera, Species.Fagus_grandifolia, 
-				Species.Ostrya_virginiana, Species.Picea_glauca, Species.Picea_mariana, 
-				Species.Pinus_banksiana, Species.Pinus_strobus, Species.Populus_tremuloides};
+		Species[] species = new Species[] {
+				Species.Abies_balsamea, 
+				Species.Acer_pensylvanicum,
+				Species.Acer_rubrum, 
+				Species.Acer_saccharinum,
+				Species.Acer_saccharum, 
+				Species.Betula_alleghaniensis, 
+				Species.Betula_papyrifera, 
+//				Species.Carya_spp,
+				Species.Fagus_grandifolia, 
+				Species.Fraxinus_americana,
+				Species.Fraxinus_nigra,
+				Species.Fraxinus_pensylvanica,
+				Species.Larix_laricina,
+				Species.Other_broadleaved,
+				Species.Ostrya_virginiana, 
+				Species.Picea_glauca, 
+				Species.Picea_mariana, 
+				Species.Pinus_banksiana, 
+				Species.Pinus_resinosa,
+				Species.Pinus_strobus, 
+				Species.Populus_balsamifera,
+				Species.Populus_grandidentata,
+				Species.Populus_tremuloides,
+				Species.Prunus_pensylvanica,
+				Species.Prunus_serotina,
+				Species.Quercus_rubra,
+				Species.Broadleaved_shrubs,
+				Species.Thuja_occidentalis,
+				Species.Tilia_americana,
+				Species.Tsuga_canadensis,
+				Species.Ulmus_spp};
 		for (Species sp : species) {
 			SpeciesLookupMap.put(sp.getLatinName().trim().toLowerCase(), sp);
+			SpeciesLookupMap.put("carya sp.", Species.Carya_spp);
+			SpeciesLookupMap.put("meridional species", Species.Other_broadleaved);
+			SpeciesLookupMap.put("shrubs", Species.Broadleaved_shrubs);
+			SpeciesLookupMap.put("ulmus sp.", Species.Ulmus_spp);
+			SpeciesLookupMap.put("fraxinus pennsylvanica", Species.Fraxinus_pensylvanica);
 		}
 		SpeciesList = Arrays.asList(species);
 	}
 
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
 	static {
-		OccupancyIndexEffects.add(18);
-		OccupancyIndexEffects.add(21);
+		OccupancyIndexEffects.add(24);
+		OccupancyIndexEffects.add(27);
 	}
 
 	private static ParameterMap BetaMap;
@@ -214,7 +247,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 				internalPredictors.put(sp, subPredictor);
 			}
 		} catch (Exception e) {
-			throw new InvalidParameterException("Unable to load the parameters in the module of recruitment occurrence in Iris 2020!");
+			throw new InvalidParameterException("Unable to load the parameters of Trillium recruitment occurrence module!");
 		}
 	}
 

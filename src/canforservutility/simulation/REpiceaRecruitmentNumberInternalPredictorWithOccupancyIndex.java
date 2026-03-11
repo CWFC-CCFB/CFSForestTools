@@ -92,7 +92,7 @@ public abstract class REpiceaRecruitmentNumberInternalPredictorWithOccupancyInde
 		this.species = species;
 		effectList = new ArrayList<Integer>();
 		occupancyIndexVarIndices = new ArrayList<Integer>();
-		ghq = new GaussHermiteQuadrature(NumberOfPoints.N5);
+		ghq = new GaussHermiteQuadrature(NumberOfPoints.N15);
 	}
 
 	

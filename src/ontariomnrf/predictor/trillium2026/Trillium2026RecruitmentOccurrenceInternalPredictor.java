@@ -82,93 +82,111 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitm
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
 		}
 		switch(effectId) {
-		case 1:	// DD
+		case 13: // intercept too
+		case 1: // intercept
+			oXVector.setValueAt(0, index, 1d);
+			break;
+		case 2:	// DD
 			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 2: // DD2
+		case 3: // DD2
 			double dd = plot.getGrowingDegreeDaysCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, dd * dd);
 			break;
-		case 3: // Frost free days
+		case 4: // Frost free days
 			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 4: // G_F
+		case 5: // G_F
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
 			break;
-		case 5: // G_F2
+		case 6: // G_F2
 			double G_F = plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies);
 			oXVector.setValueAt(0, index, G_F * G_F);
 			break;
-		case 6: // G_R
+		case 7: // G_R
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
 			break;
-		case 7: // G_R2
+		case 8: // G_R2
 			double G_R = plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies);
 			oXVector.setValueAt(0, index, G_R * G_R);
 			break;
-		case 8: // G_SpGr
+		case 9: // G_SpGr
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species));
 			break;
-		case 9: // G_SpGr2
+		case 10: // G_SpGr2
 			double g_spgr = plot.getBasalAreaM2HaForThisSpecies(species);
 			oXVector.setValueAt(0, index, g_spgr * g_spgr);
 			break;
-		case 10: // HighestTMax
+		case 11: // HighestTMax
 			oXVector.setValueAt(0, index, plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 11: // HighestTMax2
+		case 12: // HighestTMax2
 			double highestTemp = plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, highestTemp * highestTemp);
 			break;
-		case 12: // intercept
-			oXVector.setValueAt(0, index, 1d);
-			break;
-		case 13: // isHarvested
+		case 14: // isHarvested
 			oXVector.setValueAt(0, index, plot.isGoingToBeHarvested() ? 1d : 0d);
 			break;
-		case 14: // lnDt
+		case 15: // lnDt
 			oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 			break;
-		case 15: // lowest t min
+		case 16: // lowest t min
 			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 16: // MeanTminJanuary
+		case 17: // lowest t min2
+			double lowestTmin = plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
+			oXVector.setValueAt(0, index, lowestTmin * lowestTmin);
+			break;
+		case 18: // meanTair
+			oXVector.setValueAt(0, index, plot.getMeanAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
+			break;
+		case 19: // MeanTempJuneToAugust
+			oXVector.setValueAt(0, index, plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
+			break;
+		case 20: // MeanTempJuneToAugust2
+			double meanTempJuneToAug = plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
+			oXVector.setValueAt(0, index, meanTempJuneToAug * meanTempJuneToAug);
+			break;
+		case 21: // MeanTmaxJuly
+			oXVector.setValueAt(0, index, plot.getMeanMaximumJulyTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
+			break;
+		case 22: // MeanTminJanuary
 			oXVector.setValueAt(0, index, plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 17: // MeanTminJanuary
+		case 23: // MeanTminJanuary2
 			double minTempJan = plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, minTempJan * minTempJan);
 			break;
-		case 18: // occIndex25km
+		case 24: // occIndex25km
 			oXVector.setValueAt(0, index, occupancyIndex25km);
 			break;
-		case 19: // slopepct
+		case 25: // slopepct
 			oXVector.setValueAt(0, index, plot.getSlopeInclinationPercent());
 			break;
-		case 20: // speciesThere
+		case 26: // speciesThere
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
 			break;
-		case 21: // occIndex25km2
+		case 27: // occIndex25km2
 			oXVector.setValueAt(0, index, occupancyIndex25km * occupancyIndex25km);
 			break;
-		case 22: // TotalPrcp
+		case 28: // TotalPrcp
 			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 23: // TotalPrcp2
+		case 29: // TotalPrcp2
 			double totalPrcp = plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, totalPrcp * totalPrcp);
 			break;
-		case 24: // TotalPrecJuneToAugust
+		case 30: // TotalPrecJuneToAugust
 			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 25: // TotalPrecJuneToAugust2
+		case 31: // TotalPrecJuneToAugust2
 			double precJuneToAug = plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, precJuneToAug * precJuneToAug);
 			break;
-		case 26: // TotalPrecMarchToMay
+		case 32: // TotalPrecMarchToMay
 			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 27:
+		case 33: // wasHarvested
 			oXVector.setValueAt(0, index, plot.isInterventionResult() ? 1d : 0d);
 			break;
 		default:

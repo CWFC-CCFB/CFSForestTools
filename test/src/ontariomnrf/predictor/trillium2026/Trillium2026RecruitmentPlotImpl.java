@@ -95,6 +95,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	protected final Map<Species, Double> occupancyIndexMap;
 	private final double meanAnnualTemperature;
 	private final double meanMaxJulyTemperature;
+	private final double meanTemperatureJulyToAugust;
 	private final Map<Species, Double> predMap;
 	private final OccupancyIndexCalculator occIndexCalc;
 	private Mode mode;
@@ -123,6 +124,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 //			List<OccupancyIndexCalculablePlot> plots,
 			double meanAnnualTemperature,
 			double meanMaxJulyTemperature,
+			double meanTempJulyToAugust,
 			double pred,
 			OccupancyIndexCalculator occIndexCalc) {
 //		if (plots == null) {
@@ -153,6 +155,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		occupancyIndexMap.put(species, occupancyIndex);
 		this.meanAnnualTemperature = meanAnnualTemperature;
 		this.meanMaxJulyTemperature = meanMaxJulyTemperature;
+		this.meanTemperatureJulyToAugust = meanTempJulyToAugust;
 		predMap = new HashMap<Species, Double>();
 		predMap.put(species, pred);
 		this.occIndexCalc = occIndexCalc;
@@ -299,6 +302,11 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	
 	void setMode(Mode mode) {
 		this.mode = mode;
+	}
+
+	@Override
+	public double getMeanTemperatureFromJuneToAugustCelsius(REpiceaClimateVariableInformation arg0) {
+		return meanTemperatureJulyToAugust;
 	}
 	
 }

@@ -35,7 +35,6 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 	
 	
 	private final Trillium2026RecruitmentNumberPredictor owner;
-	@SuppressWarnings("unused")
 	protected final double theta; // as produced by R
 	protected final double invTheta; //
 	
@@ -70,7 +69,6 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 
 	@Override
 	protected double getNumber(double mu, boolean onTransformedScale) {
-//		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		if (onTransformedScale) {
 			mu = Math.exp(mu); // we back transform
 		}
@@ -81,31 +79,6 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 		}
 	}
 	
-//	public synchronized double predictNumberOfRecruits(Trillium2026RecruitmentPlot plot, Species species) {
-//		Matrix beta = getParametersForThisRealization(plot);
-//		constructXVector(plot, species);
-//		if (isModelUsingOccupancyIndex()) {
-//			Object occupancy = plot.getOccupancyForThisSpecies(species);
-//			if (occupancy instanceof GaussianEstimate) {
-//				GaussianEstimate estimate = (GaussianEstimate) occupancy;
-//				double meanOccIndex = estimate.getMean().getValueAt(0, 0);
-//				double varOccIndex = estimate.getVariance().getValueAt(0, 0);
-//				setOccupancyInXVector(plot, species, meanOccIndex); // we set the variable to its mean before performing the quadrature
-//				GaussHermiteImpl ghi = new GaussHermiteImpl(oXVector, beta, varOccIndex); // TODO MF20260224 this should be a member of the class
-//				double ghqApproximation = ghq.getIntegralApproximation(ghi, effectList.indexOf(Trillium2026RecruitmentNumberPredictor.OccupancyIndexEffects.get(0)), false);
-//				return ghqApproximation;
-//			} else if (occupancy instanceof Double) {
-//				double occupancyIndex25kmRandomDeviate = (Double) occupancy;
-//				setOccupancyInXVector(plot, species, occupancyIndex25kmRandomDeviate);
-//				return getNumber(beta);
-//			} else {
-//				throw new UnsupportedOperationException("Occupance should be a GaussianEstimate instance or a double, but was :" + occupancy.getClass().getName());
-//			}
-//		} else { // not using occupancy index
-//			return getNumber(beta);
-//		}
-//	}
-
 	@Override
 	protected void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, Enum<?> species, double occupancyIndex25km) {
 		int index = effectList.indexOf(effectId);
@@ -113,7 +86,6 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
 		}
 		switch(effectId) {
-		case 10: // intercept as well
 		case 1:	// intercept
 			oXVector.setValueAt(0, index, 1d);
 			break;
@@ -121,8 +93,7 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 			oXVector.setValueAt(0, index, plot.getGrowthStepLengthYr());
 			break;
 		case 3: // FrostFreeDay
-			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(owner,
-					Trillium2026RecruitmentPlot.ClimateVariableResolution));
+			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
 		case 4: // G_F
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
@@ -144,6 +115,9 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 		case 9: // G_SpGr2
 			double g_spgr = plot.getBasalAreaM2HaForThisSpecies(species);
 			oXVector.setValueAt(0, index, g_spgr * g_spgr);
+			break;
+		case 10: // highest temperature
+			oXVector.setValueAt(0, index, plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
 		case 11: // isHarvested
 			oXVector.setValueAt(0, index, plot.isGoingToBeHarvested() ? 1d : 0d);
@@ -169,47 +143,28 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 			double meanTMaxJuly = plot.getMeanMaximumJulyTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, meanTMaxJuly * meanTMaxJuly);
 			break;
-		case 18: // occIndex25km
-			oXVector.setValueAt(0, index, occupancyIndex25km);
-			break;
-		case 19: // slopePct_PDEM_mean	
+		case 18: // slopePct_PDEM_mean	
 			oXVector.setValueAt(0, index, plot.getSlopeInclinationPercent());
 			break;
-		case 20: // speciesThere
+		case 19: // speciesThere
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
 			break;
-		case 21: // TotalPrcp
+		case 20: // TotalPrcp
 			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 22: // TotalPrcp2
-			double totalPrcp = plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, totalPrcp * totalPrcp);
-			break;
-		case 23: // TotalPrecFromMarchToMay
+		case 21: // TotalPrecFromMarchToMay
 			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 24: // TotalPrecFromMarchToMay2
+		case 22: // TotalPrecFromMarchToMay2
 			double precFromMayToMarch = plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, precFromMayToMarch * precFromMayToMarch);
 			break;
-		case 25: // wasHarvested
+		case 23: // wasHarvested
 			oXVector.setValueAt(0, index, plot.isInterventionResult() ? 1d : 0d);
 			break;
-
 		default:
 			throw new InvalidParameterException("The effect id " + effectId + " is unknown!");
 		}
 	}
 	
-//	private void constructXVector(Trillium2026RecruitmentPlot plot, Species species) {
-//		oXVector.resetMatrix();
-//		
-//		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();
-//		effectListWithoutOccIndex.addAll(effectList);
-//		effectListWithoutOccIndex.removeAll(occupancyIndexVarIndices);
-//		for (int effectId : effectListWithoutOccIndex) {
-//			setValueInXVector(effectId, plot, species, 0d); // occupancy index set to 0 for now
-//		}
-//	}
-
 }

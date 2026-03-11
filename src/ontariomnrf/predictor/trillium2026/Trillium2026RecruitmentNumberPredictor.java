@@ -57,7 +57,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
 	static {
-		OccupancyIndexEffects.add(18);
+//		OccupancyIndexEffects.add(19);
 	}
 
 	static boolean IsForTestPurposes = false;
@@ -128,7 +128,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 				internalPredictors.put(sp, subPredictor);
 			}
 		} catch (Exception e) {
-			throw new InvalidParameterException("Unable to load the parameters in the module of recruitment occurrence in Iris 2020!");
+			throw new InvalidParameterException("Unable to load the parameters of Trillium recruitment abundance module!");
 		}
 	}
 

@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,6 +41,13 @@ import repicea.util.ObjectUtility;
 
 public class TrilliumDiameterIncrementTest {
 
+	static List<Species> SpeciesUsingSMI = new ArrayList<Species>();
+	static void addSpecies(Species sp) {
+		if (!SpeciesUsingSMI.contains(sp)) {
+			SpeciesUsingSMI.add(sp);
+		}
+	}
+	
 	static class Trillium2026TreeImpl implements Trillium2026Tree, Trillium2026DiameterIncrementPlot {
 
 		private final int growthStepLengthYr;
@@ -199,7 +207,10 @@ public class TrilliumDiameterIncrementTest {
 		public double getMeanMaximumJulyTemperatureCelsius(REpiceaClimateVariableInformation info) {return meanTmaxJulyCelsius;}
 
 		@Override
-		public double getMeanAnnualSMIPercent(REpiceaClimateVariableInformation info) {return SMImean;}
+		public double getMeanAnnualSMIPercent(REpiceaClimateVariableInformation info) {
+			addSpecies(this.species);
+			return SMImean;
+		}
 
 //		@Override
 //		public double getMaxTempAnomalyCelsius(Trillium2026DiameterIncrementPredictor owner) {return Mx_anom;}
@@ -414,5 +425,9 @@ public class TrilliumDiameterIncrementTest {
 		Assert.assertEquals("Comparing stochastic and deterministic predictions", expected, observed, 1E-2);
 		
 	}
-	
+
+	@AfterClass
+	public static void cleanup() {
+		System.out.println("Species using SMI: " + SpeciesUsingSMI);
+	}
 }

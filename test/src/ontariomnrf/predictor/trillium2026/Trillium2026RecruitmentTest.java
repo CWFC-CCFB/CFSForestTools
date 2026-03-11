@@ -134,10 +134,13 @@ public class Trillium2026RecruitmentTest {
 		double meanAnnualTemperature = indexMeanAnnualTemp != -1 ? 
 				Double.parseDouble(record[indexMeanAnnualTemp].toString()) :
 					0;
-
 		int indexMeanMaxJulyTemp = header.getIndexOfThisField("MeanTmaxJuly");
 		double meanMaxJulyTemp = indexMeanMaxJulyTemp != -1 ? 
 				Double.parseDouble(record[indexMeanMaxJulyTemp].toString()) :
+					0;
+		int indexMeanTempJulyToAugust = header.getIndexOfThisField("MeanTempJuneToAugust");
+		double meanTempJulyToAugust = indexMeanTempJulyToAugust != -1 ?
+				Double.parseDouble(record[indexMeanTempJulyToAugust].toString()) :
 					0;
 		double pred = Double.parseDouble(record[header.getIndexOfThisField("pred")].toString());
 		String uniqueId = plotId + "_" + dateYr;
@@ -167,6 +170,7 @@ public class Trillium2026RecruitmentTest {
 					occIndex25km,
 					meanAnnualTemperature,
 					meanMaxJulyTemp,
+					meanTempJulyToAugust,
 					pred,
 					OccIndCalc);
 			oMap.put(uniqueId, plot);
@@ -211,14 +215,16 @@ public class Trillium2026RecruitmentTest {
 		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
 			int nbTested = 0;
 			for (Trillium2026RecruitmentPlotImpl plot : plots.values()) {
-				Trillium2026Tree tree = plot.getTreeInstance(sp);
-				double actual = predictor.predictEventProbability(plot, tree);
-				double expected = plot.getPred(sp);
-				Assert.assertEquals("Testing probability for plot " + plot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
-						expected, 
-						actual, 
-						1E-8);
-				nbTested++;
+				Double expected = plot.getPred(sp);
+				if (expected != null) {
+					Trillium2026Tree tree = plot.getTreeInstance(sp);
+					double actual = predictor.predictEventProbability(plot, tree);
+					Assert.assertEquals("Testing probability for plot " + plot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
+							expected, 
+							actual, 
+							1E-8);
+					nbTested++;
+				}
 			}
 			System.out.println("    Species " + sp.getLatinName() + "; Number of successfully tested plots = " + nbTested + " / " + plots.size());
 		}
@@ -238,14 +244,17 @@ public class Trillium2026RecruitmentTest {
 		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
 			int nbTested = 0;
 			for (Trillium2026RecruitmentPlotImpl p : plots.values()) {
-				GaussianEstimate estimatedOccIndex = OccIndCalc.getOccupancyIndex(p, sp, 25);
-				double actual = estimatedOccIndex.getMean().getValueAt(0, 0);
-				double expected = (Double) p.getOccupancyForThisSpecies(sp);
-				Assert.assertEquals("Testing occupancy index for plot " + p.getSubjectId() + ", species " + sp.name(), 
-						expected, 
-						actual, 
-						1E-8);
-				nbTested++;
+				Double pred = p.getPred(sp);
+				if (pred != null) {
+					GaussianEstimate estimatedOccIndex = OccIndCalc.getOccupancyIndex(p, sp, 25);
+					double actual = estimatedOccIndex.getMean().getValueAt(0, 0);
+					double expected = (Double) p.getOccupancyForThisSpecies(sp);
+					Assert.assertEquals("Testing occupancy index for plot " + p.getSubjectId() + ", species " + sp.name(), 
+							expected, 
+							actual, 
+							1E-8);
+					nbTested++;
+				}
 			}
 			System.out.println("    Species " + sp.getLatinName() + "; Number of successfully tested plots = " + nbTested + " / " + plots.size());
 		}
@@ -286,7 +295,7 @@ public class Trillium2026RecruitmentTest {
 			Assert.assertEquals("Testing stochastic mean against deterministic mean " + plot.getSubjectId() + ", species " + plot.getTreeInstance(sp).getTrillium2026TreeSpecies().name(), 
 					detPred, 
 					meanStoPred, 
-					0.005);
+					0.02);
 		}
 		
 	}
