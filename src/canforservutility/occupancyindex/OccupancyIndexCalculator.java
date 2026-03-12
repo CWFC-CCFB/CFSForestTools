@@ -317,7 +317,7 @@ public class OccupancyIndexCalculator implements Cloneable {
 		} else {
 			List<OccupancyIndexCalculablePlot> plotsWithinLast10Yrs = plotRegistry.
 					stream().
-					filter(p -> thisPlot.getDateYr() - p.getDateYr() >= minYearDiff && thisPlot.getDateYr() - p.getDateYr() <= maxYearDiff).
+					filter(p -> cachedDateYr - (p.equals(thisPlot) ? cachedDateYr : p.getDateYr()) >= minYearDiff && cachedDateYr - (p.equals(thisPlot) ? cachedDateYr : p.getDateYr()) <= maxYearDiff).
 					collect(Collectors.toList());
 
 			List<OccupancyIndexCalculablePlot> plotsWithinDistanceWithinLast10Yrs = plotsWithinLast10Yrs.stream().
