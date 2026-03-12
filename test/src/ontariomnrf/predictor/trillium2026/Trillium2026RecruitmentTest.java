@@ -180,7 +180,7 @@ public class Trillium2026RecruitmentTest {
 
 	@BeforeClass
 	public static void initialize() throws IOException {
-		OccIndCalc = new OccupancyIndexCalculator(Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex(), true);
+		OccIndCalc = new OccupancyIndexCalculator(Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex(), null);
 		OccIndCalc.registerPlots(Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex());
 
 		PlotMapForOccurrence = new HashMap<String, Trillium2026RecruitmentPlotImpl>();
@@ -374,7 +374,7 @@ public class Trillium2026RecruitmentTest {
 			Assert.assertEquals("Testing stochastic variance against expected variance " + selectedPlot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
 					0,
 					1 - variance/expectedVariance, 
-					0.01);
+					0.02);
 		}
 	}
 

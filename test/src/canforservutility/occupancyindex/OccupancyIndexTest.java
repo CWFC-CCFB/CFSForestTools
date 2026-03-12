@@ -58,7 +58,7 @@ public class OccupancyIndexTest {
 	@Test
 	public void test01OccupancyIndexSinglePlot() throws IOException {
 		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
-		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, true);
+		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, plots.get(0).getDateYr());
 		calculator.registerPlots(plots);
 		System.out.println(calculator.getMaximumDistanceNearestPlot());
 		Assert.assertEquals("Testing the size of the id list", 12267, calculator.plotsId.size());
@@ -75,18 +75,20 @@ public class OccupancyIndexTest {
 	@Test
 	public void test02OccupancyIndexNaNException() throws IOException {
 		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
-		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, true); // is static
+		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, plots.get(0).getDateYr()); // is static
 		calculator.registerPlots(plots);
 		try {
 			for (int i = 0; i < plots.size(); i++) {
-				GaussianEstimate occInd = calculator.getOccupancyIndex(plots.get(i), IrisSpecies.ERS, 10d);
-				if (Double.isNaN(occInd.getMean().getValueAt(0, 0)) && Double.isNaN(occInd.getVariance().getValueAt(0, 0))) {
-					throw new UnsupportedOperationException("Occupancy index could not be calculated for this plot since there is only one plot within the radius!");
-				}
+				calculator.getOccupancyIndex(plots.get(i), IrisSpecies.ERS, 10d);
 			}
 			Assert.fail("Should have thrown an unsupported operation exception!");
 		} catch (UnsupportedOperationException e) {
 			e.printStackTrace();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 			System.out.println("Relax! This error was expected!");
 		}
 	}
@@ -95,7 +97,7 @@ public class OccupancyIndexTest {
 	@Test
 	public void test03OccupancyIndexAllPlotsIsCloneable() throws IOException {
 		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
-		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, true);
+		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, plots.get(0).getDateYr());
 		OccupancyIndexCalculator clone = calculator.clone();
 		Assert.assertTrue(System.identityHashCode(calculator.distances) ==
 				System.identityHashCode(clone.distances));

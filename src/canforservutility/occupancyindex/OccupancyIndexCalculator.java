@@ -96,8 +96,12 @@ public class OccupancyIndexCalculator implements Cloneable {
 	List<OccupancyIndexCalculablePlot> plotRegistry;
 	private Map<Enum<?>, Map<Integer, Map<String, GaussianEstimate>>> cacheMap; // species, plotId, occupancy index
 
-	private final boolean isStatic; 
+	private final Integer referenceYearForStaticSimulations;
+	
+//	private final boolean isStatic; 
 
+	private boolean isStatic() {return referenceYearForStaticSimulations != null;}
+	
 	@Override
 	public OccupancyIndexCalculator clone() {
 		try {
@@ -105,7 +109,7 @@ public class OccupancyIndexCalculator implements Cloneable {
 			clone.plotRegistry = new ArrayList<OccupancyIndexCalculablePlot>();
 			clone.plotRegistry.addAll(plotRegistry);
 			clone.cacheMap = new HashMap<Enum<?>, Map<Integer, Map<String, GaussianEstimate>>>();
-			if (isStatic) {
+			if (isStatic()) {
 				for (Enum<?> sp : cacheMap.keySet()) {
 					clone.cacheMap.put(sp, new HashMap<Integer, Map<String, GaussianEstimate>>());
 					Map<Integer, Map<String, GaussianEstimate>> innerMap = cacheMap.get(sp);
@@ -137,15 +141,17 @@ public class OccupancyIndexCalculator implements Cloneable {
 	 * be considered in the sample. Must be equal to or greater than 0.
 	 * @param maxYearDiff the maximum number of years between the measurement dates to 
 	 * be considered in the sample. Must be equal to or greater than minYearDiff argument
-	 * @param isStatic means that the occupancy indices are calculated once and will not
+	 * @param referenceYearForStaticSimulations an optional integer that specifies the reference year 
+	 * for the occupancy indices, which are calculated once and will not be
 	 * recalculated afterwards. This typically happens with stand-level simulation where the
 	 * sample is not large enough to ensure a proper evaluation through time.
 	 */
 	public OccupancyIndexCalculator(List<OccupancyIndexCalculablePlot> plots, 
 			int minYearDiff,
 			int maxYearDiff,
-			boolean isStatic) {
-		this.isStatic = isStatic;
+			Integer referenceYearForStaticSimulations) {
+		this.referenceYearForStaticSimulations = referenceYearForStaticSimulations;
+//		this.isStatic = isStatic;
 		if (minYearDiff < 0) {
 			throw new InvalidParameterException("The minYearDiff argument should be greater to or equal to 0!");
 		}
@@ -208,13 +214,14 @@ public class OccupancyIndexCalculator implements Cloneable {
 	 * This constructor assumes minimum and maximum year differences of 0 and 10, respectively.
 	 * 
 	 * @param plots a List of OccupancyIndexCalculablePlot instances
-	 * @param isStatic means that the occupancy indices are calculated once and will not
+	 * @param referenceYearForStaticSimulations an optional integer that specifies the reference year 
+	 * for the occupancy indices, which are calculated once and will not be
 	 * recalculated afterwards. This typically happens with stand-level simulation where the
 	 * sample is not large enough to ensure a proper evaluation through time.
 	 */
 	public OccupancyIndexCalculator(List<OccupancyIndexCalculablePlot> plots, 
-			boolean isStatic) {
-		this(plots, 0, 10, isStatic);
+			Integer referenceYearForStaticSimulations) {
+		this(plots, 0, 10, referenceYearForStaticSimulations);
 	}
 
 	/**
@@ -224,7 +231,7 @@ public class OccupancyIndexCalculator implements Cloneable {
 	 * @param plots a list of OccupancyIndexCalculablePlot instances
 	 */
 	public void registerPlots(List<OccupancyIndexCalculablePlot> plots) {
-		if (plotRegistry.isEmpty() || !isStatic) {
+		if (plotRegistry.isEmpty() || !isStatic()) {
 			for (OccupancyIndexCalculablePlot p : plots) {
 				String plotId = p.getSubjectId();
 				if (!plotsId.containsKey(plotId)) {
@@ -304,7 +311,7 @@ public class OccupancyIndexCalculator implements Cloneable {
 
 		String plotId = thisPlot.getSubjectId();
 		GaussianEstimate occupancyEstimate;
-		int cachedDateYr = isStatic ? -1 : thisPlot.getDateYr();
+		int cachedDateYr = isStatic() ? referenceYearForStaticSimulations : thisPlot.getDateYr();
 		if (isCached(species, cachedDateYr, plotId)) {
 			return cacheMap.get(species).get(cachedDateYr).get(plotId);
 		} else {
@@ -334,8 +341,9 @@ public class OccupancyIndexCalculator implements Cloneable {
 			plotsWithinDistanceWithinLast10Yrs.addAll(singletonMap.values());
 
 			if (plotsWithinDistanceWithinLast10Yrs.size() == 1) {
-				Matrix nullMatrix = new Matrix(1,1,Double.NaN,0);
-				occupancyEstimate = new GaussianEstimate(nullMatrix, SymmetricMatrix.convertToSymmetricIfPossible(nullMatrix));
+				throw new UnsupportedOperationException("Occupancy index could not be calculated for plot " + plotId + " for date " + cachedDateYr + " since there is only one plot within the radius!");
+//				Matrix nullMatrix = new Matrix(1,1,Double.NaN,0);
+//				occupancyEstimate = new GaussianEstimate(nullMatrix, SymmetricMatrix.convertToSymmetricIfPossible(nullMatrix));
 			} else {
 				int n = plotsWithinDistanceWithinLast10Yrs.size();
 				PopulationMeanEstimate estimate = new PopulationMeanEstimate();
