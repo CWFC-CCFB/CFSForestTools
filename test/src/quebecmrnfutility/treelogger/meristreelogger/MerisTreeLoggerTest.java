@@ -27,23 +27,26 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import quebecmrnfutility.treelogger.meristreelogger.MerisTreeLoggerParameters.MerisTypeMatrix;
+import repicea.simulation.covariateproviders.treelevel.ExpansionFactorProvider;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
 
 public class MerisTreeLoggerTest {
 
-	static class MerisLoggableTreeImpl implements MerisLoggableTree {
+	static class MerisLoggableTreeImpl implements MerisLoggableTree, ExpansionFactorProvider {
 
 		final double volumeM3;
 		final String speciesName;
 		final double dbhCm;
+		final double number;
 		
 		
-		MerisLoggableTreeImpl(double volumeM3, String speciesName, double dbhCm) {
+		MerisLoggableTreeImpl(double volumeM3, String speciesName, double dbhCm, double number) {
 			this.volumeM3 = volumeM3;
 			this.speciesName = speciesName;
 			this.dbhCm = dbhCm;
+			this.number = number;
 		}
 		
 		@Override
@@ -67,6 +70,14 @@ public class MerisTreeLoggerTest {
 		public SpeciesLocale getSpeciesLocale() {
 			return SpeciesLocale.Quebec;
 		}
+
+		@Override
+		public double getNumber() {return number;}
+
+		@Override
+		public String getMerisSpeciesCode() {
+			return getSpeciesName();
+		}
 		
 	}
 	
@@ -80,18 +91,27 @@ public class MerisTreeLoggerTest {
 	
 	@Test
 	public void test01SimpleTreeHappyPath() {
-		MerisLoggableTree tree = new MerisLoggableTreeImpl(1d, "EPB", 13.05);
+		MerisLoggableTree tree = new MerisLoggableTreeImpl(1d, "EPB", 13.05, 10);
 		Singleton.logThisTree(tree);
 		Collection<WoodPiece> woodPieces = Singleton.getWoodPieces().get(tree);
 		Assert.assertTrue("Testing that wood piece collections is not empty", !woodPieces.isEmpty());
 		double totalVolumeWoodM3 = 0d;
 		double totalVolumeBarkM3 = 0d;
+		double totalVolumeWoodM3WithExpansionFactor = 0d;
+		double totalVolumeBarkM3WithExpansionFactor = 0d;
+		double totalVolumeWithExpansionFactor = 0d;
 		for (WoodPiece wp : woodPieces) {
 			totalVolumeWoodM3 += wp.getWoodVolumeM3();
 			totalVolumeBarkM3 += wp.getBarkVolumeM3();
+			totalVolumeWoodM3WithExpansionFactor += wp.getWeightedWoodVolumeM3();
+			totalVolumeBarkM3WithExpansionFactor += wp.getWeightedBarkVolumeM3();
+			totalVolumeWithExpansionFactor += wp.getWeightedTotalVolumeM3();
 		}
 		Assert.assertEquals("Testing bark volume", 0.08, totalVolumeBarkM3, 1E-8);
 		Assert.assertEquals("Testing wood volume", 1d, totalVolumeWoodM3, 1E-8);
+		Assert.assertEquals("Testing bark volume with expansion factor", 0.8, totalVolumeBarkM3WithExpansionFactor, 1E-8);
+		Assert.assertEquals("Testing wood volume with expansion factor", 10d, totalVolumeWoodM3WithExpansionFactor, 1E-8);
+		Assert.assertEquals("Testing total volume with expansion factor", 10.8, totalVolumeWithExpansionFactor, 1E-8);
 	}
 	
 	@Test

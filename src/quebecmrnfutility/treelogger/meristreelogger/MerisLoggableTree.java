@@ -24,4 +24,13 @@ import repicea.simulation.treelogger.LoggableTree;
 
 public interface MerisLoggableTree extends LoggableTree, DbhCmProvider {
 	
+	/**
+	 * This method must return one of the three-character species code.<p>
+	 * The list of species code is available from the SpeciesList static member
+	 * in the MerisTreeLoggerParameters class.
+	 * 
+	 * @return a three-character species code (e.g. SAB, EPB)
+	 */
+	public String getMerisSpeciesCode();
+	
 }

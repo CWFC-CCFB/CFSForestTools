@@ -36,7 +36,7 @@ public class SimpleOccupancyIndexCalculablePlot implements OccupancyIndexCalcula
 	private final int dateYr;
 	private final Map<Enum<?>, Double> baHaSpeciesMap;
 //	private final double baHaSpecies;
-	double distanceKm;
+//	double distanceKm;
 
 	
 	/**
