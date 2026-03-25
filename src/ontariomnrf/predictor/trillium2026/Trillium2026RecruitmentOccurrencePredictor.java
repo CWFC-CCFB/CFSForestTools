@@ -121,17 +121,16 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	private static ParameterMap OffsetListMap;
 	private static List<OccupancyIndexCalculablePlot> ReferencePlotsForOccupancyIndexCalculation;
 	
-//	final OccupancyIndexCalculator occIndexCalculator;
 	private final Map<Species, Trillium2026RecruitmentOccurrenceInternalPredictor> internalPredictors;
-	
-//	private List<SimpleOccupancyIndexCalculablePlot, <, Map<>>
+	protected final double minProbRecruitmentThreshold;
 	
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled true to enable the stochastic mode
+	 * @param minProbRecruitmentThreshold the minimum probability to assume that recruitment is possible (e.g., 0.01)
 	 */
-	public Trillium2026RecruitmentOccurrencePredictor(boolean isVariabilityEnabled) {
-		this(isVariabilityEnabled, isVariabilityEnabled);		
+	public Trillium2026RecruitmentOccurrencePredictor(boolean isVariabilityEnabled, double minProbRecruitmentThreshold) {
+		this(isVariabilityEnabled, isVariabilityEnabled, minProbRecruitmentThreshold);	
 	}
 	
 	/**
@@ -142,10 +141,12 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	 *
 	 * @param isParameterVariabilityEnabled true to enable the parameter estimates variability
 	 * @param isResidualVariabilityEnabled true to enable the residual error variability
+	 * @param minProbRecruitmentThreshold the minimum probability to assume that recruitment is possible (e.g., 0.01)
 	 */
 	protected Trillium2026RecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
-			boolean isResidualVariabilityEnabled) {
+			boolean isResidualVariabilityEnabled, double minProbRecruitmentThreshold) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		
+		this.minProbRecruitmentThreshold = minProbRecruitmentThreshold;
 		internalPredictors = new HashMap<Species, Trillium2026RecruitmentOccurrenceInternalPredictor>();
 		init();
 	}

@@ -72,7 +72,9 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitm
 		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		xBeta += addOffsetIfNeeded(plot);
 		double recruitmentProbability = 1d - Math.exp(-Math.exp(xBeta));
-		return recruitmentProbability;
+		return recruitmentProbability < owner.minProbRecruitmentThreshold ? // if the recruitment probability is smaller than the threshold
+				0d : 														// the recruitment probability is assumed to be 0
+					recruitmentProbability;
 	}
 
 	@Override

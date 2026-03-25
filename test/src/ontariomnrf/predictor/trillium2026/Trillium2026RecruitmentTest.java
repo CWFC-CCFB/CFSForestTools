@@ -210,7 +210,7 @@ public class Trillium2026RecruitmentTest {
 	@Test
 	public void test01OccurrencePredictionsAgainstRPredictions() throws IOException {
 		System.out.println("Testing deterministic predictions against ground truth...");
-		Trillium2026RecruitmentOccurrencePredictor predictor = new Trillium2026RecruitmentOccurrencePredictor(false); // deterministic
+		Trillium2026RecruitmentOccurrencePredictor predictor = new Trillium2026RecruitmentOccurrencePredictor(false, 0d); // deterministic
 		Map<String, Trillium2026RecruitmentPlotImpl> plots = PlotMapForOccurrence; 
 		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
 			int nbTested = 0;
@@ -267,7 +267,7 @@ public class Trillium2026RecruitmentTest {
 	public void test03StochasticImplementationOccurrencePredictions() throws IOException {
 		System.out.println("Testing stochastic implementation of occurrence...");
 		int nbRealizations = 10000;
-		Trillium2026RecruitmentOccurrencePredictor predictor = new Trillium2026RecruitmentOccurrencePredictor(false); 
+		Trillium2026RecruitmentOccurrencePredictor predictor = new Trillium2026RecruitmentOccurrencePredictor(false, 0d); 
 		Map<String, Trillium2026RecruitmentPlotImpl> plots = PlotMapForOccurrence; 
 		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
 			System.out.println("  Processing species " + sp.getLatinName() + "..."); 
@@ -307,7 +307,7 @@ public class Trillium2026RecruitmentTest {
 	public void test11MeanNumberPredictionsAgainstRPredictions() throws IOException {
 		System.out.println("Testing predicted abundance...");
 		Trillium2026RecruitmentNumberPredictor predictor = new Trillium2026RecruitmentNumberPredictor(false, 
-				new Trillium2026RecruitmentOccurrencePredictor(false)); // deterministic
+				new Trillium2026RecruitmentOccurrencePredictor(false, 0d)); // deterministic
 		Map<String, Trillium2026RecruitmentPlotImpl> plotMap = PlotMapForNumber; 
 		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
 			System.out.println("  Processing species " + sp.getLatinName() + "...");
@@ -336,9 +336,9 @@ public class Trillium2026RecruitmentTest {
 	public void test12StochasticMeanNumberPredictions() throws IOException {
 		System.out.println("Testing stochastic abundance (residual only)...");
 		Trillium2026RecruitmentNumberPredictor detPredictor = new Trillium2026RecruitmentNumberPredictor(false,
-				new Trillium2026RecruitmentOccurrencePredictor(false)); // deterministic
+				new Trillium2026RecruitmentOccurrencePredictor(false, 0d)); // deterministic
 		Trillium2026RecruitmentNumberPredictor stoPredictor = new Trillium2026RecruitmentNumberPredictor(false, true,
-				new Trillium2026RecruitmentOccurrencePredictor(false)); // stochastic with residual variability only
+				new Trillium2026RecruitmentOccurrencePredictor(false, 0d)); // stochastic with residual variability only
 		int nbRealizations = 1000000;
 		Map<String, Trillium2026RecruitmentPlotImpl> plots = PlotMapForNumber; 
 		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
@@ -385,7 +385,7 @@ public class Trillium2026RecruitmentTest {
 	public void test13StochasticImplementationMeanNumberPredictions() throws IOException {
 		System.out.println("Testing stochastic abundance (with estimated occupancy)...");
 		Trillium2026RecruitmentNumberPredictor predictor = new Trillium2026RecruitmentNumberPredictor(false,  
-				new Trillium2026RecruitmentOccurrencePredictor(false)); // deterministic
+				new Trillium2026RecruitmentOccurrencePredictor(false, 0d)); // deterministic
 		int nbRealizations = 10000;
 		Map<String, Trillium2026RecruitmentPlotImpl> plotMap = PlotMapForNumber; 
 
