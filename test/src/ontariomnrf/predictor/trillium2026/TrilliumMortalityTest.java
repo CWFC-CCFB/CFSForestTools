@@ -86,7 +86,7 @@ public class TrilliumMortalityTest {
 		public String getSubjectId() {return null;}
 
 		@Override
-		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
+		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.INTERVAL_NESTED_IN_PLOT;}
 
 		void setMonteCarloRealizationId(int real) {this.mcReal = real;}
 
