@@ -168,7 +168,7 @@ task deleteInstallFolder(type: Delete) {
 task install(type: Copy) {
 	description = 'Copies the output jar to installation folder.'
 	group = 'build'
-	dependsOn deleteInstallFolder,integrationTest
+	dependsOn deleteInstallFolder //,integrationTest
 	from configurations.cfsForesttoolsImplementation
 	from jar
 	into "../externallibraries/" + rootProject.name

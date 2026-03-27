@@ -287,9 +287,9 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		case Known:
 			return occupancyIndexMap.get(sp);
 		case Estimated:
-			return occIndexCalc.getOccupancyIndex(this, sp, 25); 
+			return occIndexCalc.getOccupancyIndex(this, sp); 
 		case Deviate:
-			double deviate = occIndexCalc.getOccupancyIndex(this, sp, 25).getRandomDeviate().getValueAt(0, 0);
+			double deviate = occIndexCalc.getOccupancyIndex(this, sp).getRandomDeviate().getValueAt(0, 0);
 			return deviate;
 		default:
 			throw new UnsupportedOperationException("The mode " + mode.name() + " is not supported!");

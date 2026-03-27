@@ -180,7 +180,7 @@ public class Trillium2026RecruitmentTest {
 
 	@BeforeClass
 	public static void initialize() throws IOException {
-		OccIndCalc = new OccupancyIndexCalculator(Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex(), null);
+		OccIndCalc = new OccupancyIndexCalculator(Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex(), 25, null);
 		OccIndCalc.registerPlots(Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex());
 
 		PlotMapForOccurrence = new HashMap<String, Trillium2026RecruitmentPlotImpl>();
@@ -246,7 +246,7 @@ public class Trillium2026RecruitmentTest {
 			for (Trillium2026RecruitmentPlotImpl p : plots.values()) {
 				Double pred = p.getPred(sp);
 				if (pred != null) {
-					GaussianEstimate estimatedOccIndex = OccIndCalc.getOccupancyIndex(p, sp, 25);
+					GaussianEstimate estimatedOccIndex = OccIndCalc.getOccupancyIndex(p, sp);
 					double actual = estimatedOccIndex.getMean().getValueAt(0, 0);
 					double expected = (Double) p.getOccupancyForThisSpecies(sp);
 					Assert.assertEquals("Testing occupancy index for plot " + p.getSubjectId() + ", species " + sp.name(), 
