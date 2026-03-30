@@ -94,7 +94,7 @@ public class OccupancyIndexCalculator implements Cloneable {
 		Map<String, Integer> plotsId = new HashMap<String, Integer>();
 		plotRegistry = new HashMap<String, List<OccupancyIndexCalculablePlot>>();
 		// first screen for the first entry plots
-		long initTime = System.currentTimeMillis();
+//		long initTime = System.currentTimeMillis();
 		List<OccupancyIndexCalculablePlot> firstEntryPlots = new ArrayList<OccupancyIndexCalculablePlot>();
 		for (int i = 0; i < plots.size(); i++) {
 			OccupancyIndexCalculablePlot p = plots.get(i);
@@ -103,10 +103,10 @@ public class OccupancyIndexCalculator implements Cloneable {
 				firstEntryPlots.add(p);
 			} 
 		}
-		System.out.println("Time to list the plots " + (System.currentTimeMillis() - initTime) + " ms.");
+//		System.out.println("Time to list the plots " + (System.currentTimeMillis() - initTime) + " ms.");
 
 		// construct the latitude and longitude vectors
-		initTime = System.currentTimeMillis();
+//		initTime = System.currentTimeMillis();
 		Matrix latitudes = new Matrix(firstEntryPlots.size(), 1);
 		Matrix longitudes = new Matrix(firstEntryPlots.size(), 1);
 		for (int i = 0; i < firstEntryPlots.size(); i++) {
@@ -116,10 +116,10 @@ public class OccupancyIndexCalculator implements Cloneable {
 		}
 		// calculate the distance matrix
 		Matrix distances = GeographicDistanceCalculator.getDistanceBetweenTheseCoordinates(latitudes, longitudes, radiusKm);
-		System.out.println("Time to set the distance matrix " + (System.currentTimeMillis() - initTime) + " ms.");
+//		System.out.println("Time to set the distance matrix " + (System.currentTimeMillis() - initTime) + " ms.");
 		
 		
-		initTime = System.currentTimeMillis();
+//		initTime = System.currentTimeMillis();
 		nearestNeighborsMap = new HashMap<String, List<String>>();
 		for (int i = 0; i < distances.m_iRows; i++) {
 			OccupancyIndexCalculablePlot p1 = firstEntryPlots.get(i);
@@ -144,7 +144,7 @@ public class OccupancyIndexCalculator implements Cloneable {
 //				throw new UnsupportedOperationException("There is less than 2 plots with a " + radiusKm + " km radius of plot " + p1.getSubjectId());
 //			}
 		}
-		System.out.println("Time to log distances in the map " + (System.currentTimeMillis() - initTime) + " ms.");
+//		System.out.println("Time to log distances in the map " + (System.currentTimeMillis() - initTime) + " ms.");
 		cacheMap = new HashMap<Enum<?>, Map<Integer, Map<String, GaussianEstimate>>>();
 	}
 
