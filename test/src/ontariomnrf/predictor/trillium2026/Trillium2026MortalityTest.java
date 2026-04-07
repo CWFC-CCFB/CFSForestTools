@@ -37,7 +37,7 @@ import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
-public class TrilliumMortalityTest {
+public class Trillium2026MortalityTest {
 
 	static class Trillium2026TreeImpl implements Trillium2026Tree, Trillium2026MortalityPlot {
 
@@ -55,8 +55,10 @@ public class TrilliumMortalityTest {
 		private final int dateYr;
 		private final boolean dummyHarvest;
 		private final boolean planted;
+		private final String clusterId;
 		
-		Trillium2026TreeImpl(int growthStepLengthYr,
+		Trillium2026TreeImpl(String clusterId,
+				int growthStepLengthYr,
 				double meanTminJanuaryCelsius,
 				double totalPrecMarchToMayMm,
 				double meanTempJuneToAugustCelsius,
@@ -68,6 +70,7 @@ public class TrilliumMortalityTest {
 				int dateYr,
 				boolean dummyHarvest,
 				boolean planted) {
+			this.clusterId = clusterId;
 			this.growthStepLengthYr = growthStepLengthYr;
 			this.meanTminJanuaryCelsius = meanTminJanuaryCelsius;
 			this.totalPrecMarchToMayMm = totalPrecMarchToMayMm;
@@ -86,7 +89,7 @@ public class TrilliumMortalityTest {
 		public String getSubjectId() {return null;}
 
 		@Override
-		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.INTERVAL_NESTED_IN_PLOT;}
+		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
 
 		void setMonteCarloRealizationId(int real) {this.mcReal = real;}
 
@@ -141,6 +144,9 @@ public class TrilliumMortalityTest {
 		@Override
 		public String getId() {return null;}
 
+		@Override
+		public String getClusterId() {return clusterId;}
+
 	}
 
 
@@ -149,12 +155,15 @@ public class TrilliumMortalityTest {
 	@BeforeClass
 	public static void readTrees() throws IOException {
 		TreeMap = new LinkedHashMap<Species, List<Trillium2026TreeImpl>>();
-		String filename = ObjectUtility.getPackagePath(TrilliumMortalityTest.class) + "mortalityTestData.csv";
+		String filename = ObjectUtility.getPackagePath(Trillium2026MortalityTest.class) + "mortalityTestData.csv";
 		CSVReader reader = null;
 		try {
 			reader = new CSVReader(filename);
 			Object[] record;
 			while ((record = reader.nextRecord()) != null) {
+				String dataset = record[reader.getHeader().getIndexOfThisField("dataset")].toString();
+				String plotKey = record[reader.getHeader().getIndexOfThisField("PlotKey")].toString();
+				String clusterId = dataset.trim() + "_" + plotKey.trim();
 				int growthStepLengthYr = Integer.parseInt(record[reader.getHeader().getIndexOfThisField("dt")].toString());
 				double meanTminJanuaryCelsius = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("MeanTminJanuary")].toString());
 				double totalPrecMarchToMayMm = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("TotalPrecMarchToMay")].toString());
@@ -168,7 +177,8 @@ public class TrilliumMortalityTest {
 				int dateYr = ((Double) Double.parseDouble(record[reader.getHeader().getIndexOfThisField("FieldSeasonYear.x")].toString())).intValue();
 				boolean dummyHarvest = Integer.parseInt(record[reader.getHeader().getIndexOfThisField("dummyHarvest")].toString()) == 1;
 				boolean planted = record[reader.getHeader().getIndexOfThisField("planted")].toString().equals("TRUE");
-				Trillium2026TreeImpl tree = new Trillium2026TreeImpl(growthStepLengthYr,
+				Trillium2026TreeImpl tree = new Trillium2026TreeImpl(clusterId,
+						growthStepLengthYr,
 						meanTminJanuaryCelsius,
 						totalPrecMarchToMayMm,
 						meanTempJuneToAugustCelsius,

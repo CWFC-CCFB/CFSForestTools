@@ -67,7 +67,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaRecruitmentOccur
 	
 	@Override
 	public double predictEventProbability(IrisRecruitmentPlot plot, IrisTree tree, Map<String, Object> parms) {
-		return calculateEventProbability(plot, tree.getSpecies());
+		return calculateEventProbability(plot);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ class IrisRecruitmentOccurrenceInternalPredictor extends REpiceaRecruitmentOccur
 
 	// TODO MF20260209 That could be improved by internalizing the loop on the effects and avoiding calculating over and over again the same variables.
 	@Override
-	protected void setValueInXVector(int effectId, IrisRecruitmentPlot plot, Enum<?> species, double occupancyIndex10km) {
+	protected void setValueInXVector(int effectId, IrisRecruitmentPlot plot, double occupancyIndex10km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");

@@ -94,7 +94,7 @@ public abstract class REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancy
 		
 		@Override
 		public void setVariableValue(int variableIndex, double variableValue) {
-			setOccupancyInXVector(plot, REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancyIndex.this.species, variableValue);
+			setOccupancyInXVector(plot, variableValue);
 		}		
 
 		@Override
@@ -132,16 +132,16 @@ public abstract class REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancy
 		
 	}
 
-	protected void setOccupancyInXVector(S plot, Enum<?> species, double occupancyIndexValue) {
+	protected void setOccupancyInXVector(S plot, double occupancyIndexValue) {
 		for (int effectId : occupancyIndexVarIndices) {
-			setValueInXVector(effectId, plot, species, occupancyIndexValue); 
+			setValueInXVector(effectId, plot, occupancyIndexValue); 
 		}
 	}
 
 	
-	protected synchronized double calculateEventProbability(S plot, Enum<?> species) {
+	protected synchronized double calculateEventProbability(S plot) {
 		Matrix beta = getParametersForThisRealization(plot);
-		constructXVector(plot, species);
+		constructXVector(plot);
 		if (isModelUsingOccupancyIndex()) {
 			Object occupancy = plot.getOccupancyForThisSpecies(species);
 			if (occupancy instanceof GaussianEstimate) {
@@ -149,7 +149,7 @@ public abstract class REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancy
 				double meanOccIndex = estimate.getMean().getValueAt(0, 0);
 				double varOccIndex = estimate.getVariance().getValueAt(0, 0);
 				if (varOccIndex == 0d) { // there is no variability
-					setOccupancyInXVector(plot, species, meanOccIndex);
+					setOccupancyInXVector(plot, meanOccIndex);
 					return getProb(beta, plot);
 				} else {
 					imf.setMembers(beta, plot, meanOccIndex, varOccIndex);
@@ -158,7 +158,7 @@ public abstract class REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancy
 				}
 			} else if (occupancy instanceof Double) {
 				double occupancyIndex10kmRandomDeviate = (Double) occupancy;
-				setOccupancyInXVector(plot, species, occupancyIndex10kmRandomDeviate);
+				setOccupancyInXVector(plot, occupancyIndex10kmRandomDeviate);
 				return getProb(beta, plot);
 			} else {
 				throw new UnsupportedOperationException("Occupance should be a GaussianEstimate instance or a double, but was :" + occupancy.getClass().getName());
@@ -168,20 +168,20 @@ public abstract class REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancy
 		}
 	}
 
-	protected void constructXVector(S plot, Enum<?> species) {
+	protected void constructXVector(S plot) {
 		oXVector.resetMatrix();
 		
 		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();
 		effectListWithoutOccIndex.addAll(effectList);
 		effectListWithoutOccIndex.removeAll(occupancyIndexVarIndices);
 		for (int effectId : effectListWithoutOccIndex) {
-			setValueInXVector(effectId, plot, species, 0d); // occupancy index set to 0 for now
+			setValueInXVector(effectId, plot, 0d); // occupancy index set to 0 for now
 		}
 	}
 
 	public boolean isModelUsingOccupancyIndex() {return !occupancyIndexVarIndices.isEmpty();}
 
-	protected abstract void setValueInXVector(int effectId, S plot, Enum<?> species2, double d);
+	protected abstract void setValueInXVector(int effectId, S plot, double d);
 
 	protected abstract double getProb(Matrix beta, S plot);
 	

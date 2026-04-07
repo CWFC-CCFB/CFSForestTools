@@ -39,7 +39,7 @@ import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
-public class TrilliumDiameterIncrementTest {
+public class Trillium2026DiameterIncrementTest {
 
 	static List<Species> SpeciesUsingSMI = new ArrayList<Species>();
 	static void addSpecies(Species sp) {
@@ -284,7 +284,7 @@ public class TrilliumDiameterIncrementTest {
 	@BeforeClass
 	public static void readTrees() throws IOException {
 		TreeMap = new LinkedHashMap<Species, List<Trillium2026TreeImpl>>();
-		String filename = ObjectUtility.getPackagePath(TrilliumDiameterIncrementTest.class) + "diameterIncrementTestData.csv";
+		String filename = ObjectUtility.getPackagePath(Trillium2026DiameterIncrementTest.class) + "diameterIncrementTestData.csv";
 		CSVReader reader = null;
 		try {
 			reader = new CSVReader(filename);

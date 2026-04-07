@@ -64,7 +64,7 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitm
 	
 	@Override
 	public double predictEventProbability(Trillium2026RecruitmentPlot plot, Trillium2026Tree tree, Map<String, Object> parms) {
-		return calculateEventProbability(plot, tree.getTrillium2026TreeSpecies());
+		return calculateEventProbability(plot);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitm
 	}
 
 	@Override
-	protected void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, Enum<?> species, double occupancyIndex25km) {
+	protected void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, double occupancyIndex25km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");

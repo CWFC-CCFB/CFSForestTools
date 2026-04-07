@@ -23,7 +23,7 @@ import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassPro
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
-import repicea.simulation.covariateproviders.plotlevel.CruiseLineProvider;
+import repicea.simulation.covariateproviders.plotlevel.CruiseLineIdProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider;
 import repicea.simulation.covariateproviders.plotlevel.LandUseProvider;
@@ -43,7 +43,7 @@ public interface MeloThinnerPlot extends MonteCarloSimulationCompliantObject,
 											QcSlopeClassProvider,
 											EcologicalTypeProvider,
 											QcForestRegionProvider,
-											CruiseLineProvider,
+											CruiseLineIdProvider,
 											LandUseProvider,
 											LandOwnershipProvider {
 

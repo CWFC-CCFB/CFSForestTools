@@ -88,7 +88,7 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 		if (ranefVar != null) {
 			SymmetricMatrix ranefVariance = new Matrix(ranefVar).squareSym();
 			GaussianEstimate randomEffect = new GaussianEstimate(new Matrix(ranefVariance.m_iRows,1), ranefVariance);
-			setDefaultRandomEffects(HierarchicalLevel.INTERVAL_NESTED_IN_PLOT, randomEffect);
+			setDefaultRandomEffects(HierarchicalLevel.INTERVAL_NESTED_IN_CLUSTER, randomEffect);
 			linkFunction = new EmbeddedLinkFunction(Type.CLogLog, ranefVariance.getValueAt(0, 0));
 		} else {
 			linkFunction = new EmbeddedLinkFunction(Type.CLogLog, 0d);
@@ -106,8 +106,8 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 		linkFunction.setVariableValue(1, xBeta);
 		double prob;
 		if (isRandomEffectsVariabilityEnabled) {
-			IntervalNestedInPlotDefinition intervalDefinition = getIntervalNestedInPlotDefinition(plot, plot.getDateYr());
-			double intervalRandomEffect = getRandomEffectsForThisSubject(intervalDefinition).getValueAt(0, 0);
+			IntervalNestedInClusterDefinition intervalInClusterDefinition = getIntervalNestedInClusterDefinition(plot, plot.getDateYr());
+			double intervalRandomEffect = getRandomEffectsForThisSubject(intervalInClusterDefinition).getValueAt(0, 0);
 			linkFunction.setParameterValue(0, intervalRandomEffect);
 			prob = linkFunction.getValue();
 		} else {

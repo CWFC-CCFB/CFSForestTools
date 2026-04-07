@@ -85,7 +85,7 @@ class IrisRecruitmentNumberInternalPredictor extends REpiceaRecruitmentNumberInt
 	}
 	
 	@Override
-	protected void setValueInXVector(int effectId, IrisRecruitmentPlot plot, Enum<?> species, double occupancyIndex10km) {
+	protected void setValueInXVector(int effectId, IrisRecruitmentPlot plot, double occupancyIndex10km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");

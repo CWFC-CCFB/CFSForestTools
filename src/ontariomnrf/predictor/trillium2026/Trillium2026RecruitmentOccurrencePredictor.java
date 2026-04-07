@@ -47,12 +47,14 @@ import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 /**
- * The Iris2020RecruitmentOccurrencePredictor class implements the logistic part of the recruitment module in the Iris 2020 simulator.
- * @author Mathieu Fortin - May 2020
+ * The Trillium2026RecruitmentOccurrencePredictor class implements the logistic part 
+ * of the recruitment module in the Trillium simulator.
+ * @author Mathieu Fortin - March 2026
  */
 @SuppressWarnings("serial")
-public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<Trillium2026RecruitmentPlot, Trillium2026Tree> 
-														implements REpiceaSpeciesCompliantObject, ClimateSensitivePredictor {
+public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<Trillium2026RecruitmentPlot, Trillium2026Tree> implements 
+																REpiceaSpeciesCompliantObject, 
+																ClimateSensitivePredictor {
 
 	
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();

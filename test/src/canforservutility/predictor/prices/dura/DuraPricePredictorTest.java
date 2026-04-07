@@ -105,7 +105,7 @@ public class DuraPricePredictorTest {
 				double expected = c.pred;
 				Assert.assertEquals("Testing prediction", expected, actual, 1E-8);
 			}
-			System.out.println("Sucessfully tested " + observations.size() + " observaions!");
+			System.out.println("Sucessfully tested " + observations.size() + " observations!");
 		}
 	}
 

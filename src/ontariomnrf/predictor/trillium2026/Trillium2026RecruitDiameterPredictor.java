@@ -21,7 +21,6 @@ package ontariomnrf.predictor.trillium2026;
 
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,14 +41,15 @@ import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 /**
- * The Trillium2026RecruitmentNumberPredictor class implements the negative binomial part of the recruitment module 
- * in the Trillium simulator. 
+ * The Trillium2026RecruitDiameterPredictor class implements 
+ * a generalized linear model based on a Gamma distribution to 
+ * predict recruit diameters in the Trillium simulator. 
  * @author Mathieu Fortin - March 2026
  */
 @SuppressWarnings("serial")
-public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor implements 
-													REpiceaSpeciesCompliantObject,
-													ClimateSensitivePredictor {
+public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor implements 
+															REpiceaSpeciesCompliantObject,
+															ClimateSensitivePredictor {
 
 	
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
@@ -60,27 +60,21 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 				EvaluationDate.EndOfInterval);
 	}
 
-	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
-	static {
-//		OccupancyIndexEffects.add(19);
-	}
 
-	static boolean IsForTestPurposes = false;
+//	static boolean IsForTestPurposes = false;
 
 	private static ParameterMap BetaMap;
 	private static ParameterMap OmegaMap;
 	private static ParameterMap SpeciesEffectMatchesMap;
 	
-	private final Map<Species, Trillium2026RecruitmentNumberInternalPredictor> internalPredictors;
-	final Trillium2026RecruitmentOccurrencePredictor occurrencePredictor;
+	private final Map<Species, Trillium2026RecruitDiameterInternalPredictor> internalPredictors;
 	
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled true to enable the stochastic mode
-	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */
-	public Trillium2026RecruitmentNumberPredictor(boolean isVariabilityEnabled, Trillium2026RecruitmentOccurrencePredictor occurrencePredictor) {
-		this(isVariabilityEnabled, isVariabilityEnabled, occurrencePredictor);		
+	public Trillium2026RecruitDiameterPredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled);		
 	}
 
 	/**
@@ -89,22 +83,20 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	 * @param isResidualVariabilityEnabled true to enable the residual variability
 	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */
-	protected Trillium2026RecruitmentNumberPredictor(boolean isParameterVariabilityEnabled, 
-			boolean isResidualVariabilityEnabled, 
-			Trillium2026RecruitmentOccurrencePredictor occurrencePredictor) {
+	protected Trillium2026RecruitDiameterPredictor(boolean isParameterVariabilityEnabled, 
+			boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this module
-		internalPredictors = new HashMap<Species, Trillium2026RecruitmentNumberInternalPredictor>();
+		internalPredictors = new HashMap<Species, Trillium2026RecruitDiameterInternalPredictor>();
 		init();
-		this.occurrencePredictor = occurrencePredictor;
 	}
 
 	@Override
 	protected void init() {
 		if (BetaMap == null) {
 			String rootPath = ObjectUtility.getRelativePackagePath(getClass());
-			String betaFilename = rootPath + "0_RecruitmentNumberBeta.csv";
-			String omegaFilename = rootPath + "0_RecruitmentNumberOmega.csv";
-			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentNumberSpeciesEffectMatches.csv";
+			String betaFilename = rootPath + "0_RecruitmentDiameterBeta.csv";
+			String omegaFilename = rootPath + "0_RecruitmentDiameterOmega.csv";
+			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentDiameterSpeciesEffectMatches.csv";
 			try {
 				BetaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
 				OmegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
@@ -117,16 +109,16 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 			for (int spIndex = 0; spIndex < Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size(); spIndex++) {
 				Matrix beta = BetaMap.get(spIndex + 1);
 				SymmetricMatrix omega = OmegaMap.get(spIndex + 1).squareSym();
-				Matrix thetaMat = beta.getSubMatrix(beta.m_iRows - 1, beta.m_iRows - 1, 0, 0);  // theta was concatenated to beta in R
+				Matrix dispersion = beta.getSubMatrix(beta.m_iRows - 1, beta.m_iRows - 1, 0, 0);  // theta + scale = 1/theta were concatenated to beta in R
 				beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0);  // drop theta from beta
 				Matrix speciesEffectMatches = SpeciesEffectMatchesMap.get(spIndex + 1);
 				speciesEffectMatches = speciesEffectMatches.getSubMatrix(0, speciesEffectMatches.m_iRows - 1, 0, 0); // assumes the last effect has been removed
 				Species sp = Trillium2026RecruitmentOccurrencePredictor.SpeciesList.get(spIndex);
-				Trillium2026RecruitmentNumberInternalPredictor subPredictor = new Trillium2026RecruitmentNumberInternalPredictor(this,
+				Trillium2026RecruitDiameterInternalPredictor subPredictor = new Trillium2026RecruitDiameterInternalPredictor(this,
 						sp,
 						isParametersVariabilityEnabled, 
 						isResidualVariabilityEnabled, 
-						thetaMat.getValueAt(0, 0),
+						dispersion.getValueAt(0, 0),
 						beta, 
 						omega, 
 						speciesEffectMatches);
@@ -137,7 +129,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 		}
 	}
 
-	Trillium2026RecruitmentNumberInternalPredictor getInternalPredictor(Species species) {
+	Trillium2026RecruitDiameterInternalPredictor getInternalPredictor(Species species) {
 		if (!Trillium2026RecruitmentOccurrencePredictor.SpeciesLookupMap.containsValue(species)) {
 			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + " does not support the species " + species.getLatinName());
 		}
@@ -145,23 +137,23 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	}
 
 	/**
-	 * Returns the number of recruits conditional on the occurrence of recruitment.
-	 * @param plot an Iris2020CompatiblePlot instance
-	 * @param species an IrisSpecies enum
-	 * @return a double that is the number of recruits in the plot
+	 * Returns the recruit diameter.
+	 * @param plot a Trillium2026RecruitmentPlot instance
+	 * @param species an Species enum
+	 * @return the recruit DBH (cm)
 	 */
-	public double predictNumberOfRecruits(Trillium2026RecruitmentPlot plot, Species species) {
-		return getInternalPredictor(species).predictNumberOfRecruits(plot);
+	public double predictRecruitDiameterCm(Trillium2026RecruitmentPlot plot, Species species) {
+		return getInternalPredictor(species).predictRecruitDiameterCm(plot);
 	}
 	
 
-	/*
-	 * For test purposes.
-	 */
-	double getInvThetaParameterEstimate(Species species) {
-		return getInternalPredictor(species).invTheta;
-	}
-	
+//	/*
+//	 * For test purposes.
+//	 */
+//	double getInvThetaParameterEstimate(Species species) {
+//		return getInternalPredictor(species).invTheta;
+//	}
+
 	@Override
 	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
 		return CLIMATE_INFO;

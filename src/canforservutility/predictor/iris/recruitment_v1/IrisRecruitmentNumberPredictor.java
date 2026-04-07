@@ -131,7 +131,7 @@ public class IrisRecruitmentNumberPredictor extends REpiceaPredictor implements 
 	 * @return a double that is the number of recruits in the plot
 	 */
 	public double predictNumberOfRecruits(IrisRecruitmentPlot plot, IrisSpecies species) {
-		return internalPredictors.get(species).predictNumberOfRecruits(plot, species);
+		return internalPredictors.get(species).predictNumberOfRecruits(plot);
 	}
 	
 
