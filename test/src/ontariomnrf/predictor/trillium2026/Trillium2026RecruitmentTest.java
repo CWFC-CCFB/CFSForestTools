@@ -26,7 +26,6 @@ import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculator;
@@ -36,6 +35,7 @@ import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.GaussianEstimate;
+import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
 public class Trillium2026RecruitmentTest {
@@ -156,7 +156,6 @@ public class Trillium2026RecruitmentTest {
 	 * Validation test for occurrence using R validation dataset
 	 */
 	@Test
-	@Ignore
 	public void test01OccurrencePredictionsAgainstRPredictions() throws IOException {
 		System.out.println("Testing deterministic predictions against ground truth...");
 		Trillium2026RecruitmentOccurrencePredictor predictor = new Trillium2026RecruitmentOccurrencePredictor(false, 0d); // deterministic
@@ -184,7 +183,6 @@ public class Trillium2026RecruitmentTest {
 	 * This test can only be put in place if the original list of plots is used to
 	 * estimate the occupancy index.
 	 */
-	@Ignore
 	@Test
 	public void test02OccupancyIndexCalculation() throws IOException {
 		System.out.println("Testing occupancy indices...");
@@ -213,7 +211,6 @@ public class Trillium2026RecruitmentTest {
 	/*
 	 * Validation test for stochastic implementation of occurrence part with unknown occupancy index.
 	 */
-	@Ignore
 	@Test
 	public void test03StochasticImplementationOccurrencePredictions() throws IOException {
 		System.out.println("Testing stochastic implementation of occurrence...");
@@ -254,7 +251,6 @@ public class Trillium2026RecruitmentTest {
 	/*
 	 * Validation test for number of recruits using R validation dataset with known occupancy index.
 	 */
-	@Ignore
 	@Test
 	public void test11MeanNumberPredictionsAgainstRPredictions() throws IOException {
 		System.out.println("Testing predicted abundance...");
@@ -284,7 +280,6 @@ public class Trillium2026RecruitmentTest {
 	/*
 	 * Validation test for stochastic implementation with known occupancy index.
 	 */
-	@Ignore
 	@Test
 	public void test12StochasticMeanNumberPredictions() throws IOException {
 		System.out.println("Testing stochastic abundance (residual only)...");
@@ -334,7 +329,6 @@ public class Trillium2026RecruitmentTest {
 	/*
 	 * Validation test for stochastic implementation of occurrence part with unknown occupancy index.
 	 */
-	@Ignore
 	@Test
 	public void test13StochasticImplementationMeanNumberPredictions() throws IOException {
 		System.out.println("Testing stochastic abundance (with estimated occupancy)...");
@@ -391,7 +385,7 @@ public class Trillium2026RecruitmentTest {
 			int nbTested = 0;
 			for (Trillium2026RecruitmentPlotImpl plot : plotMap.values()) {
 				if (plot.getPred(sp) != null) {
-					double expected = plot.getPred(sp); // adding one because 
+					double expected = plot.getPred(sp); 
 					double actual = predictor.predictRecruitDiameterCm(plot, sp);
 					Assert.assertEquals("Testing mean predicted number for plot " + plot.getSubjectId() + ", species " + sp.name(), 
 							expected * .1 + 9.09, 
@@ -403,6 +397,44 @@ public class Trillium2026RecruitmentTest {
 			System.out.println("      Number of successfully tested plots = " + nbTested);
 		}
 	}
+	
+	/*
+	 * Comparison between stochastic and deterministic predictions.
+	 */
+	@Test
+	public void test22MeanDiameterStochasticPredictions() throws IOException {
+		System.out.println("Testing predicted diameter (stochastic)...");
+		Trillium2026RecruitDiameterPredictor detPredictor = new Trillium2026RecruitDiameterPredictor(false); 
+		Trillium2026RecruitDiameterPredictor stoPredictor = new Trillium2026RecruitDiameterPredictor(false, true); // false to disable the parameters in the parameter estimates
+		Map<String, Trillium2026RecruitmentPlotImpl> plotMap = PlotMapForDiameter; 
+		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
+			System.out.println("  Processing species " + sp.getLatinName() + "...");
+			for (Trillium2026RecruitmentPlotImpl plot : plotMap.values()) {
+				if (plot.getPred(sp) != null) {
+					double expected = detPredictor.predictRecruitDiameterCm(plot, sp);
+					MonteCarloEstimate estimate = new MonteCarloEstimate();
+					for (int i = 0; i < 100000; i++) {
+						plot.setMonteCarloRealizationId(0);
+						double predDbhCm = stoPredictor.predictRecruitDiameterCm(plot, sp);
+						estimate.addRealization(new Matrix(1,1, predDbhCm, 0));
+					}
+					double actual = estimate.getMean().getValueAt(0,0);
+					double expectedVariance = stoPredictor.getVariance(plot, sp);
+					double actualVariance = estimate.getVariance().getValueAt(0, 0);
+					System.out.println("      Deterministic mean = " + expected + "; stochastic mean = " + actual);
+					Assert.assertEquals("Testing stochastic mean against deterministic one for plot " + plot.getSubjectId() + ", species " + sp.name(), 
+							expected, 
+							actual, 
+							0.05);
+					double ratio = Math.abs(1 - actualVariance / expectedVariance);
+					System.out.println("      Expected variance = " + expectedVariance + "; stochastic variance = " + actualVariance + "; ratio diff = " + ratio);
+					Assert.assertTrue("Testing variance " + plot.getSubjectId() + ", species " + sp.name(), ratio < 0.05);
+					break;
+				}
+			}
+		}
+	}
+
 
 
 	@AfterClass

@@ -147,12 +147,12 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	}
 	
 
-//	/*
-//	 * For test purposes.
-//	 */
-//	double getInvThetaParameterEstimate(Species species) {
-//		return getInternalPredictor(species).invTheta;
-//	}
+	/* 
+	 * For test purpose.
+	 */
+	double getVariance(Trillium2026RecruitmentPlot plot, Species species) {
+		return getInternalPredictor(species).getVariance(plot);
+	}
 
 	@Override
 	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
