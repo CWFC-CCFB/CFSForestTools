@@ -243,6 +243,9 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 			pred = 1.8 * stepLengthYr;
 		}
 		
+		if (pred < -1.4 * stepLengthYr) { //  a cap, -1.4 is the 0.0005 percentile of observed periodical diameter increment 
+			pred = 1.4 * stepLengthYr;
+		}
 		return pred; 
 	}
 	
