@@ -91,7 +91,9 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 		SpeciesLookupMap.put("Ulmussp.", Species.Ulmus_spp);
 	}
 	
-	
+	public static double MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM = 1.8;
+	public static double MINIMUM_PERIOD_ANNUAL_INCREMENT_CM = -1.4;
+		
 	private static Map<Species, Matrix> CoefMap;
 	private static Map<Species, SymmetricMatrix> VCovMap;
 	private static Map<Species, List<Effect>> EffectMap;

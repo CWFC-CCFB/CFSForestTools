@@ -86,7 +86,13 @@ class Trillium2026RecruitDiameterInternalPredictor extends REpiceaPredictor {
 //			double varianceEmpirical = estimate.getVariance().getValueAt(0, 0);
 			mu = StatisticalUtility.getRandom().nextGamma(alpha, theta);
 		}
-		return mu *.1 + 9.09;
+		double muCm = mu *.1;
+		int growthStepLengthYr = plot.getGrowthStepLengthYr();
+		if (muCm > Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * growthStepLengthYr) {
+			System.out.println(getClass().getSimpleName() + "-" + this.species.name() + " hits maximum diameter for recruits " + (muCm + 9.09) + " cm over " + growthStepLengthYr + " yrs.");
+			muCm = Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * growthStepLengthYr;
+		}
+		return muCm + 9.09;
 	}
 
 	/* 

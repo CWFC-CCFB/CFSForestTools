@@ -239,12 +239,14 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		}
 		
 		double stepLengthYr = plot.getGrowthStepLengthYr();
-		if (pred > 1.8 * stepLengthYr) { //  a cap, 1.8 is the 0.9995 percentile of observed periodical diameter increment 
-			pred = 1.8 * stepLengthYr;
+		if (pred > Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr) { //  a cap, 1.8 is the 0.9995 percentile of observed periodical diameter increment 
+			System.out.println(getClass().getSimpleName() + "-" + this.species.name() + " hits maximum diameter increment with " + pred + " over " + stepLengthYr + " yrs.");
+			pred = Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr;
 		}
 		
-		if (pred < -1.4 * stepLengthYr) { //  a cap, -1.4 is the 0.0005 percentile of observed periodical diameter increment 
-			pred = 1.4 * stepLengthYr;
+		if (pred < Trillium2026DiameterIncrementPredictor.MINIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr) { //  a cap, -1.4 is the 0.0005 percentile of observed periodical diameter increment 
+			System.out.println(getClass().getSimpleName() + "-" + this.species.name() + " hits minimum diameter increment with " + pred + " over " + stepLengthYr + " yrs.");
+			pred = Trillium2026DiameterIncrementPredictor.MINIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr;
 		}
 		return pred; 
 	}

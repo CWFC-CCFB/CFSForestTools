@@ -170,7 +170,6 @@ public abstract class REpiceaRecruitmentOccurrenceInternalPredictorWithOccupancy
 
 	protected void constructXVector(S plot) {
 		oXVector.resetMatrix();
-		
 		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();
 		effectListWithoutOccIndex.addAll(effectList);
 		effectListWithoutOccIndex.removeAll(occupancyIndexVarIndices);
