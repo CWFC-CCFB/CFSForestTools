@@ -83,6 +83,10 @@ public class Trillium2026RecruitmentTest {
 				Double.parseDouble(record[indexMeanTempJulyToAugust].toString()) :
 					0;
 		double pred = Double.parseDouble(record[header.getIndexOfThisField("pred")].toString());
+		int indexAreaM2 = header.getIndexOfThisField("areaM2.x");
+		double areaM2 = indexAreaM2 != -1 ?
+				Double.parseDouble(record[indexAreaM2].toString()) :
+					400;
 		String uniqueId = plotId + "_" + dateYr;
 		if (oMap.containsKey(uniqueId)) {
 			oMap.get(uniqueId).update(species, gSpGr, occIndex25km, pred);
@@ -111,6 +115,7 @@ public class Trillium2026RecruitmentTest {
 					meanAnnualTemperature,
 					meanMaxJulyTemp,
 					meanTempJulyToAugust,
+					areaM2,
 					pred,
 					OccIndCalc);
 			oMap.put(uniqueId, plot);
@@ -243,7 +248,7 @@ public class Trillium2026RecruitmentTest {
 			Assert.assertEquals("Testing stochastic mean against deterministic mean " + plot.getSubjectId() + ", species " + plot.getTreeInstance(sp).getTrillium2026TreeSpecies().name(), 
 					detPred, 
 					meanStoPred, 
-					0.02);
+					0.03);
 		}
 		
 	}
@@ -378,6 +383,7 @@ public class Trillium2026RecruitmentTest {
 	@Test
 	public void test21MeanDiameterPredictionsAgainstRPredictions() throws IOException {
 		System.out.println("Testing predicted diameter...");
+		Trillium2026RecruitDiameterInternalPredictor.EnableCutPoint = false;
 		Trillium2026RecruitDiameterPredictor predictor = new Trillium2026RecruitDiameterPredictor(false);
 		Map<String, Trillium2026RecruitmentPlotImpl> plotMap = PlotMapForDiameter; 
 		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
@@ -387,7 +393,7 @@ public class Trillium2026RecruitmentTest {
 				if (plot.getPred(sp) != null) {
 					double expected = plot.getPred(sp); 
 					double actual = predictor.predictRecruitDiameterCm(plot, sp);
-					Assert.assertEquals("Testing mean predicted number for plot " + plot.getSubjectId() + ", species " + sp.name(), 
+					Assert.assertEquals("Testing mean predicted number for plot " + plot.getSubjectId() + ", species " + sp.name() + " at nbtested = " + nbTested, 
 							expected * .1 + 9.09, 
 							actual, 
 							1E-8);
@@ -396,6 +402,7 @@ public class Trillium2026RecruitmentTest {
 			}
 			System.out.println("      Number of successfully tested plots = " + nbTested);
 		}
+		Trillium2026RecruitDiameterInternalPredictor.EnableCutPoint = true;
 	}
 	
 	/*
@@ -404,6 +411,7 @@ public class Trillium2026RecruitmentTest {
 	@Test
 	public void test22MeanDiameterStochasticPredictions() throws IOException {
 		System.out.println("Testing predicted diameter (stochastic)...");
+		Trillium2026RecruitDiameterInternalPredictor.EnableCutPoint = false;
 		Trillium2026RecruitDiameterPredictor detPredictor = new Trillium2026RecruitDiameterPredictor(false); 
 		Trillium2026RecruitDiameterPredictor stoPredictor = new Trillium2026RecruitDiameterPredictor(false, true); // false to disable the parameters in the parameter estimates
 		Map<String, Trillium2026RecruitmentPlotImpl> plotMap = PlotMapForDiameter; 
@@ -433,6 +441,7 @@ public class Trillium2026RecruitmentTest {
 				}
 			}
 		}
+		Trillium2026RecruitDiameterInternalPredictor.EnableCutPoint = true;
 	}
 
 

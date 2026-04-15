@@ -66,6 +66,7 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	private static ParameterMap BetaMap;
 	private static ParameterMap OmegaMap;
 	private static ParameterMap SpeciesEffectMatchesMap;
+	private static ParameterMap DispersionMap;
 	
 	private final Map<Species, Trillium2026RecruitDiameterInternalPredictor> internalPredictors;
 	
@@ -96,10 +97,12 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 			String rootPath = ObjectUtility.getRelativePackagePath(getClass());
 			String betaFilename = rootPath + "0_RecruitmentDiameterBeta.csv";
 			String omegaFilename = rootPath + "0_RecruitmentDiameterOmega.csv";
+			String dispersionFilename = rootPath + "0_RecruitmentDiameterDispersion.csv";
 			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentDiameterSpeciesEffectMatches.csv";
 			try {
 				BetaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
 				OmegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
+				DispersionMap = ParameterLoader.loadVectorFromFile(1, dispersionFilename);
 				SpeciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
 			} catch (Exception e) {
 				throw new RuntimeException("Unable to read parameters from files!");
@@ -109,10 +112,8 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 			for (int spIndex = 0; spIndex < Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size(); spIndex++) {
 				Matrix beta = BetaMap.get(spIndex + 1);
 				SymmetricMatrix omega = OmegaMap.get(spIndex + 1).squareSym();
-				Matrix dispersion = beta.getSubMatrix(beta.m_iRows - 1, beta.m_iRows - 1, 0, 0);  // theta + scale = 1/theta were concatenated to beta in R
-				beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0);  // drop theta from beta
+				Matrix dispersion = DispersionMap.get(spIndex + 1);
 				Matrix speciesEffectMatches = SpeciesEffectMatchesMap.get(spIndex + 1);
-				speciesEffectMatches = speciesEffectMatches.getSubMatrix(0, speciesEffectMatches.m_iRows - 1, 0, 0); // assumes the last effect has been removed
 				Species sp = Trillium2026RecruitmentOccurrencePredictor.SpeciesList.get(spIndex);
 				Trillium2026RecruitDiameterInternalPredictor subPredictor = new Trillium2026RecruitDiameterInternalPredictor(this,
 						sp,
@@ -165,4 +166,7 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
 
+	public static void main(String[] args) {
+		new Trillium2026RecruitDiameterPredictor(false);
+	}
 }

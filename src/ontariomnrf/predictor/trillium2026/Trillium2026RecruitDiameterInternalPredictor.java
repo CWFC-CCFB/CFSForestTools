@@ -34,6 +34,8 @@ import repicea.stats.StatisticalUtility;
 @SuppressWarnings("serial")
 class Trillium2026RecruitDiameterInternalPredictor extends REpiceaPredictor {
 	
+	protected static boolean EnableCutPoint = true;
+	
 	
 	private final Trillium2026RecruitDiameterPredictor owner;
 	private final Species species;
@@ -88,7 +90,7 @@ class Trillium2026RecruitDiameterInternalPredictor extends REpiceaPredictor {
 		}
 		double muCm = mu *.1;
 		int growthStepLengthYr = plot.getGrowthStepLengthYr();
-		if (muCm > Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * growthStepLengthYr) {
+		if (muCm > Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * growthStepLengthYr && EnableCutPoint) {
 			System.out.println(getClass().getSimpleName() + "-" + this.species.name() + " hits maximum diameter for recruits " + (muCm + 9.09) + " cm over " + growthStepLengthYr + " yrs.");
 			muCm = Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * growthStepLengthYr;
 		}
@@ -155,54 +157,22 @@ class Trillium2026RecruitDiameterInternalPredictor extends REpiceaPredictor {
 		case 10: // highest temperature
 			oXVector.setValueAt(0, index, plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 11: // highest temperature2
-			double highestTemp = plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, highestTemp * highestTemp);
-			break;
-		case 12: // isHarvested
+		case 11: // isHarvested
 			oXVector.setValueAt(0, index, plot.isGoingToBeHarvested() ? 1d : 0d);
 			break;
-		case 13: // LowestTmin
+		case 12: // LowestTmin
 			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 14: // LowestTmin2
-			double lowestTmin = plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, lowestTmin * lowestTmin);
+		case 13: // meanTempJuneToAugust
+			oXVector.setValueAt(0, index, plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 15: // MeanTair
-			oXVector.setValueAt(0, index, plot.getMeanAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 16: // MeanTmaxJuly
-			oXVector.setValueAt(0, index, plot.getMeanMaximumJulyTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 17: // MeanTminJanuary
+		case 14: // MeanTminJanuary
 			oXVector.setValueAt(0, index, plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 18: // MeanTminJanuary2
-			double minTJan = plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, minTJan * minTJan);
-			break;
-		case 19: // slopePct_PDEM_mean	
-			oXVector.setValueAt(0, index, plot.getSlopeInclinationPercent());
-			break;
-		case 20: // speciesThere
-			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
-			break;
-		case 21: // TotalPrcp
-			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 22: // TotalPrcp2
-			double precTot = plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, precTot * precTot);
-			break;
-		case 23: // TotalPrecFromJuneToAugust
+		case 15: // TotalPrecFromJuneToAugust
 			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 24: // TotalPrecFromJuneToAugust2
-			double precFromJuneToAugust = plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, precFromJuneToAugust * precFromJuneToAugust);
-			break;
-		case 25: // TotalPrecFromMarchToMay
+		case 16: // TotalPrecFromMarchToMay
 			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
 		default:

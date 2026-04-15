@@ -113,8 +113,8 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
 	static {
-		OccupancyIndexEffects.add(24);
-		OccupancyIndexEffects.add(27);
+		OccupancyIndexEffects.add(17);
+		OccupancyIndexEffects.add(19);
 	}
 
 	private static ParameterMap BetaMap;
