@@ -47,12 +47,14 @@ import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 /**
- * The Iris2020RecruitmentOccurrencePredictor class implements the logistic part of the recruitment module in the Iris 2020 simulator.
- * @author Mathieu Fortin - May 2020
+ * The Trillium2026RecruitmentOccurrencePredictor class implements the logistic part 
+ * of the recruitment module in the Trillium simulator.
+ * @author Mathieu Fortin - March 2026
  */
 @SuppressWarnings("serial")
-public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<Trillium2026RecruitmentPlot, Trillium2026Tree> 
-														implements REpiceaSpeciesCompliantObject, ClimateSensitivePredictor {
+public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<Trillium2026RecruitmentPlot, Trillium2026Tree> implements 
+																REpiceaSpeciesCompliantObject, 
+																ClimateSensitivePredictor {
 
 	
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
@@ -111,8 +113,8 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
 	static {
-		OccupancyIndexEffects.add(24);
-		OccupancyIndexEffects.add(27);
+		OccupancyIndexEffects.add(17);
+		OccupancyIndexEffects.add(19);
 	}
 
 	private static ParameterMap BetaMap;
@@ -121,17 +123,16 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	private static ParameterMap OffsetListMap;
 	private static List<OccupancyIndexCalculablePlot> ReferencePlotsForOccupancyIndexCalculation;
 	
-//	final OccupancyIndexCalculator occIndexCalculator;
 	private final Map<Species, Trillium2026RecruitmentOccurrenceInternalPredictor> internalPredictors;
-	
-//	private List<SimpleOccupancyIndexCalculablePlot, <, Map<>>
+	protected final double minProbRecruitmentThreshold;
 	
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled true to enable the stochastic mode
+	 * @param minProbRecruitmentThreshold the minimum probability to assume that recruitment is possible (e.g., 0.01)
 	 */
-	public Trillium2026RecruitmentOccurrencePredictor(boolean isVariabilityEnabled) {
-		this(isVariabilityEnabled, isVariabilityEnabled);		
+	public Trillium2026RecruitmentOccurrencePredictor(boolean isVariabilityEnabled, double minProbRecruitmentThreshold) {
+		this(isVariabilityEnabled, isVariabilityEnabled, minProbRecruitmentThreshold);	
 	}
 	
 	/**
@@ -142,10 +143,12 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	 *
 	 * @param isParameterVariabilityEnabled true to enable the parameter estimates variability
 	 * @param isResidualVariabilityEnabled true to enable the residual error variability
+	 * @param minProbRecruitmentThreshold the minimum probability to assume that recruitment is possible (e.g., 0.01)
 	 */
 	protected Trillium2026RecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
-			boolean isResidualVariabilityEnabled) {
+			boolean isResidualVariabilityEnabled, double minProbRecruitmentThreshold) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		
+		this.minProbRecruitmentThreshold = minProbRecruitmentThreshold;
 		internalPredictors = new HashMap<Species, Trillium2026RecruitmentOccurrenceInternalPredictor>();
 		init();
 	}

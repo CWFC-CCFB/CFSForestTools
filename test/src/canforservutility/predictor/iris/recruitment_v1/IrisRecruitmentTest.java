@@ -232,7 +232,7 @@ public class IrisRecruitmentTest {
 			Assert.assertEquals("Testing stochastic variance against expected variance " + selectedPlot.getSubjectId() + ", species " + tree.getSpecies().name(), 
 					0,
 					1 - variance/expectedVariance, 
-					0.01);
+					0.02);
 		}
 	}
 

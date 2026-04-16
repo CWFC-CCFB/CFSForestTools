@@ -51,6 +51,7 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 		IDBH_x2,
 		TotalPrecMarchToMay,
 		TotalPrecJuneToAugust,
+		IMeanTminJanuary2,
 		logDBH_x,
 		IBAL2,
 		DutchElmDiseaseOutbreak
@@ -87,7 +88,7 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 		if (ranefVar != null) {
 			SymmetricMatrix ranefVariance = new Matrix(ranefVar).squareSym();
 			GaussianEstimate randomEffect = new GaussianEstimate(new Matrix(ranefVariance.m_iRows,1), ranefVariance);
-			setDefaultRandomEffects(HierarchicalLevel.PLOT, randomEffect);
+			setDefaultRandomEffects(HierarchicalLevel.INTERVAL_NESTED_IN_CLUSTER, randomEffect);
 			linkFunction = new EmbeddedLinkFunction(Type.CLogLog, ranefVariance.getValueAt(0, 0));
 		} else {
 			linkFunction = new EmbeddedLinkFunction(Type.CLogLog, 0d);
@@ -105,7 +106,9 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 		linkFunction.setVariableValue(1, xBeta);
 		double prob;
 		if (isRandomEffectsVariabilityEnabled) {
-			linkFunction.setParameterValue(0, getRandomEffectsForThisSubject(plot).getValueAt(0, 0));
+			IntervalNestedInClusterDefinition intervalInClusterDefinition = getIntervalNestedInClusterDefinition(plot, plot.getDateYr());
+			double intervalRandomEffect = getRandomEffectsForThisSubject(intervalInClusterDefinition).getValueAt(0, 0);
+			linkFunction.setParameterValue(0, intervalRandomEffect);
 			prob = linkFunction.getValue();
 		} else {
 			linkFunction.setParameterValue(0, 0d);
@@ -166,6 +169,9 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 			case TotalPrecJuneToAugust:
 				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026MortalityPlot.ClimateVariableResolution));
 				break;
+			case IMeanTminJanuary2:
+				oXVector.setValueAt(0, index++, meanTminJanuary * meanTminJanuary);
+				break;
 			case logDBH_x:
 				oXVector.setValueAt(0, index++, tree.getLnDbhCm());
 				break;
@@ -176,6 +182,8 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 				double nbYearsWithDutchElmDisease = getNbYearsWithDutchElmDisease(plot.getDateYr(), plot.getGrowthStepLengthYr());
 				oXVector.setValueAt(0, index++, nbYearsWithDutchElmDisease);
 				break;
+			default:
+				throw new UnsupportedOperationException("This effect is not supported: " + eff.name());
 			}
 		}
 		double pred = oXVector.multiply(beta).getValueAt(0, 0);

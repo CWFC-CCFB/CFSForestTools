@@ -58,13 +58,13 @@ public class OccupancyIndexTest {
 	@Test
 	public void test01OccupancyIndexSinglePlot() throws IOException {
 		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
-		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, plots.get(0).getDateYr());
+		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, 15d, plots.get(0).getDateYr());
 		calculator.registerPlots(plots);
-		System.out.println(calculator.getMaximumDistanceNearestPlot());
-		Assert.assertEquals("Testing the size of the id list", 12267, calculator.plotsId.size());
-		Assert.assertEquals("Testing the size of the distance matrix", 12267, calculator.distances.m_iRows);
+//		System.out.println(calculator.getMaximumDistanceNearestPlot());
+//		Assert.assertEquals("Testing the size of the id list", 12267, calculator..size());
+		Assert.assertEquals("Testing the size of the distance matrix", 12267, calculator.nearestNeighborsMap.size());
 //		ConcurrentHashMap<Integer, List<OccupancyIndexCalculablePlot>> dateFilteredPlots = new ConcurrentHashMap<Integer, List<OccupancyIndexCalculablePlot>>();
-		GaussianEstimate proximityIndexEstimate = calculator.getOccupancyIndex(plots.get(0), IrisSpecies.ERS, 15d);
+		GaussianEstimate proximityIndexEstimate = calculator.getOccupancyIndex(plots.get(0), IrisSpecies.ERS);
 		double proximityIndexMean = proximityIndexEstimate.getMean().getValueAt(0, 0);
 		double proximityIndexVariance = proximityIndexEstimate.getVariance().getValueAt(0, 0);
 		Assert.assertEquals("Testing the mean of the estimate", 0.5, proximityIndexMean, 1E-8);
@@ -75,11 +75,11 @@ public class OccupancyIndexTest {
 	@Test
 	public void test02OccupancyIndexNaNException() throws IOException {
 		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
-		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, plots.get(0).getDateYr()); // is static
+		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, 10d, plots.get(0).getDateYr()); // is static
 		calculator.registerPlots(plots);
 		try {
 			for (int i = 0; i < plots.size(); i++) {
-				calculator.getOccupancyIndex(plots.get(i), IrisSpecies.ERS, 10d);
+				calculator.getOccupancyIndex(plots.get(i), IrisSpecies.ERS);
 			}
 			Assert.fail("Should have thrown an unsupported operation exception!");
 		} catch (UnsupportedOperationException e) {
@@ -97,10 +97,10 @@ public class OccupancyIndexTest {
 	@Test
 	public void test03OccupancyIndexAllPlotsIsCloneable() throws IOException {
 		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
-		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, plots.get(0).getDateYr());
+		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, 15d, plots.get(0).getDateYr());
 		OccupancyIndexCalculator clone = calculator.clone();
-		Assert.assertTrue(System.identityHashCode(calculator.distances) ==
-				System.identityHashCode(clone.distances));
+		Assert.assertTrue(System.identityHashCode(calculator.nearestNeighborsMap) ==
+				System.identityHashCode(clone.nearestNeighborsMap));
 		Assert.assertTrue(System.identityHashCode(calculator.plotRegistry) !=
 				System.identityHashCode(clone.plotRegistry));
 	}

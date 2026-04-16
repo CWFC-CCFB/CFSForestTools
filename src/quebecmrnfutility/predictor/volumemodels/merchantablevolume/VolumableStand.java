@@ -20,14 +20,14 @@ package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.plotlevel.CruiseLineProvider;
+import repicea.simulation.covariateproviders.plotlevel.CruiseLineIdProvider;
 
 /**
  * This interface ensures the compatibility with the general volume model.
  * @author Mathieu Fortin - November 2012
  */
 public interface VolumableStand extends MonteCarloSimulationCompliantObject,
-										CruiseLineProvider {
+										CruiseLineIdProvider {
 	
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}

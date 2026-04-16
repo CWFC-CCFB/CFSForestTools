@@ -37,14 +37,19 @@ import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDa
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 /**
- * The Iris2020RecruitmentNumberPredictor class implements the negative binomial part of the recruitment module in the Iris simulator. 
- * @author Mathieu Fortin - June 2023
+ * The Trillium2026RecruitmentNumberPredictor class implements the negative binomial part of the recruitment module 
+ * in the Trillium simulator. 
+ * @author Mathieu Fortin - March 2026
  */
 @SuppressWarnings("serial")
-public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor implements ClimateSensitivePredictor {
+public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor implements 
+													REpiceaSpeciesCompliantObject,
+													ClimateSensitivePredictor {
 
 	
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
@@ -146,7 +151,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	 * @return a double that is the number of recruits in the plot
 	 */
 	public double predictNumberOfRecruits(Trillium2026RecruitmentPlot plot, Species species) {
-		return getInternalPredictor(species).predictNumberOfRecruits(plot, species);
+		return getInternalPredictor(species).predictNumberOfRecruits(plot);
 	}
 	
 
@@ -161,5 +166,11 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
 		return CLIMATE_INFO;
 	}
+
+	@Override
+	public List<Species> getEligibleSpecies() {return Trillium2026RecruitmentOccurrencePredictor.SpeciesList;}
+
+	@Override
+	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
 
 }

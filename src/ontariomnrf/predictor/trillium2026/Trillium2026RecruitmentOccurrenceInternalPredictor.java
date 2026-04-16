@@ -64,7 +64,7 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitm
 	
 	@Override
 	public double predictEventProbability(Trillium2026RecruitmentPlot plot, Trillium2026Tree tree, Map<String, Object> parms) {
-		return calculateEventProbability(plot, tree.getTrillium2026TreeSpecies());
+		return calculateEventProbability(plot);
 	}
 
 	@Override
@@ -72,29 +72,31 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitm
 		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		xBeta += addOffsetIfNeeded(plot);
 		double recruitmentProbability = 1d - Math.exp(-Math.exp(xBeta));
-		return recruitmentProbability;
+		return recruitmentProbability < owner.minProbRecruitmentThreshold ? // if the recruitment probability is smaller than the threshold
+				0d : 														// the recruitment probability is assumed to be 0
+					recruitmentProbability;
 	}
 
 	@Override
-	protected void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, Enum<?> species, double occupancyIndex25km) {
+	protected void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, double occupancyIndex25km) {
 		int index = effectList.indexOf(effectId);
 		if (index == -1) {
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
 		}
 		switch(effectId) {
-		case 13: // intercept too
+		case 11: // intercept too
 		case 1: // intercept
 			oXVector.setValueAt(0, index, 1d);
 			break;
-		case 2:	// DD
+		case 2:	// areaM2.x
+			oXVector.setValueAt(0, index, plot.getAreaHa() * 10000);
+			break;
+		case 3:	// DD
 			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 3: // DD2
+		case 4: // DD2
 			double dd = plot.getGrowingDegreeDaysCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, dd * dd);
-			break;
-		case 4: // Frost free days
-			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
 		case 5: // G_F
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
@@ -117,77 +119,43 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitm
 			double g_spgr = plot.getBasalAreaM2HaForThisSpecies(species);
 			oXVector.setValueAt(0, index, g_spgr * g_spgr);
 			break;
-		case 11: // HighestTMax
-			oXVector.setValueAt(0, index, plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 12: // HighestTMax2
-			double highestTemp = plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, highestTemp * highestTemp);
-			break;
-		case 14: // isHarvested
+		case 12: // isHarvested
 			oXVector.setValueAt(0, index, plot.isGoingToBeHarvested() ? 1d : 0d);
 			break;
-		case 15: // lnDt
+		case 13: // lnDt
 			oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 			break;
-		case 16: // lowest t min
+		case 14: // LowestTmin
 			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 17: // lowest t min2
-			double lowestTmin = plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, lowestTmin * lowestTmin);
-			break;
-		case 18: // meanTair
-			oXVector.setValueAt(0, index, plot.getMeanAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 19: // MeanTempJuneToAugust
-			oXVector.setValueAt(0, index, plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 20: // MeanTempJuneToAugust2
-			double meanTempJuneToAug = plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, meanTempJuneToAug * meanTempJuneToAug);
-			break;
-		case 21: // MeanTmaxJuly
-			oXVector.setValueAt(0, index, plot.getMeanMaximumJulyTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 22: // MeanTminJanuary
+		case 15: // MeanTminJanuary
 			oXVector.setValueAt(0, index, plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 23: // MeanTminJanuary2
+		case 16: // MeanTminJanuary2
 			double minTempJan = plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, minTempJan * minTempJan);
 			break;
-		case 24: // occIndex25km
+		case 17: // occIndex25km
 			oXVector.setValueAt(0, index, occupancyIndex25km);
 			break;
-		case 25: // slopepct
-			oXVector.setValueAt(0, index, plot.getSlopeInclinationPercent());
-			break;
-		case 26: // speciesThere
+		case 18: // speciesThere
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
 			break;
-		case 27: // occIndex25km2
+		case 19: // occIndex25km2
 			oXVector.setValueAt(0, index, occupancyIndex25km * occupancyIndex25km);
 			break;
-		case 28: // TotalPrcp
+		case 20: // TotalPrcp
 			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 29: // TotalPrcp2
+		case 21: // TotalPrcp2
 			double totalPrcp = plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, totalPrcp * totalPrcp);
 			break;
-		case 30: // TotalPrecJuneToAugust
+		case 22: // TotalPrecJuneToAugust
 			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 31: // TotalPrecJuneToAugust2
-			double precJuneToAug = plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, precJuneToAug * precJuneToAug);
-			break;
-		case 32: // TotalPrecMarchToMay
+		case 23: // TotalPrecMarchToMay
 			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 33: // wasHarvested
-			oXVector.setValueAt(0, index, plot.isInterventionResult() ? 1d : 0d);
 			break;
 		default:
 			throw new InvalidParameterException("The effect id " + effectId + " is unknown!");

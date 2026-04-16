@@ -98,6 +98,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	private final double meanTemperatureJulyToAugust;
 	private final Map<Species, Double> predMap;
 	private final OccupancyIndexCalculator occIndexCalc;
+	private final double areaHa;
 	private Mode mode;
 		
 	Trillium2026RecruitmentPlotImpl(String id,
@@ -125,6 +126,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 			double meanAnnualTemperature,
 			double meanMaxJulyTemperature,
 			double meanTempJulyToAugust,
+			double areaM2,
 			double pred,
 			OccupancyIndexCalculator occIndexCalc) {
 //		if (plots == null) {
@@ -159,6 +161,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		predMap = new HashMap<Species, Double>();
 		predMap.put(species, pred);
 		this.occIndexCalc = occIndexCalc;
+		this.areaHa = areaM2 * 0.0001;
 		mode = Mode.Known;
 	}
 	
@@ -224,7 +227,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	public double getElevationM() {return 0;}
 
 	@Override
-	public double getAreaHa() {return 0.04;}
+	public double getAreaHa() {return areaHa;}
 
 //	@Override
 //	public List<OccupancyIndexCalculablePlot> getPlotsForOccupancyIndexCalculation() {
@@ -287,9 +290,9 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		case Known:
 			return occupancyIndexMap.get(sp);
 		case Estimated:
-			return occIndexCalc.getOccupancyIndex(this, sp, 25); 
+			return occIndexCalc.getOccupancyIndex(this, sp); 
 		case Deviate:
-			double deviate = occIndexCalc.getOccupancyIndex(this, sp, 25).getRandomDeviate().getValueAt(0, 0);
+			double deviate = occIndexCalc.getOccupancyIndex(this, sp).getRandomDeviate().getValueAt(0, 0);
 			return deviate;
 		default:
 			throw new UnsupportedOperationException("The mode " + mode.name() + " is not supported!");

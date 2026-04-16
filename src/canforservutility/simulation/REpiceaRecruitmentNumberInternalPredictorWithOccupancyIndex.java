@@ -97,9 +97,9 @@ public abstract class REpiceaRecruitmentNumberInternalPredictorWithOccupancyInde
 
 	
 	
-	public synchronized double predictNumberOfRecruits(S plot, Enum<?> species) {
+	public synchronized double predictNumberOfRecruits(S plot) {
 		Matrix beta = getParametersForThisRealization(plot);
-		constructXVector(plot, species);
+		constructXVector(plot);
 		if (isModelUsingOccupancyIndex()) {
 			Object occupancy = plot.getOccupancyForThisSpecies(species);
 			if (occupancy instanceof GaussianEstimate) {
@@ -107,13 +107,13 @@ public abstract class REpiceaRecruitmentNumberInternalPredictorWithOccupancyInde
 				double meanOccIndex = estimate.getMean().getValueAt(0, 0);
 				double varOccIndex = estimate.getVariance().getValueAt(0, 0);
 				// TODO MF20260309 the occupancy index should return a deviate
-				setOccupancyInXVector(plot, species, meanOccIndex); // we set the variable to its mean before performing the quadrature
+				setOccupancyInXVector(plot, meanOccIndex); // we set the variable to its mean before performing the quadrature
 				GaussHermiteImpl ghi = new GaussHermiteImpl(oXVector, beta, varOccIndex); // TODO MF20260224 this should be a member of the class
 				double ghqApproximation = ghq.getIntegralApproximation(ghi, effectList.indexOf(occupancyIndexVarIndices.get(0)), false);
 				return getNumber(ghqApproximation, false);
 			} else if (occupancy instanceof Double) {
 				double occupancyIndex25kmRandomDeviate = (Double) occupancy;
-				setOccupancyInXVector(plot, species, occupancyIndex25kmRandomDeviate);
+				setOccupancyInXVector(plot, occupancyIndex25kmRandomDeviate);
 				return getNumber(oXVector.multiply(beta).getValueAt(0, 0), true);
 			} else {
 				throw new UnsupportedOperationException("Occupance should be a GaussianEstimate instance or a double, but was :" + occupancy.getClass().getName());
@@ -124,26 +124,25 @@ public abstract class REpiceaRecruitmentNumberInternalPredictorWithOccupancyInde
 	}
 
 
-	protected void setOccupancyInXVector(S plot, Enum<?> species, double occupancyIndexValue) {
+	protected void setOccupancyInXVector(S plot, double occupancyIndexValue) {
 		for (int effectId : occupancyIndexVarIndices) {
-			setValueInXVector(effectId, plot, species, occupancyIndexValue); 
+			setValueInXVector(effectId, plot, occupancyIndexValue); 
 		}
 	}
 	
-	protected void constructXVector(S plot, Enum<?> species) {
+	protected void constructXVector(S plot) {
 		oXVector.resetMatrix();
-		
 		List<Integer> effectListWithoutOccIndex = new ArrayList<Integer>();
 		effectListWithoutOccIndex.addAll(effectList);
 		effectListWithoutOccIndex.removeAll(occupancyIndexVarIndices);
 		for (int effectId : effectListWithoutOccIndex) {
-			setValueInXVector(effectId, plot, species, 0d); // occupancy index set to 0 for now
+			setValueInXVector(effectId, plot, 0d); // occupancy index set to 0 for now
 		}
 	}
 
 	public boolean isModelUsingOccupancyIndex() {return !occupancyIndexVarIndices.isEmpty();}
 
-	protected abstract void setValueInXVector(int effectId, S plot, Enum<?> species, double d);
+	protected abstract void setValueInXVector(int effectId, S plot, double d);
 
 	protected abstract double getNumber(double mu, boolean onTransformedScale);
 
