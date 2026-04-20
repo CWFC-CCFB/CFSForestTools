@@ -127,4 +127,15 @@ public class MerisTreeLoggerTest {
 		Assert.assertEquals("Testing number of species", 16, m.size());
 	}
 
+	@Test
+	public void test03ImportFromFileHappyPath() {
+		MerisTreeLoggerParameters parms = Singleton.getTreeLoggerParameters();
+		String filename = ObjectUtility.getPackagePath(getClass()) + "CAT_matrice_produits_utf8.csv";
+		MerisTypeMatrix newMatrix = parms.readFromFile(filename);
+		parms.currentMatrix.replaceBy(newMatrix);
+		Map <?,?> mAfter = parms.getLogCategories();
+		Assert.assertEquals("Testing number of species", 4, mAfter.size());
+		parms.initializeDefaultLogCategories();		
+	}
+
 }
