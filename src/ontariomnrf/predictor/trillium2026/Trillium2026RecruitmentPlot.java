@@ -24,6 +24,7 @@ import canforservutility.simulation.RecruitmentPlotWithOccupancy;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaBySpeciesTypeM2HaProvider;
+import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
@@ -39,6 +40,7 @@ import repicea.simulation.covariateproviders.plotlevel.climate.MeanTemperatureFr
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromJuneToAugustMmProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalPrecipitationFromMarchToMayMmProvider;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 
 public interface Trillium2026RecruitmentPlot extends MonteCarloSimulationCompliantObject,
 											GrowthStepLengthYrProvider,
@@ -54,6 +56,7 @@ public interface Trillium2026RecruitmentPlot extends MonteCarloSimulationComplia
 											AnnualFrostFreeDaysProvider,
 											AnnualGrowingDegreeDaysCelsiusProvider,
 											BasalAreaBySpeciesTypeM2HaProvider,
+											BasalAreaM2HaProvider,
 											OccupancyIndexCalculablePlot,
 											SlopeInclinationPercentProvider,
 											InterventionResultProvider,
@@ -62,4 +65,12 @@ public interface Trillium2026RecruitmentPlot extends MonteCarloSimulationComplia
 
 	static final Resolution ClimateVariableResolution = Resolution.IntervalAveragedStarting20YrsBeforeFinalMeasurement;
 
+	@Override
+	public default double getBasalAreaM2Ha() {
+		return getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies) + 
+				getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies);
+	};
+
+	
+	
 }

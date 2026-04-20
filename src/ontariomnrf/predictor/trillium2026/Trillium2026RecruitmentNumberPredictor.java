@@ -69,33 +69,28 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 
 	private static ParameterMap BetaMap;
 	private static ParameterMap OmegaMap;
+	private static ParameterMap ThetaMap;
 	private static ParameterMap SpeciesEffectMatchesMap;
 	
 	private final Map<Species, Trillium2026RecruitmentNumberInternalPredictor> internalPredictors;
-	final Trillium2026RecruitmentOccurrencePredictor occurrencePredictor;
 	
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled true to enable the stochastic mode
-	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */
-	public Trillium2026RecruitmentNumberPredictor(boolean isVariabilityEnabled, Trillium2026RecruitmentOccurrencePredictor occurrencePredictor) {
-		this(isVariabilityEnabled, isVariabilityEnabled, occurrencePredictor);		
+	public Trillium2026RecruitmentNumberPredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled);		
 	}
 
 	/**
 	 * Protected constructor for test purposes.
 	 * @param isParameterVariabilityEnabled true to enable the variability in the parameter estimates
 	 * @param isResidualVariabilityEnabled true to enable the residual variability
-	 * @param occurrencePredictor an IrisRecruitmentOccurrencePredictor instance
 	 */
-	protected Trillium2026RecruitmentNumberPredictor(boolean isParameterVariabilityEnabled, 
-			boolean isResidualVariabilityEnabled, 
-			Trillium2026RecruitmentOccurrencePredictor occurrencePredictor) {
+	protected Trillium2026RecruitmentNumberPredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this module
 		internalPredictors = new HashMap<Species, Trillium2026RecruitmentNumberInternalPredictor>();
 		init();
-		this.occurrencePredictor = occurrencePredictor;
 	}
 
 	@Override
@@ -104,10 +99,12 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 			String rootPath = ObjectUtility.getRelativePackagePath(getClass());
 			String betaFilename = rootPath + "0_RecruitmentNumberBeta.csv";
 			String omegaFilename = rootPath + "0_RecruitmentNumberOmega.csv";
+			String thetaFilename = rootPath + "0_RecruitmentNumberTheta.csv";
 			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentNumberSpeciesEffectMatches.csv";
 			try {
 				BetaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
 				OmegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
+				ThetaMap = ParameterLoader.loadVectorFromFile(1, thetaFilename);
 				SpeciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
 			} catch (Exception e) {
 				throw new RuntimeException("Unable to read parameters from files!");
@@ -117,8 +114,9 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 			for (int spIndex = 0; spIndex < Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size(); spIndex++) {
 				Matrix beta = BetaMap.get(spIndex + 1);
 				SymmetricMatrix omega = OmegaMap.get(spIndex + 1).squareSym();
-				Matrix thetaMat = beta.getSubMatrix(beta.m_iRows - 1, beta.m_iRows - 1, 0, 0);  // theta was concatenated to beta in R
-				beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0);  // drop theta from beta
+//				Matrix thetaMat = beta.getSubMatrix(beta.m_iRows - 1, beta.m_iRows - 1, 0, 0);  // theta was concatenated to beta in R
+//				beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0);  // drop theta from beta
+				Matrix thetaMat = ThetaMap.get(spIndex + 1);
 				Matrix speciesEffectMatches = SpeciesEffectMatchesMap.get(spIndex + 1);
 				speciesEffectMatches = speciesEffectMatches.getSubMatrix(0, speciesEffectMatches.m_iRows - 1, 0, 0); // assumes the last effect has been removed
 				Species sp = Trillium2026RecruitmentOccurrencePredictor.SpeciesList.get(spIndex);
@@ -173,4 +171,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
 
+	public static void main(String[] args) {
+		new Trillium2026RecruitmentNumberPredictor(false);
+	}
 }
