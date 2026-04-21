@@ -89,77 +89,60 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 		case 1:	// intercept
 			oXVector.setValueAt(0, index, 1d);
 			break;
-		case 2: // dt
+		case 2: // areaM2.x
+			oXVector.setValueAt(0, index, plot.getAreaHa() * 10000);
+			break;
+		case 3: // dt
 			oXVector.setValueAt(0, index, plot.getGrowthStepLengthYr());
 			break;
-		case 3: // FrostFreeDay
+		case 4: // FrostFreeDay
 			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 4: // G_F
+		case 5: // G_F
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
 			break;
-		case 5: // G_F2
+		case 6: // G_F2
 			double G_F = plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies);
 			oXVector.setValueAt(0, index, G_F * G_F);
 			break;
-		case 6: // G_R
+		case 7: // G_R
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
 			break;
-		case 7: // G_R2
+		case 8: // G_R2
 			double G_R = plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies);
 			oXVector.setValueAt(0, index, G_R * G_R);
 			break;
-		case 8: // G_SpGr
+		case 9: // G_SpGr
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species));
 			break;
-		case 9: // G_SpGr2
+		case 10: // G_SpGr2
 			double g_spgr = plot.getBasalAreaM2HaForThisSpecies(species);
 			oXVector.setValueAt(0, index, g_spgr * g_spgr);
 			break;
-		case 10: // highest temperature
+		case 11: // G_TOT
+			oXVector.setValueAt(0, index, plot.getBasalAreaM2Ha());
+			break;
+		case 12: // highest temperature
 			oXVector.setValueAt(0, index, plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 11: // isHarvested
+		case 13: // I(G_TOT^2)
+			double g = plot.getBasalAreaM2Ha();
+			oXVector.setValueAt(0, index, g * g);
+			break;
+		case 14: // isHarvested
 			oXVector.setValueAt(0, index, plot.isGoingToBeHarvested() ? 1d : 0d);
 			break;
-		case 12: // LowestTmin
+		case 15: // LowestTmin
 			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 13: // LowestTmin2
+		case 16: // LowestTmin2
 			double lowestTmin = plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, lowestTmin * lowestTmin);
 			break;
-		case 14: // MeanTair
-			oXVector.setValueAt(0, index, plot.getMeanAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 15: // MeanTair2
-			double meanTair = plot.getMeanAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, meanTair * meanTair);
-			break;
-		case 16: // MeanTmaxJuly
-			oXVector.setValueAt(0, index, plot.getMeanMaximumJulyTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 17: // MeanTmaxJuly2
-			double meanTMaxJuly = plot.getMeanMaximumJulyTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, meanTMaxJuly * meanTMaxJuly);
-			break;
-		case 18: // slopePct_PDEM_mean	
-			oXVector.setValueAt(0, index, plot.getSlopeInclinationPercent());
-			break;
-		case 19: // speciesThere
+		case 17: // speciesThere
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
 			break;
-		case 20: // TotalPrcp
-			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 21: // TotalPrecFromMarchToMay
-			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
-			break;
-		case 22: // TotalPrecFromMarchToMay2
-			double precFromMayToMarch = plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, precFromMayToMarch * precFromMayToMarch);
-			break;
-		case 23: // wasHarvested
+		case 18: // wasHarvested
 			oXVector.setValueAt(0, index, plot.isInterventionResult() ? 1d : 0d);
 			break;
 		default:
