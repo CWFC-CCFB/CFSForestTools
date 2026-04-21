@@ -64,7 +64,10 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitm
 	
 	@Override
 	public double predictEventProbability(Trillium2026RecruitmentPlot plot, Trillium2026Tree tree, Map<String, Object> parms) {
-		return calculateEventProbability(plot);
+		double probability = calculateEventProbability(plot);
+		return probability < owner.minProbRecruitmentThreshold ? // if the recruitment probability is smaller than the threshold
+				0d : 														// the recruitment probability is assumed to be 0
+					probability;
 	}
 
 	@Override
@@ -72,9 +75,7 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitm
 		double xBeta = oXVector.multiply(beta).getValueAt(0, 0);
 		xBeta += addOffsetIfNeeded(plot);
 		double recruitmentProbability = 1d - Math.exp(-Math.exp(xBeta));
-		return recruitmentProbability < owner.minProbRecruitmentThreshold ? // if the recruitment probability is smaller than the threshold
-				0d : 														// the recruitment probability is assumed to be 0
-					recruitmentProbability;
+		return recruitmentProbability;
 	}
 
 	@Override
