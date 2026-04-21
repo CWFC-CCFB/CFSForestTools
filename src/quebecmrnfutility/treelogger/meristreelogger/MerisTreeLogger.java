@@ -38,12 +38,6 @@ public class MerisTreeLogger extends TreeLogger<MerisTreeLoggerParameters, Meris
 			addWoodPiece(tree, wp);
 		}
 	}
-
-	@Override
-	public void setTreeLoggerParameters(MerisTreeLoggerParameters params) {
-		this.params = createDefaultTreeLoggerParameters();
-	}
-	
 	
 	@Override
 	public void setTreeLoggerParameters() {
