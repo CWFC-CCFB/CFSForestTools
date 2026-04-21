@@ -259,8 +259,7 @@ public class Trillium2026RecruitmentTest {
 	@Test
 	public void test11MeanNumberPredictionsAgainstRPredictions() throws IOException {
 		System.out.println("Testing predicted abundance...");
-		Trillium2026RecruitmentNumberPredictor predictor = new Trillium2026RecruitmentNumberPredictor(false, 
-				new Trillium2026RecruitmentOccurrencePredictor(false, 0d)); // deterministic
+		Trillium2026RecruitmentNumberPredictor predictor = new Trillium2026RecruitmentNumberPredictor(false); // deterministic
 		Map<String, Trillium2026RecruitmentPlotImpl> plotMap = PlotMapForNumber; 
 		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
 			System.out.println("  Processing species " + sp.getLatinName() + "...");
@@ -288,10 +287,8 @@ public class Trillium2026RecruitmentTest {
 	@Test
 	public void test12StochasticMeanNumberPredictions() throws IOException {
 		System.out.println("Testing stochastic abundance (residual only)...");
-		Trillium2026RecruitmentNumberPredictor detPredictor = new Trillium2026RecruitmentNumberPredictor(false,
-				new Trillium2026RecruitmentOccurrencePredictor(false, 0d)); // deterministic
-		Trillium2026RecruitmentNumberPredictor stoPredictor = new Trillium2026RecruitmentNumberPredictor(false, true,
-				new Trillium2026RecruitmentOccurrencePredictor(false, 0d)); // stochastic with residual variability only
+		Trillium2026RecruitmentNumberPredictor detPredictor = new Trillium2026RecruitmentNumberPredictor(false); // deterministic
+		Trillium2026RecruitmentNumberPredictor stoPredictor = new Trillium2026RecruitmentNumberPredictor(false, true); // stochastic with residual variability only
 		int nbRealizations = 1000000;
 		Map<String, Trillium2026RecruitmentPlotImpl> plots = PlotMapForNumber; 
 		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
@@ -337,8 +334,7 @@ public class Trillium2026RecruitmentTest {
 	@Test
 	public void test13StochasticImplementationMeanNumberPredictions() throws IOException {
 		System.out.println("Testing stochastic abundance (with estimated occupancy)...");
-		Trillium2026RecruitmentNumberPredictor predictor = new Trillium2026RecruitmentNumberPredictor(false,  
-				new Trillium2026RecruitmentOccurrencePredictor(false, 0d)); // deterministic
+		Trillium2026RecruitmentNumberPredictor predictor = new Trillium2026RecruitmentNumberPredictor(false); // deterministic
 		int nbRealizations = 10000;
 		Map<String, Trillium2026RecruitmentPlotImpl> plotMap = PlotMapForNumber; 
 
