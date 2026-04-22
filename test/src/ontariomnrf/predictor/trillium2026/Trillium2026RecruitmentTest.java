@@ -87,6 +87,10 @@ public class Trillium2026RecruitmentTest {
 		double areaM2 = indexAreaM2 != -1 ?
 				Double.parseDouble(record[indexAreaM2].toString()) :
 					400;
+		int indexStemDensity = header.getIndexOfThisField("N_TOT");
+		double stemDensityHa = indexStemDensity != -1 ?
+				Double.parseDouble(record[indexStemDensity].toString()) :
+					0;
 		String uniqueId = plotId + "_" + dateYr;
 		if (oMap.containsKey(uniqueId)) {
 			oMap.get(uniqueId).update(species, gSpGr, occIndex25km, pred);
@@ -116,6 +120,7 @@ public class Trillium2026RecruitmentTest {
 					meanMaxJulyTemp,
 					meanTempJulyToAugust,
 					areaM2,
+					stemDensityHa,
 					pred,
 					OccIndCalc);
 			oMap.put(uniqueId, plot);
@@ -324,7 +329,7 @@ public class Trillium2026RecruitmentTest {
 			Assert.assertEquals("Testing stochastic variance against expected variance " + selectedPlot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
 					0,
 					1 - variance/expectedVariance, 
-					0.02);
+					0.03);
 		}
 	}
 

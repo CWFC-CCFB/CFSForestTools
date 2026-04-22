@@ -100,6 +100,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	private final OccupancyIndexCalculator occIndexCalc;
 	private final double areaHa;
 	private Mode mode;
+	private final double stemDensityHa;
 		
 	Trillium2026RecruitmentPlotImpl(String id,
 			double latitudeDeg,
@@ -127,6 +128,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 			double meanMaxJulyTemperature,
 			double meanTempJulyToAugust,
 			double areaM2,
+			double stemDensityHa,
 			double pred,
 			OccupancyIndexCalculator occIndexCalc) {
 //		if (plots == null) {
@@ -162,6 +164,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		predMap.put(species, pred);
 		this.occIndexCalc = occIndexCalc;
 		this.areaHa = areaM2 * 0.0001;
+		this.stemDensityHa = stemDensityHa;
 		mode = Mode.Known;
 	}
 	
@@ -255,10 +258,10 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	}
 
 
-	@Override
-	public double getSlopeInclinationPercent() {
-		return slopePct;
-	}
+//	@Override
+//	public double getSlopeInclinationPercent() {
+//		return slopePct;
+//	}
 
 	@Override
 	public boolean isInterventionResult() {
@@ -311,5 +314,8 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 	public double getMeanTemperatureFromJuneToAugustCelsius(REpiceaClimateVariableInformation arg0) {
 		return meanTemperatureJulyToAugust;
 	}
+
+	@Override
+	public double getNumberOfStemsHa() {return stemDensityHa;}
 	
 }

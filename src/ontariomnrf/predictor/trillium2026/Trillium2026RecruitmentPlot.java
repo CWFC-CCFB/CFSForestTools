@@ -28,7 +28,7 @@ import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
-import repicea.simulation.covariateproviders.plotlevel.SlopeInclinationPercentProvider;
+import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.AnnualFrostFreeDaysProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.AnnualGrowingDegreeDaysCelsiusProvider;
 import repicea.simulation.covariateproviders.plotlevel.climate.HighestAnnualTemperatureCelsiusProvider;
@@ -57,8 +57,9 @@ public interface Trillium2026RecruitmentPlot extends MonteCarloSimulationComplia
 											AnnualGrowingDegreeDaysCelsiusProvider,
 											BasalAreaBySpeciesTypeM2HaProvider,
 											BasalAreaM2HaProvider,
+											StemDensityHaProvider,
 											OccupancyIndexCalculablePlot,
-											SlopeInclinationPercentProvider,
+//											SlopeInclinationPercentProvider,
 											InterventionResultProvider,
 											InterventionPlannedProvider,
 											RecruitmentPlotWithOccupancy {
