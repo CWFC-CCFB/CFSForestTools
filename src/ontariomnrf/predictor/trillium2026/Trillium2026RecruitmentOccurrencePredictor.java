@@ -76,7 +76,6 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 				Species.Acer_saccharum, 
 				Species.Betula_alleghaniensis, 
 				Species.Betula_papyrifera, 
-//				Species.Carya_spp,
 				Species.Fagus_grandifolia, 
 				Species.Fraxinus_americana,
 				Species.Fraxinus_nigra,
@@ -102,12 +101,12 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 				Species.Ulmus_spp};
 		for (Species sp : species) {
 			SpeciesLookupMap.put(sp.getLatinName().trim().toLowerCase(), sp);
-			SpeciesLookupMap.put("carya sp.", Species.Carya_spp);
-			SpeciesLookupMap.put("meridional species", Species.Other_broadleaved);
-			SpeciesLookupMap.put("shrubs", Species.Broadleaved_shrubs);
-			SpeciesLookupMap.put("ulmus sp.", Species.Ulmus_spp);
-			SpeciesLookupMap.put("fraxinus pennsylvanica", Species.Fraxinus_pensylvanica);
 		}
+		SpeciesLookupMap.put("carya sp.", Species.Other_broadleaved);
+		SpeciesLookupMap.put("meridional species", Species.Other_broadleaved);
+		SpeciesLookupMap.put("shrubs", Species.Broadleaved_shrubs);
+		SpeciesLookupMap.put("ulmus sp.", Species.Ulmus_spp);
+		SpeciesLookupMap.put("fraxinus pennsylvanica", Species.Fraxinus_pensylvanica);
 		SpeciesList = Arrays.asList(species);
 	}
 

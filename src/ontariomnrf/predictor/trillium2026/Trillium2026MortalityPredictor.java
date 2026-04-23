@@ -63,15 +63,34 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 	
 	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
 	static {
-		Species[] species = new Species[] {Species.Abies_balsamea, Species.Acer_pensylvanicum, Species.Acer_rubrum,
-				Species.Acer_saccharinum, Species.Acer_saccharum, Species.Betula_alleghaniensis,
-				Species.Betula_papyrifera, Species.Fagus_grandifolia, Species.Fraxinus_americana,
-				Species.Fraxinus_nigra, Species.Larix_laricina, Species.Ostrya_virginiana,
-				Species.Picea_glauca, Species.Picea_mariana, Species.Pinus_banksiana,
-				Species.Pinus_resinosa, Species.Pinus_strobus, Species.Populus_balsamifera,
-				Species.Populus_grandidentata, Species.Populus_tremuloides, Species.Prunus_pensylvanica,
-				Species.Prunus_serotina, Species.Quercus_rubra, Species.Thuja_occidentalis,
-				Species.Tilia_americana, Species.Tsuga_canadensis};
+		Species[] species = new Species[] {
+				Species.Abies_balsamea, 
+				Species.Acer_pensylvanicum, 
+				Species.Acer_rubrum,
+				Species.Acer_saccharinum, 
+				Species.Acer_saccharum, 
+				Species.Betula_alleghaniensis,
+				Species.Betula_papyrifera, 
+				Species.Fagus_grandifolia, 
+				Species.Fraxinus_americana,
+				Species.Fraxinus_nigra, 
+				Species.Fraxinus_pensylvanica,
+				Species.Larix_laricina, 
+				Species.Ostrya_virginiana,
+				Species.Picea_glauca, 
+				Species.Picea_mariana, 
+				Species.Pinus_banksiana,
+				Species.Pinus_resinosa, 
+				Species.Pinus_strobus, 
+				Species.Populus_balsamifera,
+				Species.Populus_grandidentata, 
+				Species.Populus_tremuloides, 
+				Species.Prunus_pensylvanica,
+				Species.Prunus_serotina, 
+				Species.Quercus_rubra, 
+				Species.Thuja_occidentalis,
+				Species.Tilia_americana, 
+				Species.Tsuga_canadensis};
 		for (Species sp : species) {
 			SpeciesLookupMap.put(sp.getLatinName(), sp);
 		}
