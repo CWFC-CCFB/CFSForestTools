@@ -32,11 +32,12 @@ import repicea.stats.StatisticalUtility;
 @SuppressWarnings("serial")
 class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentNumberInternalPredictorWithOccupancyIndex<Trillium2026RecruitmentPlot> {
 
-	
+	private enum ModelType {NegativeBinomial, Poisson} 
 	
 	private final Trillium2026RecruitmentNumberPredictor owner;
 	protected final double theta; // as produced by R
 	protected final double invTheta; //
+	protected final ModelType modelType;
 	
 	protected Trillium2026RecruitmentNumberInternalPredictor(Trillium2026RecruitmentNumberPredictor owner,
 			Species sp,
@@ -59,9 +60,16 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 				occupancyIndexVarIndices.add(effectId);
 			}
 		}
-		
-		this.theta = thetaParm;
-		this.invTheta = 1d/this.theta;
+
+		if (thetaParm != 0) {
+			modelType = ModelType.NegativeBinomial;
+	 		this.theta = thetaParm;
+			this.invTheta = 1d/this.theta;
+		} else {
+			modelType = ModelType.Poisson;
+			this.theta = 0d;
+			this.invTheta = 0d;
+		}
 	}
 
 	@Override
@@ -70,10 +78,12 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 	@Override
 	protected double getNumber(double mu, boolean onTransformedScale) {
 		if (onTransformedScale) {
-			mu = Math.exp(mu); // we back transform
+			mu = Math.exp(mu); // we back transform both the NB and Poisson distribution are using the log link function.
 		}
 		if (isResidualVariabilityEnabled) {
-			return StatisticalUtility.getRandom().nextNegativeBinomial(mu, invTheta) + 1;
+			return modelType == ModelType.NegativeBinomial ?				
+					StatisticalUtility.getRandom().nextNegativeBinomial(mu, invTheta) + 1 :
+						StatisticalUtility.getRandom().nextPoisson(mu) + 1;
 		} else {
 			return mu + 1;		// offset 1 because y = nbRecruits - 1
 		}
@@ -89,60 +99,56 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 		case 1:	// intercept
 			oXVector.setValueAt(0, index, 1d);
 			break;
-		case 2: // areaM2.x
-			oXVector.setValueAt(0, index, plot.getAreaHa() * 10000);
-			break;
-		case 3: // dt
+		case 2: // dt
 			oXVector.setValueAt(0, index, plot.getGrowthStepLengthYr());
 			break;
-		case 4: // FrostFreeDay
+		case 3: // FrostFreeDay
 			oXVector.setValueAt(0, index, plot.getAnnualNbFrostFreeDays(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 5: // G_F
+		case 4: // G_F
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
 			break;
-		case 6: // G_F2
+		case 5: // G_F2
 			double G_F = plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies);
 			oXVector.setValueAt(0, index, G_F * G_F);
 			break;
-		case 7: // G_R
+		case 6: // G_R
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
 			break;
-		case 8: // G_R2
+		case 7: // G_R2
 			double G_R = plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies);
 			oXVector.setValueAt(0, index, G_R * G_R);
 			break;
-		case 9: // G_SpGr
+		case 8: // G_SpGr
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species));
 			break;
-		case 10: // G_SpGr2
+		case 9: // G_SpGr2
 			double g_spgr = plot.getBasalAreaM2HaForThisSpecies(species);
 			oXVector.setValueAt(0, index, g_spgr * g_spgr);
 			break;
-		case 11: // G_TOT
+		case 10: // G_TOT
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2Ha());
 			break;
-		case 12: // highest temperature
+		case 11: // highest temperature
 			oXVector.setValueAt(0, index, plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 13: // I(G_TOT^2)
+		case 12: // I(G_TOT^2)
 			double g = plot.getBasalAreaM2Ha();
 			oXVector.setValueAt(0, index, g * g);
 			break;
-		case 14: // isHarvested
+		case 13: // isHarvested
 			oXVector.setValueAt(0, index, plot.isGoingToBeHarvested() ? 1d : 0d);
 			break;
-		case 15: // LowestTmin
+		case 14: // LowestTmin
 			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 16: // LowestTmin2
-			double lowestTmin = plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
-			oXVector.setValueAt(0, index, lowestTmin * lowestTmin);
+		case 15: // N_TOT
+			oXVector.setValueAt(0, index, plot.getNumberOfStemsHa());
 			break;
-		case 17: // speciesThere
+		case 16: // speciesThere
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
 			break;
-		case 18: // wasHarvested
+		case 17: // wasHarvested
 			oXVector.setValueAt(0, index, plot.isInterventionResult() ? 1d : 0d);
 			break;
 		default:

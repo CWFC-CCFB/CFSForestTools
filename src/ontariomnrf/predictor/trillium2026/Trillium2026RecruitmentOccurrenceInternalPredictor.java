@@ -85,80 +85,77 @@ class Trillium2026RecruitmentOccurrenceInternalPredictor extends REpiceaRecruitm
 			throw new InvalidParameterException("The effect id " + effectId + " is not part of this model!");
 		}
 		switch(effectId) {
-		case 11: // intercept too
+		case 10: // intercept too
 		case 1: // intercept
 			oXVector.setValueAt(0, index, 1d);
 			break;
-		case 2:	// areaM2.x
-			oXVector.setValueAt(0, index, plot.getAreaHa() * 10000);
-			break;
-		case 3:	// DD
+		case 2:	// DD
 			oXVector.setValueAt(0, index, plot.getGrowingDegreeDaysCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 4: // DD2
+		case 3: // DD2
 			double dd = plot.getGrowingDegreeDaysCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, dd * dd);
 			break;
-		case 5: // G_F
+		case 4: // G_F
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies));
 			break;
-		case 6: // G_F2
+		case 5: // G_F2
 			double G_F = plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.BroadleavedSpecies);
 			oXVector.setValueAt(0, index, G_F * G_F);
 			break;
-		case 7: // G_R
+		case 6: // G_R
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies));
 			break;
-		case 8: // G_R2
+		case 7: // G_R2
 			double G_R = plot.getBasalAreaM2HaForThisSpeciesType(SpeciesType.ConiferousSpecies);
 			oXVector.setValueAt(0, index, G_R * G_R);
 			break;
-		case 9: // G_SpGr
+		case 8: // G_SpGr
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species));
 			break;
-		case 10: // G_SpGr2
+		case 9: // G_SpGr2
 			double g_spgr = plot.getBasalAreaM2HaForThisSpecies(species);
 			oXVector.setValueAt(0, index, g_spgr * g_spgr);
 			break;
-		case 12: // isHarvested
+		case 11: // isHarvested
 			oXVector.setValueAt(0, index, plot.isGoingToBeHarvested() ? 1d : 0d);
 			break;
-		case 13: // lnDt
+		case 12: // lnDt
 			oXVector.setValueAt(0, index, Math.log(plot.getGrowthStepLengthYr()));
 			break;
-		case 14: // LowestTmin
+		case 13: // LowestTmin
 			oXVector.setValueAt(0, index, plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 15: // MeanTminJanuary
+		case 14: // MeanTminJanuary
 			oXVector.setValueAt(0, index, plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 16: // MeanTminJanuary2
+		case 15: // MeanTminJanuary2
 			double minTempJan = plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, minTempJan * minTempJan);
 			break;
-		case 17: // N_TOT
+		case 16: // N_TOT
 			oXVector.setValueAt(0, index, plot.getNumberOfStemsHa());
 			break;
-		case 18: // occIndex25km
+		case 17: // occIndex25km
 			oXVector.setValueAt(0, index, occupancyIndex25km);
 			break;
-		case 19: // speciesThere
+		case 18: // speciesThere
 			oXVector.setValueAt(0, index, plot.getBasalAreaM2HaForThisSpecies(species) > 0 ? 1d : 0d);
 			break;
-		case 20: // occIndex25km2
+		case 19: // occIndex25km2
 			oXVector.setValueAt(0, index, occupancyIndex25km * occupancyIndex25km);
 			break;
-		case 21: // TotalPrcp
+		case 20: // TotalPrcp
 			oXVector.setValueAt(0, index, plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 22: // TotalPrcp2
+		case 21: // TotalPrcp2
 			double totalPrcp = plot.getTotalAnnualPrecipitationMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution);
 			oXVector.setValueAt(0, index, totalPrcp * totalPrcp);
 			break;
-		case 23: // TotalPrecJuneToAugust
+		case 22: // TotalPrecJuneToAugust
 			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
-		case 24: // TotalPrecMarchToMay
+		case 23: // TotalPrecMarchToMay
 			oXVector.setValueAt(0, index, plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026RecruitmentPlot.ClimateVariableResolution));
 			break;
 		default:
