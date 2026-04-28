@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.recruitment.trillium2026;
+package ontariomnrf.predictor.trillium2026.recruitment;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,7 +29,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculator;
-import ontariomnrf.predictor.recruitment.trillium2026.Trillium2026RecruitmentPlotImpl.Mode;
+import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
+import ontariomnrf.predictor.trillium2026.recruitment.Trillium2026RecruitmentPlotImpl.Mode;
 import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;

@@ -17,14 +17,14 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.diameterincrement.trillium2026;
+package ontariomnrf.predictor.trillium2026.diameterincrement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ontariomnrf.predictor.recruitment.trillium2026.Trillium2026Tree;
+import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.math.Matrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;

@@ -17,13 +17,13 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.mortality.trillium2026;
+package ontariomnrf.predictor.trillium2026.mortality;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import ontariomnrf.predictor.recruitment.trillium2026.Trillium2026Tree;
+import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.math.integral.GaussHermiteQuadrature;

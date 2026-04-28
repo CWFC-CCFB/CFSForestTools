@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.mortality.trillium2026;
+package ontariomnrf.predictor.trillium2026.mortality;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import ontariomnrf.predictor.recruitment.trillium2026.Trillium2026Tree;
+import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;

@@ -17,13 +17,13 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.recruitment.trillium2026;
+package ontariomnrf.predictor.trillium2026.recruitment;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontariomnrf.predictor.diameterincrement.trillium2026.Trillium2026DiameterIncrementPredictor;
+import ontariomnrf.predictor.trillium2026.diameterincrement.Trillium2026DiameterIncrementPredictor;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;

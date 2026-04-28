@@ -17,12 +17,13 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.recruitment.trillium2026;
+package ontariomnrf.predictor.trillium2026.recruitment;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculator;
+import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;

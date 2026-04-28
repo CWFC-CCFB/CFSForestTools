@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.recruitment.trillium2026;
+package ontariomnrf.predictor.trillium2026.recruitment;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -29,6 +29,7 @@ import java.util.Map;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.occupancyindex.SimpleOccupancyIndexCalculablePlot;
+import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;

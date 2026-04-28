@@ -17,10 +17,11 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.recruitment.trillium2026;
+package ontariomnrf.predictor.trillium2026.recruitment;
 
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,15 +42,14 @@ import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 /**
- * The Trillium2026RecruitDiameterPredictor class implements 
- * a generalized linear model based on a Gamma distribution to 
- * predict recruit diameters in the Trillium simulator. 
+ * The Trillium2026RecruitmentNumberPredictor class implements the negative binomial part of the recruitment module 
+ * in the Trillium simulator. 
  * @author Mathieu Fortin - March 2026
  */
 @SuppressWarnings("serial")
-public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor implements 
-															REpiceaSpeciesCompliantObject,
-															ClimateSensitivePredictor {
+public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor implements 
+													REpiceaSpeciesCompliantObject,
+													ClimateSensitivePredictor {
 
 	
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
@@ -60,21 +60,25 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 				EvaluationDate.EndOfInterval);
 	}
 
+	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
+	static {
+//		OccupancyIndexEffects.add(19);
+	}
 
-//	static boolean IsForTestPurposes = false;
+	static boolean IsForTestPurposes = false;
 
 	private static ParameterMap BetaMap;
 	private static ParameterMap OmegaMap;
+	private static ParameterMap ThetaMap;
 	private static ParameterMap SpeciesEffectMatchesMap;
-	private static ParameterMap DispersionMap;
 	
-	private final Map<Species, Trillium2026RecruitDiameterInternalPredictor> internalPredictors;
+	private final Map<Species, Trillium2026RecruitmentNumberInternalPredictor> internalPredictors;
 	
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled true to enable the stochastic mode
 	 */
-	public Trillium2026RecruitDiameterPredictor(boolean isVariabilityEnabled) {
+	public Trillium2026RecruitmentNumberPredictor(boolean isVariabilityEnabled) {
 		this(isVariabilityEnabled, isVariabilityEnabled);		
 	}
 
@@ -83,10 +87,9 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	 * @param isParameterVariabilityEnabled true to enable the variability in the parameter estimates
 	 * @param isResidualVariabilityEnabled true to enable the residual variability
 	 */
-	protected Trillium2026RecruitDiameterPredictor(boolean isParameterVariabilityEnabled, 
-			boolean isResidualVariabilityEnabled) {
+	protected Trillium2026RecruitmentNumberPredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this module
-		internalPredictors = new HashMap<Species, Trillium2026RecruitDiameterInternalPredictor>();
+		internalPredictors = new HashMap<Species, Trillium2026RecruitmentNumberInternalPredictor>();
 		init();
 	}
 
@@ -94,14 +97,14 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	protected void init() {
 		if (BetaMap == null) {
 			String rootPath = ObjectUtility.getRelativePackagePath(getClass());
-			String betaFilename = rootPath + "0_RecruitmentDiameterBeta.csv";
-			String omegaFilename = rootPath + "0_RecruitmentDiameterOmega.csv";
-			String dispersionFilename = rootPath + "0_RecruitmentDiameterDispersion.csv";
-			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentDiameterSpeciesEffectMatches.csv";
+			String betaFilename = rootPath + "0_RecruitmentNumberBeta.csv";
+			String omegaFilename = rootPath + "0_RecruitmentNumberOmega.csv";
+			String thetaFilename = rootPath + "0_RecruitmentNumberTheta.csv";
+			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentNumberSpeciesEffectMatches.csv";
 			try {
 				BetaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
 				OmegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
-				DispersionMap = ParameterLoader.loadVectorFromFile(1, dispersionFilename);
+				ThetaMap = ParameterLoader.loadVectorFromFile(1, thetaFilename);
 				SpeciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
 			} catch (Exception e) {
 				throw new RuntimeException("Unable to read parameters from files!");
@@ -111,14 +114,17 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 			for (int spIndex = 0; spIndex < Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size(); spIndex++) {
 				Matrix beta = BetaMap.get(spIndex + 1);
 				SymmetricMatrix omega = OmegaMap.get(spIndex + 1).squareSym();
-				Matrix dispersion = DispersionMap.get(spIndex + 1);
+//				Matrix thetaMat = beta.getSubMatrix(beta.m_iRows - 1, beta.m_iRows - 1, 0, 0);  // theta was concatenated to beta in R
+//				beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0);  // drop theta from beta
+				Matrix thetaMat = ThetaMap.get(spIndex + 1);
 				Matrix speciesEffectMatches = SpeciesEffectMatchesMap.get(spIndex + 1);
+				speciesEffectMatches = speciesEffectMatches.getSubMatrix(0, speciesEffectMatches.m_iRows - 1, 0, 0); // assumes the last effect has been removed
 				Species sp = Trillium2026RecruitmentOccurrencePredictor.SpeciesList.get(spIndex);
-				Trillium2026RecruitDiameterInternalPredictor subPredictor = new Trillium2026RecruitDiameterInternalPredictor(this,
+				Trillium2026RecruitmentNumberInternalPredictor subPredictor = new Trillium2026RecruitmentNumberInternalPredictor(this,
 						sp,
 						isParametersVariabilityEnabled, 
 						isResidualVariabilityEnabled, 
-						dispersion.getValueAt(0, 0),
+						thetaMat.getValueAt(0, 0),
 						beta, 
 						omega, 
 						speciesEffectMatches);
@@ -129,7 +135,7 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 		}
 	}
 
-	Trillium2026RecruitDiameterInternalPredictor getInternalPredictor(Species species) {
+	Trillium2026RecruitmentNumberInternalPredictor getInternalPredictor(Species species) {
 		if (!Trillium2026RecruitmentOccurrencePredictor.SpeciesLookupMap.containsValue(species)) {
 			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + " does not support the species " + species.getLatinName());
 		}
@@ -137,23 +143,23 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	}
 
 	/**
-	 * Returns the recruit diameter.
-	 * @param plot a Trillium2026RecruitmentPlot instance
-	 * @param species an Species enum
-	 * @return the recruit DBH (cm)
+	 * Returns the number of recruits conditional on the occurrence of recruitment.
+	 * @param plot an Iris2020CompatiblePlot instance
+	 * @param species an IrisSpecies enum
+	 * @return a double that is the number of recruits in the plot
 	 */
-	public double predictRecruitDiameterCm(Trillium2026RecruitmentPlot plot, Species species) {
-		return getInternalPredictor(species).predictRecruitDiameterCm(plot);
+	public double predictNumberOfRecruits(Trillium2026RecruitmentPlot plot, Species species) {
+		return getInternalPredictor(species).predictNumberOfRecruits(plot);
 	}
 	
 
-	/* 
-	 * For test purpose.
+	/*
+	 * For test purposes.
 	 */
-	double getVariance(Trillium2026RecruitmentPlot plot, Species species) {
-		return getInternalPredictor(species).getVariance(plot);
+	double getInvThetaParameterEstimate(Species species) {
+		return getInternalPredictor(species).invTheta;
 	}
-
+	
 	@Override
 	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
 		return CLIMATE_INFO;
@@ -166,6 +172,6 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
 
 //	public static void main(String[] args) {
-//		new Trillium2026RecruitDiameterPredictor(false);
+//		new Trillium2026RecruitmentNumberPredictor(false);
 //	}
 }

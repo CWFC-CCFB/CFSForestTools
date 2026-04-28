@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.diameterincrement.trillium2026;
+package ontariomnrf.predictor.trillium2026.diameterincrement;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;

@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.recruitment.trillium2026;
+package ontariomnrf.predictor.trillium2026.recruitment;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.simulation.RecruitmentPlotWithOccupancy;
