@@ -1,0 +1,255 @@
+/*
+ * This file is part of the CFSForesttools library.
+ *
+ * Copyright (C) 2025 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
+ */
+package ontariomnrf.predictor.diameterincrement.trillium2026;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import ontariomnrf.predictor.recruitment.trillium2026.Trillium2026Tree;
+import repicea.math.Matrix;
+import repicea.simulation.ModelParameterEstimates;
+import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.stats.StatisticalUtility;
+
+@SuppressWarnings("serial")
+final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredictor {
+
+
+	static enum Effect {
+		Intercept,
+		DBH,
+		BAL,
+		dt,
+		MeanTminJanuary,
+		TotalPrecMarchToMay, 
+		MeanTempJuneToAugust, 
+		MeanTempAnomaly, 
+		DBH_x_BAL, 
+		TotalRadiation, 
+		MeanSummerVPD, 
+		FrostFreeDay, 
+		MeanTmaxJuly, 
+		SMImean, 
+		MaxTempAnomaly, 
+		MeanSummerVPDDaylight, 
+		TotalPrecJuneToAugust, 
+		PrecAnomaly, 
+		CMI, 
+		HighestTmax, 
+		TotalPrcp, 
+		MeanTmin,
+		MeanTair, 
+		MeanTmax,
+		DD, 
+		LowestTmin;
+	}
+	
+	static final Map<String, Effect> EffectMap = new HashMap<String, Effect>();
+	static {
+		EffectMap.put("(Intercept)", Effect.Intercept);
+		EffectMap.put("DBH.x", Effect.DBH);
+		EffectMap.put("BAL", Effect.BAL);
+		EffectMap.put("dt", Effect.dt);
+		EffectMap.put("MeanTminJanuary", Effect.MeanTminJanuary);
+		EffectMap.put("TotalPrecMarchToMay", Effect.TotalPrecMarchToMay);
+		EffectMap.put("MeanTempJuneToAugust", Effect.MeanTempJuneToAugust);
+		EffectMap.put("T_anom", Effect.MeanTempAnomaly);
+		EffectMap.put("int", Effect.DBH_x_BAL);
+		EffectMap.put("TotalRadiation", Effect.TotalRadiation);
+		EffectMap.put("MeanSummerVPD", Effect.MeanSummerVPD);
+		EffectMap.put("FrostFreeDay", Effect.FrostFreeDay);
+		EffectMap.put("MeanTmaxJuly", Effect.MeanTmaxJuly);
+		EffectMap.put("SMImean", Effect.SMImean);
+		EffectMap.put("Mx_anom", Effect.MaxTempAnomaly);
+		EffectMap.put("MeanSummerVPDDaylight", Effect.MeanSummerVPDDaylight);
+		EffectMap.put("TotalPrecJuneToAugust", Effect.TotalPrecJuneToAugust);
+		EffectMap.put("P_anom", Effect.PrecAnomaly);
+		EffectMap.put("CMI", Effect.CMI);
+		EffectMap.put("HitghestTmax", Effect.HighestTmax);
+		EffectMap.put("TotalPrcp", Effect.TotalPrcp);
+		EffectMap.put("MeanTmin", Effect.MeanTmin);
+		EffectMap.put("MeanTair", Effect.MeanTair);
+		EffectMap.put("MeanTmax", Effect.MeanTmax);
+		EffectMap.put("DD", Effect.DD);
+		EffectMap.put("LowestTmin", Effect.LowestTmin);
+	}
+	
+	private final Trillium2026DiameterIncrementPredictor owner;
+	@SuppressWarnings("unused")
+	private final Species species;
+	private final List<Effect> effects;
+	private double sigma;
+	private double sigma2;
+	
+
+	Trillium2026DiameterIncrementInternalPredictor(Trillium2026DiameterIncrementPredictor owner,
+			Species species,
+			boolean isParametersVariabilityEnabled, 
+			boolean isResidualVariabilityEnabled) {
+		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
+		this.owner = owner;
+		this.species = species;
+		effects = new ArrayList<Effect>();
+	}
+
+	@Override
+	protected void init() {}
+
+	/*
+	 * For extended visibility only.
+	 */
+	@Override
+	protected void setParameterEstimates(ModelParameterEstimates gaussianEstimate) {
+		super.setParameterEstimates(gaussianEstimate);
+		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
+	}
+	
+	protected void setEffects(List<Effect> effects) {
+		this.effects.clear();
+		this.effects.addAll(effects);
+	}
+	
+	protected void setResidualStandardDeviation(double sigma) {
+		this.sigma = sigma;
+		this.sigma2 = sigma * sigma;
+	}
+
+	private void setXVector(Trillium2026DiameterIncrementPlot plot, Trillium2026Tree tree) {
+		oXVector.resetMatrix();
+		int index = 0;
+		for (Effect effect : effects) {
+			switch(effect) {
+			case Intercept:
+				oXVector.setValueAt(0, index++, 1d);
+				break;
+			case DBH:
+				oXVector.setValueAt(0, index++, tree.getDbhCm());
+				break;
+			case BAL:
+				oXVector.setValueAt(0, index++, tree.getBasalAreaLargerThanSubjectM2Ha());
+				break;
+			case dt:
+				oXVector.setValueAt(0, index++, plot.getGrowthStepLengthYr());
+				break;
+			case MeanTminJanuary:
+				oXVector.setValueAt(0, index++, plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case TotalPrecMarchToMay:
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case MeanTempJuneToAugust: 
+				oXVector.setValueAt(0, index++, plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case MeanTempAnomaly:
+				oXVector.setValueAt(0, index++, plot.getMeanTempAnomalyCelsius(owner));
+				break;
+			case DBH_x_BAL:
+				oXVector.setValueAt(0, index++, tree.getBasalAreaLargerThanSubjectM2Ha() * tree.getDbhCm());
+				break;
+			case TotalRadiation:
+				oXVector.setValueAt(0, index++, plot.getTotalAnnualRadiationMjM2(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case MeanSummerVPD:
+				oXVector.setValueAt(0, index++, plot.getMeanVPDFromJuneToAugustHPa(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case FrostFreeDay:
+				oXVector.setValueAt(0, index++, plot.getAnnualNbFrostFreeDays(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case MeanTmaxJuly:
+				oXVector.setValueAt(0, index++, plot.getMeanMaximumJulyTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case SMImean:
+				oXVector.setValueAt(0, index++, plot.getMeanAnnualSMIPercent(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case MaxTempAnomaly:
+				oXVector.setValueAt(0, index++, plot.getMaxTempAnomalyCelsius(owner));
+				break;
+			case MeanSummerVPDDaylight:
+				oXVector.setValueAt(0, index++, plot.getMeanVPDDaylightFromJuneToAugustHPa(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case TotalPrecJuneToAugust:
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break; 
+			case PrecAnomaly:
+				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationAnomalyMm(owner));
+				break;
+			case CMI:
+				oXVector.setValueAt(0, index++, plot.getMeanAnnualCMICm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case HighestTmax:
+				oXVector.setValueAt(0, index++, plot.getHighestAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case TotalPrcp:
+				oXVector.setValueAt(0, index++, plot.getTotalAnnualPrecipitationMm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case MeanTair:
+				oXVector.setValueAt(0, index++, plot.getMeanAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case DD:
+				oXVector.setValueAt(0, index++, plot.getGrowingDegreeDaysCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case LowestTmin:
+				oXVector.setValueAt(0, index++, plot.getLowestAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case MeanTmin:
+				oXVector.setValueAt(0, index++, plot.getMeanMinimumAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			case MeanTmax:
+				oXVector.setValueAt(0, index++, plot.getMeanMaximumAnnualTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
+				break;
+			default:
+				throw new UnsupportedOperationException("This effect has not been implemented yet: " + effect.name());
+			}
+		}
+	}
+	
+	synchronized double predictGrowth(Trillium2026DiameterIncrementPlot plot, Trillium2026Tree tree) {
+		Matrix beta = getParametersForThisRealization(plot);
+		setXVector(plot, tree);
+		double pred = oXVector.multiply(beta).getValueAt(0, 0);
+		if (isResidualVariabilityEnabled) {
+			pred += StatisticalUtility.getRandom().nextGaussian() * sigma;
+		} 
+		
+		if (owner.doBackTransformation) {
+			if (isResidualVariabilityEnabled) {
+				pred = Math.sinh(pred);
+			} else {
+				pred = Math.exp(sigma2 * .5) * Math.sinh(pred);  // sinh is the back transformation and e^s2/2 is the correction factor
+			}
+		}
+		
+		double stepLengthYr = plot.getGrowthStepLengthYr();
+		if (pred > Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr) { //  a cap, 1.8 is the 0.9995 percentile of observed periodical diameter increment 
+			System.out.println(getClass().getSimpleName() + "-" + this.species.name() + " hits maximum diameter increment with " + pred + " over " + stepLengthYr + " yrs.");
+			pred = Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr;
+		}
+		
+		if (pred < Trillium2026DiameterIncrementPredictor.MINIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr) { //  a cap, -1.4 is the 0.0005 percentile of observed periodical diameter increment 
+			System.out.println(getClass().getSimpleName() + "-" + this.species.name() + " hits minimum diameter increment with " + pred + " over " + stepLengthYr + " yrs.");
+			pred = Trillium2026DiameterIncrementPredictor.MINIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr;
+		}
+		return pred; 
+	}
+	
+}
