@@ -22,11 +22,11 @@ package canforservutility.predictor.iris.recruitment_v1;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.allometrycalculator.LightAllometryCalculableTree;
-import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2Provider;
+import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2HaProvider;
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmProvider;
 import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
 
-public interface IrisTree extends BasalAreaLargerThanSubjectM2Provider,
+public interface IrisTree extends BasalAreaLargerThanSubjectM2HaProvider,
 													LightAllometryCalculableTree,
 													LnDbhCmProvider,
 													MonteCarloSimulationCompliantObject,

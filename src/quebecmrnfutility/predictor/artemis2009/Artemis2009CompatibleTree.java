@@ -21,11 +21,11 @@ package quebecmrnfutility.predictor.artemis2009;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.allometrycalculator.LightAllometryCalculableTree;
-import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2Provider;
+import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2HaProvider;
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmProvider;
 import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
 
-public interface Artemis2009CompatibleTree extends BasalAreaLargerThanSubjectM2Provider,
+public interface Artemis2009CompatibleTree extends BasalAreaLargerThanSubjectM2HaProvider,
 													LightAllometryCalculableTree,
 													LnDbhCmProvider,
 													MonteCarloSimulationCompliantObject,

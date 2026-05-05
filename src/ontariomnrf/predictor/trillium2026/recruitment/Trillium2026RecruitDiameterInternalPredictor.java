@@ -23,7 +23,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontariomnrf.predictor.trillium2026.diameterincrement.Trillium2026DiameterIncrementPredictor;
+import ontariomnrf.predictor.trillium2026.diameterincrement.elasticnet.Trillium2026DiameterIncrementPredictor;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;

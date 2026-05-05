@@ -21,7 +21,7 @@ package quebecmrnfutility.predictor.matapedia;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2Provider;
+import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2HaProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 import repicea.util.REpiceaTranslator;
@@ -35,7 +35,7 @@ import repicea.util.REpiceaTranslator.TextableEnum;
 public interface MatapediaTree extends MonteCarloSimulationCompliantObject,
 										DbhCmProvider,
 										SquaredDbhCmProvider,
-										BasalAreaLargerThanSubjectM2Provider {
+										BasalAreaLargerThanSubjectM2HaProvider {
 
 	
 	@Override

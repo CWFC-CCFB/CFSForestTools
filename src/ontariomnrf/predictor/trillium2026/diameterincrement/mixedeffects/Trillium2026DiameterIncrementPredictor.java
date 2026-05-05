@@ -1,0 +1,281 @@
+/*
+ * This file is part of the CFSForesttools library.
+ *
+ * Copyright (C) 2025 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
+ */
+package ontariomnrf.predictor.trillium2026.diameterincrement.mixedeffects;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import repicea.io.javacsv.CSVReader;
+import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
+import repicea.simulation.ClimateSensitivePredictor;
+import repicea.simulation.ModelParameterEstimates;
+import repicea.simulation.ParameterLoader;
+import repicea.simulation.ParameterMap;
+import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
+import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climate.REpiceaClimateVariableProvider;
+import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
+import repicea.util.ObjectUtility;
+
+/**
+ * A class that implements a diameter increment model based on an inverse 
+ * hyperbolic sinus transformation..
+ * @author Mathieu Fortin - March 2025
+ */
+@SuppressWarnings("serial")
+public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor 
+												implements REpiceaSpeciesCompliantObject,
+												ClimateSensitivePredictor {
+
+	
+	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
+	static {
+		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
+				Trillium2026DiameterIncrementPlot.class, 
+				Trillium2026DiameterIncrementPlot.ClimateVariableResolution, EvaluationDate.EndOfInterval);
+	}
+
+	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
+	private static Map<Integer, Species> InternalSpeciesLookupMap = new HashMap<Integer, Species>();
+	static {
+		Species[] species = new Species[] {Species.Abies_balsamea, 
+				Species.Acer_pensylvanicum, 
+				Species.Acer_rubrum,
+				Species.Acer_saccharinum, 
+				Species.Acer_saccharum, 
+				Species.Betula_alleghaniensis,
+				Species.Betula_papyrifera, 
+				Species.Carya_spp,
+				Species.Fagus_grandifolia, 
+				Species.Fraxinus_americana,
+				Species.Fraxinus_nigra, 
+				Species.Fraxinus_pensylvanica,
+				Species.Juglans_spp,
+				Species.Larix_laricina, 
+				Species.Other_broadleaved, // Meridional species
+				Species.Ostrya_virginiana,
+				Species.Picea_glauca, 
+				Species.Picea_mariana, 
+				Species.Pinus_banksiana,
+				Species.Pinus_resinosa, 
+				Species.Pinus_strobus, 
+				Species.Populus_balsamifera,
+				Species.Populus_grandidentata, 
+				Species.Populus_tremuloides, 
+				Species.Prunus_pensylvanica,
+				Species.Prunus_serotina, 
+				Species.Quercus_rubra, 
+				Species.Quercus_spp,
+				Species.Broadleaved_shrubs, // Shrubs
+				Species.Thuja_occidentalis,
+				Species.Tilia_americana, 
+				Species.Tsuga_canadensis, 
+				Species.Ulmus_spp};
+		int i = 1;
+		for (Species sp : species) {
+			SpeciesLookupMap.put(sp.getLatinName().trim().toLowerCase(), sp);
+			InternalSpeciesLookupMap.put(i++, sp);
+		}
+		SpeciesLookupMap.put("carya sp.", Species.Carya_spp);
+		SpeciesLookupMap.put("juglans sp.", Species.Juglans_spp);
+		SpeciesLookupMap.put("fraxinus pennsylvanica", Species.Fraxinus_pensylvanica); // this one has a typo in R 
+		SpeciesLookupMap.put("meridional species", Species.Other_broadleaved);
+		SpeciesLookupMap.put("quercus sp.", Species.Quercus_spp);
+		SpeciesLookupMap.put("shrubs", Species.Broadleaved_shrubs);
+		SpeciesLookupMap.put("ulmus sp.", Species.Ulmus_spp);
+	}
+	
+	public static double MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM = 1.35;
+	public static double MINIMUM_PERIOD_ANNUAL_INCREMENT_CM = -0.85;
+		
+	private static Map<Species, Matrix> CoefMap;
+	private static Map<Species, SymmetricMatrix> VCovMap;
+	private static Map<Species, List<Integer>> EffectMap;
+	private static Map<Species, SymmetricMatrix> PlotRanefMap;
+	private static Map<Species, SymmetricMatrix> TreeRanefMap;
+	private static Map<Species, SymmetricMatrix> ResVarMap;
+	
+	private final Map<Species, Trillium2026DiameterIncrementInternalPredictor> internalPredictorMap;
+
+	boolean doBackTransformation = true; // for test purpose 
+	boolean boundEnabled = true;
+	
+	/**
+	 * Constructor.
+	 * @param isVariabilityEnabled a boolean to enable/disable the stochastic variability
+	 */
+	public Trillium2026DiameterIncrementPredictor(boolean isVariabilityEnabled) {
+		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
+	}
+
+
+	
+	
+	/**
+	 * Constructor.
+	 * @param isParametersVariabilityEnabled a boolean to enable/disable the stochastic variability in the parameter estimates
+	 * @param isRandomEffectVariabilityEnabled a boolean to enable/disable the stochastic variability in the random effects.
+	 * @param isResidualVariabilityEnabled a boolean to enable/disable the stochastic variability in the residual error term.
+	 */
+	protected Trillium2026DiameterIncrementPredictor(boolean isParametersVariabilityEnabled,
+			boolean isRandomEffectVariabilityEnabled,
+			boolean isResidualVariabilityEnabled) {
+		super(isParametersVariabilityEnabled, isRandomEffectVariabilityEnabled, isResidualVariabilityEnabled); // there are no random effects in this model 
+		internalPredictorMap = new HashMap<Species, Trillium2026DiameterIncrementInternalPredictor>();
+		init();
+	}
+
+	void enableBackTransformation(boolean doBackTransformation) {
+		this.doBackTransformation = doBackTransformation;
+	}
+	
+
+	@Override
+	protected synchronized void init() {
+		if (CoefMap == null) {
+			instantiateStaticMaps();
+		}
+		for (Species sp : CoefMap.keySet()) {
+			Matrix beta = CoefMap.get(sp);
+			SymmetricMatrix vcov = VCovMap.get(sp);
+			ModelParameterEstimates parmEstimates = new ModelParameterEstimates(beta, vcov);
+			
+			Trillium2026DiameterIncrementInternalPredictor pred = new Trillium2026DiameterIncrementInternalPredictor(this, 
+					sp, 
+					isParametersVariabilityEnabled, 
+					isRandomEffectsVariabilityEnabled, 
+					isResidualVariabilityEnabled,
+					parmEstimates,
+					EffectMap.get(sp),
+					PlotRanefMap.get(sp),
+					TreeRanefMap.get(sp),
+					ResVarMap.get(sp));
+			internalPredictorMap.put(sp, pred);
+		}
+	}
+
+	static Species getSpeciesFromString(String speciesName) {
+		Species species = SpeciesLookupMap.get(speciesName.trim().toLowerCase());
+		if (species == null) {
+			throw new UnsupportedOperationException("The diameter increment model of Trillium 2026 does not support species: " + speciesName);
+		}
+		return species;
+	}
+	
+	private synchronized void instantiateStaticMaps() {
+		if (CoefMap == null) { // second check in case several threads are waiting in row to get in MF20250327
+			CSVReader reader = null;
+			try {
+				String path = ObjectUtility.getRelativePackagePath(getClass());
+				String betaFilename = path + "0_diaminc_coefs.csv";
+				String vcovFilename = path + "0_diaminc_vcov.csv";
+				String effectMatchFilename = path + "0_diaminc_effectMatch.csv";
+				String plotRanefFilename = path + "0_diaminc_PlotRanef.csv";
+				String treeRanefFilename = path + "0_diaminc_TreeRanef.csv";
+				String resVarFilename = path + "0_diaminc_ResidualVar.csv";
+
+				ParameterMap parmMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
+				ParameterMap vcovMap = ParameterLoader.loadVectorFromFile(1, vcovFilename);
+				ParameterMap effectMatchMap = ParameterLoader.loadVectorFromFile(1, effectMatchFilename);
+				ParameterMap plotRanefMap = ParameterLoader.loadVectorFromFile(1, plotRanefFilename);
+				ParameterMap treeRanefMap = ParameterLoader.loadVectorFromFile(1, treeRanefFilename);
+				ParameterMap resVarianceMap = ParameterLoader.loadVectorFromFile(1, resVarFilename);
+				
+				CoefMap = new HashMap<Species, Matrix>();
+				VCovMap = new HashMap<Species, SymmetricMatrix>();
+				EffectMap = new HashMap<Species, List<Integer>>();
+				PlotRanefMap = new HashMap<Species, SymmetricMatrix>();
+				TreeRanefMap = new HashMap<Species, SymmetricMatrix>();
+				ResVarMap = new HashMap<Species, SymmetricMatrix>();
+				
+				for (Integer speciesID : InternalSpeciesLookupMap.keySet()) {
+					Species sp = InternalSpeciesLookupMap.get(speciesID); 
+					CoefMap.put(sp, parmMap.get(speciesID));
+					SymmetricMatrix vcovMatrix = SymmetricMatrix.convertToSymmetricIfPossible(vcovMap.get(speciesID).squareSym());
+					VCovMap.put(sp, vcovMatrix);
+					EffectMap.put(sp, new ArrayList<Integer>());
+					Matrix effectList = effectMatchMap.get(speciesID);
+					for (int i = 0; i < effectList.m_iRows; i++) {
+						EffectMap.get(sp).add(((Number) effectList.getValueAt(i, 0)).intValue());
+					}
+					PlotRanefMap.put(sp, SymmetricMatrix.convertToSymmetricIfPossible(plotRanefMap.get(speciesID)));
+					TreeRanefMap.put(sp, SymmetricMatrix.convertToSymmetricIfPossible(treeRanefMap.get(speciesID)));
+					ResVarMap.put(sp, SymmetricMatrix.convertToSymmetricIfPossible(resVarianceMap.get(speciesID)));
+				}
+			} catch (Exception e) {
+				throw new UnsupportedOperationException("Failed to initialize the instance of the " + getClass().getSimpleName() + " class!");
+			} finally {
+	 			if (reader != null) {
+	 				reader.close();
+	 			}
+	 		}
+				
+		}
+	}
+	
+	/**
+	 * Provide a diameter increment prediction.<p>
+	 * 
+	 * @param plot a Trillium2026DiameterIncrementPlot instance
+	 * @param tree a Trillium2026Tree instance
+	 * @return the diameter increment (cm)
+	 */
+	public double predictDiameterIncrementCm(Trillium2026DiameterIncrementPlot plot, Trillium2026DiameterIncrementTree tree) {
+		Species species = tree.getTrillium2026TreeSpecies();
+		if (!SpeciesLookupMap.values().contains(species)) {
+			throw new UnsupportedOperationException("The diameter increment model of Trillium 2026 does not support species: " + species.getLatinName());
+		}
+		return internalPredictorMap.get(species).predictDiameterIncrementCm(plot, tree);
+	}
+
+	/**
+	 * Provide the list of eligible species for this module.
+	 * @return a List of Species enums
+	 */
+	@Override
+	public List<Species> getEligibleSpecies() {
+		List<Species> species = new ArrayList<Species>(SpeciesLookupMap.values());
+		Collections.sort(species);
+		return species;
+	}
+	
+	public static void main(String[] args) {
+		new Trillium2026DiameterIncrementPredictor(false);
+	}
+
+	@Override
+	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
+
+	@Override
+	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
+		return CLIMATE_INFO;
+	}
+	
+	
+	
+}
