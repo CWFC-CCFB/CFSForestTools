@@ -29,7 +29,6 @@ import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.StatisticalUtility;
-import repicea.stats.estimates.GaussianEstimate;
 
 @SuppressWarnings("serial")
 final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredictor {
@@ -48,8 +47,8 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 			boolean isResidualVariabilityEnabled,
 			final ModelParameterEstimates parmEst,
 			final List<Integer> effectList,
-			final SymmetricMatrix plotRandomEffectVariance,
-			final SymmetricMatrix treeRandomEffectVariance,
+//			final SymmetricMatrix plotRandomEffectVariance,
+//			final SymmetricMatrix treeRandomEffectVariance,
 			final SymmetricMatrix residualVariance) {
 		super(isParametersVariabilityEnabled, isRandomEffectVariabilityEnabled, isResidualVariabilityEnabled);
 		this.owner = owner;
@@ -58,10 +57,10 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
 		effects = new ArrayList<Integer>();
 		effects.addAll(effectList);
-		setDefaultRandomEffects(HierarchicalLevel.PLOT, 
-				new GaussianEstimate(new Matrix(1,1), plotRandomEffectVariance));
-		setDefaultRandomEffects(HierarchicalLevel.TREE, 
-				new GaussianEstimate(new Matrix(1,1), treeRandomEffectVariance));
+//		setDefaultRandomEffects(HierarchicalLevel.PLOT, 
+//				new GaussianEstimate(new Matrix(1,1), plotRandomEffectVariance));
+//		setDefaultRandomEffects(HierarchicalLevel.TREE, 
+//				new GaussianEstimate(new Matrix(1,1), treeRandomEffectVariance));
 		sigma2 = residualVariance.getValueAt(0, 0);
 		sigma = Math.sqrt(sigma2);
 	}
@@ -164,10 +163,10 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		Matrix beta = getParametersForThisRealization(plot);
 		setXVector(plot, tree);
 		double pred = oXVector.multiply(beta).getValueAt(0, 0);
-		if (isRandomEffectsVariabilityEnabled) {
-			pred += getRandomEffectsForThisSubject(plot).getValueAt(0, 0);
-			pred += getRandomEffectsForThisSubject(tree).getValueAt(0, 0);
-		}
+//		if (isRandomEffectsVariabilityEnabled) {
+//			pred += getRandomEffectsForThisSubject(plot).getValueAt(0, 0);
+//			pred += getRandomEffectsForThisSubject(tree).getValueAt(0, 0);
+//		}
 		if (isResidualVariabilityEnabled) {
 			pred += StatisticalUtility.getRandom().nextGaussian() * sigma;
 		} 
@@ -177,10 +176,10 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 			if (!isResidualVariabilityEnabled) {
 				variance += sigma2;
 			}
-			if (!isRandomEffectsVariabilityEnabled) {
-				variance += getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance().getValueAt(0, 0);
-				variance += getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance().getValueAt(0, 0);
-			}
+//			if (!isRandomEffectsVariabilityEnabled) {
+//				variance += getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance().getValueAt(0, 0);
+//				variance += getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance().getValueAt(0, 0);
+//			}
 			pred = Math.sinh(pred);
 			if (variance > 0) {
 				pred *= Math.exp(0.5 * variance);

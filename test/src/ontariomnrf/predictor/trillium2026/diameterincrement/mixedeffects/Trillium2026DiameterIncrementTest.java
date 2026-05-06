@@ -247,7 +247,7 @@ public class Trillium2026DiameterIncrementTest {
 					String speciesName = record[reader.getHeader().getIndexOfThisField("SpecGroup")].toString();
 					Species species	= Trillium2026DiameterIncrementPredictor.getSpeciesFromString(speciesName);
 					double pred = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("pred")].toString());
-					double predTransformed = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("pred_transformed")].toString());
+					double predTransformed = Double.parseDouble(record[reader.getHeader().getIndexOfThisField("pred_backTrans")].toString());
 					int dateYr = ((Double) Double.parseDouble(record[reader.getHeader().getIndexOfThisField("FieldSeasonYear.x")].toString())).intValue();
 					Trillium2026TreeImpl tree = new Trillium2026TreeImpl(
 							growthStepLengthYr,
