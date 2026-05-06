@@ -18,6 +18,8 @@
  */
 package quebecmrnfutility.predictor.matapedia;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.predictor.matapedia.MatapediaTree.MatapediaTreeSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -26,6 +28,7 @@ import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
@@ -40,6 +43,7 @@ import repicea.util.ObjectUtility;
  * relationship: Some insights from balsam fir stands in Quebec, Canada. The Forestry Chronicle 90(4): 503-515 
  * </a>
  */
+@SimulationModule(type = ModuleType.DiameterIncrement, scope = SpeciesLocale.Quebec)
 public class MatapediaDbhIncrementPredictor extends REpiceaPredictor implements GrowthModel<MatapediaStand, MatapediaTree>{
 
 	private static final long serialVersionUID = 20120911L;

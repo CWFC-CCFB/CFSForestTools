@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.io.javacsv.CSVReader;
 import repicea.simulation.ClimateSensitivePredictor;
@@ -49,6 +51,7 @@ import repicea.util.ObjectUtility;
  * </a>
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.Mortality, scope = SpeciesLocale.Ontario)
 public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<Trillium2026MortalityPlot, Trillium2026Tree>
 										implements REpiceaSpeciesCompliantObject,
 													ClimateSensitivePredictor {

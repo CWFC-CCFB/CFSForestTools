@@ -22,6 +22,8 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree.VolSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -48,6 +50,7 @@ import repicea.util.ObjectUtility;
  * The Forestry Chronicle 83(5) 754-765.
  * </a> 
  */
+@SimulationModule(type = ModuleType.Volume, scope = SpeciesLocale.Quebec)
 public final class MerchantableVolumePredictor extends REpiceaPredictor {
 
 	private static final long serialVersionUID = 20100804L;

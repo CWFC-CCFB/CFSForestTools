@@ -29,6 +29,8 @@ import java.util.Map;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.occupancyindex.SimpleOccupancyIndexCalculablePlot;
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
@@ -53,6 +55,7 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - March 2026
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.RecruitmentOccurrence, scope = SpeciesLocale.Ontario)
 public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEventPredictor<Trillium2026RecruitmentPlot, Trillium2026Tree> implements 
 																REpiceaSpeciesCompliantObject, 
 																ClimateSensitivePredictor {

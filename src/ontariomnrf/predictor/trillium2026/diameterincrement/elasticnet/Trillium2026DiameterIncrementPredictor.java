@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import ontariomnrf.predictor.trillium2026.diameterincrement.elasticnet.Trillium2026DiameterIncrementInternalPredictor.Effect;
 import repicea.io.javacsv.CSVReader;
@@ -51,6 +53,7 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - March 2025
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.DiameterIncrement, scope = SpeciesLocale.Ontario)
 public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor 
 												implements REpiceaSpeciesCompliantObject,
 												ClimateSensitivePredictor {
@@ -265,7 +268,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	 * 
 	 * @param plot a Trillium2026DiameterIncrementPlot instance
 	 * @param tree a Trillium2026Tree instance
-	 * @return the diameter increment (mm)
+	 * @return the diameter increment (cm)
 	 */
 	public double predictGrowth(Trillium2026DiameterIncrementPlot plot, Trillium2026Tree tree) {
 		Species species = tree.getTrillium2026TreeSpecies();

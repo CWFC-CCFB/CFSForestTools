@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ClimateSensitivePredictor;
@@ -47,6 +49,7 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - March 2026
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.RecruitDiameter, scope = SpeciesLocale.Ontario)
 public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor implements 
 															REpiceaSpeciesCompliantObject,
 															ClimateSensitivePredictor {

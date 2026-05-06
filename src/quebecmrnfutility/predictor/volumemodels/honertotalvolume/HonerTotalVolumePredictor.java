@@ -21,9 +21,12 @@ package quebecmrnfutility.predictor.volumemodels.honertotalvolume;
 import java.util.HashMap;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.predictor.volumemodels.honertotalvolume.HonerTotalVolumeTree.HonerTotalVolumeTreeSpecies;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 /**
  * The HonerTotalVolumePredictor class implements the underbark volume model developed 
@@ -34,6 +37,7 @@ import repicea.simulation.REpiceaPredictor;
  * @author Mathieu Fortin - March 2013
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.Volume, scope = SpeciesLocale.Canada)
 public class HonerTotalVolumePredictor extends REpiceaPredictor {
 
 	private final Map<HonerTotalVolumeTreeSpecies, Matrix> betaMap;

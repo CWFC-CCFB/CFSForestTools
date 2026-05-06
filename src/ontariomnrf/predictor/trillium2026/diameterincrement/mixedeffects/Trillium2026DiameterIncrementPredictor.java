@@ -1,7 +1,7 @@
 /*
  * This file is part of the CFSForesttools library.
  *
- * Copyright (C) 2025 His Majesty the King in right of Canada
+ * Copyright (C) 2026 His Majesty the King in right of Canada
  * Author: Mathieu Fortin, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -44,10 +46,12 @@ import repicea.util.ObjectUtility;
 
 /**
  * A class that implements a diameter increment model based on an inverse 
- * hyperbolic sinus transformation..
- * @author Mathieu Fortin - March 2025
+ * hyperbolic sinus transformation.
+ * 
+ * @author Mathieu Fortin - May 2026
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.DiameterIncrement, scope = SpeciesLocale.Ontario)
 public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor 
 												implements REpiceaSpeciesCompliantObject,
 												ClimateSensitivePredictor {

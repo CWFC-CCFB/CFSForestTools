@@ -26,7 +26,7 @@ import repicea.simulation.MonteCarloSimulationCompliantObject;
  * the VigQualPredictor class.
  * @author Mathieu Fortin - July 2012
  */
-public interface VigQualTree extends MonteCarloSimulationCompliantObject {
+interface VigQualTree extends MonteCarloSimulationCompliantObject {
 	
 	
 	@Override

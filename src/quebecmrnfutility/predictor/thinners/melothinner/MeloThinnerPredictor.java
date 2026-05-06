@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcSlopeClassProvider.QcSlopeClass;
 import repicea.gui.REpiceaShowableUIWithParent;
 import repicea.math.AbstractMathematicalFunction;
@@ -39,6 +41,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.plotlevel.LandOwnershipProvider.LandOwnership;
 import repicea.simulation.disturbances.DisturbanceParameter;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.thinners.REpiceaThinner;
 import repicea.simulation.thinners.REpiceaTreatmentDefinition;
 import repicea.simulation.thinners.REpiceaTreatmentEnum;
@@ -60,6 +63,7 @@ import repicea.util.ObjectUtility;
  * </a>
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.HarvestOccurrencePlotLevel, scope = SpeciesLocale.Quebec)
 public final class MeloThinnerPredictor extends REpiceaThinner<MeloThinnerPlot, Object> implements REpiceaShowableUIWithParent {
 
 	class EmbeddedFunction extends AbstractMathematicalFunction implements GaussHermiteQuadratureCompatibleFunction<Double> {

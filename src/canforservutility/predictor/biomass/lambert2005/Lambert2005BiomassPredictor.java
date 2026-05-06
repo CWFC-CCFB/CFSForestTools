@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.species.REpiceaSpecies.Species;
@@ -44,6 +46,7 @@ import repicea.simulation.species.REpiceaSpeciesCompliantObject;
  * </a>
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.Biomass, scope = SpeciesLocale.Canada)
 public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
 	
 	static final Map<String, Species> ENGLISH_TO_LATIN_LOOKUP_MAP = new HashMap<String, Species>();

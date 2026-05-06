@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
 import repicea.math.DiagonalMatrix;
@@ -40,6 +42,7 @@ import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.Dra
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.hdrelationships.HDRelationshipPredictor;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.stats.StatisticalUtility.TypeMatrixR;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.stats.estimates.GaussianEstimate;
@@ -56,6 +59,7 @@ import repicea.util.ObjectUtility;
  * la recherche forestiere. Memoire de recherche forestiere no 153. 22 p.
  * </a>
  */
+@SimulationModule(type = ModuleType.HDRelationship, scope = SpeciesLocale.Quebec)
 public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<Heightable2009Stand, Heightable2009Tree> 
 												implements ClimateSensitivePredictor {
 

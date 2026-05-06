@@ -20,6 +20,8 @@ package quebecmrnfutility.predictor.matapedia;
 
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.predictor.matapedia.MatapediaTree.MatapediaTreeSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -31,6 +33,7 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.disturbances.DisturbanceParameter;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.model.glm.LinkFunction.Type;
 import repicea.util.ObjectUtility;
@@ -54,6 +57,7 @@ import repicea.util.ObjectUtility;
  * in forestry: an estimator based on Gauss-Hermite quadrature. Canadian Journal of Forest Research
  * 43: 129-138. </a> 
  */
+@SimulationModule(type = ModuleType.Mortality, scope = SpeciesLocale.Quebec)
 public final class MatapediaMortalityPredictor extends REpiceaBinaryEventPredictor<MatapediaStand, MatapediaTree>{
 
 	private static final long serialVersionUID = 20120912L;
