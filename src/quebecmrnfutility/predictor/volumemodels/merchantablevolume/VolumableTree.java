@@ -41,6 +41,7 @@ public interface VolumableTree extends DbhCmProvider,
 										HeightMProvider {
 	
 	
+	@Deprecated
 	public enum VolSpecies implements REpiceaSpecies {
 		BOG(REpiceaSpecies.Species.Betula_populifolia),   
 		BOJ(REpiceaSpecies.Species.Betula_alleghaniensis),
@@ -74,19 +75,13 @@ public interface VolumableTree extends DbhCmProvider,
 		private static List<String> EligibleLatinNames;
 		
 		private Matrix dummy;
-//		private SpeciesType speciesType;
 		
-		private final REpiceaSpecies.Species species;
+		final REpiceaSpecies.Species species;
 		
 		VolSpecies(REpiceaSpecies.Species species) {
 			this.species = species;
 			dummy = new Matrix(1,26);
 			dummy.setValueAt(0, ordinal(), 1d);
-//			if (QuebecGeneralSettings.CONIFEROUS_SPECIES.contains(this.name().toUpperCase().trim())) {
-//				speciesType = SpeciesType.ConiferousSpecies;
-//			} else {
-//				speciesType = SpeciesType.BroadleavedSpecies;
-//			}
 		}
 		
 		@Override
@@ -178,7 +173,7 @@ public interface VolumableTree extends DbhCmProvider,
 	
 	/**
 	 * This method ensures the species compatibility with the volume model.
-	 * @return a VolSpecies enum instance
+	 * @return a REpiceaSpecies enum instance
 	 */
 	public REpiceaSpecies getVolumableTreeSpecies();
 	
