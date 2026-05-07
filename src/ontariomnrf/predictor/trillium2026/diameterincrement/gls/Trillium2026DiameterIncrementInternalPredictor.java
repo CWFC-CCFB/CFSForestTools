@@ -24,7 +24,6 @@ import java.util.List;
 
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
-import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.species.REpiceaSpecies.Species;
@@ -43,24 +42,17 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 	Trillium2026DiameterIncrementInternalPredictor(Trillium2026DiameterIncrementPredictor owner,
 			Species species,
 			boolean isParametersVariabilityEnabled, 
-			boolean isRandomEffectVariabilityEnabled,
 			boolean isResidualVariabilityEnabled,
 			final ModelParameterEstimates parmEst,
 			final List<Integer> effectList,
-//			final SymmetricMatrix plotRandomEffectVariance,
-//			final SymmetricMatrix treeRandomEffectVariance,
 			final SymmetricMatrix residualVariance) {
-		super(isParametersVariabilityEnabled, isRandomEffectVariabilityEnabled, isResidualVariabilityEnabled);
+		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled); // no random effect
 		this.owner = owner;
 		this.species = species;
 		setParameterEstimates(parmEst);
 		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
 		effects = new ArrayList<Integer>();
 		effects.addAll(effectList);
-//		setDefaultRandomEffects(HierarchicalLevel.PLOT, 
-//				new GaussianEstimate(new Matrix(1,1), plotRandomEffectVariance));
-//		setDefaultRandomEffects(HierarchicalLevel.TREE, 
-//				new GaussianEstimate(new Matrix(1,1), treeRandomEffectVariance));
 		sigma2 = residualVariance.getValueAt(0, 0);
 		sigma = Math.sqrt(sigma2);
 	}
@@ -163,10 +155,6 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		Matrix beta = getParametersForThisRealization(plot);
 		setXVector(plot, tree);
 		double pred = oXVector.multiply(beta).getValueAt(0, 0);
-//		if (isRandomEffectsVariabilityEnabled) {
-//			pred += getRandomEffectsForThisSubject(plot).getValueAt(0, 0);
-//			pred += getRandomEffectsForThisSubject(tree).getValueAt(0, 0);
-//		}
 		if (isResidualVariabilityEnabled) {
 			pred += StatisticalUtility.getRandom().nextGaussian() * sigma;
 		} 
@@ -176,10 +164,6 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 			if (!isResidualVariabilityEnabled) {
 				variance += sigma2;
 			}
-//			if (!isRandomEffectsVariabilityEnabled) {
-//				variance += getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance().getValueAt(0, 0);
-//				variance += getDefaultRandomEffects(HierarchicalLevel.TREE).getVariance().getValueAt(0, 0);
-//			}
 			pred = Math.sinh(pred);
 			if (variance > 0) {
 				pred *= Math.exp(0.5 * variance);
@@ -189,12 +173,16 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		if (owner.boundEnabled) {
 			double stepLengthYr = plot.getGrowthStepLengthYr();
 			if (pred > Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr) { //  a cap, 1.8 is the 0.9995 percentile of observed periodical diameter increment 
-				System.out.println(getClass().getSimpleName() + "-" + this.species.name() + " hits maximum diameter increment with " + pred + " over " + stepLengthYr + " yrs.");
+				if (Trillium2026DiameterIncrementPredictor.Verbose) {
+					System.out.println(getClass().getSimpleName() + "-" + this.species.name() + " hits maximum diameter increment with " + pred + " over " + stepLengthYr + " yrs.");
+				}
 				pred = Trillium2026DiameterIncrementPredictor.MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr;
 			}
 			
 			if (pred < Trillium2026DiameterIncrementPredictor.MINIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr) { //  a cap, -1.4 is the 0.0005 percentile of observed periodical diameter increment 
-				System.out.println(getClass().getSimpleName() + "-" + this.species.name() + " hits minimum diameter increment with " + pred + " over " + stepLengthYr + " yrs.");
+				if (Trillium2026DiameterIncrementPredictor.Verbose) {
+					System.out.println(getClass().getSimpleName() + "-" + this.species.name() + " hits minimum diameter increment with " + pred + " over " + stepLengthYr + " yrs.");
+				}
 				pred = Trillium2026DiameterIncrementPredictor.MINIMUM_PERIOD_ANNUAL_INCREMENT_CM * stepLengthYr;
 			}
 		}

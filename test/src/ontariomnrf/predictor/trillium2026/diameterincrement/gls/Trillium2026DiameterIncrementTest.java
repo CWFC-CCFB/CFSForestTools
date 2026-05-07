@@ -30,9 +30,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import ontariomnrf.predictor.trillium2026.diameterincrement.gls.Trillium2026DiameterIncrementPlot;
-import ontariomnrf.predictor.trillium2026.diameterincrement.gls.Trillium2026DiameterIncrementPredictor;
-import ontariomnrf.predictor.trillium2026.diameterincrement.gls.Trillium2026DiameterIncrementTree;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -324,7 +321,7 @@ public class Trillium2026DiameterIncrementTest {
 
 	@Test
 	public void test03StochasticPredictions() {
-		Trillium2026DiameterIncrementPredictor stoPredictor = new Trillium2026DiameterIncrementPredictor(false, true, true); // stochastic but parameter variability disabled
+		Trillium2026DiameterIncrementPredictor stoPredictor = new Trillium2026DiameterIncrementPredictor(false, true); // stochastic but parameter variability disabled
 		stoPredictor.boundEnabled = false;
 		Trillium2026DiameterIncrementPredictor detPredictor = new Trillium2026DiameterIncrementPredictor(false); // deterministic
 		Trillium2026TreeImpl t = TreeMap.get(Species.Abies_balsamea).get(0);

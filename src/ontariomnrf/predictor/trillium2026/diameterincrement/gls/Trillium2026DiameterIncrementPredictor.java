@@ -117,6 +117,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	public static double MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM = 1.35;
 	public static double MINIMUM_PERIOD_ANNUAL_INCREMENT_CM = -0.85;
 		
+	static boolean Verbose = false;
 	private static Map<Species, Matrix> CoefMap;
 	static Map<Species, SymmetricMatrix> VCovMap;
 	private static Map<Species, List<Integer>> EffectMap;
@@ -128,28 +129,25 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 
 	boolean doBackTransformation = true; // for test purpose 
 	boolean boundEnabled = true;
+
+	public static void setVerbose(boolean verbose) {Verbose = verbose;}
+	
 	
 	/**
-	 * Constructor.
+	 * Simpler constructor.
 	 * @param isVariabilityEnabled a boolean to enable/disable the stochastic variability
 	 */
 	public Trillium2026DiameterIncrementPredictor(boolean isVariabilityEnabled) {
-		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
+		this(isVariabilityEnabled, isVariabilityEnabled);
 	}
 
-
-	
-	
 	/**
-	 * Constructor.
+	 * General constructor.
 	 * @param isParametersVariabilityEnabled a boolean to enable/disable the stochastic variability in the parameter estimates
-	 * @param isRandomEffectVariabilityEnabled a boolean to enable/disable the stochastic variability in the random effects.
 	 * @param isResidualVariabilityEnabled a boolean to enable/disable the stochastic variability in the residual error term.
 	 */
-	public Trillium2026DiameterIncrementPredictor(boolean isParametersVariabilityEnabled,
-			boolean isRandomEffectVariabilityEnabled,
-			boolean isResidualVariabilityEnabled) {
-		super(isParametersVariabilityEnabled, isRandomEffectVariabilityEnabled, isResidualVariabilityEnabled); // there are no random effects in this model 
+	public Trillium2026DiameterIncrementPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled); // there are no random effects in this model 
 		internalPredictorMap = new HashMap<Species, Trillium2026DiameterIncrementInternalPredictor>();
 		init();
 	}
@@ -172,12 +170,9 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 			Trillium2026DiameterIncrementInternalPredictor pred = new Trillium2026DiameterIncrementInternalPredictor(this, 
 					sp, 
 					isParametersVariabilityEnabled, 
-					isRandomEffectsVariabilityEnabled, 
 					isResidualVariabilityEnabled,
 					parmEstimates,
 					EffectMap.get(sp),
-//					PlotRanefMap.get(sp),
-//					TreeRanefMap.get(sp),
 					ResVarMap.get(sp));
 			internalPredictorMap.put(sp, pred);
 		}

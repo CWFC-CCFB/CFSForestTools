@@ -66,12 +66,15 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 
 //	static boolean IsForTestPurposes = false;
 
+	static boolean Verbose = false;
 	private static ParameterMap BetaMap;
 	static ParameterMap OmegaMap;
 	private static ParameterMap SpeciesEffectMatchesMap;
 	private static ParameterMap DispersionMap;
 	
 	private final Map<Species, Trillium2026RecruitDiameterInternalPredictor> internalPredictors;
+
+	public static void setVerbose(boolean verbose) {Verbose = verbose;}
 	
 	/**
 	 * Constructor.
