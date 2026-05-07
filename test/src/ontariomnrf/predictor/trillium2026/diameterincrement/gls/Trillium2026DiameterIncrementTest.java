@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.trillium2026.diameterincrement.mixedeffects;
+package ontariomnrf.predictor.trillium2026.diameterincrement.gls;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +30,9 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import ontariomnrf.predictor.trillium2026.diameterincrement.gls.Trillium2026DiameterIncrementPlot;
+import ontariomnrf.predictor.trillium2026.diameterincrement.gls.Trillium2026DiameterIncrementPredictor;
+import ontariomnrf.predictor.trillium2026.diameterincrement.gls.Trillium2026DiameterIncrementTree;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;

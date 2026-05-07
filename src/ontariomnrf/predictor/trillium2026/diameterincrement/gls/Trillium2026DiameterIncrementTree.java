@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.trillium2026.diameterincrement.mixedeffects;
+package ontariomnrf.predictor.trillium2026.diameterincrement.gls;
 
 import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.simulation.covariateproviders.treelevel.BasalAreaSmallerThanSubjectM2HaProvider;

@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package ontariomnrf.predictor.trillium2026.diameterincrement.mixedeffects;
+package ontariomnrf.predictor.trillium2026.diameterincrement.gls;
 
 import java.util.ArrayList;
 import java.util.Collections;
