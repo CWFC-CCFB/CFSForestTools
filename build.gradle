@@ -134,6 +134,8 @@ jar {
                    )
     }
     
+    exclude '**/*.java'
+        
 	into ('/') {
 		from files(['./README.md', './LICENSE.md'])			
 	}

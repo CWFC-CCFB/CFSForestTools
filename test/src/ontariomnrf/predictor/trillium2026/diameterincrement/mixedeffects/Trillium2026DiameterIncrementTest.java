@@ -32,6 +32,7 @@ import org.junit.Test;
 
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.species.REpiceaSpecies.Species;
@@ -339,6 +340,20 @@ public class Trillium2026DiameterIncrementTest {
 		
 	}
 
+	@Test
+	public void test04CholeskyDecompositionVarianceCovarianceMatrix() {
+		new Trillium2026DiameterIncrementPredictor(false); // to make sure the static maps are populated
+		Map<Species, SymmetricMatrix> oMap = Trillium2026DiameterIncrementPredictor.VCovMap;
+		for (Species sp : oMap.keySet()) {
+			try {
+				oMap.get(sp).getLowerCholTriangle();
+			} catch (Exception e) {
+				Assert.fail("Unable to compute the Cholesky decomposition of species: " + sp.getLatinName());
+			}
+		}
+	}
+	
+	
 	@AfterClass
 	public static void cleanup() {
 		System.out.println("Species using SMI: " + SpeciesUsingSMI);

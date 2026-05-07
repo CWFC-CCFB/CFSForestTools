@@ -67,7 +67,7 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 //	static boolean IsForTestPurposes = false;
 
 	private static ParameterMap BetaMap;
-	private static ParameterMap OmegaMap;
+	static ParameterMap OmegaMap;
 	private static ParameterMap SpeciesEffectMatchesMap;
 	private static ParameterMap DispersionMap;
 	
@@ -86,8 +86,7 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	 * @param isParameterVariabilityEnabled true to enable the variability in the parameter estimates
 	 * @param isResidualVariabilityEnabled true to enable the residual variability
 	 */
-	protected Trillium2026RecruitDiameterPredictor(boolean isParameterVariabilityEnabled, 
-			boolean isResidualVariabilityEnabled) {
+	public Trillium2026RecruitDiameterPredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this module
 		internalPredictors = new HashMap<Species, Trillium2026RecruitDiameterInternalPredictor>();
 		init();

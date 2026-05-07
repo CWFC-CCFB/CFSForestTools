@@ -71,7 +71,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	static boolean IsForTestPurposes = false;
 
 	private static ParameterMap BetaMap;
-	private static ParameterMap OmegaMap;
+	static ParameterMap OmegaMap;
 	private static ParameterMap ThetaMap;
 	private static ParameterMap SpeciesEffectMatchesMap;
 	
@@ -90,7 +90,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	 * @param isParameterVariabilityEnabled true to enable the variability in the parameter estimates
 	 * @param isResidualVariabilityEnabled true to enable the residual variability
 	 */
-	protected Trillium2026RecruitmentNumberPredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	public Trillium2026RecruitmentNumberPredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this module
 		internalPredictors = new HashMap<Species, Trillium2026RecruitmentNumberInternalPredictor>();
 		init();

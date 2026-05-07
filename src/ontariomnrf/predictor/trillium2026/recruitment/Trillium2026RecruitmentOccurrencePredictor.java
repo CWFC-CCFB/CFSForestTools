@@ -121,7 +121,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	}
 
 	private static ParameterMap BetaMap;
-	private static ParameterMap OmegaMap;
+	static ParameterMap OmegaMap;
 	private static ParameterMap SpeciesEffectMatchesMap;
 	private static ParameterMap OffsetListMap;
 	private static List<OccupancyIndexCalculablePlot> ReferencePlotsForOccupancyIndexCalculation;
@@ -139,16 +139,13 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	}
 	
 	/**
-	 * Constructor for test purposes.<p>
+	 * Constructor.
 	 * 
-	 * IMPORTANT: The random effect variability is only enabling the variability in 
-	 * the occupancy index.
-	 *
 	 * @param isParameterVariabilityEnabled true to enable the parameter estimates variability
 	 * @param isResidualVariabilityEnabled true to enable the residual error variability
 	 * @param minProbRecruitmentThreshold the minimum probability to assume that recruitment is possible (e.g., 0.01)
 	 */
-	protected Trillium2026RecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
+	public Trillium2026RecruitmentOccurrencePredictor(boolean isParameterVariabilityEnabled, 
 			boolean isResidualVariabilityEnabled, double minProbRecruitmentThreshold) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		
 		this.minProbRecruitmentThreshold = minProbRecruitmentThreshold;

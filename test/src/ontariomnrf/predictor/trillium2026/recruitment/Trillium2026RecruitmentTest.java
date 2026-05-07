@@ -34,6 +34,8 @@ import ontariomnrf.predictor.trillium2026.recruitment.Trillium2026RecruitmentPlo
 import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
+import repicea.simulation.ParameterMap;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.stats.estimates.MonteCarloEstimate;
@@ -260,6 +262,21 @@ public class Trillium2026RecruitmentTest {
 		}
 		
 	}
+	
+	@Test
+	public void test04RecruitmentOccurrenceCholeskyDecompositionVarianceCovarianceMatrix() {
+		new Trillium2026RecruitmentOccurrencePredictor(false, 0.01); // to make sure the static maps are populated
+		ParameterMap oMap = Trillium2026RecruitmentOccurrencePredictor.OmegaMap;
+		for (int spIndex = 0; spIndex < Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size(); spIndex++) {
+			Species sp = Trillium2026RecruitmentOccurrencePredictor.SpeciesList.get(spIndex);
+			try {
+				SymmetricMatrix omega = oMap.get(spIndex + 1).squareSym();
+				omega.getLowerCholTriangle();
+			} catch (Exception e) {
+				Assert.fail("Unable to compute the Cholesky decomposition of species: " + sp.getLatinName());
+			}
+		}
+	}
 
 	/*
 	 * Validation test for number of recruits using R validation dataset with known occupancy index.
@@ -381,6 +398,22 @@ public class Trillium2026RecruitmentTest {
 		}
 	}
 
+	@Test
+	public void test14RecruitmentAbundanceCholeskyDecompositionVarianceCovarianceMatrix() {
+		new Trillium2026RecruitmentNumberPredictor(false); // to make sure the static maps are populated
+		ParameterMap oMap = Trillium2026RecruitmentNumberPredictor.OmegaMap;
+		for (int spIndex = 0; spIndex < Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size(); spIndex++) {
+			Species sp = Trillium2026RecruitmentOccurrencePredictor.SpeciesList.get(spIndex);
+			try {
+				SymmetricMatrix omega = oMap.get(spIndex + 1).squareSym();
+				omega.getLowerCholTriangle();
+			} catch (Exception e) {
+				Assert.fail("Unable to compute the Cholesky decomposition of species: " + sp.getLatinName());
+			}
+		}
+	}
+
+	
 	/*
 	 * Validation test for recruit diameter using R validation dataset.
 	 */
@@ -448,6 +481,20 @@ public class Trillium2026RecruitmentTest {
 		Trillium2026RecruitDiameterInternalPredictor.EnableCutPoint = true;
 	}
 
+	@Test
+	public void test23RecruitDiameterCholeskyDecompositionVarianceCovarianceMatrix() {
+		new Trillium2026RecruitDiameterPredictor(false); // to make sure the static maps are populated
+		ParameterMap oMap = Trillium2026RecruitDiameterPredictor.OmegaMap;
+		for (int spIndex = 0; spIndex < Trillium2026RecruitmentOccurrencePredictor.SpeciesList.size(); spIndex++) {
+			Species sp = Trillium2026RecruitmentOccurrencePredictor.SpeciesList.get(spIndex);
+			try {
+				SymmetricMatrix omega = oMap.get(spIndex + 1).squareSym();
+				omega.getLowerCholTriangle();
+			} catch (Exception e) {
+				Assert.fail("Unable to compute the Cholesky decomposition of species: " + sp.getLatinName());
+			}
+		}
+	}
 
 
 	@AfterClass

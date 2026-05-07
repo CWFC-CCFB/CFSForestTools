@@ -107,16 +107,20 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 		SpeciesLookupMap.put("Ulmus sp.", Species.Ulmus_spp);
 	}
 	
-	
 	private static HashMap<Species, List<Double>> CoefLists;
 	private static HashMap<Species, List<Double>> EffectLists;
-	private static HashMap<Species, List<Double>> VCovLists;
+	static HashMap<Species, List<Double>> VCovLists;
 	private static HashMap<Species, List<Double>> RanefVarLists;
 	
 	private final Map<Species, Trillium2026MortalityInternalPredictor> internalPredictorMap;
 	
-	protected Trillium2026MortalityPredictor(boolean isParametersVariabilityEnabled,
-			boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+	/**
+	 * Constructor.
+	 * @param isParametersVariabilityEnabled a boolean to enable the variability in the parameter estimates
+	 * @param isRandomEffectsVariabilityEnabled a boolean to enable the variability in the random effect
+	 * @param isResidualVariabilityEnabled a boolean to enable the residual variability 
+	 */
+	public Trillium2026MortalityPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
 		internalPredictorMap = new HashMap<Species, Trillium2026MortalityInternalPredictor>();
 		init();

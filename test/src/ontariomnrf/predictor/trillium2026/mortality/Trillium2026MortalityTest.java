@@ -32,6 +32,7 @@ import org.junit.Test;
 import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.species.REpiceaSpecies.Species;
@@ -249,7 +250,7 @@ public class Trillium2026MortalityTest {
 	}
 
 	@Test
-	public void test03StochasticPredictions() {
+	public void test02StochasticPredictions() {
 		Trillium2026MortalityPredictor stoPredictor = new Trillium2026MortalityPredictor(false, true, false); // random effect variability enabled
 		Trillium2026MortalityPredictor detPredictor = new Trillium2026MortalityPredictor(false); 
 		Trillium2026TreeImpl t = TreeMap.get(Species.Abies_balsamea).get(0);
@@ -265,7 +266,20 @@ public class Trillium2026MortalityTest {
 		double expected = detPredictor.predictEventProbability(t, t);
 		System.out.println("Stochastic prediction = " +  observed + "; deterministic prediction = " + expected);
 		Assert.assertEquals("Comparing stochastic and deterministic predictions", expected, observed, 1E-2);
-		
 	}
-	
+
+	@Test
+	public void test03CholeskyDecompositionVarianceCovarianceMatrix() {
+		new Trillium2026MortalityPredictor(false); // to make sure the static maps are populated
+		Map<Species, List<Double>> oMap = Trillium2026MortalityPredictor.VCovLists;
+		for (Species sp : oMap.keySet()) {
+			try {
+				SymmetricMatrix omega = new Matrix(oMap.get(sp)).squareSym();
+				omega.getLowerCholTriangle();
+			} catch (Exception e) {
+				Assert.fail("Unable to compute the Cholesky decomposition of species: " + sp.getLatinName());
+			}
+		}
+	}
+
 }
