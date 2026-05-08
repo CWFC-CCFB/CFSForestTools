@@ -196,6 +196,10 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	
 	private Species convertSpeciesEnumToSpecies(REpiceaSpecies speciesEnum) {
 		if (speciesEnum instanceof Species) {
+			if (!SpeciesList.contains(speciesEnum)) {
+				throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
+						" does not support species " + speciesEnum.getLatinName() + "!");
+			}
 			return (Species) speciesEnum;
 		} else if (speciesEnum instanceof VolSpecies) {
 			return ((VolSpecies) speciesEnum).species;

@@ -45,6 +45,7 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 			boolean isResidualVariabilityEnabled,
 			final ModelParameterEstimates parmEst,
 			final List<Integer> effectList,
+			Double rho,
 			final SymmetricMatrix residualVariance) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled); // no random effect
 		this.owner = owner;
@@ -53,6 +54,10 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
 		effects = new ArrayList<Integer>();
 		effects.addAll(effectList);
+		
+		if (rho != null) {
+			// TODO MF20260507 Implement the correlation structure here
+		}
 		sigma2 = residualVariance.getValueAt(0, 0);
 		sigma = Math.sqrt(sigma2);
 	}

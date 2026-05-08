@@ -121,6 +121,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	private static Map<Species, Matrix> CoefMap;
 	static Map<Species, SymmetricMatrix> VCovMap;
 	private static Map<Species, List<Integer>> EffectMap;
+	private static Map<Species, Double> RhoMap;
 //	private static Map<Species, SymmetricMatrix> PlotRanefMap;
 //	private static Map<Species, SymmetricMatrix> TreeRanefMap;
 	private static Map<Species, SymmetricMatrix> ResVarMap;
@@ -166,13 +167,13 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 			Matrix beta = CoefMap.get(sp);
 			SymmetricMatrix vcov = VCovMap.get(sp);
 			ModelParameterEstimates parmEstimates = new ModelParameterEstimates(beta, vcov);
-			
 			Trillium2026DiameterIncrementInternalPredictor pred = new Trillium2026DiameterIncrementInternalPredictor(this, 
 					sp, 
 					isParametersVariabilityEnabled, 
 					isResidualVariabilityEnabled,
 					parmEstimates,
 					EffectMap.get(sp),
+					RhoMap.get(sp),
 					ResVarMap.get(sp));
 			internalPredictorMap.put(sp, pred);
 		}
@@ -194,22 +195,19 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 				String betaFilename = path + "0_diaminc_coefs.csv";
 				String vcovFilename = path + "0_diaminc_vcov.csv";
 				String effectMatchFilename = path + "0_diaminc_effectMatch.csv";
-//				String plotRanefFilename = path + "0_diaminc_PlotRanef.csv";
-//				String treeRanefFilename = path + "0_diaminc_TreeRanef.csv";
+				String rhoFilename = path + "0_diaminc_rho.csv";
 				String resVarFilename = path + "0_diaminc_ResidualVar.csv";
 
 				ParameterMap parmMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
 				ParameterMap vcovMap = ParameterLoader.loadVectorFromFile(1, vcovFilename);
 				ParameterMap effectMatchMap = ParameterLoader.loadVectorFromFile(1, effectMatchFilename);
-//				ParameterMap plotRanefMap = ParameterLoader.loadVectorFromFile(1, plotRanefFilename);
-//				ParameterMap treeRanefMap = ParameterLoader.loadVectorFromFile(1, treeRanefFilename);
+				ParameterMap rhoMap = ParameterLoader.loadVectorFromFile(1, rhoFilename);
 				ParameterMap resVarianceMap = ParameterLoader.loadVectorFromFile(1, resVarFilename);
 				
 				CoefMap = new HashMap<Species, Matrix>();
 				VCovMap = new HashMap<Species, SymmetricMatrix>();
 				EffectMap = new HashMap<Species, List<Integer>>();
-//				PlotRanefMap = new HashMap<Species, SymmetricMatrix>();
-//				TreeRanefMap = new HashMap<Species, SymmetricMatrix>();
+				RhoMap = new HashMap<Species, Double>();
 				ResVarMap = new HashMap<Species, SymmetricMatrix>();
 				
 				for (Integer speciesID : InternalSpeciesLookupMap.keySet()) {
@@ -222,8 +220,10 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 					for (int i = 0; i < effectList.m_iRows; i++) {
 						EffectMap.get(sp).add(((Number) effectList.getValueAt(i, 0)).intValue());
 					}
-//					PlotRanefMap.put(sp, SymmetricMatrix.convertToSymmetricIfPossible(plotRanefMap.get(speciesID)));
-//					TreeRanefMap.put(sp, SymmetricMatrix.convertToSymmetricIfPossible(treeRanefMap.get(speciesID)));
+					Matrix rho = rhoMap.get(speciesID);
+					if (rho != null) {
+						RhoMap.put(sp, rho.getValueAt(0, 0));
+					}
 					ResVarMap.put(sp, SymmetricMatrix.convertToSymmetricIfPossible(resVarianceMap.get(speciesID)));
 				}
 			} catch (Exception e) {
