@@ -115,6 +115,10 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 		return SpeciesLookupMap;
 	}
 	
+	private static Matrix DefaultBetaMean; 
+	private static SymmetricMatrix DefaultBetaVariance;
+	private static Matrix CovParms;
+		
 	private Matrix sigma2;
 
 	/**
@@ -136,30 +140,28 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 
 	@Override
 	protected final void init() {
-		try {
-			String path = ObjectUtility.getRelativePackagePath(getClass());
-			String betaFilename = path + "0_MerchVolumeBeta.csv";
-			String omegaFilename = path + "0_MerchVolumeOmega.csv";
-			String covparmsFilename = path + "0_MerchVolumeCovParms.csv";
+		if (DefaultBetaMean == null) {
+			try {
+				String path = ObjectUtility.getRelativePackagePath(getClass());
+				String betaFilename = path + "0_MerchVolumeBeta.csv";
+				String omegaFilename = path + "0_MerchVolumeOmega.csv";
+				String covparmsFilename = path + "0_MerchVolumeCovParms.csv";
 
-			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			SymmetricMatrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
-			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance));
-			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
-
-			SymmetricMatrix matrixGPlotLevel =  covParms.getSubMatrix(0, 2, 0, 0).squareSym();
-			Matrix defaultRandomEffectsPlotLevel = new Matrix(matrixGPlotLevel.m_iRows, 1);
-
-			SymmetricMatrix matrixGCruiseLineLevel = covParms.getSubMatrix(3, 5, 0, 0).squareSym();
-			Matrix defaultRandomEffectsCruiseLineLevel = new Matrix(matrixGCruiseLineLevel.m_iRows, 1);
-			
-			sigma2 = covParms.getSubMatrix(6, covParms.m_iRows - 1, 0, 0);
-
-			setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsPlotLevel, matrixGPlotLevel));
-			setDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE, new GaussianEstimate(defaultRandomEffectsCruiseLineLevel, matrixGCruiseLineLevel));
-		} catch (Exception e) {
-			System.out.println("GeneralVolumeCalculator.init() : Unable to initialize the GeneralVolumeEquation");
+				DefaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
+				DefaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
+				CovParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
+			} catch (Exception e) {
+				throw new RuntimeException("Unable to load the parameters of " + getClass().getSimpleName(), e);
+			}
 		}
+		setParameterEstimates(new SASParameterEstimates(DefaultBetaMean.getDeepClone(), DefaultBetaVariance.getDeepClone()));
+		SymmetricMatrix matrixGPlotLevel =  CovParms.getSubMatrix(0, 2, 0, 0).squareSym();
+		Matrix defaultRandomEffectsPlotLevel = new Matrix(matrixGPlotLevel.m_iRows, 1);
+		SymmetricMatrix matrixGCruiseLineLevel = CovParms.getSubMatrix(3, 5, 0, 0).squareSym();
+		Matrix defaultRandomEffectsCruiseLineLevel = new Matrix(matrixGCruiseLineLevel.m_iRows, 1);
+		sigma2 = CovParms.getSubMatrix(6, CovParms.m_iRows - 1, 0, 0);
+		setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsPlotLevel, matrixGPlotLevel));
+		setDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE, new GaussianEstimate(defaultRandomEffectsCruiseLineLevel, matrixGCruiseLineLevel));
 	}
 	
 	/**
