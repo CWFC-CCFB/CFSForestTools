@@ -102,7 +102,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	
 	private static Map<String, Species> SpeciesLookupMap;
 	
-	private synchronized Map<String, Species> getSpeciesLookupMap() {
+	private static synchronized Map<String, Species> getSpeciesLookupMap() {
 		if (SpeciesLookupMap == null) {
 			SpeciesLookupMap = new HashMap<String, Species>();
 			for (Species s : SpeciesList) {
@@ -209,14 +209,16 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 		}
 	}
 
-	private Species convertStringToSpecies(String speciesName) {
-		Species species = getSpeciesLookupMap().get(speciesName.toLowerCase().trim());
-		if (species == null) {
-			throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
-					" does not support species " + speciesName + "!");
-		}
-		return species;
+	/**
+	 * Provide a Species enum instance from a species code.
+	 * @param speciesName a three-character species code (e.g., BOP) or the Latin name.
+	 * @return a Species enum or null if the species is not eligible
+	 */
+	public static Species getSpeciesFromString(String speciesName) {
+		return getSpeciesLookupMap().get(speciesName.toLowerCase().trim());
 	}
+
+	
 	
 //	/**
 //	 * Return the Latin names of the eligible species for this model.
@@ -245,7 +247,11 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 		if (heightM < 1.3) {	// means the height has not been calculated
 			throw new InvalidParameterException("Volume cannot be calculated if the tree is not at least 1.3 m in height!");
 		}
-		Species species = this.convertStringToSpecies(speciesName);
+		Species species = getSpeciesFromString(speciesName);
+		if (species == null) {
+			throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
+					" does not support species " + speciesName + "!");
+		}
 		Matrix modelParameters = getParameterEstimates().getMean();
 		double volume = computePrediction(dbhCm, dbhCm * dbhCm, heightM, modelParameters, species);
 		if (overbark) {
