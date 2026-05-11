@@ -29,7 +29,7 @@ import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
  * @author Mathieu Fortin - July 2012
  */
 
-public interface VigQualStand extends MonteCarloSimulationCompliantObject,
+interface VigQualStand extends MonteCarloSimulationCompliantObject,
 										BasalAreaM2HaProvider, 
 										StemDensityHaProvider {
 

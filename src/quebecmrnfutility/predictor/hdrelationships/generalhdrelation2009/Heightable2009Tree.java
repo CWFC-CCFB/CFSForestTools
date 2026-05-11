@@ -18,16 +18,12 @@
  */
 package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import quebecmrnfutility.predictor.QuebecGeneralSettings;
-import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmPlus1Provider;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredLnDbhCmPlus1Provider;
 import repicea.simulation.hdrelationships.HDRelationshipTree;
+import repicea.simulation.species.REpiceaSpecies;
 
 /**
  * The HeightableTree interface ensures the compatibility with the HD relationship.
@@ -38,77 +34,80 @@ public interface Heightable2009Tree extends HDRelationshipTree,
 										LnDbhCmPlus1Provider,
 										SquaredLnDbhCmPlus1Provider {
 
-	public enum Hd2009Species implements SpeciesTypeProvider {
-		BOJ,
-		BOP,
-		CHR,
-		EPB,
-		EPN,
-		EPR,
-		ERR,
-		ERS,
-		FRN,
-		HEG,
-		MEL,
-		OSV,
-		PEG,
-		PET,
-		PIB,
-		PIG,
-		PRU,
-		SAB,
-		THO,
-		TIL;
+	@Deprecated
+	public enum Hd2009Species implements SpeciesTypeProvider, REpiceaSpecies {
+		BOJ(Species.Betula_alleghaniensis),
+		BOP(Species.Betula_papyrifera),
+		CHR(Species.Quercus_rubra),
+		EPB(Species.Picea_glauca),
+		EPN(Species.Picea_mariana),
+		EPR(Species.Picea_rubens),
+		ERR(Species.Acer_rubrum),
+		ERS(Species.Acer_saccharum),
+		FRN(Species.Fraxinus_nigra),
+		HEG(Species.Fagus_grandifolia),
+		MEL(Species.Larix_laricina),
+		OSV(Species.Ostrya_virginiana),
+		PEG(Species.Populus_grandidentata),
+		PET(Species.Populus_tremuloides),
+		PIB(Species.Pinus_strobus),
+		PIG(Species.Pinus_banksiana),
+		PRU(Species.Tsuga_canadensis),
+		SAB(Species.Abies_balsamea),
+		THO(Species.Thuja_occidentalis),
+		TIL(Species.Tilia_americana);
 
-		private static Set<String> eligibleSpeciesNames;
-
+//		private static Set<String> eligibleSpeciesNames;
 		
-		private Matrix dummy;
-		private SpeciesType speciesType;
+		final Species species;
 		
-		Hd2009Species() {
-			dummy = new Matrix(1,20);
-			dummy.setValueAt(0, ordinal(), 1d);
-			if (QuebecGeneralSettings.CONIFEROUS_SPECIES.contains(this.name().toUpperCase().trim())) {
-				speciesType = SpeciesType.ConiferousSpecies;
-			} else {
-				speciesType = SpeciesType.BroadleavedSpecies;
-			}
+		Hd2009Species(Species s) {
+			this.species = s;
 		}
 		
 		@Override
-		public SpeciesType getSpeciesType() {return this.speciesType;}
-		public Matrix getDummy() {return this.dummy;}
+		public SpeciesType getSpeciesType() {return species.getSpeciesType();}
 		
 		
-		public static Hd2009Species findEligibleSpecies(String speciesName) {
-			if (eligibleSpeciesNames == null) {
-				eligibleSpeciesNames = new HashSet<String>();
-				for (Hd2009Species species : Hd2009Species.values()) {
-					eligibleSpeciesNames.add(species.name());
-				}
-			}
-			if (speciesName == null) {
-				return null;
-			} else {
-				String formattedSpeciesName = speciesName.trim().toUpperCase();
-				if (eligibleSpeciesNames.contains(formattedSpeciesName)) {
-					return Hd2009Species.valueOf(formattedSpeciesName);
-				} else {
-					return null;
-				}
-			}
-		}
+//		public static Hd2009Species findEligibleSpecies(String speciesName) {
+//			if (eligibleSpeciesNames == null) {
+//				eligibleSpeciesNames = new HashSet<String>();
+//				for (Hd2009Species species : Hd2009Species.values()) {
+//					eligibleSpeciesNames.add(species.name());
+//				}
+//			}
+//			if (speciesName == null) {
+//				return null;
+//			} else {
+//				String formattedSpeciesName = speciesName.trim().toUpperCase();
+//				if (eligibleSpeciesNames.contains(formattedSpeciesName)) {
+//					return Hd2009Species.valueOf(formattedSpeciesName);
+//				} else {
+//					return null;
+//				}
+//			}
+//		}
 
+		@Override
+		public double getBarkProportionOfWoodVolume(SpeciesLocale arg0) {return species.getBarkProportionOfWoodVolume(arg0);}
+
+		@Override
+		public double getBasicWoodDensity(SpeciesLocale arg0) {return species.getBasicWoodDensity(arg0);}
+
+		@Override
+		public String getLatinName() {return species.getLatinName();}
+
+		@Override
+		public void setText(String arg0, String arg1) {}
 		
 	}	
 	
 	
 	/**
 	 * This method ensures the species compatibility with the hd relationship.
-	 * @return a HdSpecies enum instance
+	 * @return a REpiceaSpecies enum instance
 	 */
-	public Hd2009Species getHeightableTreeSpecies();
+	public REpiceaSpecies getHeightableTreeSpecies();
 	
 	
 	/**

@@ -22,12 +22,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.util.ObjectUtility;
 
@@ -36,6 +39,7 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - Sept 2016
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.VolumeByLogGrade, scope = SpeciesLocale.Quebec)
 public class PetroGradePredictor extends REpiceaPredictor {
 
 	private static ParameterMap betaPres;

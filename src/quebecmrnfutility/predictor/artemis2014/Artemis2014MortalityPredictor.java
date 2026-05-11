@@ -24,12 +24,15 @@ package quebecmrnfutility.predictor.artemis2014;
 import java.util.HashMap;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import repicea.math.Matrix;
 import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.REpiceaBinaryEventPredictor;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.Index;
 
@@ -38,6 +41,7 @@ import repicea.util.Index;
  * @author Denis Hache and Hugues Power - 2014, Mathieu Fortin - November 2025
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.Mortality, scope = SpeciesLocale.Quebec)
 public final class Artemis2014MortalityPredictor extends REpiceaBinaryEventPredictor<Artemis2014CompatibleStand, Artemis2014CompatibleTree> 
 												implements ClimateSensitivePredictor {
 

@@ -19,10 +19,15 @@
 package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
 
 import java.security.InvalidParameterException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
 import repicea.math.DiagonalMatrix;
@@ -40,6 +45,10 @@ import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.Dra
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.hdrelationships.HDRelationshipPredictor;
+import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.stats.StatisticalUtility.TypeMatrixR;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
 import repicea.stats.estimates.GaussianEstimate;
@@ -56,8 +65,11 @@ import repicea.util.ObjectUtility;
  * la recherche forestiere. Memoire de recherche forestiere no 153. 22 p.
  * </a>
  */
+@SuppressWarnings({ "serial", "deprecation" })
+@SimulationModule(type = ModuleType.HDRelationship, scope = SpeciesLocale.Quebec)
 public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<Heightable2009Stand, Heightable2009Tree> 
-												implements ClimateSensitivePredictor {
+												implements ClimateSensitivePredictor,
+															REpiceaSpeciesCompliantObject {
 
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
 	static {
@@ -67,7 +79,38 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 				EvaluationDate.Now);
 	}
 
-	private static final long serialVersionUID = 20100804L;
+	private static final List<Species> SpeciesList = Collections.unmodifiableList(Arrays.asList(
+			Species.Betula_alleghaniensis,
+			Species.Betula_papyrifera,
+			Species.Quercus_rubra,
+			Species.Picea_glauca,
+			Species.Picea_mariana,
+			Species.Picea_rubens,
+			Species.Acer_rubrum,
+			Species.Acer_saccharum,
+			Species.Fraxinus_nigra,
+			Species.Fagus_grandifolia,
+			Species.Larix_laricina,
+			Species.Ostrya_virginiana,
+			Species.Populus_grandidentata,
+			Species.Populus_tremuloides,
+			Species.Pinus_strobus,
+			Species.Pinus_banksiana,
+			Species.Tsuga_canadensis,
+			Species.Abies_balsamea,
+			Species.Thuja_occidentalis,
+			Species.Tilia_americana));
+	
+	
+	static final Map<Species, Matrix> DummyMatrixMap = new HashMap<Species, Matrix>();
+	static {
+		for (int i = 0; i < SpeciesList.size(); i++) {
+			Matrix dummy = new Matrix(1,SpeciesList.size());
+			dummy.setValueAt(0, i, 1d);
+			DummyMatrixMap.put(SpeciesList.get(i), dummy);
+		}
+		
+	}
 
 	private static enum DisturbanceType {HUMAN, 
 		NATURAL, 
@@ -148,16 +191,6 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		DUMMY_ECO_REGION.put("6m", dummy);	// region S_EST
 	}
 	
-//	private final static Map<DrainageGroup, Matrix> DUMMY_DRAINAGE_GROUP = new HashMap<DrainageGroup, Matrix>();
-//	static {
-//		for (DrainageGroup dg : DrainageGroup.values()) {
-//			Matrix mat = new Matrix(1,4);
-//			mat.m_afData[0][dg.ordinal()] = 1d;
-//			DUMMY_DRAINAGE_GROUP.put(dg, mat);
-//		}
-//	}
-	
-	
 	/**
 	 * General constructor for all combinations of uncertainty sources.
 	 * @param isVariabilityEnabled a boolean that enables the stochastic mode
@@ -205,9 +238,24 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		}
 	}
 	
+	private Species convertSpeciesEnumToSpecies(REpiceaSpecies speciesEnum) {
+		if (speciesEnum instanceof Species) {
+			if (!SpeciesList.contains(speciesEnum)) {
+				throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
+						" does not support species " + speciesEnum.getLatinName() + "!");
+			}
+			return (Species) speciesEnum;
+		} else if (speciesEnum instanceof Hd2009Species) {
+			return ((Hd2009Species) speciesEnum).species;
+		} else {
+			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
+						" does not support species " + speciesEnum.getLatinName() + "!");
+		}
+	}
+
+	
 	@Override
 	protected synchronized RegressionElements fixedEffectsPrediction(Heightable2009Stand stand, Heightable2009Tree t, Matrix beta) {
-//		Matrix modelParameters = getParametersForThisRealization(stand);
 		Matrix modelParameters = beta;
 		double basalArea = stand.getBasalAreaM2Ha();
 		if (basalArea < 0d) {
@@ -233,11 +281,11 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		
 		oXVector.resetMatrix();
 		int pointer = 0;
-		Hd2009Species species = t.getHeightableTreeSpecies();
+		Species species = this.convertSpeciesEnumToSpecies(t.getHeightableTreeSpecies());
 		double lnDbh = t.getLnDbhCmPlus1();
 		double SSI = t.getSocialStatusIndex();
 		double lnDbh2 = t.getSquaredLnDbhCmPlus1();
-		Matrix dummySpecies = species.getDummy();
+		Matrix dummySpecies = DummyMatrixMap.get(species);
 
 		oXVector.setSubMatrix(dummySpecies.scalarMultiply(lnDbh), 0, pointer);
 		pointer += dummySpecies.m_iCols;
@@ -310,6 +358,12 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
 		return CLIMATE_INFO;
 	}
+
+	@Override
+	public List<Species> getEligibleSpecies() {return SpeciesList;}
+
+	@Override
+	public SpeciesLocale getScope() {return SpeciesLocale.Quebec;}
 	
 
 }

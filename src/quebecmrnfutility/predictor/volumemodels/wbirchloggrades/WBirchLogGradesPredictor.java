@@ -23,18 +23,22 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityProvider.QcTreeQuality;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.stats.Distribution.Type;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.distributions.ChiSquaredDistribution;
 import repicea.util.ObjectUtility;
 
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.VolumeByLogGrade, scope = SpeciesLocale.Quebec)
 public class WBirchLogGradesPredictor extends REpiceaPredictor {
 	
 	protected boolean isTestPurpose = false;

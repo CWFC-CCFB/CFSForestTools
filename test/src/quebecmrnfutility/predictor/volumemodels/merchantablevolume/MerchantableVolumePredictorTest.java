@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 public class MerchantableVolumePredictorTest {
@@ -129,9 +130,16 @@ public class MerchantableVolumePredictorTest {
 	
 	@Test
 	public void test10LatinNameList() {
-		List<String> species = MerchantableVolumePredictor.getEligibleSpecies();
+		MerchantableVolumePredictor pred = new MerchantableVolumePredictor();
+		List<Species> species = pred.getEligibleSpecies();
 		Assert.assertEquals("Testing the number of species", 26, species.size());
 		System.out.println(species);
+		try {
+			species.add(Species.Abies_alba);
+			Assert.fail("Should have thrown an exception");
+		} catch (Exception e) {
+			int u = 0;
+		}
 	}
 
 }

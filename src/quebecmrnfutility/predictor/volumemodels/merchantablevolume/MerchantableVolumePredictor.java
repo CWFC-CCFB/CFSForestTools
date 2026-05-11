@@ -19,9 +19,14 @@
 package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree.VolSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -31,7 +36,9 @@ import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.stats.StatisticalUtility;
 import repicea.stats.estimates.GaussianEstimate;
 import repicea.util.ObjectUtility;
@@ -48,10 +55,72 @@ import repicea.util.ObjectUtility;
  * The Forestry Chronicle 83(5) 754-765.
  * </a> 
  */
-public final class MerchantableVolumePredictor extends REpiceaPredictor {
+@SuppressWarnings({ "serial", "deprecation" })
+@SimulationModule(type = ModuleType.Volume, scope = SpeciesLocale.Quebec)
+public final class MerchantableVolumePredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
 
-	private static final long serialVersionUID = 20100804L;
+	private static List<Species> SpeciesList = Collections.unmodifiableList(
+			Arrays.asList(
+			Species.Betula_populifolia, 
+			Species.Betula_alleghaniensis,
+			Species.Betula_papyrifera,
+			Species.Prunus_serotina,
+			Species.Quercus_rubra,
+			Species.Picea_glauca,
+			Species.Picea_mariana,
+			Species.Picea_rubens,
+			Species.Acer_rubrum,
+			Species.Acer_saccharum,
+			Species.Fraxinus_americana,
+			Species.Fraxinus_nigra,
+			Species.Fagus_grandifolia,
+			Species.Larix_laricina,
+			Species.Ulmus_americana,
+			Species.Ostrya_virginiana,
+			Species.Populus_balsamifera,
+			Species.Populus_grandidentata,
+			Species.Populus_tremuloides,
+			Species.Pinus_strobus,
+			Species.Pinus_banksiana,
+			Species.Pinus_resinosa,
+			Species.Tsuga_canadensis,
+			Species.Abies_balsamea,
+			Species.Thuja_occidentalis,
+			Species.Tilia_americana));
 
+	private static Map<Species, Matrix> DummyMap;
+	
+	private synchronized Map<Species, Matrix> getDummyMap() {
+		if (DummyMap == null) {
+			DummyMap = new HashMap<Species, Matrix>();
+			for (Species s : SpeciesList) {
+				Matrix m = new Matrix(1, SpeciesList.size());
+				m.setValueAt(0, SpeciesList.indexOf(s), 1d);
+				DummyMap.put(s, m);
+			}
+		}
+		return DummyMap;
+	}
+	
+	private static Map<String, Species> SpeciesLookupMap;
+	
+	private static synchronized Map<String, Species> getSpeciesLookupMap() {
+		if (SpeciesLookupMap == null) {
+			SpeciesLookupMap = new HashMap<String, Species>();
+			for (Species s : SpeciesList) {
+				SpeciesLookupMap.put(s.getLatinName().toLowerCase().trim(), s);
+			}
+			for (VolSpecies vs : VolSpecies.values()) {
+				SpeciesLookupMap.put(vs.name().toLowerCase(), vs.species);
+			}
+		}
+		return SpeciesLookupMap;
+	}
+	
+	private static Matrix DefaultBetaMean; 
+	private static SymmetricMatrix DefaultBetaVariance;
+	private static Matrix CovParms;
+		
 	private Matrix sigma2;
 
 	/**
@@ -73,30 +142,28 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 
 	@Override
 	protected final void init() {
-		try {
-			String path = ObjectUtility.getRelativePackagePath(getClass());
-			String betaFilename = path + "0_MerchVolumeBeta.csv";
-			String omegaFilename = path + "0_MerchVolumeOmega.csv";
-			String covparmsFilename = path + "0_MerchVolumeCovParms.csv";
+		if (DefaultBetaMean == null) {
+			try {
+				String path = ObjectUtility.getRelativePackagePath(getClass());
+				String betaFilename = path + "0_MerchVolumeBeta.csv";
+				String omegaFilename = path + "0_MerchVolumeOmega.csv";
+				String covparmsFilename = path + "0_MerchVolumeCovParms.csv";
 
-			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			SymmetricMatrix defaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
-			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance));
-			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
-
-			SymmetricMatrix matrixGPlotLevel =  covParms.getSubMatrix(0, 2, 0, 0).squareSym();
-			Matrix defaultRandomEffectsPlotLevel = new Matrix(matrixGPlotLevel.m_iRows, 1);
-
-			SymmetricMatrix matrixGCruiseLineLevel = covParms.getSubMatrix(3, 5, 0, 0).squareSym();
-			Matrix defaultRandomEffectsCruiseLineLevel = new Matrix(matrixGCruiseLineLevel.m_iRows, 1);
-			
-			sigma2 = covParms.getSubMatrix(6, covParms.m_iRows - 1, 0, 0);
-
-			setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsPlotLevel, matrixGPlotLevel));
-			setDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE, new GaussianEstimate(defaultRandomEffectsCruiseLineLevel, matrixGCruiseLineLevel));
-		} catch (Exception e) {
-			System.out.println("GeneralVolumeCalculator.init() : Unable to initialize the GeneralVolumeEquation");
+				DefaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
+				DefaultBetaVariance = ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym();
+				CovParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
+			} catch (Exception e) {
+				throw new RuntimeException("Unable to load the parameters of " + getClass().getSimpleName(), e);
+			}
 		}
+		setParameterEstimates(new SASParameterEstimates(DefaultBetaMean.getDeepClone(), DefaultBetaVariance.getDeepClone()));
+		SymmetricMatrix matrixGPlotLevel =  CovParms.getSubMatrix(0, 2, 0, 0).squareSym();
+		Matrix defaultRandomEffectsPlotLevel = new Matrix(matrixGPlotLevel.m_iRows, 1);
+		SymmetricMatrix matrixGCruiseLineLevel = CovParms.getSubMatrix(3, 5, 0, 0).squareSym();
+		Matrix defaultRandomEffectsCruiseLineLevel = new Matrix(matrixGCruiseLineLevel.m_iRows, 1);
+		sigma2 = CovParms.getSubMatrix(6, CovParms.m_iRows - 1, 0, 0);
+		setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsPlotLevel, matrixGPlotLevel));
+		setDefaultRandomEffects(HierarchicalLevel.CRUISE_LINE, new GaussianEstimate(defaultRandomEffectsCruiseLineLevel, matrixGCruiseLineLevel));
 	}
 	
 	/**
@@ -118,14 +185,8 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		}
 		
 		REpiceaSpecies speciesEnum = tree.getVolumableTreeSpecies();
-		VolSpecies species = speciesEnum instanceof VolSpecies ?
-				(VolSpecies) speciesEnum :
-					VolSpecies.findEligibleSpeciesUsingLatinName(speciesEnum.getLatinName());
+		Species species = convertSpeciesEnumToSpecies(speciesEnum);
 		
-		if (species == null) {
-			throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
-					" does not support species " + speciesEnum.getLatinName() + "!");
-		}
 		Matrix modelParameters = getParametersForThisRealization(stand);
 		double volume = fixedEffectPrediction(stand, tree, modelParameters, species);
 		volume += blupImplementation(stand, tree, species);
@@ -135,18 +196,45 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		}
 		return volume;
 	}
+	
+	
+	private Species convertSpeciesEnumToSpecies(REpiceaSpecies speciesEnum) {
+		if (speciesEnum instanceof Species) {
+			if (!SpeciesList.contains(speciesEnum)) {
+				throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
+						" does not support species " + speciesEnum.getLatinName() + "!");
+			}
+			return (Species) speciesEnum;
+		} else if (speciesEnum instanceof VolSpecies) {
+			return ((VolSpecies) speciesEnum).species;
+		} else {
+			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
+						" does not support species " + speciesEnum.getLatinName() + "!");
+		}
+	}
 
 	/**
-	 * Return the Latin names of the eligible species for this model.
-	 * @return a List of Strings.
+	 * Provide a Species enum instance from a species code.
+	 * @param speciesName a three-character species code (e.g., BOP) or the Latin name.
+	 * @return a Species enum or null if the species is not eligible
 	 */
-	public static List<String> getEligibleSpecies() {
-		List<String> speciesList = new ArrayList<String>();
-		for (String sp : VolSpecies.getLatinNameList()) {
-			speciesList.add(sp.substring(0, 1).toUpperCase() + sp.substring(1));
-		}
-		return speciesList;
+	public static Species getSpeciesFromString(String speciesName) {
+		return getSpeciesLookupMap().get(speciesName.toLowerCase().trim());
 	}
+
+	
+	
+//	/**
+//	 * Return the Latin names of the eligible species for this model.
+//	 * @return a List of Strings.
+//	 */
+//	public static List<String> getEligibleSpecies() {
+//		List<String> speciesList = new ArrayList<String>();
+//		for (String sp : VolSpecies.getLatinNameList()) {
+//			speciesList.add(sp.substring(0, 1).toUpperCase() + sp.substring(1));
+//		}
+//		return speciesList;
+//	}
 	
 	/**
 	 * A fast-track computation of deterministic predictions.
@@ -160,17 +248,10 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		if (dbhCm < 9.1) {	// means this is a sapling
 			return 0d;
 		}
-
 		if (heightM < 1.3) {	// means the height has not been calculated
 			throw new InvalidParameterException("Volume cannot be calculated if the tree is not at least 1.3 m in height!");
 		}
-
-		VolSpecies species = VolSpecies.findEligibleSpeciesUsingQuebecSpeciesCode(speciesName);
-
-		if (species == null) {
-			species = VolSpecies.findEligibleSpeciesUsingLatinName(speciesName);
-		}
-		
+		Species species = getSpeciesFromString(speciesName);
 		if (species == null) {
 			throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
 					" does not support species " + speciesName + "!");
@@ -190,14 +271,14 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	 * @return the fixed effect prediction (double)
 	 * @throws Exception
 	 */
-	private double fixedEffectPrediction(VolumableStand stand, VolumableTree t, Matrix modelParameters, VolSpecies species) {
+	private double fixedEffectPrediction(VolumableStand stand, VolumableTree t, Matrix modelParameters, Species species) {
 		double dbh = t.getDbhCm();
 		double dbh2 = t.getSquaredDbhCm();
 		double height = t.getHeightM();
 		return computePrediction(dbh, dbh2, height, modelParameters, species);
 	}
 
-	private synchronized double computePrediction(double dbh, double dbh2, double height, Matrix modelParameters, VolSpecies species) {
+	private synchronized double computePrediction(double dbh, double dbh2, double height, Matrix modelParameters, Species species) {
 		this.oXVector.resetMatrix();
 		int pointeur = 0;
 		double cylindre = Math.PI*dbh2*height*0.025;
@@ -205,7 +286,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 		oXVector.setValueAt(0, pointeur, height/dbh);
 		pointeur++;
 
-		Matrix dummy = species.getDummy();
+		Matrix dummy = getDummyMap().get(species);
 		oXVector.setSubMatrix(dummy.scalarMultiply(cylindre), 0, pointeur);
 		pointeur += dummy.m_iCols;
 		if (species.getSpeciesType() == SpeciesType.ConiferousSpecies) {
@@ -223,7 +304,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	 * @param t = a TreeVolumable object
 	 * @return a simulated random effect (double)
 	 */
-	private double blupImplementation(VolumableStand stand, VolumableTree t, VolSpecies species) {
+	private double blupImplementation(VolumableStand stand, VolumableTree t, Species species) {
 		if (isRandomEffectsVariabilityEnabled) {					
 			String cruiseLineID = stand.getCruiseLineID();
 			if (cruiseLineID == null) {
@@ -252,10 +333,10 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 	 * @param t a TreeVolumable object
 	 * @return a simulated residual (double)
 	 */
-	private double residualImplementation(VolumableTree t, VolSpecies species) {
+	private double residualImplementation(VolumableTree t, Species species) {
 		if (isResidualVariabilityEnabled) {
 //			VolSpecies species = t.getVolumableTreeSpecies();
-			Matrix dummy = species.getDummy();
+			Matrix dummy = getDummyMap().get(species);
 			double dbh2 = t.getSquaredDbhCm();
 
 			return Math.sqrt(dummy.multiply(sigma2).getValueAt(0, 0)) * dbh2 * StatisticalUtility.getRandom().nextGaussian();
@@ -263,6 +344,12 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor {
 			return 0d;
 		}
 	}
+
+	@Override
+	public List<Species> getEligibleSpecies() {return SpeciesList;}
+
+	@Override
+	public SpeciesLocale getScope() {return SpeciesLocale.Quebec;}
 	
 //	/**
 //	 * For testing purpose.

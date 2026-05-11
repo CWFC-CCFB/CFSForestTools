@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ClimateSensitivePredictor;
@@ -35,6 +37,7 @@ import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.ObjectUtility;
 
@@ -43,6 +46,7 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - June 2023
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.RecruitmentAbundance, scope = SpeciesLocale.Quebec)
 public class IrisRecruitmentNumberPredictor extends REpiceaPredictor implements ClimateSensitivePredictor {
 
 	

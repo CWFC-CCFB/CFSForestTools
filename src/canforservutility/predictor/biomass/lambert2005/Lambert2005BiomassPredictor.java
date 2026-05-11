@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import repicea.math.Matrix;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.species.REpiceaSpecies.Species;
@@ -44,6 +46,7 @@ import repicea.simulation.species.REpiceaSpeciesCompliantObject;
  * </a>
  */
 @SuppressWarnings("serial")
+@SimulationModule(type = ModuleType.Biomass, scope = SpeciesLocale.Canada)
 public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
 	
 	static final Map<String, Species> ENGLISH_TO_LATIN_LOOKUP_MAP = new HashMap<String, Species>();
@@ -76,7 +79,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Hop-Hornbeam", Species.Ostrya_virginiana);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Jack Pine", Species.Pinus_banksiana);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Largetooth Aspen", Species.Populus_grandidentata);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Ash", Species.Fraxinus_pensylvanica);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Ash", Species.Fraxinus_pennsylvanica);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Maple", Species.Acer_rubrum);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Oak", Species.Quercus_rubra);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Spruce", Species.Picea_rubens);

@@ -25,7 +25,10 @@ import repicea.simulation.REpiceaPredictor;
  * respectively predicts tree vigor (MSCR) and tree quality (ABCD). The model has no plot random
  * effects. Consequently the random effect variability is disabled.
  * @author Mathieu Fortin - July 2012
+ * NOTE MF 20260506 THIS MODEL HAS NEVER BEEN IMPLEMENTED AND THE ORIGINAL MATERIAL IS NO LONGER 
+ * AVAILABLE.
  */
+@Deprecated
 public class VigQualPredictor extends REpiceaPredictor {
 
 	private static final long serialVersionUID = 20120705L;

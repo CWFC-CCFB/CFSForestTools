@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
 import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
@@ -33,6 +35,7 @@ import repicea.serial.SerializerChangeMonitor;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.AbstractStemTaperPredictor;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
@@ -59,6 +62,7 @@ import repicea.util.ObjectUtility;
  * 
  * @author Mathieu Fortin - September 2011
  */
+@SimulationModule(type = ModuleType.StemTaper, scope = SpeciesLocale.Quebec)
 public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	
 	

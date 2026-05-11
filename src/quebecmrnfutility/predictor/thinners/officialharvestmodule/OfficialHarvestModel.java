@@ -30,10 +30,13 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import modulemanagement.SimulationModule;
+import modulemanagement.SimulationModule.ModuleType;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.disturbances.DisturbanceParameter;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.thinners.REpiceaThinner;
 import repicea.simulation.thinners.REpiceaThinningOccurrenceProvider;
 import repicea.simulation.thinners.REpiceaTreatmentEnum;
@@ -45,6 +48,7 @@ import repicea.util.REpiceaTranslator;
  * Based on database provided by Gordon Weber on March 1st, 2010.
  * @author M. Fortin - August 2010
  */
+@SimulationModule(type = ModuleType.HarvestOccurrenceTreeLevel, scope = SpeciesLocale.Quebec)
 public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestableStand, OfficialHarvestableTree> {
 	
 	 

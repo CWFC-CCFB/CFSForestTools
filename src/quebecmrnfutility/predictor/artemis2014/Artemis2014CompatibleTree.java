@@ -23,7 +23,7 @@ import quebecmrnfutility.simulation.covariateproviders.treelevel.QcTreeQualityPr
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.allometrycalculator.LightAllometryCalculableTree;
-import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2Provider;
+import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2HaProvider;
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmProvider;
 import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
 
@@ -31,7 +31,7 @@ import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
  * Ensure the tree instance is compatible with Artemis 2014's modules.<p>
  * @author Mathieu Fortin - November 2025
  */
-public interface Artemis2014CompatibleTree extends BasalAreaLargerThanSubjectM2Provider,
+public interface Artemis2014CompatibleTree extends BasalAreaLargerThanSubjectM2HaProvider,
 													LightAllometryCalculableTree,
 													LnDbhCmProvider,
 													MonteCarloSimulationCompliantObject,
