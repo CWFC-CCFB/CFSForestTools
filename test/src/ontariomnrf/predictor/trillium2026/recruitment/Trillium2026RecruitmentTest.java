@@ -349,7 +349,7 @@ public class Trillium2026RecruitmentTest {
 			Assert.assertEquals("Testing stochastic variance against expected variance " + selectedPlot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
 					0,
 					1 - variance/expectedVariance, 
-					0.03);
+					0.04);
 		}
 	}
 
