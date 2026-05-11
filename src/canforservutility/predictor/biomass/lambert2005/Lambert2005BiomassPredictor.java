@@ -79,7 +79,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Hop-Hornbeam", Species.Ostrya_virginiana);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Jack Pine", Species.Pinus_banksiana);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Largetooth Aspen", Species.Populus_grandidentata);
-		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Ash", Species.Fraxinus_pensylvanica);
+		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Ash", Species.Fraxinus_pennsylvanica);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Maple", Species.Acer_rubrum);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Oak", Species.Quercus_rubra);
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Red Spruce", Species.Picea_rubens);

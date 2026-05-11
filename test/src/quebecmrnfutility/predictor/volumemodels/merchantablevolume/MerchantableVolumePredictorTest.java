@@ -134,6 +134,12 @@ public class MerchantableVolumePredictorTest {
 		List<Species> species = pred.getEligibleSpecies();
 		Assert.assertEquals("Testing the number of species", 26, species.size());
 		System.out.println(species);
+		try {
+			species.add(Species.Abies_alba);
+			Assert.fail("Should have thrown an exception");
+		} catch (Exception e) {
+			int u = 0;
+		}
 	}
 
 }

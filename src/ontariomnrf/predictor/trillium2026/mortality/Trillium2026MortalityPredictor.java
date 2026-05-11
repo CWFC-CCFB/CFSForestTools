@@ -20,6 +20,7 @@
 package ontariomnrf.predictor.trillium2026.mortality;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -65,9 +66,8 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 	}
 
 	
-	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
-	static {
-		Species[] species = new Species[] {
+	private static final Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
+	private static final List<Species> SpeciesList = Collections.unmodifiableList(Arrays.asList(
 				Species.Abies_balsamea, 
 				Species.Acer_pensylvanicum, 
 				Species.Acer_rubrum,
@@ -78,7 +78,7 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 				Species.Fagus_grandifolia, 
 				Species.Fraxinus_americana,
 				Species.Fraxinus_nigra, 
-				Species.Fraxinus_pensylvanica,
+				Species.Fraxinus_pennsylvanica,
 				Species.Larix_laricina, 
 				Species.Ostrya_virginiana,
 				Species.Picea_glauca, 
@@ -94,17 +94,18 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 				Species.Quercus_rubra, 
 				Species.Thuja_occidentalis,
 				Species.Tilia_americana, 
-				Species.Tsuga_canadensis};
-		for (Species sp : species) {
-			SpeciesLookupMap.put(sp.getLatinName(), sp);
+				Species.Tsuga_canadensis));
+	
+	static {
+		for (Species sp : SpeciesList) {
+			SpeciesLookupMap.put(sp.getLatinName().toLowerCase().trim(), sp);
 		}
-		SpeciesLookupMap.put("Carya sp.", Species.Carya_spp);
-		SpeciesLookupMap.put("Juglans sp.", Species.Juglans_spp);
-		SpeciesLookupMap.put("Fraxinus pennsylvanica", Species.Fraxinus_pensylvanica); // this one has a typo in R 
-		SpeciesLookupMap.put("Meridional species", Species.Other_broadleaved);
-		SpeciesLookupMap.put("Quercus sp.", Species.Quercus_spp);
-		SpeciesLookupMap.put("Shrubs", Species.Broadleaved_shrubs);
-		SpeciesLookupMap.put("Ulmus sp.", Species.Ulmus_spp);
+		SpeciesLookupMap.put("carya sp.", Species.Carya_spp);
+		SpeciesLookupMap.put("juglans sp.", Species.Juglans_spp);
+		SpeciesLookupMap.put("meridional species", Species.Other_broadleaved);
+		SpeciesLookupMap.put("quercus sp.", Species.Quercus_spp);
+		SpeciesLookupMap.put("shrubs", Species.Broadleaved_shrubs);
+		SpeciesLookupMap.put("ulmus sp.", Species.Ulmus_spp);
 	}
 	
 	private static HashMap<Species, List<Double>> CoefLists;
@@ -143,11 +144,8 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 		return internalPredictorMap.get(species).predictEventProbability(plot, tree);
 	}
 	
-	public List<Species> getEligibleSpecies() {
-		List<Species> species = new ArrayList<Species>(SpeciesLookupMap.values());
-		Collections.sort(species);
-		return species;
-	}
+	@Override
+	public List<Species> getEligibleSpecies() {return SpeciesList;}
 
 	@Override
 	protected synchronized void init() {
@@ -185,7 +183,7 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 	}
 
 	static Species getSpeciesFromString(String speciesName) {
-		Species species = SpeciesLookupMap.get(speciesName);
+		Species species = SpeciesLookupMap.get(speciesName.toLowerCase().trim());
 		if (species == null) {
 			throw new UnsupportedOperationException("The mortality model of Trillium 2026 does not support species: " + speciesName);
 		}

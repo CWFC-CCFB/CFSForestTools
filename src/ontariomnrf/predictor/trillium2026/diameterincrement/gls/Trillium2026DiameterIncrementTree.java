@@ -21,12 +21,15 @@ package ontariomnrf.predictor.trillium2026.diameterincrement.gls;
 
 import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.simulation.covariateproviders.treelevel.BasalAreaSmallerThanSubjectM2HaProvider;
+import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
 
 /**
  * An interface to ensure the Tree instance is compatible with the diameter increment
  * module.
  * @author Mathieu Fortin - May 2026
  */
-public interface Trillium2026DiameterIncrementTree extends Trillium2026Tree, BasalAreaSmallerThanSubjectM2HaProvider {
+public interface Trillium2026DiameterIncrementTree extends Trillium2026Tree, 
+															BasalAreaSmallerThanSubjectM2HaProvider,
+															IndexableErrorTerm {
 
 }

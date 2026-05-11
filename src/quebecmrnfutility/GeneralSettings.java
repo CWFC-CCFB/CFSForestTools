@@ -256,7 +256,7 @@ public class GeneralSettings {
 		SPECIES_LOOKUP_MAP.put("ERS", Species.Acer_saccharum);
 		SPECIES_LOOKUP_MAP.put("FRA", Species.Fraxinus_americana);
 		SPECIES_LOOKUP_MAP.put("FRN", Species.Fraxinus_nigra);
-		SPECIES_LOOKUP_MAP.put("FRP", Species.Fraxinus_pensylvanica);
+		SPECIES_LOOKUP_MAP.put("FRP", Species.Fraxinus_pennsylvanica);
 		SPECIES_LOOKUP_MAP.put("HEG", Species.Fagus_grandifolia);
 		SPECIES_LOOKUP_MAP.put("JUV", Species.Juniperus_virginiana);
 		SPECIES_LOOKUP_MAP.put("MAS", Species.Malus_spp);

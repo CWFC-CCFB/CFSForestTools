@@ -25,9 +25,12 @@ import java.util.List;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
+import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaPredictor;
+import repicea.simulation.REpiceaPredictor.ErrorTermGroup;
 import repicea.simulation.species.REpiceaSpecies.Species;
-import repicea.stats.StatisticalUtility;
+import repicea.stats.StatisticalUtility.TypeMatrixR;
+import repicea.stats.estimates.GaussianErrorTermEstimate;
 
 @SuppressWarnings("serial")
 final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredictor {
@@ -35,8 +38,9 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 	private final Trillium2026DiameterIncrementPredictor owner;
 	private final Species species;
 	private final List<Integer> effects;
-	private final double sigma;
-	private final double sigma2;
+	final boolean hasCorrelationStructure;
+//	private final double sigma;
+//	private final double sigma2;
 	
 
 	Trillium2026DiameterIncrementInternalPredictor(Trillium2026DiameterIncrementPredictor owner,
@@ -55,11 +59,12 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		effects = new ArrayList<Integer>();
 		effects.addAll(effectList);
 		
-		if (rho != null) {
-			// TODO MF20260507 Implement the correlation structure here
-		}
-		sigma2 = residualVariance.getValueAt(0, 0);
-		sigma = Math.sqrt(sigma2);
+		hasCorrelationStructure = rho != null;
+		
+		setDefaultResidualError(REpiceaPredictor.ErrorTermGroup.Default, 
+				hasCorrelationStructure ?
+					new GaussianErrorTermEstimate(residualVariance, rho, TypeMatrixR.POWER) :
+						new GaussianErrorTermEstimate(residualVariance));
 	}
 
 	@Override
@@ -161,13 +166,21 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		setXVector(plot, tree);
 		double pred = oXVector.multiply(beta).getValueAt(0, 0);
 		if (isResidualVariabilityEnabled) {
-			pred += StatisticalUtility.getRandom().nextGaussian() * sigma;
+			double residualErrorTerm;
+			if (hasCorrelationStructure) {
+				Matrix errorTerm = getResidualErrorForThisSubject(tree, ErrorTermGroup.Default);
+				int index = this.getGaussianErrorTerms(tree).getDistanceIndex().indexOf(tree.getErrorTermIndex());
+				residualErrorTerm = errorTerm.getValueAt(index, 0);		// last element
+			} else {
+				residualErrorTerm = getDefaultResidualError(ErrorTermGroup.Default).getRandomDeviate().getValueAt(0,0);
+			}
+			pred += residualErrorTerm;
 		} 
 		
 		if (owner.doBackTransformation) {
 			double variance = 0d;
 			if (!isResidualVariabilityEnabled) {
-				variance += sigma2;
+				variance += getDefaultResidualError(ErrorTermGroup.Default).getVariance().getValueAt(0,0);
 			}
 			pred = Math.sinh(pred);
 			if (variance > 0) {
@@ -193,5 +206,13 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		}
 		return pred; 
 	}
+
 	
+	/*
+	 * For testing only.
+	 */
+	Matrix getResidualErrorForThisTree(MonteCarloSimulationCompliantObject tree) {
+		return getResidualErrorForThisSubject(tree, ErrorTermGroup.Default);
+	}
+
 }

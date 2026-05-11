@@ -20,6 +20,7 @@
 package ontariomnrf.predictor.trillium2026.diameterincrement.gls;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.ModelParameterEstimates;
+import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
@@ -64,10 +66,9 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 				Trillium2026DiameterIncrementPlot.ClimateVariableResolution, EvaluationDate.EndOfInterval);
 	}
 
-	private static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
-	private static Map<Integer, Species> InternalSpeciesLookupMap = new HashMap<Integer, Species>();
-	static {
-		Species[] species = new Species[] {Species.Abies_balsamea, 
+	private static final Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
+	private static final Map<Integer, Species> InternalSpeciesLookupMap = new HashMap<Integer, Species>();
+	private static final List<Species> SpeciesList = Collections.unmodifiableList(Arrays.asList(Species.Abies_balsamea, 
 				Species.Acer_pensylvanicum, 
 				Species.Acer_rubrum,
 				Species.Acer_saccharinum, 
@@ -78,7 +79,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 				Species.Fagus_grandifolia, 
 				Species.Fraxinus_americana,
 				Species.Fraxinus_nigra, 
-				Species.Fraxinus_pensylvanica,
+				Species.Fraxinus_pennsylvanica,
 				Species.Juglans_spp,
 				Species.Larix_laricina, 
 				Species.Other_broadleaved, // Meridional species
@@ -99,15 +100,16 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 				Species.Thuja_occidentalis,
 				Species.Tilia_americana, 
 				Species.Tsuga_canadensis, 
-				Species.Ulmus_spp};
+				Species.Ulmus_spp));
+
+	static {
 		int i = 1;
-		for (Species sp : species) {
+		for (Species sp : SpeciesList) {
 			SpeciesLookupMap.put(sp.getLatinName().trim().toLowerCase(), sp);
 			InternalSpeciesLookupMap.put(i++, sp);
 		}
 		SpeciesLookupMap.put("carya sp.", Species.Carya_spp);
 		SpeciesLookupMap.put("juglans sp.", Species.Juglans_spp);
-		SpeciesLookupMap.put("fraxinus pennsylvanica", Species.Fraxinus_pensylvanica); // this one has a typo in R 
 		SpeciesLookupMap.put("meridional species", Species.Other_broadleaved);
 		SpeciesLookupMap.put("quercus sp.", Species.Quercus_spp);
 		SpeciesLookupMap.put("shrubs", Species.Broadleaved_shrubs);
@@ -121,12 +123,12 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	private static Map<Species, Matrix> CoefMap;
 	static Map<Species, SymmetricMatrix> VCovMap;
 	private static Map<Species, List<Integer>> EffectMap;
-	private static Map<Species, Double> RhoMap;
+	static Map<Species, Double> RhoMap;
 //	private static Map<Species, SymmetricMatrix> PlotRanefMap;
 //	private static Map<Species, SymmetricMatrix> TreeRanefMap;
-	private static Map<Species, SymmetricMatrix> ResVarMap;
+	static Map<Species, SymmetricMatrix> ResVarMap;
 	
-	private final Map<Species, Trillium2026DiameterIncrementInternalPredictor> internalPredictorMap;
+	final Map<Species, Trillium2026DiameterIncrementInternalPredictor> internalPredictorMap;
 
 	boolean doBackTransformation = true; // for test purpose 
 	boolean boundEnabled = true;
@@ -257,11 +259,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	 * @return a List of Species enums
 	 */
 	@Override
-	public List<Species> getEligibleSpecies() {
-		List<Species> species = new ArrayList<Species>(SpeciesLookupMap.values());
-		Collections.sort(species);
-		return species;
-	}
+	public List<Species> getEligibleSpecies() {return SpeciesList;}
 	
 	public static void main(String[] args) {
 		new Trillium2026DiameterIncrementPredictor(false);

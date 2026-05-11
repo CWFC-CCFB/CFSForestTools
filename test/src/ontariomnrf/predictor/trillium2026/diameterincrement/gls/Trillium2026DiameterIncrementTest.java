@@ -136,6 +136,7 @@ public class Trillium2026DiameterIncrementTest {
 		private final boolean isGoingToBeHarvested;
 		private int mcReal;
 		private final Trillium2026PlotImpl plot;
+		protected int dateYr = 2000;
 		
 		Trillium2026TreeImpl(
 				int growthStepLengthYr,
@@ -211,6 +212,9 @@ public class Trillium2026DiameterIncrementTest {
 
 		@Override
 		public double getBasalAreaSmallerThanSubjectM2Ha() {return BAS;}
+
+		@Override
+		public int getErrorTermIndex() {return dateYr;}
 
 	}
 
@@ -352,6 +356,57 @@ public class Trillium2026DiameterIncrementTest {
 			}
 		}
 	}
+	
+	@Test
+	public void test05CorrelationStructure() {
+		Species sp = Species.Abies_balsamea;
+		Trillium2026DiameterIncrementPredictor predictor = new Trillium2026DiameterIncrementPredictor(false, true); // to make sure the static maps are populated
+		Trillium2026TreeImpl t = TreeMap.get(sp).get(0);
+		MonteCarloEstimate estimate = new MonteCarloEstimate();
+		int initialDateYr = t.dateYr;
+		for (int i = 0; i < 100000; i++) {
+			t.setMonteCarloRealizationId(i);
+			t.dateYr = initialDateYr;
+			predictor.predictDiameterIncrementCm(t.plot, t);
+			t.dateYr += 5;
+			predictor.predictDiameterIncrementCm(t.plot, t);
+			Matrix res = predictor.internalPredictorMap.get(sp).getResidualErrorForThisTree(t);
+			estimate.addRealization(res);
+		}
+//		Matrix mean = estimate.getMean();
+		SymmetricMatrix variance = estimate.getVariance();
+		double expectedVariance = Trillium2026DiameterIncrementPredictor.ResVarMap.get(sp).getValueAt(0, 0);
+		Assert.assertEquals("Testing variance 1", expectedVariance, variance.getValueAt(0, 0), 1E-2);
+		Assert.assertEquals("Testing variance 2", expectedVariance, variance.getValueAt(1, 1), 1E-2);
+		Matrix std = variance.diagonalVector().elementWisePower(0.5);
+		Matrix fullVar = std.multiply(std.transpose());
+		Matrix correlation = variance.elementWiseDivide(fullVar);
+		double expectedCorrelation = Math.pow(Trillium2026DiameterIncrementPredictor.RhoMap.get(sp), 5);
+		Assert.assertEquals("Testing correlation", expectedCorrelation, correlation.getValueAt(0, 1), 1E-2);
+	}
+
+	@Test
+	public void test06WithoutCorrelationStructure() {
+		Species sp = Species.Acer_pensylvanicum;
+		Trillium2026DiameterIncrementPredictor predictor = new Trillium2026DiameterIncrementPredictor(false, true); // to make sure the static maps are populated
+		Trillium2026TreeImpl t = TreeMap.get(sp).get(0);
+		MonteCarloEstimate estimate = new MonteCarloEstimate();
+		int initialDateYr = t.dateYr;
+		for (int i = 0; i < 100000; i++) {
+			t.setMonteCarloRealizationId(i);
+			t.dateYr = initialDateYr;
+			predictor.predictDiameterIncrementCm(t.plot, t);
+			t.dateYr += 5;
+			predictor.predictDiameterIncrementCm(t.plot, t);
+			Matrix res = predictor.internalPredictorMap.get(sp).getResidualErrorForThisTree(t);
+			estimate.addRealization(res);
+		}
+//		Matrix mean = estimate.getMean();
+		SymmetricMatrix variance = estimate.getVariance();
+		double expectedVariance = Trillium2026DiameterIncrementPredictor.ResVarMap.get(sp).getValueAt(0, 0);
+		Assert.assertEquals("Testing variance 1", expectedVariance, variance.getValueAt(0, 0), 1E-2);
+	}
+
 	
 	
 	@AfterClass

@@ -88,7 +88,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 		}
 		SpeciesLookupMap.put("Caryasp.", Species.Carya_spp);
 		SpeciesLookupMap.put("Juglanssp.", Species.Juglans_spp);
-		SpeciesLookupMap.put("Fraxinuspennsylvanica", Species.Fraxinus_pensylvanica); // this one has a typo in R 
+		SpeciesLookupMap.put("Fraxinuspennsylvanica", Species.Fraxinus_pennsylvanica); // this one has a typo in R 
 //		SpeciesLookupMap.put("Meridional species", Species.Other_broadleaved);
 		SpeciesLookupMap.put("Quercussp.", Species.Quercus_spp);
 //		SpeciesLookupMap.put("Shrubs", Species.Broadleaved_shrubs);

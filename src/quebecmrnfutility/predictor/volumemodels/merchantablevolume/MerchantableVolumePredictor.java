@@ -20,6 +20,7 @@ package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,8 @@ import repicea.util.ObjectUtility;
 @SimulationModule(type = ModuleType.Volume, scope = SpeciesLocale.Quebec)
 public final class MerchantableVolumePredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
 
-	private static List<Species> SpeciesList = Arrays.asList(new Species[] {
+	private static List<Species> SpeciesList = Collections.unmodifiableList(
+			Arrays.asList(
 			Species.Betula_populifolia, 
 			Species.Betula_alleghaniensis,
 			Species.Betula_papyrifera,
@@ -84,7 +86,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 			Species.Tsuga_canadensis,
 			Species.Abies_balsamea,
 			Species.Thuja_occidentalis,
-			Species.Tilia_americana});
+			Species.Tilia_americana));
 
 	private static Map<Species, Matrix> DummyMap;
 	
@@ -199,14 +201,14 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	private Species convertSpeciesEnumToSpecies(REpiceaSpecies speciesEnum) {
 		if (speciesEnum instanceof Species) {
 			if (!SpeciesList.contains(speciesEnum)) {
-				throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
+				throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
 						" does not support species " + speciesEnum.getLatinName() + "!");
 			}
 			return (Species) speciesEnum;
 		} else if (speciesEnum instanceof VolSpecies) {
 			return ((VolSpecies) speciesEnum).species;
 		} else {
-			throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
+			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
 						" does not support species " + speciesEnum.getLatinName() + "!");
 		}
 	}

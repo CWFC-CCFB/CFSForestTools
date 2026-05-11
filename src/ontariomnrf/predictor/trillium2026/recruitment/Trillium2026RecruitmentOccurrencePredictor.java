@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,10 +70,8 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 				EvaluationDate.EndOfInterval);
 	}
 
-	static Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
-	static List<Species> SpeciesList;
-	static {
-		Species[] species = new Species[] {
+	static final Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
+	static final List<Species> SpeciesList = Collections.unmodifiableList(Arrays.asList(
 				Species.Abies_balsamea, 
 				Species.Acer_pensylvanicum,
 				Species.Acer_rubrum, 
@@ -83,7 +82,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 				Species.Fagus_grandifolia, 
 				Species.Fraxinus_americana,
 				Species.Fraxinus_nigra,
-				Species.Fraxinus_pensylvanica,
+				Species.Fraxinus_pennsylvanica,
 				Species.Larix_laricina,
 				Species.Other_broadleaved,
 				Species.Ostrya_virginiana, 
@@ -102,16 +101,16 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 				Species.Thuja_occidentalis,
 				Species.Tilia_americana,
 				Species.Tsuga_canadensis,
-				Species.Ulmus_spp};
-		for (Species sp : species) {
+				Species.Ulmus_spp));
+	
+	static {
+		for (Species sp : SpeciesList) {
 			SpeciesLookupMap.put(sp.getLatinName().trim().toLowerCase(), sp);
 		}
 		SpeciesLookupMap.put("carya sp.", Species.Other_broadleaved);
 		SpeciesLookupMap.put("meridional species", Species.Other_broadleaved);
 		SpeciesLookupMap.put("shrubs", Species.Broadleaved_shrubs);
 		SpeciesLookupMap.put("ulmus sp.", Species.Ulmus_spp);
-		SpeciesLookupMap.put("fraxinus pennsylvanica", Species.Fraxinus_pensylvanica);
-		SpeciesList = Arrays.asList(species);
 	}
 
 	static List<Integer> OccupancyIndexEffects = new ArrayList<Integer>();
