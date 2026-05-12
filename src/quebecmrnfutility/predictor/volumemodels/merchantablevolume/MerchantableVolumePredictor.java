@@ -141,7 +141,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	}
 
 	@Override
-	protected final void init() {
+	protected synchronized void init() {
 		if (DefaultBetaMean == null) {
 			try {
 				String path = ObjectUtility.getRelativePackagePath(getClass());

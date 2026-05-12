@@ -27,7 +27,6 @@ import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaPredictor;
-import repicea.simulation.REpiceaPredictor.ErrorTermGroup;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.StatisticalUtility.TypeMatrixR;
 import repicea.stats.estimates.GaussianErrorTermEstimate;

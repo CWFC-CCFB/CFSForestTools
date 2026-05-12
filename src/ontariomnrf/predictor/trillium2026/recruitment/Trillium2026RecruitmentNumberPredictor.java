@@ -97,7 +97,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	}
 
 	@Override
-	protected void init() {
+	protected synchronized void init() {
 		if (BetaMap == null) {
 			String rootPath = ObjectUtility.getRelativePackagePath(getClass());
 			String betaFilename = rootPath + "0_RecruitmentNumberBeta.csv";

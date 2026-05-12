@@ -55,10 +55,10 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("serial")
 @SimulationModule(type = ModuleType.DiameterIncrement, scope = SpeciesLocale.Ontario)
 public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor 
-												implements REpiceaSpeciesCompliantObject,
-												ClimateSensitivePredictor {
+implements REpiceaSpeciesCompliantObject,
+ClimateSensitivePredictor {
 
-	
+
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
 	static {
 		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
@@ -89,24 +89,24 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 		SpeciesLookupMap.put("Caryasp.", Species.Carya_spp);
 		SpeciesLookupMap.put("Juglanssp.", Species.Juglans_spp);
 		SpeciesLookupMap.put("Fraxinuspennsylvanica", Species.Fraxinus_pennsylvanica); // this one has a typo in R 
-//		SpeciesLookupMap.put("Meridional species", Species.Other_broadleaved);
+		//		SpeciesLookupMap.put("Meridional species", Species.Other_broadleaved);
 		SpeciesLookupMap.put("Quercussp.", Species.Quercus_spp);
-//		SpeciesLookupMap.put("Shrubs", Species.Broadleaved_shrubs);
+		//		SpeciesLookupMap.put("Shrubs", Species.Broadleaved_shrubs);
 		SpeciesLookupMap.put("Ulmussp.", Species.Ulmus_spp);
 	}
-	
+
 	public static double MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM = 1.8;
 	public static double MINIMUM_PERIOD_ANNUAL_INCREMENT_CM = -1.4;
-		
+
 	private static Map<Species, Matrix> CoefMap;
 	private static Map<Species, SymmetricMatrix> VCovMap;
 	private static Map<Species, List<Effect>> EffectMap;
 	private static Map<Species, Double> SigmaMap;
-	
+
 	private final Map<Species, Trillium2026DiameterIncrementInternalPredictor> internalPredictorMap;
 
 	boolean doBackTransformation = true; // for test purpose 
-	
+
 	/**
 	 * Constructor.
 	 * @param isVariabilityEnabled a boolean to enable/disable the stochastic variability
@@ -116,8 +116,8 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	}
 
 
-	
-	
+
+
 	/**
 	 * Constructor.
 	 * @param isParametersVariabilityEnabled a boolean to enable/disable the stochastic variability in the parameter estimates
@@ -133,7 +133,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	void enableBackTransformation(boolean doBackTransformation) {
 		this.doBackTransformation = doBackTransformation;
 	}
-	
+
 
 	@Override
 	protected synchronized void init() {
@@ -159,110 +159,108 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 		}
 		return species;
 	}
-	
+
 	@SuppressWarnings("resource")
-	private synchronized void instantiateStaticMaps() {
-		if (CoefMap == null) { // second check in case several threads are waiting in row to get in MF20250327
-			Map<Species, List<Double>> localCoefMap = new HashMap<Species, List<Double>>();
-			Map<Species, List<String>> localEffectMap = new HashMap<Species, List<String>>();
-			List<String> uniqueEffects = new ArrayList<String>();
-			Map<Species, List<Double>> localVCovMap = new HashMap<Species, List<Double>>();
+	private void instantiateStaticMaps() {
+		Map<Species, List<Double>> localCoefMap = new HashMap<Species, List<Double>>();
+		Map<Species, List<String>> localEffectMap = new HashMap<Species, List<String>>();
+		List<String> uniqueEffects = new ArrayList<String>();
+		Map<Species, List<Double>> localVCovMap = new HashMap<Species, List<Double>>();
 
-			String path = ObjectUtility.getRelativePackagePath(getClass());
-			String betaFilename = path + "0_diaminc_coefs.csv";
-			String vcovFilename = path + "0_diaminc_vcov.csv";
-			String sigmaFilename = path + "0_diaminc_sigma.csv";
+		String path = ObjectUtility.getRelativePackagePath(getClass());
+		String betaFilename = path + "0_diaminc_coefs.csv";
+		String vcovFilename = path + "0_diaminc_vcov.csv";
+		String sigmaFilename = path + "0_diaminc_sigma.csv";
 
-			CSVReader reader = null;
-			try {
-				reader = new CSVReader(betaFilename);
-				Object[] record;
-				while ((record = reader.nextRecord()) != null) {
-					String species = record[1].toString().replace(" ", "");
-					Species spEnum = getSpeciesFromString(species);
-					if (!localCoefMap.containsKey(spEnum)) {
-						localCoefMap.put(spEnum, new ArrayList<Double>());
-						localEffectMap.put(spEnum, new ArrayList<String>());
-					}
-					String effect = record[2].toString();
-					localEffectMap.get(spEnum).add(effect);
-					if (!uniqueEffects.contains(effect)) {
-						uniqueEffects.add(effect);
-					}
-					double coef = Double.parseDouble(record[3].toString());
-					localCoefMap.get(spEnum).add(coef);
+		CSVReader reader = null;
+		try {
+			reader = new CSVReader(betaFilename);
+			Object[] record;
+			while ((record = reader.nextRecord()) != null) {
+				String species = record[1].toString().replace(" ", "");
+				Species spEnum = getSpeciesFromString(species);
+				if (!localCoefMap.containsKey(spEnum)) {
+					localCoefMap.put(spEnum, new ArrayList<Double>());
+					localEffectMap.put(spEnum, new ArrayList<String>());
 				}
-	 		} catch (Exception e) {
-	 			throw new UnsupportedOperationException("Enable to set the parameter estimates of " + getClass().getSimpleName());
-	 		} finally {
-	 			if (reader != null) {
-	 				reader.close();
-	 			}
-	 		}
-			
-			try {
-				reader = new CSVReader(vcovFilename);
-				Object[] record;
-				while ((record = reader.nextRecord()) != null) {
-					String species = record[1].toString().replace(" ", "");
-					Species spEnum = getSpeciesFromString(species);
-					if (!localVCovMap.containsKey(spEnum)) {
-						localVCovMap.put(spEnum, new ArrayList<Double>());
-					}
-					double vcov = Double.parseDouble(record[2].toString());
-					localVCovMap.get(spEnum).add(vcov);
+				String effect = record[2].toString();
+				localEffectMap.get(spEnum).add(effect);
+				if (!uniqueEffects.contains(effect)) {
+					uniqueEffects.add(effect);
 				}
-	 		} catch (Exception e) {
-	 			e.printStackTrace();
-	 			throw new UnsupportedOperationException("Enable to set the covariance of " + getClass().getSimpleName());
-	 		} finally {
-	 			if (reader != null) {
-	 				reader.close();
-	 			}
-	 		}
+				double coef = Double.parseDouble(record[3].toString());
+				localCoefMap.get(spEnum).add(coef);
+			}
+		} catch (Exception e) {
+			throw new UnsupportedOperationException("Enable to set the parameter estimates of " + getClass().getSimpleName());
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
 
-			SigmaMap = new HashMap<Species, Double>();
-			
-			try {
-				reader = new CSVReader(sigmaFilename);
-				Object[] record;
-				while ((record = reader.nextRecord()) != null) {
-					String species = record[1].toString().replace(" ", "");
-					Species spEnum = getSpeciesFromString(species);
-					double sigma = Double.parseDouble(record[2].toString());
-					if (!SigmaMap.containsKey(spEnum)) {
-						SigmaMap.put(spEnum, sigma);
-					}
+		try {
+			reader = new CSVReader(vcovFilename);
+			Object[] record;
+			while ((record = reader.nextRecord()) != null) {
+				String species = record[1].toString().replace(" ", "");
+				Species spEnum = getSpeciesFromString(species);
+				if (!localVCovMap.containsKey(spEnum)) {
+					localVCovMap.put(spEnum, new ArrayList<Double>());
 				}
-	 		} catch (Exception e) {
-	 			throw new UnsupportedOperationException("Enable to set the residual variance of " + getClass().getSimpleName());
-	 		} finally {
-	 			if (reader != null) {
-	 				reader.close();
-	 			}
-	 		}
+				double vcov = Double.parseDouble(record[2].toString());
+				localVCovMap.get(spEnum).add(vcov);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new UnsupportedOperationException("Enable to set the covariance of " + getClass().getSimpleName());
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
 
-			
-			CoefMap = new HashMap<Species, Matrix>();
-			VCovMap = new HashMap<Species, SymmetricMatrix>();
-			EffectMap = new HashMap<Species, List<Effect>>();
-			
-			for (Species sp : localCoefMap.keySet()) {
-				CoefMap.put(sp, new Matrix(localCoefMap.get(sp)));
-				SymmetricMatrix vcovMatrix = SymmetricMatrix.convertToSymmetricIfPossible(new Matrix(localVCovMap.get(sp)).squareSym());
-				VCovMap.put(sp, vcovMatrix);
-				EffectMap.put(sp, new ArrayList<Effect>());
-				for (String effectStr : localEffectMap.get(sp)) {
-					Effect effect = Trillium2026DiameterIncrementInternalPredictor.EffectMap.get(effectStr);
-//					if (effect == null) {
-//						int u = 0;
-//					}
-					EffectMap.get(sp).add(effect);
+		SigmaMap = new HashMap<Species, Double>();
+
+		try {
+			reader = new CSVReader(sigmaFilename);
+			Object[] record;
+			while ((record = reader.nextRecord()) != null) {
+				String species = record[1].toString().replace(" ", "");
+				Species spEnum = getSpeciesFromString(species);
+				double sigma = Double.parseDouble(record[2].toString());
+				if (!SigmaMap.containsKey(spEnum)) {
+					SigmaMap.put(spEnum, sigma);
 				}
+			}
+		} catch (Exception e) {
+			throw new UnsupportedOperationException("Enable to set the residual variance of " + getClass().getSimpleName());
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+
+
+		CoefMap = new HashMap<Species, Matrix>();
+		VCovMap = new HashMap<Species, SymmetricMatrix>();
+		EffectMap = new HashMap<Species, List<Effect>>();
+
+		for (Species sp : localCoefMap.keySet()) {
+			CoefMap.put(sp, new Matrix(localCoefMap.get(sp)));
+			SymmetricMatrix vcovMatrix = SymmetricMatrix.convertToSymmetricIfPossible(new Matrix(localVCovMap.get(sp)).squareSym());
+			VCovMap.put(sp, vcovMatrix);
+			EffectMap.put(sp, new ArrayList<Effect>());
+			for (String effectStr : localEffectMap.get(sp)) {
+				Effect effect = Trillium2026DiameterIncrementInternalPredictor.EffectMap.get(effectStr);
+				//					if (effect == null) {
+				//						int u = 0;
+				//					}
+				EffectMap.get(sp).add(effect);
 			}
 		}
 	}
-	
+
 	/**
 	 * Provide a diameter increment prediction.<p>
 	 * 
@@ -288,7 +286,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 		Collections.sort(species);
 		return species;
 	}
-	
+
 	public static void main(String[] args) {
 		new Trillium2026DiameterIncrementPredictor(false);
 	}

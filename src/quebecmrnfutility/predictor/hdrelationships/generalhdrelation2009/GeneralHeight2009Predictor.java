@@ -191,6 +191,36 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		DUMMY_ECO_REGION.put("6m", dummy);	// region S_EST
 	}
 	
+	private static Map<String, Species> SpeciesLookupMap;
+	
+	private static synchronized Map<String, Species> getSpeciesLookupMap() {
+		if (SpeciesLookupMap == null) {
+			SpeciesLookupMap = new HashMap<String, Species>();
+			for (Species s : SpeciesList) {
+				SpeciesLookupMap.put(s.getLatinName().toLowerCase().trim(), s);
+			}
+			for (Hd2009Species vs : Hd2009Species.values()) {
+				SpeciesLookupMap.put(vs.name().toLowerCase(), vs.species);
+			}
+		}
+		return SpeciesLookupMap;
+	}
+
+	/**
+	 * Provide a Species enum instance from a species code.
+	 * @param speciesName a three-character species code (e.g., BOP) or the Latin name.
+	 * @return a Species enum or null if the species is not eligible
+	 */
+	public static Species getSpeciesFromString(String speciesName) {
+		return getSpeciesLookupMap().get(speciesName.toLowerCase().trim());
+	}
+
+
+	static Matrix Beta;
+	static SymmetricMatrix Omega;
+	static Matrix CovParms;
+	
+	
 	/**
 	 * General constructor for all combinations of uncertainty sources.
 	 * @param isVariabilityEnabled a boolean that enables the stochastic mode
@@ -209,33 +239,35 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	}
 
 	@Override
-	protected final void init() {
-		try {
-			String path = ObjectUtility.getRelativePackagePath(getClass());
-			String betaFilename = path + "0_HDRelationBeta.csv";
-			String omegaFilename = path + "0_HDRelationOmega.csv";
-			String covparmsFilename = path + "0_HDRelationCovParms.csv";
-
-			Matrix defaultBetaMean = ParameterLoader.loadVectorFromFile(betaFilename).get();
-			SymmetricMatrix defaultBetaVariance = SymmetricMatrix.convertToSymmetricIfPossible(
-					ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym());
-			setParameterEstimates(new SASParameterEstimates(defaultBetaMean, defaultBetaVariance));
-			Matrix covParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
-			
-			DiagonalMatrix matrixG = covParms.getSubMatrix(0, 19, 0, 0).matrixDiagonal();
-			Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);
-			setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
-			SymmetricMatrix sigma2 = SymmetricMatrix.convertToSymmetricIfPossible(covParms.getSubMatrix(20, 20, 0, 0));
-			double phi = covParms.getValueAt(21, 0);
-			setDefaultResidualError(SpeciesType.BroadleavedSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));
-			
-			sigma2 = SymmetricMatrix.convertToSymmetricIfPossible(covParms.getSubMatrix(22, 22, 0, 0));
-			phi = covParms.getValueAt(23, 0);
-			setDefaultResidualError(SpeciesType.ConiferousSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));			
-			
-		} catch (Exception e) {
-			System.out.println("GeneralHDRelation Class : Unable to initialize the general height-diameter relationship");
-		}
+	protected synchronized void init() {
+		if (Beta == null) {
+			try {
+				String path = ObjectUtility.getRelativePackagePath(getClass());
+				String betaFilename = path + "0_HDRelationBeta.csv";
+				String omegaFilename = path + "0_HDRelationOmega.csv";
+				String covparmsFilename = path + "0_HDRelationCovParms.csv";
+				
+				Beta = ParameterLoader.loadVectorFromFile(betaFilename).get();
+				Omega = SymmetricMatrix.convertToSymmetricIfPossible(
+						ParameterLoader.loadVectorFromFile(omegaFilename).get().squareSym());
+				CovParms = ParameterLoader.loadVectorFromFile(covparmsFilename).get();
+			} catch (Exception e) {
+				throw new RuntimeException("Unable to load the parameters of " + getClass().getSimpleName(), e);
+			}
+		} 				
+				
+		setParameterEstimates(new SASParameterEstimates(Beta.getDeepClone(), Omega.getDeepClone()));
+				
+		DiagonalMatrix matrixG = CovParms.getSubMatrix(0, 19, 0, 0).matrixDiagonal();
+		Matrix defaultRandomEffectsMean = new Matrix(matrixG.m_iRows, 1);
+		setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(defaultRandomEffectsMean, matrixG));
+		SymmetricMatrix sigma2 = SymmetricMatrix.convertToSymmetricIfPossible(CovParms.getSubMatrix(20, 20, 0, 0));
+		double phi = CovParms.getValueAt(21, 0);
+		setDefaultResidualError(SpeciesType.BroadleavedSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));
+				
+		sigma2 = SymmetricMatrix.convertToSymmetricIfPossible(CovParms.getSubMatrix(22, 22, 0, 0));
+		phi = CovParms.getValueAt(23, 0);
+		setDefaultResidualError(SpeciesType.ConiferousSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));			
 	}
 	
 	private Species convertSpeciesEnumToSpecies(REpiceaSpecies speciesEnum) {

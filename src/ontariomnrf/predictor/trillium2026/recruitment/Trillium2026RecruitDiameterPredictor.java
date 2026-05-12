@@ -96,7 +96,7 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	}
 
 	@Override
-	protected void init() {
+	protected synchronized void init() {
 		if (BetaMap == null) {
 			String rootPath = ObjectUtility.getRelativePackagePath(getClass());
 			String betaFilename = rootPath + "0_RecruitmentDiameterBeta.csv";

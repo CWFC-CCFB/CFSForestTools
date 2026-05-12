@@ -33,7 +33,6 @@ import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.ModelParameterEstimates;
-import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.ParameterMap;
 import repicea.simulation.REpiceaPredictor;
@@ -189,53 +188,50 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 		return species;
 	}
 	
-	private synchronized void instantiateStaticMaps() {
-		if (CoefMap == null) { // second check in case several threads are waiting in row to get in MF20250327
-			CSVReader reader = null;
-			try {
-				String path = ObjectUtility.getRelativePackagePath(getClass());
-				String betaFilename = path + "0_diaminc_coefs.csv";
-				String vcovFilename = path + "0_diaminc_vcov.csv";
-				String effectMatchFilename = path + "0_diaminc_effectMatch.csv";
-				String rhoFilename = path + "0_diaminc_rho.csv";
-				String resVarFilename = path + "0_diaminc_ResidualVar.csv";
+	private void instantiateStaticMaps() {
+		CSVReader reader = null;
+		try {
+			String path = ObjectUtility.getRelativePackagePath(getClass());
+			String betaFilename = path + "0_diaminc_coefs.csv";
+			String vcovFilename = path + "0_diaminc_vcov.csv";
+			String effectMatchFilename = path + "0_diaminc_effectMatch.csv";
+			String rhoFilename = path + "0_diaminc_rho.csv";
+			String resVarFilename = path + "0_diaminc_ResidualVar.csv";
 
-				ParameterMap parmMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
-				ParameterMap vcovMap = ParameterLoader.loadVectorFromFile(1, vcovFilename);
-				ParameterMap effectMatchMap = ParameterLoader.loadVectorFromFile(1, effectMatchFilename);
-				ParameterMap rhoMap = ParameterLoader.loadVectorFromFile(1, rhoFilename);
-				ParameterMap resVarianceMap = ParameterLoader.loadVectorFromFile(1, resVarFilename);
-				
-				CoefMap = new HashMap<Species, Matrix>();
-				VCovMap = new HashMap<Species, SymmetricMatrix>();
-				EffectMap = new HashMap<Species, List<Integer>>();
-				RhoMap = new HashMap<Species, Double>();
-				ResVarMap = new HashMap<Species, SymmetricMatrix>();
-				
-				for (Integer speciesID : InternalSpeciesLookupMap.keySet()) {
-					Species sp = InternalSpeciesLookupMap.get(speciesID); 
-					CoefMap.put(sp, parmMap.get(speciesID));
-					SymmetricMatrix vcovMatrix = SymmetricMatrix.convertToSymmetricIfPossible(vcovMap.get(speciesID).squareSym());
-					VCovMap.put(sp, vcovMatrix);
-					EffectMap.put(sp, new ArrayList<Integer>());
-					Matrix effectList = effectMatchMap.get(speciesID);
-					for (int i = 0; i < effectList.m_iRows; i++) {
-						EffectMap.get(sp).add(((Number) effectList.getValueAt(i, 0)).intValue());
-					}
-					Matrix rho = rhoMap.get(speciesID);
-					if (rho != null) {
-						RhoMap.put(sp, rho.getValueAt(0, 0));
-					}
-					ResVarMap.put(sp, SymmetricMatrix.convertToSymmetricIfPossible(resVarianceMap.get(speciesID)));
+			ParameterMap parmMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
+			ParameterMap vcovMap = ParameterLoader.loadVectorFromFile(1, vcovFilename);
+			ParameterMap effectMatchMap = ParameterLoader.loadVectorFromFile(1, effectMatchFilename);
+			ParameterMap rhoMap = ParameterLoader.loadVectorFromFile(1, rhoFilename);
+			ParameterMap resVarianceMap = ParameterLoader.loadVectorFromFile(1, resVarFilename);
+
+			CoefMap = new HashMap<Species, Matrix>();
+			VCovMap = new HashMap<Species, SymmetricMatrix>();
+			EffectMap = new HashMap<Species, List<Integer>>();
+			RhoMap = new HashMap<Species, Double>();
+			ResVarMap = new HashMap<Species, SymmetricMatrix>();
+
+			for (Integer speciesID : InternalSpeciesLookupMap.keySet()) {
+				Species sp = InternalSpeciesLookupMap.get(speciesID); 
+				CoefMap.put(sp, parmMap.get(speciesID));
+				SymmetricMatrix vcovMatrix = SymmetricMatrix.convertToSymmetricIfPossible(vcovMap.get(speciesID).squareSym());
+				VCovMap.put(sp, vcovMatrix);
+				EffectMap.put(sp, new ArrayList<Integer>());
+				Matrix effectList = effectMatchMap.get(speciesID);
+				for (int i = 0; i < effectList.m_iRows; i++) {
+					EffectMap.get(sp).add(((Number) effectList.getValueAt(i, 0)).intValue());
 				}
-			} catch (Exception e) {
-				throw new UnsupportedOperationException("Failed to initialize the instance of the " + getClass().getSimpleName() + " class!");
-			} finally {
-	 			if (reader != null) {
-	 				reader.close();
-	 			}
-	 		}
-				
+				Matrix rho = rhoMap.get(speciesID);
+				if (rho != null) {
+					RhoMap.put(sp, rho.getValueAt(0, 0));
+				}
+				ResVarMap.put(sp, SymmetricMatrix.convertToSymmetricIfPossible(resVarianceMap.get(speciesID)));
+			}
+		} catch (Exception e) {
+			throw new UnsupportedOperationException("Failed to initialize the instance of the " + getClass().getSimpleName() + " class!");
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
 		}
 	}
 	
