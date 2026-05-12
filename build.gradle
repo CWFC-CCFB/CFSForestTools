@@ -14,7 +14,6 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-
 task sourcesJar(type: Jar) {
 	 archiveClassifier = 'sources'
 	 manifest {
@@ -27,14 +26,14 @@ task sourcesJar(type: Jar) {
                    "Implementation-Vendor": "CFS",
                    )
     }
-//   	duplicatesStrategy = DuplicatesStrategy.EXCLUDE		// to avoid duplicate files
+   	duplicatesStrategy = DuplicatesStrategy.EXCLUDE		// to avoid duplicate files
     
-//	into ('/') {
-//		from files(['./README.md', './LICENSE.md'])			
-//	}
+	into ('/') {
+		from files(['./README.md', './LICENSE.md'])			
+	}
 	
 	// include all java files from main sourceset into the jar file (resources are already included)
-//	from sourceSets.main.java
+	from sourceSets.main.java
 //	from sourceSets.main.resources		
 }
 
@@ -133,7 +132,7 @@ jar {
                    "Implementation-Vendor": "CFS",
                    )
     }
-    
+
     exclude '**/*.java'
         
 	into ('/') {
