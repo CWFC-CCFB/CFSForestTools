@@ -67,7 +67,8 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 
 	private static final Map<String, Species> SpeciesLookupMap = new HashMap<String, Species>();
 	private static final Map<Integer, Species> InternalSpeciesLookupMap = new HashMap<Integer, Species>();
-	private static final List<Species> SpeciesList = Collections.unmodifiableList(Arrays.asList(Species.Abies_balsamea, 
+	private static final List<Species> SpeciesList = Collections.unmodifiableList(Arrays.asList(
+				Species.Abies_balsamea, 
 				Species.Acer_pensylvanicum, 
 				Species.Acer_rubrum,
 				Species.Acer_saccharinum, 

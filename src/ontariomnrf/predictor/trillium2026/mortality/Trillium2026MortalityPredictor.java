@@ -75,11 +75,14 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 				Species.Acer_saccharum, 
 				Species.Betula_alleghaniensis,
 				Species.Betula_papyrifera, 
+				Species.Carya_spp,
 				Species.Fagus_grandifolia, 
 				Species.Fraxinus_americana,
 				Species.Fraxinus_nigra, 
 				Species.Fraxinus_pennsylvanica,
+				Species.Juglans_spp,
 				Species.Larix_laricina, 
+				Species.Other_broadleaved, // Meridional species
 				Species.Ostrya_virginiana,
 				Species.Picea_glauca, 
 				Species.Picea_mariana, 
@@ -92,9 +95,12 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 				Species.Prunus_pensylvanica,
 				Species.Prunus_serotina, 
 				Species.Quercus_rubra, 
+				Species.Quercus_spp,
+				Species.Broadleaved_shrubs,	// shrubs
 				Species.Thuja_occidentalis,
 				Species.Tilia_americana, 
-				Species.Tsuga_canadensis));
+				Species.Tsuga_canadensis,
+				Species.Ulmus_spp));
 	
 	static {
 		for (Species sp : SpeciesList) {
