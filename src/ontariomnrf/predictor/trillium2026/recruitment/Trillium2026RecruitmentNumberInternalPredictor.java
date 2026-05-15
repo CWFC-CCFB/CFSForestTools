@@ -34,10 +34,13 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 
 	private enum ModelType {NegativeBinomial, Poisson} 
 	
+	static boolean EnableCapping = true;
+
 	private final Trillium2026RecruitmentNumberPredictor owner;
 	protected final double theta; // as produced by R
 	protected final double invTheta; //
 	protected final ModelType modelType;
+	private final double maxCap;
 	
 	protected Trillium2026RecruitmentNumberInternalPredictor(Trillium2026RecruitmentNumberPredictor owner,
 			Species sp,
@@ -46,7 +49,8 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 			double thetaParm,
 			Matrix beta,
 			SymmetricMatrix omega,
-			Matrix effectMat) {
+			Matrix effectMat,
+			double maxCap) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled, sp);		// random effect stands for occupancy index variability
 		this.owner = owner;
 		ModelParameterEstimates estimate = new ModelParameterEstimates(beta, omega);
@@ -70,6 +74,7 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 			this.theta = 0d;
 			this.invTheta = 0d;
 		}
+		this.maxCap = maxCap > 10 ? maxCap : 10;		// we cap the recruit number for those that could have more than 10 recruits in the database, otherwise we set it to 10.
 	}
 
 	@Override
@@ -77,6 +82,14 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 
 	@Override
 	protected double getNumber(double mu, boolean onTransformedScale) {
+		double number = getNumberInternal(mu, onTransformedScale);
+		return EnableCapping == true ?
+				number > maxCap ? maxCap : number :
+					number;
+	}
+	
+	
+	private double getNumberInternal(double mu, boolean onTransformedScale) {
 		if (onTransformedScale) {
 			mu = Math.exp(mu); // we back transform both the NB and Poisson distribution are using the log link function.
 		}
@@ -88,6 +101,7 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 			return mu + 1;		// offset 1 because y = nbRecruits - 1
 		}
 	}
+	
 	
 	@Override
 	protected void setValueInXVector(int effectId, Trillium2026RecruitmentPlot plot, double occupancyIndex25km) {

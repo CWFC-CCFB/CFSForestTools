@@ -74,6 +74,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	static ParameterMap OmegaMap;
 	private static ParameterMap ThetaMap;
 	private static ParameterMap SpeciesEffectMatchesMap;
+	private static ParameterMap MaxCapMap;
 	
 	private final Map<Species, Trillium2026RecruitmentNumberInternalPredictor> internalPredictors;
 	
@@ -103,11 +104,13 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 			String betaFilename = rootPath + "0_RecruitmentNumberBeta.csv";
 			String omegaFilename = rootPath + "0_RecruitmentNumberOmega.csv";
 			String thetaFilename = rootPath + "0_RecruitmentNumberTheta.csv";
+			String maxCapFilename = rootPath + "0_RecruitmentNumberMaxCap.csv";
 			String speciesEffectMatchesFilename = rootPath + "0_RecruitmentNumberSpeciesEffectMatches.csv";
 			try {
 				BetaMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
 				OmegaMap = ParameterLoader.loadVectorFromFile(1, omegaFilename);
 				ThetaMap = ParameterLoader.loadVectorFromFile(1, thetaFilename);
+				MaxCapMap = ParameterLoader.loadVectorFromFile(1, maxCapFilename);
 				SpeciesEffectMatchesMap = ParameterLoader.loadVectorFromFile(1, speciesEffectMatchesFilename);
 			} catch (Exception e) {
 				throw new RuntimeException("Unable to read parameters from files!");
@@ -120,6 +123,7 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 //				Matrix thetaMat = beta.getSubMatrix(beta.m_iRows - 1, beta.m_iRows - 1, 0, 0);  // theta was concatenated to beta in R
 //				beta = beta.getSubMatrix(0, beta.m_iRows - 2, 0, 0);  // drop theta from beta
 				Matrix thetaMat = ThetaMap.get(spIndex + 1);
+				Matrix maxCap = MaxCapMap.get(spIndex + 1);
 				Matrix speciesEffectMatches = SpeciesEffectMatchesMap.get(spIndex + 1);
 				speciesEffectMatches = speciesEffectMatches.getSubMatrix(0, speciesEffectMatches.m_iRows - 1, 0, 0); // assumes the last effect has been removed
 				Species sp = Trillium2026RecruitmentOccurrencePredictor.SpeciesList.get(spIndex);
@@ -130,7 +134,8 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 						thetaMat.getValueAt(0, 0),
 						beta, 
 						omega, 
-						speciesEffectMatches);
+						speciesEffectMatches,
+						maxCap.getValueAt(0, 0));
 				internalPredictors.put(sp, subPredictor);
 			}
 		} catch (Exception e) {
