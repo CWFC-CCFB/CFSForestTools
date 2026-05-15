@@ -131,7 +131,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	final Map<Species, Trillium2026DiameterIncrementInternalPredictor> internalPredictorMap;
 
 	boolean doBackTransformation = true; // for test purpose 
-	boolean boundEnabled = true;
+	static boolean BoundEnabled = true; // for test purpose
 
 	public static void setVerbose(boolean verbose) {Verbose = verbose;}
 	

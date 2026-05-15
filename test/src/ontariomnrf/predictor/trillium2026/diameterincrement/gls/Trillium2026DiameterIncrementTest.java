@@ -288,6 +288,7 @@ public class Trillium2026DiameterIncrementTest {
 				reader.close();
 			}
 		}
+		Trillium2026DiameterIncrementPredictor.BoundEnabled = false;
 	}
 	
 	@Test
@@ -326,7 +327,6 @@ public class Trillium2026DiameterIncrementTest {
 	@Test
 	public void test03StochasticPredictions() {
 		Trillium2026DiameterIncrementPredictor stoPredictor = new Trillium2026DiameterIncrementPredictor(false, true); // stochastic but parameter variability disabled
-		stoPredictor.boundEnabled = false;
 		Trillium2026DiameterIncrementPredictor detPredictor = new Trillium2026DiameterIncrementPredictor(false); // deterministic
 		Trillium2026TreeImpl t = TreeMap.get(Species.Abies_balsamea).get(0);
 		Matrix real;
@@ -412,5 +412,6 @@ public class Trillium2026DiameterIncrementTest {
 	@AfterClass
 	public static void cleanup() {
 		System.out.println("Species using SMI: " + SpeciesUsingSMI);
+		Trillium2026DiameterIncrementPredictor.BoundEnabled = true;
 	}
 }
