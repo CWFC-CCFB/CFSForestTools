@@ -19,8 +19,13 @@
  */
 package quebecmrnfutility.treelogger.meristreelogger;
 
+import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
+import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
@@ -29,10 +34,18 @@ import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
  * A tree logger class implementing the MERIS product matrix.
  * @author Mathieu Fortin - December 2025 
  */
-public class MerisTreeLogger extends TreeLogger<MerisTreeLoggerParameters, MerisLoggableTree> {
+public final class MerisTreeLogger extends TreeLogger<MerisTreeLoggerParameters, LoggableTree> {
 
+	final Map<Class<?>, Boolean> validatedClasses;
+	
+	public MerisTreeLogger() {
+		super();
+		validatedClasses = new HashMap<Class<?>, Boolean>();
+	}
+	
+	
 	@Override
-	protected void logThisTree(MerisLoggableTree tree) {
+	protected void logThisTree(LoggableTree tree) {
 		List<MerisWoodPiece> woodPieces = getTreeLoggerParameters().currentMatrix.processTree(tree);
 		for (MerisWoodPiece wp : woodPieces) {
 			addWoodPiece(tree, wp);
@@ -53,17 +66,30 @@ public class MerisTreeLogger extends TreeLogger<MerisTreeLoggerParameters, Meris
 	}
 
 	@Override
-	public MerisLoggableTree getEligible(LoggableTree t) {
-		if (t instanceof MerisLoggableTree) {
-			MerisLoggableTree merisTree = (MerisLoggableTree) t;
-			return merisTree.getDbhCm() >= 9.1 ? merisTree : null;
-		}
-		return null;
+	public LoggableTree getEligible(LoggableTree t) {
+//		if (internalCheck(t)) {
+//			return ((DbhCmProvider) t).getDbhCm() >= 9.1 ? t : null;
+//		}
+		return internalCheck(t) ? t : null;
 	}
 
+	private synchronized boolean internalCheck(Object tree) {
+		if (tree == null) {
+			throw new InvalidParameterException("The tree argument cannot be null!");
+		}
+		Class<?> clazz = tree.getClass();
+		if (!validatedClasses.containsKey(clazz)) {
+			validatedClasses.put(clazz, tree instanceof LoggableTree && 
+				tree instanceof DbhCmProvider &&
+				tree instanceof SpeciesProvider);
+		}
+		return validatedClasses.get(clazz);
+	}
+	
 	@Override
 	public boolean isCompatibleWith(TreeLoggerCompatibilityCheck check) {
-		return check.getTreeInstance() instanceof MerisLoggableTree;
+		Object o = check.getTreeInstance();
+		return internalCheck(o);
 	}
 
 }
