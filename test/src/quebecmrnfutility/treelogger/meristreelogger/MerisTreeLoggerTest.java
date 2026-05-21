@@ -79,7 +79,7 @@ public class MerisTreeLoggerTest {
 		public double getNumber() {return number;}
 
 		@Override
-		public Species getSpecies() {return sp;}
+		public Species getSpecies(Object caller) {return sp;}
 		
 	}
 	

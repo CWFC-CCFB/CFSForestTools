@@ -59,7 +59,7 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 	private static final List<String> ReservedFieldNames = Arrays.asList(new String[] {"ESSENCE","DHP","GROUPE"});
 //	private static String DefaultCode = "DEFAUT";
 
-	private static final List<String> SpeciesList = Collections.unmodifiableList(Arrays.asList(
+	static final List<String> SpeciesList = Collections.unmodifiableList(Arrays.asList(
 						"BOG", "BOJ", "BOP", "CAC", "CAF", 
 						"CET", "CHB", "CHE", "CHG", "CHR", 
 						"EPB", "EPN", "EPO", "EPR", "ERA", 
@@ -72,7 +72,7 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 
 	
 	private static Map<Species, String> SpeciesToSpeciesCodeMap = new HashMap<Species, String>();
-	private static List<Species> LatinSpeciesList;
+	static List<Species> LatinSpeciesList;
 	static {
 		List<Species> tmpList = new ArrayList<Species>();
 		for (String s : SpeciesList) {
@@ -177,7 +177,7 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 		List<MerisWoodPiece> processTree(LoggableTree tree) {
 			List<MerisWoodPiece> pieces  = new ArrayList<MerisWoodPiece>();
 			
-			Species sp = ((SpeciesProvider) tree).getSpecies();
+			Species sp = ((SpeciesProvider) tree).getSpecies(this);
 			String speciesCode = SpeciesToSpeciesCodeMap.get(sp);
 			if (speciesCode == null) {
 				throw new UnsupportedOperationException("This species cannot be matched to a three-character code " + sp.name());
