@@ -19,7 +19,6 @@
  */
 package quebecmrnfutility.treelogger.meristreelogger;
 
-import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,16 +66,10 @@ public final class MerisTreeLogger extends TreeLogger<MerisTreeLoggerParameters,
 
 	@Override
 	public LoggableTree getEligible(LoggableTree t) {
-//		if (internalCheck(t)) {
-//			return ((DbhCmProvider) t).getDbhCm() >= 9.1 ? t : null;
-//		}
 		return internalCheck(t) ? t : null;
 	}
 
 	private synchronized boolean internalCheck(Object tree) {
-		if (tree == null) {
-			throw new InvalidParameterException("The tree argument cannot be null!");
-		}
 		Class<?> clazz = tree.getClass();
 		if (!validatedClasses.containsKey(clazz)) {
 			validatedClasses.put(clazz, tree instanceof LoggableTree && 
@@ -89,7 +82,7 @@ public final class MerisTreeLogger extends TreeLogger<MerisTreeLoggerParameters,
 	@Override
 	public boolean isCompatibleWith(TreeLoggerCompatibilityCheck check) {
 		Object o = check.getTreeInstance();
-		return internalCheck(o);
+		return o == null ? false : internalCheck(o);
 	}
 
 }
