@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
+package quebecmrnfutility.predictor.volumemodels.fortin2007volume;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;
@@ -27,7 +27,7 @@ import java.util.Map;
 
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
-import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTree.VolSpecies;
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableTree.VolSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
@@ -35,7 +35,6 @@ import repicea.simulation.ParameterLoader;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.SASParameterEstimates;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
-import repicea.simulation.species.REpiceaSpecies;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.species.REpiceaSpeciesCompliantObject;
@@ -57,8 +56,9 @@ import repicea.util.ObjectUtility;
  */
 @SuppressWarnings({ "serial", "deprecation" })
 @SimulationModule(type = ModuleType.Volume, scope = SpeciesLocale.Quebec)
-public final class MerchantableVolumePredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
+public final class Fortin2007VolumePredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
 
+	// IMPORTANT DO NOT CHANGE THE ORDER OT THE SPECIES IN THE LIST
 	private static List<Species> SpeciesList = Collections.unmodifiableList(
 			Arrays.asList(
 			Species.Betula_populifolia, 
@@ -104,7 +104,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	
 	private static Map<String, Species> SpeciesLookupMap;
 	
-	private static synchronized Map<String, Species> getSpeciesLookupMap() {
+	static synchronized Map<String, Species> getSpeciesLookupMap() {
 		if (SpeciesLookupMap == null) {
 			SpeciesLookupMap = new HashMap<String, Species>();
 			for (Species s : SpeciesList) {
@@ -127,7 +127,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	 * General constructor for all combinations of uncertainty sources.
 	 * @param isVariabilityEnabled = a boolean that enables the variability at the parameter level
 	 */
-	public MerchantableVolumePredictor(boolean isVariabilityEnabled) {
+	public Fortin2007VolumePredictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
 		init();
 		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
@@ -136,7 +136,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	/**
 	 * Default constructor with all sources of uncertainty disabled.
 	 */
-	public MerchantableVolumePredictor() {
+	public Fortin2007VolumePredictor() {
 		this(false);
 	}
 
@@ -175,7 +175,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	 * @param tree a TreeVolumable object
 	 * @return the commercial underbark volume (dm3)
 	 */
-	public double predictTreeCommercialUnderbarkVolumeDm3(VolumableStand stand, VolumableTree tree) {
+	public double predictTreeCommercialUnderbarkVolumeDm3(Fortin2007VolumableStand stand, Fortin2007VolumableTree tree) {
 		if (tree.getDbhCm() < 9.1) {	// means this is a sapling
 			return 0d;
 		}
@@ -184,9 +184,11 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 			throw new InvalidParameterException("Volume cannot be calculated if the tree is not at least 1.3 m in height!");
 		}
 		
-		REpiceaSpecies speciesEnum = tree.getVolumableTreeSpecies();
-		Species species = convertSpeciesEnumToSpecies(speciesEnum);
+//		REpiceaSpecies speciesEnum = tree.getVolumableTreeSpecies();
+//		Species species = convertSpeciesEnumToSpecies(speciesEnum);
 		
+		Species species = getSpecies(tree);
+					
 		Matrix modelParameters = getParametersForThisRealization(stand);
 		double volume = fixedEffectPrediction(stand, tree, modelParameters, species);
 		volume += blupImplementation(stand, tree, species);
@@ -197,21 +199,29 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 		return volume;
 	}
 	
-	
-	private Species convertSpeciesEnumToSpecies(REpiceaSpecies speciesEnum) {
-		if (speciesEnum instanceof Species) {
-			if (!SpeciesList.contains(speciesEnum)) {
-				throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
-						" does not support species " + speciesEnum.getLatinName() + "!");
-			}
-			return (Species) speciesEnum;
-		} else if (speciesEnum instanceof VolSpecies) {
-			return ((VolSpecies) speciesEnum).species;
-		} else {
-			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
-						" does not support species " + speciesEnum.getLatinName() + "!");
+
+	private Species getSpecies(Fortin2007VolumableTree tree) {
+		Species sp = tree.getSpecies(this);
+		if (!SpeciesList.contains(sp)) {
+			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + " does not support species " + (sp == null ? "null" : sp.getLatinName()) + "!");
 		}
+		return sp;
 	}
+	
+//	private Species convertSpeciesEnumToSpecies(REpiceaSpecies speciesEnum) {
+//		if (speciesEnum instanceof Species) {
+//			if (!SpeciesList.contains(speciesEnum)) {
+//				throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
+//						" does not support species " + speciesEnum.getLatinName() + "!");
+//			}
+//			return (Species) speciesEnum;
+//		} else if (speciesEnum instanceof VolSpecies) {
+//			return ((VolSpecies) speciesEnum).species;
+//		} else {
+//			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
+//						" does not support species " + speciesEnum.getLatinName() + "!");
+//		}
+//	}
 
 	/**
 	 * Provide a Species enum instance from a species code.
@@ -253,7 +263,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 		}
 		Species species = getSpeciesFromString(speciesName);
 		if (species == null) {
-			throw new UnsupportedOperationException("The " + MerchantableVolumePredictor.class.getSimpleName() + 
+			throw new UnsupportedOperationException("The " + Fortin2007VolumePredictor.class.getSimpleName() + 
 					" does not support species " + speciesName + "!");
 		}
 		Matrix modelParameters = getParameterEstimates().getMean();
@@ -271,7 +281,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	 * @return the fixed effect prediction (double)
 	 * @throws Exception
 	 */
-	private double fixedEffectPrediction(VolumableStand stand, VolumableTree t, Matrix modelParameters, Species species) {
+	private double fixedEffectPrediction(Fortin2007VolumableStand stand, Fortin2007VolumableTree t, Matrix modelParameters, Species species) {
 		double dbh = t.getDbhCm();
 		double dbh2 = t.getSquaredDbhCm();
 		double height = t.getHeightM();
@@ -304,7 +314,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	 * @param t = a TreeVolumable object
 	 * @return a simulated random effect (double)
 	 */
-	private double blupImplementation(VolumableStand stand, VolumableTree t, Species species) {
+	private double blupImplementation(Fortin2007VolumableStand stand, Fortin2007VolumableTree t, Species species) {
 		if (isRandomEffectsVariabilityEnabled) {					
 			String cruiseLineID = stand.getCruiseLineID();
 			if (cruiseLineID == null) {
@@ -333,7 +343,7 @@ public final class MerchantableVolumePredictor extends REpiceaPredictor implemen
 	 * @param t a TreeVolumable object
 	 * @return a simulated residual (double)
 	 */
-	private double residualImplementation(VolumableTree t, Species species) {
+	private double residualImplementation(Fortin2007VolumableTree t, Species species) {
 		if (isResidualVariabilityEnabled) {
 //			VolSpecies species = t.getVolumableTreeSpecies();
 			Matrix dummy = getDummyMap().get(species);

@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
+package quebecmrnfutility.predictor.volumemodels.fortin2007volume;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +27,7 @@ import java.util.Map;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
+import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 import repicea.simulation.species.REpiceaSpecies;
 
@@ -36,9 +37,10 @@ import repicea.simulation.species.REpiceaSpecies;
  * the getters for the general volume equation in Fortin et al. (2007)
  * @author Mathieu Fortin - Octobre 2009 
  */
-public interface VolumableTree extends DbhCmProvider,
+public interface Fortin2007VolumableTree extends  DbhCmProvider,
 										SquaredDbhCmProvider,
-										HeightMProvider {
+										HeightMProvider,
+										SpeciesProvider {
 	
 	
 	@Deprecated
@@ -171,10 +173,10 @@ public interface VolumableTree extends DbhCmProvider,
 	}
 	
 	
-	/**
-	 * This method ensures the species compatibility with the volume model.
-	 * @return a REpiceaSpecies enum instance
-	 */
-	public REpiceaSpecies getVolumableTreeSpecies();
+//	/**
+//	 * This method ensures the species compatibility with the volume model.
+//	 * @return a REpiceaSpecies enum instance
+//	 */
+//	public REpiceaSpecies getVolumableTreeSpecies();
 	
 }

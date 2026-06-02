@@ -32,6 +32,7 @@ import repicea.simulation.covariateproviders.treelevel.ExpansionFactorProvider;
 import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
@@ -79,7 +80,7 @@ public class MerisTreeLoggerTest {
 		public double getNumber() {return number;}
 
 		@Override
-		public Species getSpecies(Class<?> caller) {return sp;}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return sp;}
 		
 	}
 	
