@@ -19,42 +19,46 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
+package quebecmrnfutility.predictor.volumemodels.fortin2007volume;
 
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableStand;
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableStandImpl;
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableTree;
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumePredictor;
 import repicea.simulation.species.REpiceaSpecies;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
-public class MerchantableVolumePredictorTest {
+public class Fortin2007VolumePredictorTest {
 
 	@Test
 	public void test01SimpleHappyPath() {
-		VolumableStand p = new VolumableStandImpl();
-		VolumableTree t = new VolumableTreeImpl("BOJ", 18, 15);
-		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Fortin2007VolumableStand p = new Fortin2007VolumableStandImpl();
+		Fortin2007VolumableTree t = new Fortin2007VolumableTreeImpl("BOJ", 18, 15);
+		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		double volumeDM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t);
 		Assert.assertEquals("Testing volume", 149.284990537785, volumeDM3, 1E-8);
 	}
 
 	@Test
 	public void test02WithNonmerchantableTree() {
-		VolumableStand p = new VolumableStandImpl();
-		VolumableTree t = new VolumableTreeImpl("BOJ", 8d, 15);
-		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Fortin2007VolumableStand p = new Fortin2007VolumableStandImpl();
+		Fortin2007VolumableTree t = new Fortin2007VolumableTreeImpl("BOJ", 8d, 15);
+		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		double volumeDM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t);
 		Assert.assertEquals("Testing volume", 0d, volumeDM3, 1E-8);
 	}
 
 	@Test
 	public void test03WithNonobservedHeight() {
-		VolumableStand p = new VolumableStandImpl();
-		VolumableTree t = new VolumableTreeImpl("BOJ", 10d, -1d);
-		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Fortin2007VolumableStand p = new Fortin2007VolumableStandImpl();
+		Fortin2007VolumableTree t = new Fortin2007VolumableTreeImpl("BOJ", 10d, -1d);
+		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		try {
 			volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t);
 			Assert.fail("Should have thrown an exception!");
@@ -65,9 +69,9 @@ public class MerchantableVolumePredictorTest {
 
 	@Test
 	public void test04WithTooShortTree() {
-		VolumableStand p = new VolumableStandImpl();
-		VolumableTree t = new VolumableTreeImpl("BOJ", 10d, 1d);
-		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Fortin2007VolumableStand p = new Fortin2007VolumableStandImpl();
+		Fortin2007VolumableTree t = new Fortin2007VolumableTreeImpl("BOJ", 10d, 1d);
+		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		try {
 			volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t);
 			Assert.fail("Should have thrown an exception!");
@@ -78,7 +82,7 @@ public class MerchantableVolumePredictorTest {
 	public void test05FastTrackSimpleHappyPath() {
 //		VolumableStand p = new VolumableStandImpl();
 //		VolumableTree t = new VolumableTreeImpl("BOJ", 18, 15);
-		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		double volumeDM3 = volPred.predictDeterministicTreeCommercialVolumeDm3("Betula alleghaniensis", 18d, 15d, false);
 		Assert.assertEquals("Testing volume", 149.284990537785, volumeDM3, 1E-8);
 	}
@@ -87,7 +91,7 @@ public class MerchantableVolumePredictorTest {
 	public void test06FastTrackWithNonmerchantableTree() {
 //		VolumableStand p = new VolumableStandImpl();
 //		VolumableTree t = new VolumableTreeImpl("BOJ", 8d, 15);
-		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		double volumeDM3 = volPred.predictDeterministicTreeCommercialVolumeDm3("Betula alleghaniensis", 8d, 15d, false);
 		Assert.assertEquals("Testing volume", 0d, volumeDM3, 1E-8);
 	}
@@ -96,7 +100,7 @@ public class MerchantableVolumePredictorTest {
 	public void test07FastTrackWithNonobservedHeight() {
 //		VolumableStand p = new VolumableStandImpl();
 //		VolumableTree t = new VolumableTreeImpl("BOJ", 10d, -1d);
-		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		try {
 			volPred.predictDeterministicTreeCommercialVolumeDm3("Betula alleghaniensis", 10d, -1d, false);
 			Assert.fail("Should have thrown an exception!");
@@ -109,7 +113,7 @@ public class MerchantableVolumePredictorTest {
 	public void test08FastTrackWithTooShortTree() {
 //		VolumableStand p = new VolumableStandImpl();
 //		VolumableTree t = new VolumableTreeImpl("BOJ", 10d, 1d);
-		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		try {
 			volPred.predictDeterministicTreeCommercialVolumeDm3("Betula alleghaniensis", 10d, 1d, false);
 			Assert.fail("Should have thrown an exception!");
@@ -120,7 +124,7 @@ public class MerchantableVolumePredictorTest {
 	public void test09FastTrackSimpleHappyPathOverbark() {
 //		VolumableStand p = new VolumableStandImpl();
 //		VolumableTree t = new VolumableTreeImpl("BOJ", 18, 15);
-		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		double volumeDM3 = volPred.predictDeterministicTreeCommercialVolumeDm3("Betula alleghaniensis", 18d, 15d, true);
 		Assert.assertEquals("Testing volume", 
 				149.284990537785 * (1 + REpiceaSpecies.Species.Betula_alleghaniensis.getBarkProportionOfWoodVolume(SpeciesLocale.Quebec)),
@@ -130,7 +134,7 @@ public class MerchantableVolumePredictorTest {
 	
 	@Test
 	public void test10LatinNameList() {
-		MerchantableVolumePredictor pred = new MerchantableVolumePredictor();
+		Fortin2007VolumePredictor pred = new Fortin2007VolumePredictor();
 		List<Species> species = pred.getEligibleSpecies();
 		Assert.assertEquals("Testing the number of species", 26, species.size());
 		System.out.println(species);

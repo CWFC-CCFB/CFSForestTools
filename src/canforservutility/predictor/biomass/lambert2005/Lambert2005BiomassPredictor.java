@@ -90,11 +90,17 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 	}
 	
 	static final Map<String, Species> Species_LookupMap = new HashMap<String, Species>();
+	static List<Species> EligibleSpecies;
 	static {
+		List<Species> tmpList = new ArrayList<Species>();
 		for (Species sp : ENGLISH_TO_LATIN_LOOKUP_MAP.values()) {
 			Species_LookupMap.put(sp.getLatinName().trim().toLowerCase(), sp);
+			tmpList.add(sp);
 		}
+		Collections.sort(tmpList);
+		EligibleSpecies = Collections.unmodifiableList(tmpList);
 	}
+	
 	
 	public static enum BiomassCompartment {
 		/**
@@ -280,7 +286,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 	 */
 	public Matrix predictBiomassKg(Lambert2005Tree tree) {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
-		Species species = tree.getLambert2005Species();
+		Species species = tree.getSpecies(this);
 		if (!Species_LookupMap.containsValue(species)) {
 			throw new UnsupportedOperationException("The species " + species.getLatinName() + " is not supported in Lambert et al.'s biomass model!");
 		}
@@ -322,16 +328,12 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 
 	Matrix getWeight(Lambert2005Tree tree) {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
-		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(tree.getLambert2005Species());
+		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(tree.getSpecies(this));
 		return predictor.getWeight(tree);
 	}
 
 	@Override
-	public List<Species> getEligibleSpecies() {
-		List<Species> speciesList = new ArrayList<Species>(Species_LookupMap.values());
-		Collections.sort(speciesList);
-		return speciesList;
-	}
+	public List<Species> getEligibleSpecies() {return EligibleSpecies;}
 
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Canada;}	

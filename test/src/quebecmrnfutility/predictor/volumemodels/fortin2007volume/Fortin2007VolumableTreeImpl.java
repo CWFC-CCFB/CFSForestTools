@@ -17,19 +17,24 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.merchantablevolume;
+package quebecmrnfutility.predictor.volumemodels.fortin2007volume;
 
 import java.security.InvalidParameterException;
+
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableTree;
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumePredictor;
+import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 
 /**
  * A class to facilitate the use of the deterministic version of the model in R.
  * @author Mathieu Fortin - August 2021
  */
-public class VolumableTreeImpl implements VolumableTree {
+public class Fortin2007VolumableTreeImpl implements Fortin2007VolumableTree {
 
 	private final double dbhCm;
 	private final double heightM;
-	private final VolSpecies species;
+	private final Species species;
 	
 	/**
 	 * Constructor.
@@ -37,8 +42,8 @@ public class VolumableTreeImpl implements VolumableTree {
 	 * @param dbhCm diameter at breast height (cm)
 	 * @param heightM tree height (m)
 	 */
-	public VolumableTreeImpl(String speciesName, double dbhCm, double heightM) {
-		species = VolSpecies.findEligibleSpeciesUsingQuebecSpeciesCode(speciesName);
+	public Fortin2007VolumableTreeImpl(String speciesName, double dbhCm, double heightM) {
+		species = Fortin2007VolumePredictor.getSpeciesLookupMap().get(speciesName.toLowerCase().trim());
 		if (species == null) {
 			throw new InvalidParameterException("Species " + speciesName + " is not recognized!");
 		}
@@ -56,6 +61,9 @@ public class VolumableTreeImpl implements VolumableTree {
 	public double getHeightM() {return heightM;}
 
 	@Override
-	public VolSpecies getVolumableTreeSpecies() {return species;}
+	public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return species;}
+
+//	@Override
+//	public VolSpecies getVolumableTreeSpecies() {return species;}
 
 }

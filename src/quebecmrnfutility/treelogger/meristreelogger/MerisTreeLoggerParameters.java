@@ -1,7 +1,7 @@
 /*
  * This file is part of the CFSForesttools library.
  *
- * Copyright (C) 2025 His Majesty the King in right of Canada
+ * Copyright (C) 2025-26 His Majesty the King in right of Canada
  * Author: Mathieu Fortin, Canadian Forest Service
  *
  * This library is free software; you can redistribute it and/or
@@ -24,6 +24,8 @@ import java.awt.Window;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,25 +36,86 @@ import quebecmrnfutility.GeneralSettings;
 import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
+import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
+import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
+import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLoggerParameters;
 import repicea.simulation.treelogger.TreeLoggerParametersDialog;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.Language;
 
+/**
+ * A class that implements the MERIS matrix, a bucking matrix widely used by Quebec's
+ * Ministry of Natural Resources and Forests.
+ * @author Mathieu Fortin - November 2025
+ */
 @SuppressWarnings("serial")
-public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLogCategory>{
+public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLogCategory> implements REpiceaSpeciesCompliantObject {
 
 	private static final List<String> ReservedFieldNames = Arrays.asList(new String[] {"ESSENCE","DHP","GROUPE"});
 //	private static String DefaultCode = "DEFAUT";
 
-	public static final List<String> SpeciesList = Arrays.asList(new String[] {"BOG", "BOJ", "BOP", "CAC", "CAF", 
-						"CET", "CHB", "CHE", "CHG", "CHR", "EPB", "EPN", "EPO", "EPR", "ERA", "ERN", "ERR",
-						"ERS", "FRA", "FRN", "FRP", "HEG", "MEH", "MEJ", "MEL", "MEU", "NOC", "ORA", "ORR", 
-						"ORT", "OSV", "PEB", "PED", "PEG", "PEH", "PET", "PIB", "PID", "PIG", "PIR", "PIS", 
-						"PRU", "SAB", "THO", "TIL"});
+	static final List<String> SpeciesList = Collections.unmodifiableList(Arrays.asList(
+						"BOG", "BOJ", "BOP", "CAC", "CAF", 
+						"CET", "CHB", "CHE", "CHG", "CHR", 
+						"EPB", "EPN", "EPO", "EPR", "ERA", 
+						"ERN", "ERR", "ERS", "FRA", "FRN", 
+						"FRP", "HEG", "MEH", "MEJ", "MEL", 
+						"MEU", "NOC", "ORA", "ORR", "ORT", 
+						"OSV", "PEB", "PED", "PEG", "PEH", 
+						"PET", "PIB", "PID", "PIG", "PIR", 
+						"PIS", "PRU", "SAB", "THO", "TIL"));
+
 	
+	private static Map<Species, String> SpeciesToSpeciesCodeMap = new HashMap<Species, String>();
+	static List<Species> LatinSpeciesList;
+	static {
+		List<Species> tmpList = new ArrayList<Species>();
+		for (String s : SpeciesList) {
+			if (!GeneralSettings.SPECIES_LOOKUP_MAP.containsKey(s)) {
+				throw new UnsupportedOperationException("Species " + s + " is not found the GeneralSettings.SPECIES_LOOKUP_MAP");
+			} else {
+				Species speciesEnum = GeneralSettings.SPECIES_LOOKUP_MAP.get(s);
+				tmpList.add(speciesEnum);
+				SpeciesToSpeciesCodeMap.put(speciesEnum, s);
+			}
+		}
+		LatinSpeciesList = Collections.unmodifiableList(tmpList);
+	}
+	
+//	private static final Map<Species, String> SpeciesLookupMap = new HashMap<Species, String>(); 
+//	static {
+//		SpeciesLookupMap.put(Species.Betula_populifolia, "BOG");
+//		SpeciesLookupMap.put(Species.Betula_alleghaniensis, "BOJ");
+//		SpeciesLookupMap.put(Species.Betula_alleghaniensis, "BOP");
+//		SpeciesLookupMap.put(Species.Carya_cordiformis, "CAC");
+//		SpeciesLookupMap.put(Species.Carya_ovata, "CAF"); 
+//		SpeciesLookupMap.put(Species.Prunus_serotina, "CET");
+//		SpeciesLookupMap.put(Species.Quercus_alba, "CHB");
+//		SpeciesLookupMap.put(Species.Quercus_bicolor, "CHE");
+//		SpeciesLookupMap.put(Species.Quercus_macrocarpa, "CHG");
+//		SpeciesLookupMap.put(Species.Quercus_rubra, "CHR");
+//		SpeciesLookupMap.put(Species.Picea_glauca, "EPB");
+//		SpeciesLookupMap.put(Species.Picea_mariana, "EPN");
+//		SpeciesLookupMap.put(Species.Picea_abies, "EPO");
+//		SpeciesLookupMap.put(Species.Picea_rubens, "EPR");
+//		SpeciesLookupMap.put(Species.Acer_saccharinum, "ERA"); 
+//		SpeciesLookupMap.put(Species.Acer_nigrum, "ERN");
+//		SpeciesLookupMap.put(Species.Acer_rubrum, "ERR");
+//		SpeciesLookupMap.put(Species.Acer_saccharum, "ERS");
+//		SpeciesLookupMap.put(Species.Fraxinus_americana, "FRA");
+//		SpeciesLookupMap.put(Species.Fraxinus_nigra, "FRN");
+//		SpeciesLookupMap.put(Species.Fr
+//		"FRP", "HEG", "MEH", "MEJ", "MEL", 
+//		"MEU", "NOC", "ORA", "ORR", "ORT", 
+//		"OSV", "PEB", "PED", "PEG", "PEH", 
+//		"PET", "PIB", "PID", "PIG", "PIR", 
+//		"PIS", "PRU", "SAB", "THO", "TIL"
+//	}
 //	private static final Map<String, String> OtherSpeciesLookupMap = new HashMap<String, String>();
 //	static {
 //		OtherSpeciesLookupMap.put("CHX", "CHR");
@@ -111,17 +174,23 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 		}
 		
 		
-		List<MerisWoodPiece> processTree(MerisLoggableTree tree) {
+		List<MerisWoodPiece> processTree(LoggableTree tree) {
 			List<MerisWoodPiece> pieces  = new ArrayList<MerisWoodPiece>();
-			String speciesCode = tree.getMerisSpeciesCode().trim().toUpperCase();
+			
+			Species sp = ((SpeciesProvider) tree).getSpecies(MerisTreeLoggerParameters.this);
+			String speciesCode = SpeciesToSpeciesCodeMap.get(sp);
+			if (speciesCode == null) {
+				throw new UnsupportedOperationException("This species cannot be matched to a three-character code " + sp.name());
+			}
 			if (!splittingMatrix.containsKey(speciesCode)) {
 				throw new UnsupportedOperationException("This species code is not supported by MerisTreeLogger: " + speciesCode);
 			}
 			TreeMap<Integer, RowEntry> rowCollections = splittingMatrix.get(speciesCode);
-			if (tree.getDbhCm() < 9.1) {
+			double dbhCm = ((DbhCmProvider) tree).getDbhCm();
+			if (dbhCm < 9.1) {
 				return pieces;
 			} else {
-				int roundedDbh = roundDbh(tree.getDbhCm());
+				int roundedDbh = roundDbh(dbhCm);
 				int largestDiameterClass = rowCollections.lastKey();
 				int diamClass = roundedDbh > largestDiameterClass ? largestDiameterClass : roundedDbh;
 				RowEntry entry = rowCollections.get(diamClass);
@@ -296,4 +365,11 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 		o.showUI(null);
 		System.exit(0);
 	}
+
+	@Override
+	public List<Species> getEligibleSpecies() {return LatinSpeciesList;}
+
+	@Override
+	public SpeciesLocale getScope() {return SpeciesLocale.Quebec;}
+
 }

@@ -27,26 +27,31 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import quebecmrnfutility.treelogger.meristreelogger.MerisTreeLoggerParameters.MerisTypeMatrix;
+import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.ExpansionFactorProvider;
+import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
+import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
 
 public class MerisTreeLoggerTest {
 
-	static class MerisLoggableTreeImpl implements MerisLoggableTree, ExpansionFactorProvider {
+	static class LoggableTreeImpl implements LoggableTree, DbhCmProvider, SpeciesProvider, ExpansionFactorProvider {
 
 		final double volumeM3;
-		final String speciesName;
 		final double dbhCm;
 		final double number;
+		final Species sp;
 		
 		
-		MerisLoggableTreeImpl(double volumeM3, String speciesName, double dbhCm, double number) {
+		LoggableTreeImpl(double volumeM3, Species sp, double dbhCm, double number) {
 			this.volumeM3 = volumeM3;
-			this.speciesName = speciesName;
 			this.dbhCm = dbhCm;
 			this.number = number;
+			this.sp = sp;
 		}
 		
 		@Override
@@ -56,7 +61,7 @@ public class MerisTreeLoggerTest {
 		public boolean isCommercialVolumeOverbark() {return false;}
 
 		@Override
-		public String getSpeciesName() {return speciesName;}
+		public String getSpeciesName() {return sp.getLatinName();}
 
 		@Override
 		public double getDbhCm() {return dbhCm;}
@@ -75,9 +80,7 @@ public class MerisTreeLoggerTest {
 		public double getNumber() {return number;}
 
 		@Override
-		public String getMerisSpeciesCode() {
-			return getSpeciesName();
-		}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return sp;}
 		
 	}
 	
@@ -91,7 +94,7 @@ public class MerisTreeLoggerTest {
 	
 	@Test
 	public void test01SimpleTreeHappyPath() {
-		MerisLoggableTree tree = new MerisLoggableTreeImpl(1d, "EPB", 13.05, 10);
+		LoggableTree tree = new LoggableTreeImpl(1d, Species.Picea_glauca, 13.05, 10);
 		Singleton.logThisTree(tree);
 		Collection<WoodPiece> woodPieces = Singleton.getWoodPieces().get(tree);
 		Assert.assertTrue("Testing that wood piece collections is not empty", !woodPieces.isEmpty());

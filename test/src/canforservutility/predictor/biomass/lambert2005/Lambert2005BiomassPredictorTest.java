@@ -35,16 +35,17 @@ import org.junit.Test;
 
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
-import quebecmrnfutility.predictor.volumemodels.merchantablevolume.MerchantableVolumePredictor;
-import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableStand;
-import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableStandImpl;
-import quebecmrnfutility.predictor.volumemodels.merchantablevolume.VolumableTreeImpl;
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableStand;
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableStandImpl;
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableTreeImpl;
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumePredictor;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.species.REpiceaSpecies;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 public class Lambert2005BiomassPredictorTest {
@@ -173,7 +174,7 @@ public class Lambert2005BiomassPredictorTest {
 				
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(1E-6)) {
-				REpiceaSpecies speciesEnum = tree.getLambert2005Species(); 
+				Species speciesEnum = tree.getSpecies(predictor); 
 				if (!differentLines.containsKey(speciesEnum)) {
 					differentLines.put(speciesEnum, new ArrayList<Integer>());
 				}
@@ -297,7 +298,7 @@ public class Lambert2005BiomassPredictorTest {
 			
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(0.5)) {
-				REpiceaSpecies speciesEnum = tree.getLambert2005Species(); 
+				Species speciesEnum = tree.getSpecies(predictor); 
 				if (!differentLines.containsKey(speciesEnum)) {
 					differentLines.put(speciesEnum, new ArrayList<Integer>());
 				}
@@ -362,7 +363,7 @@ public class Lambert2005BiomassPredictorTest {
 		Assert.assertEquals("Comparing fasttrack 2-parm model", 0.38409593131, observed, 1E-8);
 	}
 	
-	static class Tree extends VolumableTreeImpl implements Lambert2005Tree {
+	static class Tree extends Fortin2007VolumableTreeImpl implements Lambert2005Tree {
 
 		final Species lambertSpecies;
 		
@@ -372,7 +373,7 @@ public class Lambert2005BiomassPredictorTest {
 		}
 
 		@Override
-		public Species getLambert2005Species() {return lambertSpecies;}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return lambertSpecies;}
 
 		@Override
 		public String getSubjectId() {return null;}
@@ -387,10 +388,10 @@ public class Lambert2005BiomassPredictorTest {
 	
 	
 	public static void main(String[] args) {
-		MerchantableVolumePredictor volPred = new MerchantableVolumePredictor();
+		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		Lambert2005BiomassPredictor bioPred = new Lambert2005BiomassPredictor();
 		Species species = Species.Populus_tremuloides;
-		VolumableStand p = new VolumableStandImpl();
+		Fortin2007VolumableStand p = new Fortin2007VolumableStandImpl();
 		Tree t = new Tree("PET", species, 20, 15);
 		double volumeM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t) * 0.001;
 		double overbarkCommercialVolumeM3 = volumeM3 * (1 + species.getBarkProportionOfWoodVolume(SpeciesLocale.Quebec));
