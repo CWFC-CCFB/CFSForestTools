@@ -37,14 +37,15 @@ import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredict
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
 import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableStand;
 import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableStandImpl;
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumePredictor;
 import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableTreeImpl;
+import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumePredictor;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.species.REpiceaSpecies;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 public class Lambert2005BiomassPredictorTest {
@@ -173,7 +174,7 @@ public class Lambert2005BiomassPredictorTest {
 				
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(1E-6)) {
-				REpiceaSpecies speciesEnum = tree.getLambert2005Species(); 
+				Species speciesEnum = tree.getSpecies(predictor); 
 				if (!differentLines.containsKey(speciesEnum)) {
 					differentLines.put(speciesEnum, new ArrayList<Integer>());
 				}
@@ -297,7 +298,7 @@ public class Lambert2005BiomassPredictorTest {
 			
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(0.5)) {
-				REpiceaSpecies speciesEnum = tree.getLambert2005Species(); 
+				Species speciesEnum = tree.getSpecies(predictor); 
 				if (!differentLines.containsKey(speciesEnum)) {
 					differentLines.put(speciesEnum, new ArrayList<Integer>());
 				}
@@ -372,7 +373,7 @@ public class Lambert2005BiomassPredictorTest {
 		}
 
 		@Override
-		public Species getLambert2005Species() {return lambertSpecies;}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return lambertSpecies;}
 
 		@Override
 		public String getSubjectId() {return null;}

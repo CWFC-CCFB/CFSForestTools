@@ -25,6 +25,7 @@ import java.security.InvalidParameterException;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 
 /**
  * An implementation of the Lambert2005Tree interface for the reduced model.
@@ -64,7 +65,7 @@ public class Lambert2005TreeReducedImpl implements Lambert2005Tree {
 	public int getMonteCarloRealizationId() {return 0;}
 
 	@Override
-	public Species getLambert2005Species() {return species;}
+	public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return species;}
 
 }
 
