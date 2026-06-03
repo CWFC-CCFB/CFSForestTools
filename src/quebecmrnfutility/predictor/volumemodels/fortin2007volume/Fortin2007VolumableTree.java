@@ -78,7 +78,7 @@ public interface Fortin2007VolumableTree extends  DbhCmProvider,
 		
 		private Matrix dummy;
 		
-		final REpiceaSpecies.Species species;
+		public final REpiceaSpecies.Species species;
 		
 		VolSpecies(REpiceaSpecies.Species species) {
 			this.species = species;
