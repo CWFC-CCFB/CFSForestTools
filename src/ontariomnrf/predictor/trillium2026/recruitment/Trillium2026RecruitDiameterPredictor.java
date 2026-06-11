@@ -24,6 +24,7 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
@@ -73,7 +74,7 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	private static ParameterMap DispersionMap;
 	
 	private final Map<Species, Trillium2026RecruitDiameterInternalPredictor> internalPredictors;
-
+	final ConcurrentHashMap<Species, Species> surrogateMap;
 	public static void setVerbose(boolean verbose) {Verbose = verbose;}
 	
 	/**
@@ -92,6 +93,8 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	public Trillium2026RecruitDiameterPredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this module
 		internalPredictors = new HashMap<Species, Trillium2026RecruitDiameterInternalPredictor>();
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
+		setSurrogateMapToDefaultValue();
 		init();
 	}
 
@@ -134,12 +137,6 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 		}
 	}
 
-	Trillium2026RecruitDiameterInternalPredictor getInternalPredictor(Species species) {
-		if (!Trillium2026RecruitmentOccurrencePredictor.SpeciesLookupMap.containsValue(species)) {
-			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + " does not support the species " + species.getLatinName());
-		}
-		return internalPredictors.get(species);
-	}
 
 	/**
 	 * Returns the recruit diameter.
@@ -148,7 +145,8 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	 * @return the recruit DBH (cm)
 	 */
 	public double predictRecruitDiameterCm(Trillium2026RecruitmentPlot plot, Species species) {
-		return getInternalPredictor(species).predictRecruitDiameterCm(plot);
+		Species sp = convertToEligibleSpecies(species);
+		return internalPredictors.get(sp).predictRecruitDiameterCm(plot);
 	}
 	
 
@@ -156,7 +154,8 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 	 * For test purpose.
 	 */
 	double getVariance(Trillium2026RecruitmentPlot plot, Species species) {
-		return getInternalPredictor(species).getVariance(plot);
+		Species sp = convertToEligibleSpecies(species);
+		return internalPredictors.get(sp).getVariance(plot);
 	}
 
 	@Override
@@ -169,6 +168,14 @@ public class Trillium2026RecruitDiameterPredictor extends REpiceaPredictor imple
 
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
+
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		Trillium2026RecruitmentOccurrencePredictor.setInternallySurrogateMap(surrogateMap);
+	}
 
 //	public static void main(String[] args) {
 //		new Trillium2026RecruitDiameterPredictor(false);

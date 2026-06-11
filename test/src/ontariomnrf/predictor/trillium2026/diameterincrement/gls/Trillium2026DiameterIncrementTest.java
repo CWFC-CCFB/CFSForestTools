@@ -36,6 +36,7 @@ import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
@@ -200,15 +201,7 @@ public class Trillium2026DiameterIncrementTest {
 		public double getBasalAreaLargerThanSubjectM2Ha() {return BAL;}
 
 		@Override
-		public Species getTrillium2026TreeSpecies() {return species;}
-
-		@Override
-		public double getLnDbhCm() {return Math.log(getDbhCm());}
-
-		@Override
-		public double getSquaredDbhCm() {return getDbhCm() * getDbhCm();}
-
-
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return species;}
 
 		@Override
 		public double getBasalAreaSmallerThanSubjectM2Ha() {return BAS;}

@@ -173,7 +173,8 @@ class Trillium2026MortalityInternalPredictor extends REpiceaBinaryEventPredictor
 				oXVector.setValueAt(0, index++, plot.getMeanAnnualTemperatureCelsius(owner, Trillium2026MortalityPlot.ClimateVariableResolution));
 				break;
 			case IDBH_x2: // 11
-				oXVector.setValueAt(0, index++, tree.getSquaredDbhCm());
+				double dbhCm = tree.getDbhCm();
+				oXVector.setValueAt(0, index++, dbhCm * dbhCm);
 				break;
 			case TotalPrcp: // 12
 				oXVector.setValueAt(0, index++, plot.getTotalAnnualPrecipitationMm(owner, Trillium2026MortalityPlot.ClimateVariableResolution));

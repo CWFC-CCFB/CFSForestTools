@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
@@ -54,8 +55,8 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("serial")
 @SimulationModule(type = ModuleType.Mortality, scope = SpeciesLocale.Ontario)
 public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<Trillium2026MortalityPlot, Trillium2026Tree>
-										implements REpiceaSpeciesCompliantObject,
-													ClimateSensitivePredictor {
+											implements REpiceaSpeciesCompliantObject,
+														ClimateSensitivePredictor {
 
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
 	static {
@@ -120,7 +121,8 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 	private static HashMap<Species, List<Double>> RanefVarLists;
 	
 	private final Map<Species, Trillium2026MortalityInternalPredictor> internalPredictorMap;
-	
+	final ConcurrentHashMap<Species, Species> surrogateMap;
+
 	/**
 	 * Constructor.
 	 * @param isParametersVariabilityEnabled a boolean to enable the variability in the parameter estimates
@@ -130,6 +132,8 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 	public Trillium2026MortalityPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectsVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, isRandomEffectsVariabilityEnabled, isResidualVariabilityEnabled);
 		internalPredictorMap = new HashMap<Species, Trillium2026MortalityInternalPredictor>();
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
+		setSurrogateMapToDefaultValue();
 		init();
 	}
 	
@@ -143,7 +147,7 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 
 	@Override
 	public double predictEventProbability(Trillium2026MortalityPlot plot, Trillium2026Tree tree, Map<String, Object> parms) {
-		Species species = tree.getTrillium2026TreeSpecies();
+		Species species = convertToEligibleSpecies(tree.getSpecies(this));
 		if (!SpeciesLookupMap.values().contains(species)) {
 			throw new UnsupportedOperationException("The mortality model of Trillium 2026 does not support species: " + species.getLatinName());
 		}
@@ -225,5 +229,17 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 	@Override
 	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
 		return CLIMATE_INFO;
+	}
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
+
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		surrogateMap.clear();
+		surrogateMap.put(Species.Betula_populifolia, Species.Betula_papyrifera);
+		surrogateMap.put(Species.Juniperus_virginiana, Species.Thuja_occidentalis);
+		surrogateMap.put(Species.Picea_rubens, Species.Picea_mariana);
+		surrogateMap.put(Species.Other_coniferous, Species.Abies_balsamea);
 	}
 }

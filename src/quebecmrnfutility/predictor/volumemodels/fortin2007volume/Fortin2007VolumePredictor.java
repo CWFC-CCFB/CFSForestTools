@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
@@ -120,7 +121,7 @@ public final class Fortin2007VolumePredictor extends REpiceaPredictor implements
 	private static Matrix DefaultBetaMean; 
 	private static SymmetricMatrix DefaultBetaVariance;
 	private static Matrix CovParms;
-		
+	final ConcurrentHashMap<Species, Species> surrogateMap;
 	private Matrix sigma2;
 
 	/**
@@ -129,6 +130,8 @@ public final class Fortin2007VolumePredictor extends REpiceaPredictor implements
 	 */
 	public Fortin2007VolumePredictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
+		setSurrogateMapToDefaultValue();
 		init();
 		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
 	}
@@ -167,7 +170,9 @@ public final class Fortin2007VolumePredictor extends REpiceaPredictor implements
 	}
 	
 	/**
-	 * This method return the underbark volume estimate for an individual trees. 
+	 * Predict the underbark commercial volume for an individual trees. <p>
+	 * In Quebec, the commercial volume is defined as the underbark volume between
+	 * a stump height of 15 cm and a top diameter of 9 cm overbark.<p>
 	 * NOTE: Stochastic implementation is handled through the general constructor.
 	 * The method returns 0 if the tree is smaller than 9.1 cm in dbh. It returns -1
 	 * if the tree height has not been calculated.
@@ -247,7 +252,11 @@ public final class Fortin2007VolumePredictor extends REpiceaPredictor implements
 //	}
 	
 	/**
-	 * A fast-track computation of deterministic predictions.
+	 * 
+	 * Predict the underbark commercial volume for an individual trees. <p>
+	 * In Quebec, the commercial volume is defined as the underbark volume between
+	 * a stump height of 15 cm and a top diameter of 9 cm overbark.<p>
+	 * This a fast-track computation method for deterministic predictions.
 	 * @param speciesName the Latin name or the three-character code used in Quebec
 	 * @param dbhCm tree dbh (cm)
 	 * @param heightM tree height (m)
@@ -360,6 +369,16 @@ public final class Fortin2007VolumePredictor extends REpiceaPredictor implements
 
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Quebec;}
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
+
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		getSurrogateMap().clear();
+		getSurrogateMap().put(Species.Other_broadleaved, Species.Betula_papyrifera);
+		getSurrogateMap().put(Species.Other_coniferous, Species.Picea_mariana);
+	}
 	
 //	/**
 //	 * For testing purpose.

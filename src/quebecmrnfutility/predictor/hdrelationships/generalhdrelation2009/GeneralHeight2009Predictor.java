@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
@@ -220,13 +221,15 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	static SymmetricMatrix Omega;
 	static Matrix CovParms;
 	
-	
+	final ConcurrentHashMap<Species, Species> surrogateMap;
 	/**
 	 * General constructor for all combinations of uncertainty sources.
 	 * @param isVariabilityEnabled a boolean that enables the stochastic mode
 	 */
 	public GeneralHeight2009Predictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled);
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
+		setSurrogateMapToDefaultValue();
 		init();
 		oXVector = new Matrix(1,getParameterEstimates().getMean().m_iRows);
 	}
@@ -313,7 +316,8 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		
 		oXVector.resetMatrix();
 		int pointer = 0;
-		Species species = this.convertSpeciesEnumToSpecies(t.getHeightableTreeSpecies());
+//		Species species = this.convertSpeciesEnumToSpecies(t.getHeightableTreeSpecies());
+		Species species = this.convertToEligibleSpecies(t.getSpecies(this));
 		double lnDbh = t.getLnDbhCmPlus1();
 		double SSI = t.getSocialStatusIndex();
 		double lnDbh2 = t.getSquaredLnDbhCmPlus1();
@@ -396,6 +400,16 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Quebec;}
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
+
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		getSurrogateMap().clear();
+		getSurrogateMap().put(Species.Other_broadleaved, Species.Betula_papyrifera);
+		getSurrogateMap().put(Species.Other_coniferous, Species.Picea_mariana);
+	}
 	
 
 }

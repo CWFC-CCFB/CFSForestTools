@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import modulemanagement.SimulationModule;
@@ -215,6 +216,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 	
 	
 	final Map<ModelVersion, Map<Species, Lambert2005BiomassInternalPredictor>> internalPredictors;
+	private final ConcurrentHashMap<Species, Species> surrogateMap;
 
 	/**
 	 * Default constructor for deterministic simulations.
@@ -235,6 +237,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
 
 		internalPredictors = new HashMap<ModelVersion, Map<Species, Lambert2005BiomassInternalPredictor>>();
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
 		init();
 	}
 
@@ -336,5 +339,19 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 	public List<Species> getEligibleSpecies() {return EligibleSpecies;}
 
 	@Override
-	public SpeciesLocale getScope() {return SpeciesLocale.Canada;}	
+	public SpeciesLocale getScope() {return SpeciesLocale.Canada;}
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
+
+	/**
+	 * No need for specific surrogate since the other broadleaved and other coniferous are part of the eligible species.
+	 */
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		getSurrogateMap().clear();
+	}	
+	
+	
+	
 }
