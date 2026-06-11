@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
+package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
 
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
@@ -30,7 +30,7 @@ import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTempera
 import repicea.simulation.hdrelationships.HDRelationshipStand;
 
 
-public interface Heightable2009Stand extends HDRelationshipStand,
+public interface Fortin2009HeightableStand extends HDRelationshipStand,
 										TreeStatusCollectionsProvider,
 										BasalAreaM2HaProvider,
 										MeanAnnualTemperatureCelsiusProvider,

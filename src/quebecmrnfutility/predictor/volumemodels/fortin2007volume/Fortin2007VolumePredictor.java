@@ -59,6 +59,9 @@ import repicea.util.ObjectUtility;
 @SimulationModule(type = ModuleType.Volume, scope = SpeciesLocale.Quebec)
 public final class Fortin2007VolumePredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
 
+	
+	
+	
 	// IMPORTANT DO NOT CHANGE THE ORDER OT THE SPECIES IN THE LIST
 	private static List<Species> SpeciesList = Collections.unmodifiableList(
 			Arrays.asList(
@@ -376,10 +379,17 @@ public final class Fortin2007VolumePredictor extends REpiceaPredictor implements
 	@Override
 	public void setSurrogateMapToDefaultValue() {
 		getSurrogateMap().clear();
+		getSurrogateMap().put(Species.Other, Species.Betula_papyrifera);
 		getSurrogateMap().put(Species.Other_broadleaved, Species.Betula_papyrifera);
 		getSurrogateMap().put(Species.Other_coniferous, Species.Picea_mariana);
+		getSurrogateMap().put(Species.Prunus_spp, Species.Prunus_serotina);
+		getSurrogateMap().put(Species.Quercus_spp, Species.Quercus_rubra);
+		getSurrogateMap().put(Species.Acer_spp, Species.Acer_rubrum);
+		getSurrogateMap().put(Species.Fraxinus_spp, Species.Fraxinus_americana);
+		getSurrogateMap().put(Species.Ulmus_spp, Species.Ulmus_americana);
+		getSurrogateMap().put(Species.Populus_spp, Species.Populus_tremuloides);
 	}
-	
+
 //	/**
 //	 * For testing purpose.
 //	 * @param args

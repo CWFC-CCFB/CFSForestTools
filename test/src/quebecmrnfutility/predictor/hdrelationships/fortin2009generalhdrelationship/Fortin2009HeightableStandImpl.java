@@ -16,16 +16,18 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
+package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableStand;
+import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableTree;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.covariateproviders.plotlevel.MeanQuadraticDiameterCmProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
-public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadraticDiameterCmProvider {
+public class Fortin2009HeightableStandImpl implements Fortin2009HeightableStand, MeanQuadraticDiameterCmProvider {
 
 	final String subjectID;
 	int monteCarloRealizationID;
@@ -38,9 +40,9 @@ public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadrat
 	final double meanAnnualTemperatureC;
 	final double meanAnnualPrecipitationMm;
 	boolean isDefoliated;
-	final Collection<Heightable2009Tree> trees;
+	final Collection<Fortin2009HeightableTree> trees;
 	
-	Heightable2009StandImpl(String subjectID,
+	Fortin2009HeightableStandImpl(String subjectID,
 			double basalAreaM2Ha, 
 			double meanQuadraticDiameter, 
 			String ecoRegion, 
@@ -56,7 +58,7 @@ public class Heightable2009StandImpl implements Heightable2009Stand, MeanQuadrat
 		this.elevationM = elevationM;
 		this.meanAnnualTemperatureC = meanAnnualTemperatureC;
 		this.meanAnnualPrecipitationMm = meanAnnualPrecipitationMm;
-		this.trees = new ArrayList<Heightable2009Tree>();
+		this.trees = new ArrayList<Fortin2009HeightableTree>();
 	}
 	
 	

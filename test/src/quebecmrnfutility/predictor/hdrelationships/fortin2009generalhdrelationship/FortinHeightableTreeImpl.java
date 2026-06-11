@@ -16,19 +16,21 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
+package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
 
+import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableStand;
+import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableTree;
 import repicea.simulation.species.REpiceaSpecies.Species;
 
-class Heightable2009TreeImpl implements Heightable2009Tree {
+class FortinHeightableTreeImpl implements Fortin2009HeightableTree {
 
 	final double dbhCm;
-	final Heightable2009Stand stand;
+	final Fortin2009HeightableStand stand;
 	final int subjectID;
 	double heightM;
 	Hd2009Species speciesCode;
 	
-	Heightable2009TreeImpl(Heightable2009StandImpl stand,
+	FortinHeightableTreeImpl(Fortin2009HeightableStandImpl stand,
 			double dbhCm,
 			int subjectID, 
 			String species,
@@ -91,7 +93,7 @@ class Heightable2009TreeImpl implements Heightable2009Tree {
 
 	@Override
 	public double getSocialStatusIndex() {
-		return getDbhCm() - ((Heightable2009StandImpl) stand).getMeanQuadraticDiameterCm();
+		return getDbhCm() - ((Fortin2009HeightableStandImpl) stand).getMeanQuadraticDiameterCm();
 	}
 
 

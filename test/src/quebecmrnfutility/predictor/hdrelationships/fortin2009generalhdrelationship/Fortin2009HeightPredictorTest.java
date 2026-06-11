@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
+package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -29,6 +29,9 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightPredictor;
+import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableStand;
+import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableTree;
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.GeneralHeight2014PredictorTest;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
@@ -38,9 +41,9 @@ import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
 
-public class GeneralHeight2009PredictorTest {
+public class Fortin2009HeightPredictorTest {
 
-	static Map<String, Heightable2009Stand> standMap;
+	static Map<String, Fortin2009HeightableStand> standMap;
 
 	/*
 	 * Those are the trees used in the 2014 HD relationships. The predicted values are for the 2014 version of the
@@ -49,7 +52,7 @@ public class GeneralHeight2009PredictorTest {
 	static void ReadStands() {
 		String filename = ObjectUtility.getPackagePath(GeneralHeight2014PredictorTest.class) + "fichier_test_unitaire_smaller.csv";
 		System.out.println("Reading file " + filename);
-		standMap = new HashMap<String, Heightable2009Stand>();
+		standMap = new HashMap<String, Fortin2009HeightableStand>();
 		CSVReader reader;
 		try {
 			reader = new CSVReader(filename);
@@ -74,7 +77,7 @@ public class GeneralHeight2009PredictorTest {
 				String species = record[5].toString();
 				
 				if (!standMap.containsKey(placetteID)) {
-					standMap.put(placetteID, new Heightable2009StandImpl(placetteID,
+					standMap.put(placetteID, new Fortin2009HeightableStandImpl(placetteID,
 							basalAreaM2Ha,
 							meanQuadraticDiameterCm,
 							regEco,
@@ -83,8 +86,8 @@ public class GeneralHeight2009PredictorTest {
 							meanAnnualTemperatureC,
 							meanAnnualPrecipitationMm));
 				}
-				Heightable2009StandImpl stand = (Heightable2009StandImpl) standMap.get(placetteID);
-				new Heightable2009TreeImpl(stand, dbhCm, treeID++, species, heightM);
+				Fortin2009HeightableStandImpl stand = (Fortin2009HeightableStandImpl) standMap.get(placetteID);
+				new FortinHeightableTreeImpl(stand, dbhCm, treeID++, species, heightM);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -104,7 +107,7 @@ public class GeneralHeight2009PredictorTest {
 	@Test
 	public void comparePredictionsAndBlups() throws Exception {
 		if (standMap == null) {
-			GeneralHeight2009PredictorTest.ReadStands();
+			Fortin2009HeightPredictorTest.ReadStands();
 		}
 		
 		List<String> plotIds = new ArrayList<String>();
@@ -112,16 +115,16 @@ public class GeneralHeight2009PredictorTest {
 		
 		Collections.sort(plotIds);
 		
-		GeneralHeight2009Predictor predictor = new GeneralHeight2009Predictor(); // deterministic simulations
+		Fortin2009HeightPredictor predictor = new Fortin2009HeightPredictor(); // deterministic simulations
 		
 		Map<String, Map<String, Double>> predictedHeights = new HashMap<String, Map<String, Double>>();
 		Map<String, Matrix> blupMap = new HashMap<String, Matrix>();
 		
 		for (int i = 0; i < 10; i++) {
 			String selectedPlotId = plotIds.get(i);
-			Heightable2009Stand s = standMap.get(selectedPlotId);
+			Fortin2009HeightableStand s = standMap.get(selectedPlotId);
 			for (Object t : s.getTrees(StatusClass.alive)) {
-				Heightable2009Tree tree = (Heightable2009Tree) t;
+				Fortin2009HeightableTree tree = (Fortin2009HeightableTree) t;
 				double predictedHeightM = predictor.predictHeightM(s, tree);
 				if (!predictedHeights.containsKey(s.getSubjectId())) {
 					predictedHeights.put(s.getSubjectId(), new HashMap<String, Double>());
@@ -197,7 +200,7 @@ public class GeneralHeight2009PredictorTest {
 	@Test
 	public void compareStochasticPredictions() throws Exception {
 		if (standMap == null) {
-			GeneralHeight2009PredictorTest.ReadStands();
+			Fortin2009HeightPredictorTest.ReadStands();
 		}
 		
 		List<String> plotIds = new ArrayList<String>();
@@ -205,13 +208,13 @@ public class GeneralHeight2009PredictorTest {
 		
 		Collections.sort(plotIds);
 		
-		GeneralHeight2009Predictor detPredictor = new GeneralHeight2009Predictor(); // deterministic simulations
-		GeneralHeight2009Predictor stoPredictor = new GeneralHeight2009Predictor(true); // stochastic simulations
+		Fortin2009HeightPredictor detPredictor = new Fortin2009HeightPredictor(); // deterministic simulations
+		Fortin2009HeightPredictor stoPredictor = new Fortin2009HeightPredictor(true); // stochastic simulations
 		
 		
 		String selectedPlotId = plotIds.get(0);
-		Heightable2009Stand s = standMap.get(selectedPlotId);
-		Heightable2009Tree tree = (Heightable2009Tree) ((ArrayList) s.getTrees(StatusClass.alive)).get(0);
+		Fortin2009HeightableStand s = standMap.get(selectedPlotId);
+		Fortin2009HeightableTree tree = (Fortin2009HeightableTree) ((ArrayList) s.getTrees(StatusClass.alive)).get(0);
 		if (tree.getHeightM() > 0d) {
 			throw new InvalidParameterException("This tree should not have an observed height!");
 		}
@@ -219,7 +222,7 @@ public class GeneralHeight2009PredictorTest {
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		Matrix realization;
 		for (int i = 0; i < 50000; i++) {
-			((Heightable2009StandImpl) s).monteCarloRealizationID = i;
+			((Fortin2009HeightableStandImpl) s).monteCarloRealizationID = i;
 			realization = new Matrix(1,1);
 			realization.setValueAt(0, 0, stoPredictor.predictHeightM(s, tree));
 			estimate.addRealization(realization);
@@ -241,7 +244,7 @@ public class GeneralHeight2009PredictorTest {
 	@Test
 	public void testStochasticPredictionsForTreeWithKnownHeight() {
 		if (standMap == null) {
-			GeneralHeight2009PredictorTest.ReadStands();
+			Fortin2009HeightPredictorTest.ReadStands();
 		}
 		
 		List<String> plotIds = new ArrayList<String>();
@@ -249,17 +252,17 @@ public class GeneralHeight2009PredictorTest {
 		
 		Collections.sort(plotIds);
 		
-		GeneralHeight2009Predictor stoPredictor = new GeneralHeight2009Predictor(true); // stochastic simulations
+		Fortin2009HeightPredictor stoPredictor = new Fortin2009HeightPredictor(true); // stochastic simulations
 
 		String selectedPlotId = plotIds.get(0);
-		Heightable2009Stand s = standMap.get(selectedPlotId);
-		List<Heightable2009Tree> livingTrees = (List) s.getTrees(StatusClass.alive);
-		Heightable2009Tree tree = livingTrees.get(2);
+		Fortin2009HeightableStand s = standMap.get(selectedPlotId);
+		List<Fortin2009HeightableTree> livingTrees = (List) s.getTrees(StatusClass.alive);
+		Fortin2009HeightableTree tree = livingTrees.get(2);
 		if (tree.getHeightM() == 0d) {
 			throw new InvalidParameterException("This tree should have an observed height!");
 		}
 		for (int i = 0; i < 10; i++) {
-			((Heightable2009StandImpl) s).monteCarloRealizationID = i;
+			((Fortin2009HeightableStandImpl) s).monteCarloRealizationID = i;
 			double predictedHeight = stoPredictor.predictHeightM(s, tree);
 			Assert.assertEquals("Comparing stochastic prediction to observed height", tree.getHeightM(), predictedHeight, 1E-8);
 		}
@@ -270,7 +273,7 @@ public class GeneralHeight2009PredictorTest {
 	
 	@Test
 	public void aDeadTreeOnly() {
-		Heightable2009StandImpl stand = new Heightable2009StandImpl("PlotWithASingleDeadTree",
+		Fortin2009HeightableStandImpl stand = new Fortin2009HeightableStandImpl("PlotWithASingleDeadTree",
 				0d,
 				0d,
 				"3a",
@@ -278,9 +281,9 @@ public class GeneralHeight2009PredictorTest {
 				200,
 				2d,
 				1000d);
-		Heightable2009TreeImpl tree = new Heightable2009TreeImpl(stand, 25d, 1, "BOJ", 0d);
+		FortinHeightableTreeImpl tree = new FortinHeightableTreeImpl(stand, 25d, 1, "BOJ", 0d);
 		
-		GeneralHeight2009Predictor predictor = new GeneralHeight2009Predictor();
+		Fortin2009HeightPredictor predictor = new Fortin2009HeightPredictor();
 		double heightM = predictor.predictHeightM(stand, tree);
 		Assert.assertEquals("Testing height of a dead tree", 15.129429409429527, heightM, 1E-8);
 	}

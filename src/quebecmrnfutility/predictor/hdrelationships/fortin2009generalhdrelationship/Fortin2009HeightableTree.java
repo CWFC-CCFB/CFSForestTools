@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
+package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
 
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmPlus1Provider;
@@ -30,7 +30,7 @@ import repicea.simulation.species.REpiceaSpecies;
  * The HeightableTree interface ensures the compatibility with the HD relationship.
  * @author Mathieu Fortin - November 2012
  */
-public interface Heightable2009Tree extends HDRelationshipTree, 
+public interface Fortin2009HeightableTree extends HDRelationshipTree, 
 										DbhCmProvider,
 										REpiceaSpeciesProvider,
 										LnDbhCmPlus1Provider,

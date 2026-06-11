@@ -50,6 +50,8 @@ import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 @SimulationModule(type = ModuleType.Biomass, scope = SpeciesLocale.Canada)
 public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
 	
+	
+
 	static final Map<String, Species> ENGLISH_TO_LATIN_LOOKUP_MAP = new HashMap<String, Species>();
 	static {
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Balsam Fir", Species.Abies_balsamea);
@@ -342,14 +344,17 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 	@Override
 	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
 
-	/**
-	 * No need for specific surrogate since the other broadleaved and other coniferous are part of the eligible species.
-	 */
+
 	@Override
 	public void setSurrogateMapToDefaultValue() {
 		getSurrogateMap().clear();
+		getSurrogateMap().put(Species.Abies_spp, Species.Abies_balsamea);
+		getSurrogateMap().put(Species.Acer_spp, Species.Acer_rubrum);
+		getSurrogateMap().put(Species.Populus_spp, Species.Populus_tremuloides);
+		getSurrogateMap().put(Species.Prunus_spp, Species.Prunus_serotina);
+		getSurrogateMap().put(Species.Quercus_spp, Species.Quercus_alba);
+		getSurrogateMap().put(Species.Ulmus_spp, Species.Ulmus_americana);
 	}	
-	
 	
 	
 }

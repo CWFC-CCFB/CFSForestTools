@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
+package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
-import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009.Heightable2009Tree.Hd2009Species;
+import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableTree.Hd2009Species;
 import repicea.math.DiagonalMatrix;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
@@ -67,18 +67,19 @@ import repicea.util.ObjectUtility;
  */
 @SuppressWarnings({ "serial", "deprecation" })
 @SimulationModule(type = ModuleType.HDRelationship, scope = SpeciesLocale.Quebec)
-public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<Heightable2009Stand, Heightable2009Tree> 
+public final class Fortin2009HeightPredictor extends HDRelationshipPredictor<Fortin2009HeightableStand, Fortin2009HeightableTree> 
 												implements ClimateSensitivePredictor,
 															REpiceaSpeciesCompliantObject {
 
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
 	static {
 		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
-				Heightable2009Stand.class, 
-				Heightable2009Stand.ClimateVariableResolution, 
+				Fortin2009HeightableStand.class, 
+				Fortin2009HeightableStand.ClimateVariableResolution, 
 				EvaluationDate.Now);
 	}
 
+	
 	private static final List<Species> SpeciesList = Collections.unmodifiableList(Arrays.asList(
 			Species.Betula_alleghaniensis,
 			Species.Betula_papyrifera,
@@ -225,7 +226,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	 * General constructor for all combinations of uncertainty sources.
 	 * @param isVariabilityEnabled a boolean that enables the stochastic mode
 	 */
-	public GeneralHeight2009Predictor(boolean isVariabilityEnabled) {
+	public Fortin2009HeightPredictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled);
 		surrogateMap = new ConcurrentHashMap<Species, Species>();
 		setSurrogateMapToDefaultValue();
@@ -236,7 +237,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	/**
 	 * Default constructor with all sources of uncertainty disabled.
 	 */
-	public GeneralHeight2009Predictor() {
+	public Fortin2009HeightPredictor() {
 		this(false);
 	}
 
@@ -289,21 +290,21 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 
 	
 	@Override
-	protected synchronized RegressionElements fixedEffectsPrediction(Heightable2009Stand stand, Heightable2009Tree t, Matrix beta) {
+	protected synchronized RegressionElements fixedEffectsPrediction(Fortin2009HeightableStand stand, Fortin2009HeightableTree t, Matrix beta) {
 		Matrix modelParameters = beta;
 		double basalArea = stand.getBasalAreaM2Ha();
 		if (basalArea < 0d) {
 			System.out.println("Error in HD relationship: The basal area of the plot has not been calculated yet!");
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
-		double averageTemp = stand.getMeanAnnualTemperatureCelsius(this, Heightable2009Stand.ClimateVariableResolution);
+		double averageTemp = stand.getMeanAnnualTemperatureCelsius(this, Fortin2009HeightableStand.ClimateVariableResolution);
 		DrainageGroup drainageGroup = getDrainageGroup(stand);
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();
 		boolean isDefoliated = stand.isSBWDefoliated();
 		
 		Matrix dummyDrainageClass = drainageGroup.getDrainageDummy();
-		Matrix dummyEcoRegion = GeneralHeight2009Predictor.DUMMY_ECO_REGION.get(ecoRegion);
+		Matrix dummyEcoRegion = Fortin2009HeightPredictor.DUMMY_ECO_REGION.get(ecoRegion);
 		Matrix dummyDisturbance;
 		if (isInterventionResult) {
 			dummyDisturbance = DisturbanceType.HUMAN.getDummy();
@@ -357,7 +358,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	}
 	
 	
-	private DrainageGroup getDrainageGroup(Heightable2009Stand stand) {
+	private DrainageGroup getDrainageGroup(Fortin2009HeightableStand stand) {
 		DrainageGroup drainageGroup = stand.getDrainageGroup();
 		if (drainageGroup == null) {
 			if (stand.getEcologicalType() != null && stand.getEcologicalType().length() >= 4) {	// else if the ecological type is available then provide a typical class that corresponds to the grouping XERIC MESIC SUBHYDRIC HYDRIC
@@ -375,7 +376,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	 * @param stand a Heightable2009Stand instance
 	 * @return a Matrix instance
 	 */
-	public Matrix getBlups(Heightable2009Stand stand) {
+	public Matrix getBlups(Fortin2009HeightableStand stand) {
 		if (doBlupsExistForThisSubject(stand)) {
 			return getBlupsForThisSubject(stand).getMean();
 		} else {
@@ -385,7 +386,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Collection<Heightable2009Tree> getTreesFromStand(Heightable2009Stand stand) {
+	protected Collection<Fortin2009HeightableTree> getTreesFromStand(Fortin2009HeightableStand stand) {
 		return stand.getTrees(StatusClass.alive);
 	}
 
@@ -406,9 +407,17 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 	@Override
 	public void setSurrogateMapToDefaultValue() {
 		getSurrogateMap().clear();
+		getSurrogateMap().put(Species.Other, Species.Betula_papyrifera);
 		getSurrogateMap().put(Species.Other_broadleaved, Species.Betula_papyrifera);
 		getSurrogateMap().put(Species.Other_coniferous, Species.Picea_mariana);
+		getSurrogateMap().put(Species.Betula_spp, Species.Betula_papyrifera);
+		getSurrogateMap().put(Species.Quercus_spp, Species.Quercus_rubra);
+		getSurrogateMap().put(Species.Acer_spp, Species.Acer_rubrum);
+		getSurrogateMap().put(Species.Fraxinus_spp, Species.Fraxinus_nigra);
+		getSurrogateMap().put(Species.Populus_spp, Species.Populus_tremuloides);
+		getSurrogateMap().put(Species.Pinus_resinosa, Species.Pinus_strobus);
 	}
+	
 	
 
 }
