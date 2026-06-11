@@ -267,7 +267,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 
 	@Override
 	public double predictEventProbability(Trillium2026RecruitmentPlot stand, Trillium2026Tree tree, Map<String, Object> parms) {
-		Species sp = convertToEligibleSpecies(tree.getSpecies());
+		Species sp = convertToEligibleSpecies(tree.getREpiceaSpecies());
 		return internalPredictors.get(sp).predictEventProbability(stand, tree, parms);
 		
 	}

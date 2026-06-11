@@ -58,7 +58,7 @@ public class Fortin2007VolumableTreeImpl implements Fortin2007VolumableTree {
 	public double getHeightM() {return heightM;}
 
 	@Override
-	public Species getSpecies() {return species;}
+	public Species getREpiceaSpecies() {return species;}
 
 //	@Override
 //	public VolSpecies getVolumableTreeSpecies() {return species;}

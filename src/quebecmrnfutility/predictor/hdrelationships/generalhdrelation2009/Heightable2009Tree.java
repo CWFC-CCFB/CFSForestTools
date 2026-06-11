@@ -20,7 +20,7 @@ package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
 
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.LnDbhCmPlus1Provider;
-import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
+import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredLnDbhCmPlus1Provider;
 import repicea.simulation.hdrelationships.HDRelationshipTree;
@@ -32,7 +32,7 @@ import repicea.simulation.species.REpiceaSpecies;
  */
 public interface Heightable2009Tree extends HDRelationshipTree, 
 										DbhCmProvider,
-										SpeciesProvider,
+										REpiceaSpeciesProvider,
 										LnDbhCmPlus1Provider,
 										SquaredLnDbhCmPlus1Provider {
 

@@ -147,7 +147,7 @@ public class Trillium2026MortalityPredictor extends REpiceaBinaryEventPredictor<
 
 	@Override
 	public double predictEventProbability(Trillium2026MortalityPlot plot, Trillium2026Tree tree, Map<String, Object> parms) {
-		Species species = convertToEligibleSpecies(tree.getSpecies());
+		Species species = convertToEligibleSpecies(tree.getREpiceaSpecies());
 		if (!SpeciesLookupMap.values().contains(species)) {
 			throw new UnsupportedOperationException("The mortality model of Trillium 2026 does not support species: " + species.getLatinName());
 		}

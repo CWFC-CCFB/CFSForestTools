@@ -64,7 +64,7 @@ public class Lambert2005TreeReducedImpl implements Lambert2005Tree {
 	public int getMonteCarloRealizationId() {return 0;}
 
 	@Override
-	public Species getSpecies() {return species;}
+	public Species getREpiceaSpecies() {return species;}
 
 }
 

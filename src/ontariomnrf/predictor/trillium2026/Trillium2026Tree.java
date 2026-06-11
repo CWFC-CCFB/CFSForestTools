@@ -22,19 +22,10 @@ package ontariomnrf.predictor.trillium2026;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2HaProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
+import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
 
 public interface Trillium2026Tree extends MonteCarloSimulationCompliantObject,
 											DbhCmProvider,
 											BasalAreaLargerThanSubjectM2HaProvider,
-											SpeciesProvider {
-	
-//	/**
-//	 * Provide a Species instance that must be
-//	 * compatible with the model. <p>
-//	 * 
-//	 * @return an REpiceaSpecies.Species enum
-//	 */
-//	public Species getTrillium2026TreeSpecies();
-	
+											REpiceaSpeciesProvider {
 }

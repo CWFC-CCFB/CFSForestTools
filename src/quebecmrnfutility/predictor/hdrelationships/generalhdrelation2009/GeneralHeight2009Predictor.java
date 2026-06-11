@@ -46,7 +46,6 @@ import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.Dra
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.hdrelationships.HDRelationshipPredictor;
-import repicea.simulation.species.REpiceaSpecies;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.species.REpiceaSpeciesCompliantObject;
@@ -273,20 +272,20 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		setDefaultResidualError(SpeciesType.ConiferousSpecies, new GaussianErrorTermEstimate(sigma2, phi, TypeMatrixR.LINEAR));			
 	}
 	
-	private Species convertSpeciesEnumToSpecies(REpiceaSpecies speciesEnum) {
-		if (speciesEnum instanceof Species) {
-			if (!SpeciesList.contains(speciesEnum)) {
-				throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
-						" does not support species " + speciesEnum.getLatinName() + "!");
-			}
-			return (Species) speciesEnum;
-		} else if (speciesEnum instanceof Hd2009Species) {
-			return ((Hd2009Species) speciesEnum).species;
-		} else {
-			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
-						" does not support species " + speciesEnum.getLatinName() + "!");
-		}
-	}
+//	private Species convertSpeciesEnumToSpecies(REpiceaSpecies speciesEnum) {
+//		if (speciesEnum instanceof Species) {
+//			if (!SpeciesList.contains(speciesEnum)) {
+//				throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
+//						" does not support species " + speciesEnum.getLatinName() + "!");
+//			}
+//			return (Species) speciesEnum;
+//		} else if (speciesEnum instanceof Hd2009Species) {
+//			return ((Hd2009Species) speciesEnum).species;
+//		} else {
+//			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + 
+//						" does not support species " + speciesEnum.getLatinName() + "!");
+//		}
+//	}
 
 	
 	@Override
@@ -317,7 +316,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		oXVector.resetMatrix();
 		int pointer = 0;
 //		Species species = this.convertSpeciesEnumToSpecies(t.getHeightableTreeSpecies());
-		Species species = convertToEligibleSpecies(t.getSpecies());
+		Species species = convertToEligibleSpecies(t.getREpiceaSpecies());
 		double lnDbh = t.getLnDbhCmPlus1();
 		double SSI = t.getSocialStatusIndex();
 		double lnDbh2 = t.getSquaredLnDbhCmPlus1();

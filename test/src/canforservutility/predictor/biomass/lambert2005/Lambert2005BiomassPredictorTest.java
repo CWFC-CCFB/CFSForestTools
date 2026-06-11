@@ -173,7 +173,7 @@ public class Lambert2005BiomassPredictorTest {
 				
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(1E-6)) {
-				Species speciesEnum = tree.getSpecies(); 
+				Species speciesEnum = tree.getREpiceaSpecies(); 
 				if (!differentLines.containsKey(speciesEnum)) {
 					differentLines.put(speciesEnum, new ArrayList<Integer>());
 				}
@@ -297,7 +297,7 @@ public class Lambert2005BiomassPredictorTest {
 			
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(0.5)) {
-				Species speciesEnum = tree.getSpecies(); 
+				Species speciesEnum = tree.getREpiceaSpecies(); 
 				if (!differentLines.containsKey(speciesEnum)) {
 					differentLines.put(speciesEnum, new ArrayList<Integer>());
 				}
@@ -372,7 +372,7 @@ public class Lambert2005BiomassPredictorTest {
 		}
 
 		@Override
-		public Species getSpecies() {return lambertSpecies;}
+		public Species getREpiceaSpecies() {return lambertSpecies;}
 
 		@Override
 		public String getSubjectId() {return null;}

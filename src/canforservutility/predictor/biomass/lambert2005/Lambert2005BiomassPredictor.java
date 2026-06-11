@@ -289,7 +289,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 	 */
 	public Matrix predictBiomassKg(Lambert2005Tree tree) {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
-		Species sp = this.convertToEligibleSpecies(tree.getSpecies());
+		Species sp = this.convertToEligibleSpecies(tree.getREpiceaSpecies());
 		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(sp);
 		return predictor.predictBiomass(tree);
 	}
@@ -328,7 +328,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 
 	Matrix getWeight(Lambert2005Tree tree) {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
-		Species sp = this.convertToEligibleSpecies(tree.getSpecies());
+		Species sp = this.convertToEligibleSpecies(tree.getREpiceaSpecies());
 		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(sp);
 		return predictor.getWeight(tree);
 	}

@@ -29,7 +29,7 @@ import org.junit.Test;
 import quebecmrnfutility.treelogger.meristreelogger.MerisTreeLoggerParameters.MerisTypeMatrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.ExpansionFactorProvider;
-import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
+import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.LoggableTree;
@@ -38,7 +38,7 @@ import repicea.util.ObjectUtility;
 
 public class MerisTreeLoggerTest {
 
-	static class LoggableTreeImpl implements LoggableTree, DbhCmProvider, SpeciesProvider, ExpansionFactorProvider {
+	static class LoggableTreeImpl implements LoggableTree, DbhCmProvider, REpiceaSpeciesProvider, ExpansionFactorProvider {
 
 		final double volumeM3;
 		final double dbhCm;
@@ -79,7 +79,7 @@ public class MerisTreeLoggerTest {
 		public double getNumber() {return number;}
 
 		@Override
-		public Species getSpecies() {return sp;}
+		public Species getREpiceaSpecies() {return sp;}
 		
 	}
 	

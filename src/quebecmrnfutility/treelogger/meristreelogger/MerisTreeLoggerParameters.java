@@ -38,7 +38,7 @@ import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
+import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.species.REpiceaSpeciesCompliantObject;
@@ -178,7 +178,7 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 		List<MerisWoodPiece> processTree(LoggableTree tree) {
 			List<MerisWoodPiece> pieces  = new ArrayList<MerisWoodPiece>();
 			
-			Species sp = MerisTreeLoggerParameters.this.convertToEligibleSpecies(((SpeciesProvider) tree).getSpecies());
+			Species sp = MerisTreeLoggerParameters.this.convertToEligibleSpecies(((REpiceaSpeciesProvider) tree).getREpiceaSpecies());
 			String speciesCode = SpeciesToSpeciesCodeMap.get(sp);
 			if (speciesCode == null) {
 				throw new UnsupportedOperationException("This species cannot be matched to a three-character code " + sp.name());

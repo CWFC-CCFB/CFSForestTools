@@ -130,7 +130,7 @@ public class Trillium2026MortalityTest {
 		public double getBasalAreaLargerThanSubjectM2Ha() {return BAL;}
 
 		@Override
-		public Species getSpecies() {return species;}
+		public Species getREpiceaSpecies() {return species;}
 
 		@Override
 		public boolean isGoingToBeHarvested() {

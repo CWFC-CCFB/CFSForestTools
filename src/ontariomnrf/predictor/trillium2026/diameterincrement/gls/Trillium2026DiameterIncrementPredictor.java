@@ -249,7 +249,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	 * @return the diameter increment (cm)
 	 */
 	public double predictDiameterIncrementCm(Trillium2026DiameterIncrementPlot plot, Trillium2026DiameterIncrementTree tree) {
-		Species species = convertToEligibleSpecies(tree.getSpecies());
+		Species species = convertToEligibleSpecies(tree.getREpiceaSpecies());
 		if (!SpeciesLookupMap.values().contains(species)) {
 			throw new UnsupportedOperationException("The diameter increment model of Trillium 2026 does not support species: " + species.getLatinName());
 		}

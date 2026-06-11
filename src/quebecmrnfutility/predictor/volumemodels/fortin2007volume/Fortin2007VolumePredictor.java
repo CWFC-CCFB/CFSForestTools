@@ -206,7 +206,7 @@ public final class Fortin2007VolumePredictor extends REpiceaPredictor implements
 	
 
 	private Species getSpecies(Fortin2007VolumableTree tree) {
-		Species sp = this.convertToEligibleSpecies(tree.getSpecies());
+		Species sp = this.convertToEligibleSpecies(tree.getREpiceaSpecies());
 		if (!SpeciesList.contains(sp)) {
 			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + " does not support species " + (sp == null ? "null" : sp.getLatinName()) + "!");
 		}

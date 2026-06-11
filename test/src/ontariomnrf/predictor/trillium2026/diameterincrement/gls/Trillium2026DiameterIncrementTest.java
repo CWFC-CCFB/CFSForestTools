@@ -200,7 +200,7 @@ public class Trillium2026DiameterIncrementTest {
 		public double getBasalAreaLargerThanSubjectM2Ha() {return BAL;}
 
 		@Override
-		public Species getSpecies() {return species;}
+		public Species getREpiceaSpecies() {return species;}
 
 		@Override
 		public double getBasalAreaSmallerThanSubjectM2Ha() {return BAS;}

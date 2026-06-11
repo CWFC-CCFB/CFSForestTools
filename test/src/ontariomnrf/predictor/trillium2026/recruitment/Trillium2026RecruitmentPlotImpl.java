@@ -52,7 +52,7 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		public int getMonteCarloRealizationId() {return 0;}
 
 		@Override
-		public Species getSpecies() {return species;}
+		public Species getREpiceaSpecies() {return species;}
 
 		@Override
 		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}

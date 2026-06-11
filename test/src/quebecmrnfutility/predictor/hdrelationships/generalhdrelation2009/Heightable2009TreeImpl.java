@@ -85,7 +85,7 @@ class Heightable2009TreeImpl implements Heightable2009Tree {
 //	}
 
 	@Override
-	public Species getSpecies() {
+	public Species getREpiceaSpecies() {
 		return speciesCode.species;
 	}
 
@@ -97,6 +97,6 @@ class Heightable2009TreeImpl implements Heightable2009Tree {
 
 	@Override
 	public Enum<?> getHDRelationshipTreeErrorGroup() {
-		return getSpecies().getSpeciesType();
+		return getREpiceaSpecies().getSpeciesType();
 	}
 }
