@@ -19,7 +19,6 @@
 package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2009;
 
 import repicea.simulation.species.REpiceaSpecies.Species;
-import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 
 class Heightable2009TreeImpl implements Heightable2009Tree {
 
@@ -86,7 +85,7 @@ class Heightable2009TreeImpl implements Heightable2009Tree {
 //	}
 
 	@Override
-	public Species getSpecies(REpiceaSpeciesCompliantObject caller) {
+	public Species getSpecies() {
 		return speciesCode.species;
 	}
 
@@ -98,6 +97,6 @@ class Heightable2009TreeImpl implements Heightable2009Tree {
 
 	@Override
 	public Enum<?> getHDRelationshipTreeErrorGroup() {
-		return getSpecies(null).getSpeciesType();
+		return getSpecies().getSpeciesType();
 	}
 }

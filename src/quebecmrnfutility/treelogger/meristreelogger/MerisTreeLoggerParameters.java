@@ -178,7 +178,7 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 		List<MerisWoodPiece> processTree(LoggableTree tree) {
 			List<MerisWoodPiece> pieces  = new ArrayList<MerisWoodPiece>();
 			
-			Species sp = MerisTreeLoggerParameters.this.convertToEligibleSpecies(((SpeciesProvider) tree).getSpecies(MerisTreeLoggerParameters.this));
+			Species sp = MerisTreeLoggerParameters.this.convertToEligibleSpecies(((SpeciesProvider) tree).getSpecies());
 			String speciesCode = SpeciesToSpeciesCodeMap.get(sp);
 			if (speciesCode == null) {
 				throw new UnsupportedOperationException("This species cannot be matched to a three-character code " + sp.name());

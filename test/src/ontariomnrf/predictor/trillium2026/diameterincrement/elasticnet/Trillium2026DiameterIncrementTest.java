@@ -37,7 +37,6 @@ import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.climate.REpiceaClimateVariableInformation;
 import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.species.REpiceaSpecies.Species;
-import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
 
@@ -246,7 +245,7 @@ public class Trillium2026DiameterIncrementTest {
 		public double getBasalAreaLargerThanSubjectM2Ha() {return BAL;}
 
 		@Override
-		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return species;}
+		public Species getSpecies() {return species;}
 
 		@Override
 		public double getMeanMaximumAnnualTemperatureCelsius(REpiceaClimateVariableInformation info) {

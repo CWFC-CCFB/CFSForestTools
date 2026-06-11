@@ -317,7 +317,7 @@ public final class GeneralHeight2009Predictor extends HDRelationshipPredictor<He
 		oXVector.resetMatrix();
 		int pointer = 0;
 //		Species species = this.convertSpeciesEnumToSpecies(t.getHeightableTreeSpecies());
-		Species species = this.convertToEligibleSpecies(t.getSpecies(this));
+		Species species = convertToEligibleSpecies(t.getSpecies());
 		double lnDbh = t.getLnDbhCmPlus1();
 		double SSI = t.getSocialStatusIndex();
 		double lnDbh2 = t.getSquaredLnDbhCmPlus1();

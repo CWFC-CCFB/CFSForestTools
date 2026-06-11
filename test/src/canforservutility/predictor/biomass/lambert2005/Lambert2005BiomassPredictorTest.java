@@ -45,7 +45,6 @@ import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.species.REpiceaSpecies;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
-import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 public class Lambert2005BiomassPredictorTest {
@@ -174,7 +173,7 @@ public class Lambert2005BiomassPredictorTest {
 				
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(1E-6)) {
-				Species speciesEnum = tree.getSpecies(predictor); 
+				Species speciesEnum = tree.getSpecies(); 
 				if (!differentLines.containsKey(speciesEnum)) {
 					differentLines.put(speciesEnum, new ArrayList<Integer>());
 				}
@@ -298,7 +297,7 @@ public class Lambert2005BiomassPredictorTest {
 			
 			Matrix difference = res.subtract(m1).getAbsoluteValue();
 			if (difference.anyElementLargerThan(0.5)) {
-				Species speciesEnum = tree.getSpecies(predictor); 
+				Species speciesEnum = tree.getSpecies(); 
 				if (!differentLines.containsKey(speciesEnum)) {
 					differentLines.put(speciesEnum, new ArrayList<Integer>());
 				}
@@ -373,7 +372,7 @@ public class Lambert2005BiomassPredictorTest {
 		}
 
 		@Override
-		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return lambertSpecies;}
+		public Species getSpecies() {return lambertSpecies;}
 
 		@Override
 		public String getSubjectId() {return null;}

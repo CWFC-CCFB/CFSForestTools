@@ -21,10 +21,7 @@ package quebecmrnfutility.predictor.volumemodels.fortin2007volume;
 
 import java.security.InvalidParameterException;
 
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableTree;
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumePredictor;
 import repicea.simulation.species.REpiceaSpecies.Species;
-import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 
 /**
  * A class to facilitate the use of the deterministic version of the model in R.
@@ -61,7 +58,7 @@ public class Fortin2007VolumableTreeImpl implements Fortin2007VolumableTree {
 	public double getHeightM() {return heightM;}
 
 	@Override
-	public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return species;}
+	public Species getSpecies() {return species;}
 
 //	@Override
 //	public VolSpecies getVolumableTreeSpecies() {return species;}
