@@ -384,6 +384,15 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 	@Override
 	public void setSurrogateMapToDefaultValue() {
 		getSurrogateMap().clear();
+		getSurrogateMap().put(Species.Betula_spp, Species.Betula_papyrifera);
+		getSurrogateMap().put(Species.Prunus_spp, Species.Prunus_serotina);
+		getSurrogateMap().put(Species.Quercus_spp, Species.Quercus_alba);
+		getSurrogateMap().put(Species.Acer_spp, Species.Acer_rubrum);
+		getSurrogateMap().put(Species.Fraxinus_spp, Species.Fraxinus_americana);
+		getSurrogateMap().put(Species.Juglans_spp, Species.Juglans_nigra);
+		getSurrogateMap().put(Species.Ulmus_spp, Species.Ulmus_americana);
+		
+		getSurrogateMap().put(Species.Other, Species.Betula_papyrifera);
 		getSurrogateMap().put(Species.Other_broadleaved, Species.Betula_papyrifera);
 		getSurrogateMap().put(Species.Other_coniferous, Species.Picea_mariana);
 	}
