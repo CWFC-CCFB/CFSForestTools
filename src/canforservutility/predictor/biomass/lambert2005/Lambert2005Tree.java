@@ -24,7 +24,7 @@ package canforservutility.predictor.biomass.lambert2005;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
-import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
+import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
 
 /**
  * 
@@ -33,7 +33,7 @@ import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
  */
 
 public interface Lambert2005Tree extends DbhCmProvider, 
-										SpeciesProvider,
+										REpiceaSpeciesProvider,
 										MonteCarloSimulationCompliantObject {
 
 //	private enum Lambert2005Species implements REpiceaSpecies {	

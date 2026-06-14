@@ -130,7 +130,7 @@ public class Trillium2026MortalityTest {
 		public double getBasalAreaLargerThanSubjectM2Ha() {return BAL;}
 
 		@Override
-		public Species getTrillium2026TreeSpecies() {return species;}
+		public Species getREpiceaSpecies() {return species;}
 
 		@Override
 		public boolean isGoingToBeHarvested() {
@@ -139,16 +139,6 @@ public class Trillium2026MortalityTest {
 
 		@Override
 		public int getDateYr() {return dateYr;}
-
-		@Override
-		public double getLnDbhCm() {
-			return Math.log(getDbhCm());
-		}
-
-		@Override
-		public double getSquaredDbhCm() {
-			return getDbhCm() * getDbhCm();
-		}
 
 		@Override
 		public boolean isFromPlantation() {return planted;}

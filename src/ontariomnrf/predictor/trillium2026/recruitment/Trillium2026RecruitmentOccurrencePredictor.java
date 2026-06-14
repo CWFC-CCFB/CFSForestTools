@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.occupancyindex.SimpleOccupancyIndexCalculablePlot;
@@ -127,6 +128,7 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	
 	private final Map<Species, Trillium2026RecruitmentOccurrenceInternalPredictor> internalPredictors;
 	protected final double minProbRecruitmentThreshold;
+	final ConcurrentHashMap<Species, Species> surrogateMap;
 	
 	/**
 	 * Constructor.
@@ -149,6 +151,8 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		
 		this.minProbRecruitmentThreshold = minProbRecruitmentThreshold;
 		internalPredictors = new HashMap<Species, Trillium2026RecruitmentOccurrenceInternalPredictor>();
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
+		setSurrogateMapToDefaultValue();
 		init();
 	}
 
@@ -253,14 +257,6 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 		}
 	}
 
-	
-	Trillium2026RecruitmentOccurrenceInternalPredictor getInternalPredictor(Species species) {
-		if (!SpeciesLookupMap.containsValue(species)) {
-			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + " does not support the species " + species.getLatinName());
-		}
-		return internalPredictors.get(species);
-	}
-
 	static Species getTrillium2026SpeciesFromLatinName(String latinName) {
 		String formattedName = latinName.trim().toLowerCase();
 		if (!SpeciesLookupMap.containsKey(formattedName)) {
@@ -271,7 +267,9 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 
 	@Override
 	public double predictEventProbability(Trillium2026RecruitmentPlot stand, Trillium2026Tree tree, Map<String, Object> parms) {
-		return getInternalPredictor(tree.getTrillium2026TreeSpecies()).predictEventProbability(stand, tree, parms);
+		Species sp = convertToEligibleSpecies(tree.getREpiceaSpecies());
+		return internalPredictors.get(sp).predictEventProbability(stand, tree, parms);
+		
 	}
 
 	@Override
@@ -284,6 +282,21 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 	public  Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
 		return CLIMATE_INFO;
 	}
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
+
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		setInternallySurrogateMap(surrogateMap);
+	}
 	
+	static void setInternallySurrogateMap(ConcurrentHashMap<Species, Species> surrogateMap) {
+		surrogateMap.clear();
+		surrogateMap.put(Species.Betula_populifolia, Species.Betula_papyrifera);
+		surrogateMap.put(Species.Juniperus_virginiana, Species.Thuja_occidentalis);
+		surrogateMap.put(Species.Picea_rubens, Species.Picea_mariana);
+		surrogateMap.put(Species.Other_coniferous, Species.Abies_balsamea);
+	}
 	
 }

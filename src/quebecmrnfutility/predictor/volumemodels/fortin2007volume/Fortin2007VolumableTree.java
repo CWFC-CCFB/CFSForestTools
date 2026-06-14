@@ -27,7 +27,7 @@ import java.util.Map;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
-import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
+import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
 import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 import repicea.simulation.species.REpiceaSpecies;
 
@@ -40,7 +40,7 @@ import repicea.simulation.species.REpiceaSpecies;
 public interface Fortin2007VolumableTree extends  DbhCmProvider,
 										SquaredDbhCmProvider,
 										HeightMProvider,
-										SpeciesProvider {
+										REpiceaSpeciesProvider {
 	
 	
 	@Deprecated

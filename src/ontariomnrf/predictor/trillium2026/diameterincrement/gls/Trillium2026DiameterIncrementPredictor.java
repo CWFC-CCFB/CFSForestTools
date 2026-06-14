@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
@@ -101,7 +102,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 				Species.Tilia_americana, 
 				Species.Tsuga_canadensis, 
 				Species.Ulmus_spp));
-
+	
 	static {
 		int i = 1;
 		for (Species sp : SpeciesList) {
@@ -116,16 +117,17 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 		SpeciesLookupMap.put("ulmus sp.", Species.Ulmus_spp);
 	}
 	
+	
+	
 	public static double MAXIMUM_PERIOD_ANNUAL_INCREMENT_CM = 1.35;
 	public static double MINIMUM_PERIOD_ANNUAL_INCREMENT_CM = -0.85;
 		
+	final ConcurrentHashMap<Species, Species> surrogateMap;
 	static boolean Verbose = false;
 	private static Map<Species, Matrix> CoefMap;
 	static Map<Species, SymmetricMatrix> VCovMap;
 	private static Map<Species, List<Integer>> EffectMap;
 	static Map<Species, Double> RhoMap;
-//	private static Map<Species, SymmetricMatrix> PlotRanefMap;
-//	private static Map<Species, SymmetricMatrix> TreeRanefMap;
 	static Map<Species, SymmetricMatrix> ResVarMap;
 	
 	final Map<Species, Trillium2026DiameterIncrementInternalPredictor> internalPredictorMap;
@@ -152,9 +154,12 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	public Trillium2026DiameterIncrementPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled); // there are no random effects in this model 
 		internalPredictorMap = new HashMap<Species, Trillium2026DiameterIncrementInternalPredictor>();
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
+		setSurrogateMapToDefaultValue();
 		init();
 	}
 
+	
 	void enableBackTransformation(boolean doBackTransformation) {
 		this.doBackTransformation = doBackTransformation;
 	}
@@ -244,7 +249,7 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	 * @return the diameter increment (cm)
 	 */
 	public double predictDiameterIncrementCm(Trillium2026DiameterIncrementPlot plot, Trillium2026DiameterIncrementTree tree) {
-		Species species = tree.getTrillium2026TreeSpecies();
+		Species species = convertToEligibleSpecies(tree.getREpiceaSpecies());
 		if (!SpeciesLookupMap.values().contains(species)) {
 			throw new UnsupportedOperationException("The diameter increment model of Trillium 2026 does not support species: " + species.getLatinName());
 		}
@@ -269,7 +274,17 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
 		return CLIMATE_INFO;
 	}
-	
-	
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
+
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		surrogateMap.clear();
+		surrogateMap.put(Species.Betula_populifolia, Species.Betula_papyrifera);
+		surrogateMap.put(Species.Juniperus_virginiana, Species.Thuja_occidentalis);
+		surrogateMap.put(Species.Picea_rubens, Species.Picea_mariana);
+		surrogateMap.put(Species.Other_coniferous, Species.Abies_balsamea);
+	}
 	
 }

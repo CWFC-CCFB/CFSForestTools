@@ -46,19 +46,13 @@ final class Trillium2026RecruitmentPlotImpl implements Trillium2026RecruitmentPl
 		public double getDbhCm() {return 0;}
 
 		@Override
-		public double getSquaredDbhCm() {return 0;}
-
-		@Override
-		public double getLnDbhCm() {return 0;}
-
-		@Override
 		public String getSubjectId() {return null;}
 
 		@Override
 		public int getMonteCarloRealizationId() {return 0;}
 
 		@Override
-		public Species getTrillium2026TreeSpecies() {return species;}
+		public Species getREpiceaSpecies() {return species;}
 
 		@Override
 		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}

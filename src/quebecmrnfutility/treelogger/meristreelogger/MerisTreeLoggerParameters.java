@@ -31,13 +31,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import quebecmrnfutility.GeneralSettings;
 import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
+import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.species.REpiceaSpeciesCompliantObject;
@@ -177,7 +178,7 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 		List<MerisWoodPiece> processTree(LoggableTree tree) {
 			List<MerisWoodPiece> pieces  = new ArrayList<MerisWoodPiece>();
 			
-			Species sp = ((SpeciesProvider) tree).getSpecies(MerisTreeLoggerParameters.this);
+			Species sp = MerisTreeLoggerParameters.this.convertToEligibleSpecies(((REpiceaSpeciesProvider) tree).getREpiceaSpecies());
 			String speciesCode = SpeciesToSpeciesCodeMap.get(sp);
 			if (speciesCode == null) {
 				throw new UnsupportedOperationException("This species cannot be matched to a three-character code " + sp.name());
@@ -225,10 +226,13 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 	}
 	
 	final MerisTypeMatrix currentMatrix;
+	final ConcurrentHashMap<Species, Species> surrogateMap;
 	
 	protected MerisTreeLoggerParameters() {
 		super(MerisTreeLogger.class);
 		currentMatrix = new MerisTypeMatrix();
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
+		setSurrogateMapToDefaultValue();
 	}
 
 	@Override
@@ -371,5 +375,26 @@ public class MerisTreeLoggerParameters extends TreeLoggerParameters<MerisTreeLog
 
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Quebec;}
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {
+		return surrogateMap;
+	}
+
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		getSurrogateMap().clear();
+		getSurrogateMap().put(Species.Betula_spp, Species.Betula_papyrifera);
+		getSurrogateMap().put(Species.Prunus_spp, Species.Prunus_serotina);
+		getSurrogateMap().put(Species.Quercus_spp, Species.Quercus_alba);
+		getSurrogateMap().put(Species.Acer_spp, Species.Acer_rubrum);
+		getSurrogateMap().put(Species.Fraxinus_spp, Species.Fraxinus_americana);
+		getSurrogateMap().put(Species.Juglans_spp, Species.Juglans_nigra);
+		getSurrogateMap().put(Species.Ulmus_spp, Species.Ulmus_americana);
+		
+		getSurrogateMap().put(Species.Other, Species.Betula_papyrifera);
+		getSurrogateMap().put(Species.Other_broadleaved, Species.Betula_papyrifera);
+		getSurrogateMap().put(Species.Other_coniferous, Species.Picea_mariana);
+	}
 
 }

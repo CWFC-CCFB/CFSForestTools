@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
+import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
@@ -74,7 +74,7 @@ public final class MerisTreeLogger extends TreeLogger<MerisTreeLoggerParameters,
 		if (!validatedClasses.containsKey(clazz)) {
 			validatedClasses.put(clazz, tree instanceof LoggableTree && 
 				tree instanceof DbhCmProvider &&
-				tree instanceof SpeciesProvider);
+				tree instanceof REpiceaSpeciesProvider);
 		}
 		return validatedClasses.get(clazz);
 	}

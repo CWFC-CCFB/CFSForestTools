@@ -180,7 +180,7 @@ public class Trillium2026RecruitmentTest {
 				if (expected != null) {
 					Trillium2026Tree tree = plot.getTreeInstance(sp);
 					double actual = predictor.predictEventProbability(plot, tree);
-					Assert.assertEquals("Testing probability for plot " + plot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
+					Assert.assertEquals("Testing probability for plot " + plot.getSubjectId() + ", species " + tree.getREpiceaSpecies().name(), 
 							expected, 
 							actual, 
 							1E-8);
@@ -255,7 +255,7 @@ public class Trillium2026RecruitmentTest {
 			plot.setMode(Mode.Known);
 			double meanStoPred = realizations.getSumOfElements() / realizations.m_iRows;
 			System.out.println("       Expected mean = " + detPred + " Actual mean = " + meanStoPred);
-			Assert.assertEquals("Testing stochastic mean against deterministic mean " + plot.getSubjectId() + ", species " + plot.getTreeInstance(sp).getTrillium2026TreeSpecies().name(), 
+			Assert.assertEquals("Testing stochastic mean against deterministic mean " + plot.getSubjectId() + ", species " + plot.getTreeInstance(sp).getREpiceaSpecies().name(), 
 					detPred, 
 					meanStoPred, 
 					0.03);
@@ -292,9 +292,9 @@ public class Trillium2026RecruitmentTest {
 			for (Trillium2026RecruitmentPlotImpl plot : plotMap.values()) {
 				if (plot.getPred(sp) != null) {
 					Trillium2026Tree tree = plot.getTreeInstance(sp);
-					double actual = predictor.predictNumberOfRecruits(plot, tree.getTrillium2026TreeSpecies());
+					double actual = predictor.predictNumberOfRecruits(plot, tree.getREpiceaSpecies());
 					double expected = plot.getPred(sp) + 1d; // adding one because 
-					Assert.assertEquals("Testing mean predicted number for plot " + plot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
+					Assert.assertEquals("Testing mean predicted number for plot " + plot.getSubjectId() + ", species " + tree.getREpiceaSpecies().name(), 
 							expected, 
 							actual, 
 							1E-8);
@@ -330,25 +330,25 @@ public class Trillium2026RecruitmentTest {
 				throw new UnsupportedOperationException("No plots were selected!");
 			}
 			Trillium2026Tree tree = selectedPlot.getTreeInstance(sp);
-			double detPred = detPredictor.predictNumberOfRecruits(selectedPlot, tree.getTrillium2026TreeSpecies());
+			double detPred = detPredictor.predictNumberOfRecruits(selectedPlot, tree.getREpiceaSpecies());
 			Matrix realizations = new Matrix(nbRealizations, 1);
 			for (int j = 0; j < nbRealizations; j++) {
-				realizations.setValueAt(j, 0, stoPredictor.predictNumberOfRecruits(selectedPlot, tree.getTrillium2026TreeSpecies()));
+				realizations.setValueAt(j, 0, stoPredictor.predictNumberOfRecruits(selectedPlot, tree.getREpiceaSpecies()));
 			}
 			double meanStoPred = realizations.getSumOfElements() / realizations.m_iRows;
 			Matrix diff = realizations.scalarAdd(-meanStoPred);
 			Matrix ssq = diff.transpose().multiply(diff);
 			double variance = ssq.getValueAt(0, 0) / (realizations.m_iRows - 1);
-			double invThetaParmEst = stoPredictor.getInvThetaParameterEstimate(tree.getTrillium2026TreeSpecies());
+			double invThetaParmEst = stoPredictor.getInvThetaParameterEstimate(tree.getREpiceaSpecies());
 			double expectedVariance = (detPred - 1) + invThetaParmEst * (detPred - 1) * (detPred - 1);
 			Trillium2026RecruitmentNumberInternalPredictor.EnableCapping = true;
 			System.out.println("Expected mean = " + detPred + " Actual mean = " + meanStoPred);
-			Assert.assertEquals("Testing stochastic mean against deterministic mean " + selectedPlot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
+			Assert.assertEquals("Testing stochastic mean against deterministic mean " + selectedPlot.getSubjectId() + ", species " + tree.getREpiceaSpecies().name(), 
 					0, 
 					1 - meanStoPred/detPred, 
 					0.02);
 			System.out.println("Expected variance = " + expectedVariance + " Actual variance = " + variance);
-			Assert.assertEquals("Testing stochastic variance against expected variance " + selectedPlot.getSubjectId() + ", species " + tree.getTrillium2026TreeSpecies().name(), 
+			Assert.assertEquals("Testing stochastic variance against expected variance " + selectedPlot.getSubjectId() + ", species " + tree.getREpiceaSpecies().name(), 
 					0,
 					1 - variance/expectedVariance, 
 					0.04);
@@ -366,7 +366,7 @@ public class Trillium2026RecruitmentTest {
 		Map<String, Trillium2026RecruitmentPlotImpl> plotMap = PlotMapForNumber; 
 
 		for (Species sp : Trillium2026RecruitmentOccurrencePredictor.SpeciesList) {
-			if (predictor.getInternalPredictor(sp).isModelUsingOccupancyIndex()) {
+			if (predictor.internalPredictors.get(sp).isModelUsingOccupancyIndex()) {
 				System.out.println("  Processing species " + sp.getLatinName() + "...");
 				Trillium2026RecruitmentPlotImpl selectedPlot = null;
 				for (Trillium2026RecruitmentPlotImpl p : plotMap.values()) {

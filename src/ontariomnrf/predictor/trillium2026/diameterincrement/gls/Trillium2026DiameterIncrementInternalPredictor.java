@@ -38,8 +38,6 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 	private final Species species;
 	private final List<Integer> effects;
 	final boolean hasCorrelationStructure;
-//	private final double sigma;
-//	private final double sigma2;
 	
 
 	Trillium2026DiameterIncrementInternalPredictor(Trillium2026DiameterIncrementPredictor owner,
@@ -122,10 +120,10 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 				oXVector.setValueAt(0, index++, totalPrecJuneToAugust * totalPrecJuneToAugust);
 				break; 
 			case 15: // log dbh
-				oXVector.setValueAt(0, index++, tree.getLnDbhCm());
+				oXVector.setValueAt(0, index++, Math.log(tree.getDbhCm()));
 				break;
 			case 16: // log dbh * G_TOT
-				oXVector.setValueAt(0, index++, tree.getLnDbhCm() * plot.getBasalAreaM2Ha());
+				oXVector.setValueAt(0, index++, Math.log(tree.getDbhCm()) * plot.getBasalAreaM2Ha());
 				break;
 			case 17: // log N_TOT
 				oXVector.setValueAt(0, index++, Math.log(plot.getNumberOfStemsHa()));

@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import modulemanagement.SimulationModule;
@@ -49,6 +50,8 @@ import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 @SimulationModule(type = ModuleType.Biomass, scope = SpeciesLocale.Canada)
 public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject {
 	
+	
+
 	static final Map<String, Species> ENGLISH_TO_LATIN_LOOKUP_MAP = new HashMap<String, Species>();
 	static {
 		ENGLISH_TO_LATIN_LOOKUP_MAP.put("Balsam Fir", Species.Abies_balsamea);
@@ -215,6 +218,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 	
 	
 	final Map<ModelVersion, Map<Species, Lambert2005BiomassInternalPredictor>> internalPredictors;
+	private final ConcurrentHashMap<Species, Species> surrogateMap;
 
 	/**
 	 * Default constructor for deterministic simulations.
@@ -235,6 +239,7 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled);
 
 		internalPredictors = new HashMap<ModelVersion, Map<Species, Lambert2005BiomassInternalPredictor>>();
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
 		init();
 	}
 
@@ -286,11 +291,8 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 	 */
 	public Matrix predictBiomassKg(Lambert2005Tree tree) {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
-		Species species = tree.getSpecies(this);
-		if (!Species_LookupMap.containsValue(species)) {
-			throw new UnsupportedOperationException("The species " + species.getLatinName() + " is not supported in Lambert et al.'s biomass model!");
-		}
-		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(species);
+		Species sp = this.convertToEligibleSpecies(tree.getREpiceaSpecies());
+		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(sp);
 		return predictor.predictBiomass(tree);
 	}
 
@@ -328,7 +330,8 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 
 	Matrix getWeight(Lambert2005Tree tree) {
 		ModelVersion v = tree.implementHeighMProvider() ? ModelVersion.Complete : ModelVersion.Reduced;
-		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(tree.getSpecies(this));
+		Species sp = this.convertToEligibleSpecies(tree.getREpiceaSpecies());
+		Lambert2005BiomassInternalPredictor predictor = internalPredictors.get(v).get(sp);
 		return predictor.getWeight(tree);
 	}
 
@@ -336,5 +339,22 @@ public class Lambert2005BiomassPredictor extends REpiceaPredictor implements REp
 	public List<Species> getEligibleSpecies() {return EligibleSpecies;}
 
 	@Override
-	public SpeciesLocale getScope() {return SpeciesLocale.Canada;}	
+	public SpeciesLocale getScope() {return SpeciesLocale.Canada;}
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
+
+
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		getSurrogateMap().clear();
+		getSurrogateMap().put(Species.Abies_spp, Species.Abies_balsamea);
+		getSurrogateMap().put(Species.Acer_spp, Species.Acer_rubrum);
+		getSurrogateMap().put(Species.Populus_spp, Species.Populus_tremuloides);
+		getSurrogateMap().put(Species.Prunus_spp, Species.Prunus_serotina);
+		getSurrogateMap().put(Species.Quercus_spp, Species.Quercus_alba);
+		getSurrogateMap().put(Species.Ulmus_spp, Species.Ulmus_americana);
+	}	
+	
+	
 }

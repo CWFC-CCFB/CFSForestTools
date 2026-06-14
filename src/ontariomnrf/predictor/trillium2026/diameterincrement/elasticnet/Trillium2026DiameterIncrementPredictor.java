@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
@@ -54,9 +55,8 @@ import repicea.util.ObjectUtility;
  */
 @SuppressWarnings("serial")
 @SimulationModule(type = ModuleType.DiameterIncrement, scope = SpeciesLocale.Ontario)
-public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor 
-implements REpiceaSpeciesCompliantObject,
-ClimateSensitivePredictor {
+public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject,
+																						ClimateSensitivePredictor {
 
 
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
@@ -105,6 +105,8 @@ ClimateSensitivePredictor {
 
 	private final Map<Species, Trillium2026DiameterIncrementInternalPredictor> internalPredictorMap;
 
+	final ConcurrentHashMap<Species, Species> surrogateMap;
+
 	boolean doBackTransformation = true; // for test purpose 
 
 	/**
@@ -127,6 +129,8 @@ ClimateSensitivePredictor {
 			boolean isResidualVariabilityEnabled) {
 		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled); // there are no random effects in this model 
 		internalPredictorMap = new HashMap<Species, Trillium2026DiameterIncrementInternalPredictor>();
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
+		setSurrogateMapToDefaultValue();
 		init();
 	}
 
@@ -269,7 +273,7 @@ ClimateSensitivePredictor {
 	 * @return the diameter increment (cm)
 	 */
 	public double predictGrowth(Trillium2026DiameterIncrementPlot plot, Trillium2026Tree tree) {
-		Species species = tree.getTrillium2026TreeSpecies();
+		Species species = convertToEligibleSpecies(tree.getREpiceaSpecies());
 		if (!SpeciesLookupMap.values().contains(species)) {
 			throw new UnsupportedOperationException("The diameter increment model of Trillium 2026 does not support species: " + species.getLatinName());
 		}
@@ -297,5 +301,17 @@ ClimateSensitivePredictor {
 	@Override
 	public Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> getClimateVariableInformationMap() {
 		return CLIMATE_INFO;
+	}
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
+
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		surrogateMap.clear();
+		surrogateMap.put(Species.Betula_populifolia, Species.Betula_papyrifera);
+		surrogateMap.put(Species.Juniperus_virginiana, Species.Thuja_occidentalis);
+		surrogateMap.put(Species.Picea_rubens, Species.Picea_mariana);
+		surrogateMap.put(Species.Other_coniferous, Species.Abies_balsamea);
 	}
 }

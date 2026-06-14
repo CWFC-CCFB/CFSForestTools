@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
@@ -76,7 +77,8 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	private static ParameterMap SpeciesEffectMatchesMap;
 	private static ParameterMap MaxCapMap;
 	
-	private final Map<Species, Trillium2026RecruitmentNumberInternalPredictor> internalPredictors;
+	final Map<Species, Trillium2026RecruitmentNumberInternalPredictor> internalPredictors;
+	final ConcurrentHashMap<Species, Species> surrogateMap;
 	
 	/**
 	 * Constructor.
@@ -94,6 +96,8 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	public Trillium2026RecruitmentNumberPredictor(boolean isParameterVariabilityEnabled, boolean isResidualVariabilityEnabled) {
 		super(isParameterVariabilityEnabled, false, isResidualVariabilityEnabled);		// no random effect in this module
 		internalPredictors = new HashMap<Species, Trillium2026RecruitmentNumberInternalPredictor>();
+		surrogateMap = new ConcurrentHashMap<Species, Species>();
+		setSurrogateMapToDefaultValue();
 		init();
 	}
 
@@ -143,12 +147,6 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 		}
 	}
 
-	Trillium2026RecruitmentNumberInternalPredictor getInternalPredictor(Species species) {
-		if (!Trillium2026RecruitmentOccurrencePredictor.SpeciesLookupMap.containsValue(species)) {
-			throw new UnsupportedOperationException("The " + getClass().getSimpleName() + " does not support the species " + species.getLatinName());
-		}
-		return internalPredictors.get(species);
-	}
 
 	/**
 	 * Returns the number of recruits conditional on the occurrence of recruitment.
@@ -157,7 +155,8 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	 * @return a double that is the number of recruits in the plot
 	 */
 	public double predictNumberOfRecruits(Trillium2026RecruitmentPlot plot, Species species) {
-		return getInternalPredictor(species).predictNumberOfRecruits(plot);
+		Species sp = this.convertToEligibleSpecies(species);
+		return internalPredictors.get(sp).predictNumberOfRecruits(plot);
 	}
 	
 
@@ -165,7 +164,8 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 	 * For test purposes.
 	 */
 	double getInvThetaParameterEstimate(Species species) {
-		return getInternalPredictor(species).invTheta;
+		Species sp = this.convertToEligibleSpecies(species);
+		return internalPredictors.get(sp).invTheta;
 	}
 	
 	@Override
@@ -178,6 +178,15 @@ public class Trillium2026RecruitmentNumberPredictor extends REpiceaPredictor imp
 
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}
+
+	@Override
+	public ConcurrentHashMap<Species, Species> getSurrogateMap() {return surrogateMap;}
+	
+	@Override
+	public void setSurrogateMapToDefaultValue() {
+		Trillium2026RecruitmentOccurrencePredictor.setInternallySurrogateMap(surrogateMap);
+	}
+	
 
 //	public static void main(String[] args) {
 //		new Trillium2026RecruitmentNumberPredictor(false);
