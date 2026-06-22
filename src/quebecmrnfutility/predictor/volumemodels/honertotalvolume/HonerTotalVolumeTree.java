@@ -23,14 +23,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
-import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 
 /**
  * This interface ensures the tree instance is compatible with the HonerTotalVolumePredictor class.
  * @author Mathieu Fortin - March 2013
  */
-public interface HonerTotalVolumeTree extends SquaredDbhCmProvider, 
+public interface HonerTotalVolumeTree extends DbhCmProvider, 
 												HeightMProvider {
 
 	
@@ -116,4 +116,13 @@ public interface HonerTotalVolumeTree extends SquaredDbhCmProvider,
 	 */
 	public HonerTotalVolumeTreeSpecies getHonerSpecies();
 	
+	/**
+	 * This method returns the square of dbh. 
+	 * @return the square of dbh in cm2 (double)
+	 */
+	public default double getSquaredDbhCm() {
+		double dbhCm = getDbhCm();
+		return dbhCm * dbhCm;
+	}
+
 }

@@ -31,24 +31,14 @@ public class HonerTotalVolumeTreeImpl implements HonerTotalVolumeTree {//, Volum
 		this.height = height;
 	}
 	
-	
-	@Override
-	public double getSquaredDbhCm() {return dbh * dbh;}
-
 	@Override
 	public double getHeightM() {return height;}
 
 	@Override
 	public HonerTotalVolumeTreeSpecies getHonerSpecies() {return species;}
 
-//	@Override
-//	public double getDbhCm() {
-//		return dbh;
-//	}
-//	
-//	@Override
-//	public VolSpecies getVolumableTreeSpecies() {
-//		return VolSpecies.valueOf(species.name());
-//	}
+	@Override
+	public double getDbhCm() {return dbh;}
+
 
 }

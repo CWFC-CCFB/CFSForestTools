@@ -23,15 +23,21 @@ import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.allometrycalculator.LightAllometryCalculableTree;
 import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2HaProvider;
-import repicea.simulation.covariateproviders.treelevel.LnDbhCmProvider;
 import repicea.stats.distributions.GaussianErrorTermList.IndexableErrorTerm;
 
 public interface IrisTree extends BasalAreaLargerThanSubjectM2HaProvider,
 													LightAllometryCalculableTree,
-													LnDbhCmProvider,
 													MonteCarloSimulationCompliantObject,
 													IndexableErrorTerm {
 
+	/**
+	 * This method returns ln(dbh) with the dbh in cm.
+	 * @return a double
+	 */
+	public default double getLnDbhCm() {
+		return Math.log(getDbhCm());
+	}
+	
 	public static enum IrisSpecies {
 		BOG,
 		BOJ,

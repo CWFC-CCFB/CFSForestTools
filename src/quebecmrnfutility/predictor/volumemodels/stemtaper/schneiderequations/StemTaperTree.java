@@ -27,7 +27,6 @@ import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.BarkProportionProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
-import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 import repicea.simulation.species.REpiceaSpecies;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.stemtaper.AbstractStemTaperPredictor.BasicStemTaperTree;
@@ -40,7 +39,6 @@ import repicea.simulation.stemtaper.StemTaperCrossSection;
 public interface StemTaperTree extends BasicStemTaperTree,
 										MonteCarloSimulationCompliantObject,
 										DbhCmProvider,
-										SquaredDbhCmProvider,
 										HeightMProvider {
 	
 	@Override
@@ -149,6 +147,16 @@ public interface StemTaperTree extends BasicStemTaperTree,
 	 * @return a StemTaperTreeSpecies enum instance
 	 */
 	public StemTaperTreeSpecies getStemTaperTreeSpecies();
+	
+	/**
+	 * This method returns the square of dbh. 
+	 * @return the square of dbh in cm2 (double)
+	 */
+	public default double getSquaredDbhCm() {
+		double dbhCm = getDbhCm();
+		return dbhCm * dbhCm;
+	}
+
 	
 //	public void setMonteCarloRealizationId(int id);
 }

@@ -71,11 +71,6 @@ public class PetroGradeTreeImpl implements PetroGradeTree {
 	}
 
 	@Override
-	public double getSquaredDbhCm() {
-		return getDbhCm() * getDbhCm();
-	}
-
-	@Override
 	public QcTreeQuality getTreeQuality() {
 		return abcdQuality;
 	}

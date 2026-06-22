@@ -19,10 +19,8 @@
 package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
 
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.LnDbhCmPlus1Provider;
 import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;
-import repicea.simulation.covariateproviders.treelevel.SquaredLnDbhCmPlus1Provider;
 import repicea.simulation.hdrelationships.HDRelationshipTree;
 import repicea.simulation.species.REpiceaSpecies;
 
@@ -30,12 +28,27 @@ import repicea.simulation.species.REpiceaSpecies;
  * The HeightableTree interface ensures the compatibility with the HD relationship.
  * @author Mathieu Fortin - November 2012
  */
-public interface Fortin2009HeightableTree extends HDRelationshipTree, 
-										DbhCmProvider,
-										REpiceaSpeciesProvider,
-										LnDbhCmPlus1Provider,
-										SquaredLnDbhCmPlus1Provider {
+public interface Fortin2009HeightableTree extends HDRelationshipTree, DbhCmProvider, REpiceaSpeciesProvider {
 
+	
+	/**
+	 * This method returns ln(dbh + 1) with the dbh in cm.
+	 * @return a double
+	 */
+	public default double getLnDbhCmPlus1() {
+		return Math.log(getDbhCm() + 1);
+	}
+
+	/**
+	 * This method returns (ln(dbh + 1))^2 with the dbh in cm.
+	 * @return a double
+	 */
+	public default double getSquaredLnDbhCmPlus1() {
+		double lnDbhCmPlus1 = getLnDbhCmPlus1();
+		return lnDbhCmPlus1 * lnDbhCmPlus1;
+	}
+
+	
 	@Deprecated
 	public enum Hd2009Species implements SpeciesTypeProvider, REpiceaSpecies {
 		BOJ(Species.Betula_alleghaniensis),

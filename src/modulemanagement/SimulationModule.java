@@ -20,6 +20,7 @@ public @interface SimulationModule {
 		RecruitmentOccurrence, 
 		RecruitmentAbundance, 
 		RecruitDiameter, 
+		HeightGrowth,
 		StemTaper,
 		Volume, 
 		VolumeByLogGrade,

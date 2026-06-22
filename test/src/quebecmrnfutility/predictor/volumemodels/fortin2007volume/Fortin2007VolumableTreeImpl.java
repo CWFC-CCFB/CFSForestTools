@@ -52,9 +52,6 @@ public class Fortin2007VolumableTreeImpl implements Fortin2007VolumableTree {
 	public double getDbhCm() {return dbhCm;}
 
 	@Override
-	public double getSquaredDbhCm() {return getDbhCm() * getDbhCm();}
-
-	@Override
 	public double getHeightM() {return heightM;}
 
 	@Override

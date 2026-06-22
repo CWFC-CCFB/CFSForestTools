@@ -18,10 +18,9 @@
  */
 package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
 
-import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableStand;
-import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableTree;
 import repicea.simulation.species.REpiceaSpecies.Species;
 
+@SuppressWarnings("deprecation")
 class FortinHeightableTreeImpl implements Fortin2009HeightableTree {
 
 	final double dbhCm;
@@ -67,24 +66,9 @@ class FortinHeightableTreeImpl implements Fortin2009HeightableTree {
 	public double getDbhCm() {return dbhCm;}
 
 	@Override
-	public double getLnDbhCmPlus1() {return Math.log(getDbhCm() + 1);}
-
-	@Override
-	public double getSquaredLnDbhCmPlus1() {
-		double lnDbhCmPlus1 = this.getLnDbhCmPlus1();
-		return lnDbhCmPlus1 * lnDbhCmPlus1;
-	}
-
-
-	@Override
 	public int getErrorTermIndex() {
 		return 0;
 	}
-
-//	@Override
-//	public Hd2009Species getHeightableTreeSpecies() {
-//		return speciesCode;
-//	}
 
 	@Override
 	public Species getREpiceaSpecies() {
@@ -95,7 +79,6 @@ class FortinHeightableTreeImpl implements Fortin2009HeightableTree {
 	public double getSocialStatusIndex() {
 		return getDbhCm() - ((Fortin2009HeightableStandImpl) stand).getMeanQuadraticDiameterCm();
 	}
-
 
 	@Override
 	public Enum<?> getHDRelationshipTreeErrorGroup() {

@@ -23,7 +23,6 @@ import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.BasalAreaLargerThanSubjectM2HaProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
@@ -34,10 +33,18 @@ import repicea.util.REpiceaTranslator.TextableEnum;
  */
 public interface MatapediaTree extends MonteCarloSimulationCompliantObject,
 										DbhCmProvider,
-										SquaredDbhCmProvider,
 										BasalAreaLargerThanSubjectM2HaProvider {
 
-	
+
+	/**
+	 * This method returns the square of dbh. 
+	 * @return the square of dbh in cm2 (double)
+	 */
+	public default double getSquaredDbhCm() {
+		double dbhCm = getDbhCm();
+		return dbhCm * dbhCm;
+	}
+
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
 

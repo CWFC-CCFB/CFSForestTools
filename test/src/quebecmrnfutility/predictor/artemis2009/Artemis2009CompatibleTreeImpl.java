@@ -57,12 +57,6 @@ class Artemis2009CompatibleTreeImpl implements Artemis2009CompatibleTree {
 	public double getDbhCm() {return dbhCm;}
 
 	@Override
-	public double getLnDbhCm() {return Math.log(dbhCm);}
-
-	@Override
-	public double getSquaredDbhCm() {return dbhCm * dbhCm;}
-
-	@Override
 	public String getSpeciesGroupName() {return speciesGroupName;}
 	
 	@Override

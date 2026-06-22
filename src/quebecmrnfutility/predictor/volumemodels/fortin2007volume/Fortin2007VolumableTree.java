@@ -28,7 +28,6 @@ import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
 import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
-import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 import repicea.simulation.species.REpiceaSpecies;
 
 
@@ -37,11 +36,7 @@ import repicea.simulation.species.REpiceaSpecies;
  * the getters for the general volume equation in Fortin et al. (2007)
  * @author Mathieu Fortin - Octobre 2009 
  */
-public interface Fortin2007VolumableTree extends  DbhCmProvider,
-										SquaredDbhCmProvider,
-										HeightMProvider,
-										REpiceaSpeciesProvider {
-	
+public interface Fortin2007VolumableTree extends DbhCmProvider, HeightMProvider, REpiceaSpeciesProvider {
 	
 	@Deprecated
 	public enum VolSpecies implements REpiceaSpecies {
@@ -172,6 +167,17 @@ public interface Fortin2007VolumableTree extends  DbhCmProvider,
 		public String getLatinName() {return species.getLatinName();}
 	}
 	
+	
+	
+	/**
+	 * This method returns the square of dbh. 
+	 * @return the square of dbh in cm2 (double)
+	 */
+	public default double getSquaredDbhCm() {
+		double dbhCm = getDbhCm();
+		return dbhCm * dbhCm;
+	}
+
 	
 //	/**
 //	 * This method ensures the species compatibility with the volume model.

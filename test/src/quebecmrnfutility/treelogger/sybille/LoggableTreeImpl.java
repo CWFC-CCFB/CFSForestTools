@@ -62,9 +62,6 @@ public class LoggableTreeImpl implements SybilleLoggableTree {
 	public double getDbhCm() {return dbhmm;}
 
 	@Override
-	public double getSquaredDbhCm() {return dbhmm * dbhmm;}
-
-	@Override
 	public double getHeightM() {return heightm;}
 
 	@Override

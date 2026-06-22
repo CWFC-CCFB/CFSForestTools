@@ -60,11 +60,6 @@ class StemTaperTreeImpl implements StemTaperTree {
 	}
 
 	@Override
-	public double getSquaredDbhCm() {
-		return getDbhCm() * getDbhCm();
-	}
-
-	@Override
 	public double getHeightM() {
 		return heightm;
 	}
