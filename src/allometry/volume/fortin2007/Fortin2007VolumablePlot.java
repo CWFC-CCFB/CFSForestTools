@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.fortin2007volume;
+package allometry.volume.fortin2007;
 
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
@@ -26,7 +26,7 @@ import repicea.simulation.covariateproviders.plotlevel.CruiseLineIdProvider;
  * This interface ensures the compatibility with the general volume model.
  * @author Mathieu Fortin - November 2012
  */
-public interface Fortin2007VolumableStand extends MonteCarloSimulationCompliantObject, CruiseLineIdProvider {
+public interface Fortin2007VolumablePlot extends MonteCarloSimulationCompliantObject, CruiseLineIdProvider {
 	
 	@Override
 	default public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}

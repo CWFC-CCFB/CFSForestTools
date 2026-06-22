@@ -27,11 +27,11 @@ import modulemanagement.SimulationModule.ModuleType;
 import repicea.math.Matrix;
 import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.REpiceaPredictor;
-import repicea.simulation.climate.REpiceaClimateVariableInformation;
-import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
-import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation.EvaluationDate;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableProvider;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
-import repicea.simulation.climate.REpiceaClimateVariableProvider;
 import repicea.util.Index;
 
 @SuppressWarnings("serial")

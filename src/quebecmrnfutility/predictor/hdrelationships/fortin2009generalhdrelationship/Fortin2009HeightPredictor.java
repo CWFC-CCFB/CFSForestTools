@@ -38,10 +38,10 @@ import repicea.simulation.ClimateSensitivePredictor;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ParameterLoader;
 import repicea.simulation.SASParameterEstimates;
-import repicea.simulation.climate.REpiceaClimateVariableInformation;
-import repicea.simulation.climate.REpiceaClimateVariableInformation.EvaluationDate;
-import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
-import repicea.simulation.climate.REpiceaClimateVariableProvider;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation.EvaluationDate;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableProvider;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider.DrainageGroup;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
@@ -67,15 +67,15 @@ import repicea.util.ObjectUtility;
  */
 @SuppressWarnings({ "serial", "deprecation" })
 @SimulationModule(type = ModuleType.HDRelationship, scope = SpeciesLocale.Quebec)
-public final class Fortin2009HeightPredictor extends HDRelationshipPredictor<Fortin2009HeightableStand, Fortin2009HeightableTree> 
+public final class Fortin2009HeightPredictor extends HDRelationshipPredictor<Fortin2009HeightablePlot, Fortin2009HeightableTree> 
 												implements ClimateSensitivePredictor,
 															REpiceaSpeciesCompliantObject {
 
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
 	static {
 		REpiceaClimateVariableInformation.fillClimateInfoMap(CLIMATE_INFO, 
-				Fortin2009HeightableStand.class, 
-				Fortin2009HeightableStand.ClimateVariableResolution, 
+				Fortin2009HeightablePlot.class, 
+				Fortin2009HeightablePlot.ClimateVariableResolution, 
 				EvaluationDate.Now);
 	}
 
@@ -290,14 +290,14 @@ public final class Fortin2009HeightPredictor extends HDRelationshipPredictor<For
 
 	
 	@Override
-	protected synchronized RegressionElements fixedEffectsPrediction(Fortin2009HeightableStand stand, Fortin2009HeightableTree t, Matrix beta) {
+	protected synchronized RegressionElements fixedEffectsPrediction(Fortin2009HeightablePlot stand, Fortin2009HeightableTree t, Matrix beta) {
 		Matrix modelParameters = beta;
 		double basalArea = stand.getBasalAreaM2Ha();
 		if (basalArea < 0d) {
 			System.out.println("Error in HD relationship: The basal area of the plot has not been calculated yet!");
 			throw new InvalidParameterException("The basal area of the plot has not been calculated yet!");
 		}
-		double averageTemp = stand.getMeanAnnualTemperatureCelsius(this, Fortin2009HeightableStand.ClimateVariableResolution);
+		double averageTemp = stand.getMeanAnnualTemperatureCelsius(this, Fortin2009HeightablePlot.ClimateVariableResolution);
 		DrainageGroup drainageGroup = getDrainageGroup(stand);
 		String ecoRegion = stand.getEcoRegion();
 		boolean isInterventionResult = stand.isInterventionResult();
@@ -358,7 +358,7 @@ public final class Fortin2009HeightPredictor extends HDRelationshipPredictor<For
 	}
 	
 	
-	private DrainageGroup getDrainageGroup(Fortin2009HeightableStand stand) {
+	private DrainageGroup getDrainageGroup(Fortin2009HeightablePlot stand) {
 		DrainageGroup drainageGroup = stand.getDrainageGroup();
 		if (drainageGroup == null) {
 			if (stand.getEcologicalType() != null && stand.getEcologicalType().length() >= 4) {	// else if the ecological type is available then provide a typical class that corresponds to the grouping XERIC MESIC SUBHYDRIC HYDRIC
@@ -376,7 +376,7 @@ public final class Fortin2009HeightPredictor extends HDRelationshipPredictor<For
 	 * @param stand a Heightable2009Stand instance
 	 * @return a Matrix instance
 	 */
-	public Matrix getBlups(Fortin2009HeightableStand stand) {
+	public Matrix getBlups(Fortin2009HeightablePlot stand) {
 		if (doBlupsExistForThisSubject(stand)) {
 			return getBlupsForThisSubject(stand).getMean();
 		} else {
@@ -386,7 +386,7 @@ public final class Fortin2009HeightPredictor extends HDRelationshipPredictor<For
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Collection<Fortin2009HeightableTree> getTreesFromStand(Fortin2009HeightableStand stand) {
+	protected Collection<Fortin2009HeightableTree> getTreesFromStand(Fortin2009HeightablePlot stand) {
 		return stand.getTrees(StatusClass.alive);
 	}
 

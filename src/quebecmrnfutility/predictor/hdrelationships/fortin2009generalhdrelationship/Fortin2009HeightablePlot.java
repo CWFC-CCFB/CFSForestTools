@@ -18,7 +18,7 @@
  */
 package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
 
-import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.DrainageGroupProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalRegionProvider;
@@ -30,7 +30,7 @@ import repicea.simulation.covariateproviders.plotlevel.climate.MeanAnnualTempera
 import repicea.simulation.hdrelationships.HDRelationshipStand;
 
 
-public interface Fortin2009HeightableStand extends HDRelationshipStand,
+public interface Fortin2009HeightablePlot extends HDRelationshipStand,
 										TreeStatusCollectionsProvider,
 										BasalAreaM2HaProvider,
 										MeanAnnualTemperatureCelsiusProvider,

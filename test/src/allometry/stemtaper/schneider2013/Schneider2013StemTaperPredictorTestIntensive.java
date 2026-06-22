@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
+package allometry.stemtaper.schneider2013;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,8 +26,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
+import allometry.stemtaper.schneider2013.StemTaperEquationSettings.ModelType;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPredictor.EstimationMethodInDeterministicMode;
 import repicea.io.FormatReader;
 import repicea.io.javacsv.CSVReader;
 import repicea.simulation.HierarchicalLevel;
@@ -35,9 +35,9 @@ import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 import repicea.util.ObjectUtility;
 
-public class StemTaperPredictorTestIntensive {
+public class Schneider2013StemTaperPredictorTestIntensive {
 	
-	private static class StemTaperStandImpl implements StemTaperStand {
+	private static class StemTaperStandImpl implements Schneider2013StemTaperPlot {
 		
 		private final double basalAreaM2Ha;
 		private final double numberOfStemsHa;
@@ -87,12 +87,12 @@ public class StemTaperPredictorTestIntensive {
 		
 	}
 	
-	private static class StemTaperTreeImpl implements StemTaperTree {
+	private static class StemTaperTreeImpl implements Schneider2013StemTaperTree {
 
 		private double dbhCm;
 		private double heightM;
 		private StemTaperTreeSpecies species;
-		private StemTaperStand stand;
+		private Schneider2013StemTaperPlot stand;
 		private double predicted;
 		private List<Double> crossSectionsHeight;
 		
@@ -131,7 +131,7 @@ public class StemTaperPredictorTestIntensive {
 		public double getHeightM() {return heightM;}
 
 		@Override
-		public StemTaperStand getStand() {return stand;}
+		public Schneider2013StemTaperPlot getStand() {return stand;}
 
 		@Override
 		public List<StemTaperCrossSection> getCrossSections() {
@@ -143,12 +143,12 @@ public class StemTaperPredictorTestIntensive {
 		
 	}
 
-	static String path = ObjectUtility.getPackagePath(StemTaperPredictorTest.class);
+	static String path = ObjectUtility.getPackagePath(Schneider2013StemTaperPredictorTest.class);
 
 	
 	
-	private static List<StemTaperTree> getTreeList(String species) throws IOException {
-		List<StemTaperTree> treeList = new ArrayList<StemTaperTree>();
+	private static List<Schneider2013StemTaperTree> getTreeList(String species) throws IOException {
+		List<Schneider2013StemTaperTree> treeList = new ArrayList<Schneider2013StemTaperTree>();
 		String filename = path + species.trim().toLowerCase().concat("PredRef.csv");
 		CSVReader reader = (CSVReader) FormatReader.createFormatReader(filename);
 		Object[] record;
@@ -175,9 +175,9 @@ public class StemTaperPredictorTestIntensive {
 		speciesList.add("tho");
 		for (String species : speciesList) {
 			System.out.println("Testing species: " + species);
-			List<StemTaperTree> trees = getTreeList(species);
-			StemTaperPredictor stm = new StemTaperPredictor();
-			for (StemTaperTree tree : trees) {
+			List<Schneider2013StemTaperTree> trees = getTreeList(species);
+			Schneider2013StemTaperPredictor stm = new Schneider2013StemTaperPredictor();
+			for (Schneider2013StemTaperTree tree : trees) {
 				AbstractStemTaperEstimate estimate = stm.getPredictedTaperForTheseHeights(tree, ((StemTaperTreeImpl) tree).getHeightList(), EstimationMethodInDeterministicMode.FirstOrderMeanOnly, ModelType.TREEMODEL);
 				double newValue = estimate.getMean().getValueAt(0, 0);
 				double oldValue = ((StemTaperTreeImpl) tree).getPredicted();

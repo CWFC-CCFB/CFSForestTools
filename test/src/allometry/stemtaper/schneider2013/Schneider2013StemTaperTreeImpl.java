@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
+package allometry.stemtaper.schneider2013;
 
 
 import java.util.List;
@@ -29,14 +29,14 @@ import repicea.simulation.stemtaper.StemTaperCrossSection;
 import repicea.simulation.stemtaper.StemTaperSegment;
 import repicea.simulation.stemtaper.StemTaperSegmentList;
 
-class StemTaperTreeImpl implements StemTaperTree {
+class Schneider2013StemTaperTreeImpl implements Schneider2013StemTaperTree {
 
-	StemTaperStandImpl stand;
+	Schneider2013StemTaperPlotImpl stand;
 	StemTaperTreeSpecies species;
 	double dbhcm;
 	double heightm;
 	
-	StemTaperTreeImpl(StemTaperTreeSpecies species, StemTaperStandImpl stand, double dbhcm, double heightm) {
+	Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies species, Schneider2013StemTaperPlotImpl stand, double dbhcm, double heightm) {
 		this.stand = stand;
 		this.species = species;
 		this.dbhcm = dbhcm;
@@ -50,7 +50,7 @@ class StemTaperTreeImpl implements StemTaperTree {
 	}
 
 	@Override
-	public StemTaperStand getStand() {
+	public Schneider2013StemTaperPlot getStand() {
 		return stand;
 	}
 

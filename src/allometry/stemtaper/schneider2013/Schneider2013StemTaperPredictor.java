@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
+package allometry.stemtaper.schneider2013;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -25,13 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import allometry.stemtaper.schneider2013.StemTaperEquationSettings.ModelType;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperTree.StemTaperTreeSpecies;
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
-import repicea.serial.SerializerChangeMonitor;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.ParameterLoader;
@@ -63,14 +62,7 @@ import repicea.util.ObjectUtility;
  * @author Mathieu Fortin - September 2011
  */
 @SimulationModule(type = ModuleType.StemTaper, scope = SpeciesLocale.Quebec)
-public final class StemTaperPredictor extends AbstractStemTaperPredictor {
-	
-	
-	static {
-		SerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethod", 
-				"quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethodInDeterministicMode");
-	}
-	
+public final class Schneider2013StemTaperPredictor extends AbstractStemTaperPredictor {
 	
 	@SuppressWarnings("serial")
 	public static class SchneiderStemTaperEstimate extends AbstractStemTaperEstimate {
@@ -122,7 +114,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	/**
 	 * Simple constructor with no variability.
 	 */
-	public StemTaperPredictor() {
+	public Schneider2013StemTaperPredictor() {
 		this(false);
 	}
 	
@@ -130,7 +122,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	 * General constructor.
 	 * @param isVariabilityEnabled a boolean true to enable the stochastic mode
 	 */
-	public StemTaperPredictor(boolean isVariabilityEnabled) {
+	public Schneider2013StemTaperPredictor(boolean isVariabilityEnabled) {
 		super(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
 		subModules = new HashMap<ModelType, Map<StemTaperTreeSpecies, StemTaperSubModule>>();
 		
@@ -216,10 +208,10 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	 * @return a StemTaperEstimate instance with the cross section squared diameter
 	 */
 	public AbstractStemTaperEstimate getPredictedTaperForTheseHeights(BasicStemTaperTree t, List<Double> heightMeasures, Object... additionalParameters) {
-		if (!(t instanceof StemTaperTree)) {
+		if (!(t instanceof Schneider2013StemTaperTree)) {
 			throw new InvalidParameterException("The StemTaperPredictor class is designed to work with StemTaperTree instances only!"); 
 		}
-		StemTaperTree tree = (StemTaperTree) t;
+		Schneider2013StemTaperTree tree = (Schneider2013StemTaperTree) t;
 		ModelType mType = StemTaperEquationSettings.getModelTypeEquation(tree);
 		
 		Map<StemTaperTreeSpecies, StemTaperSubModule> innerMap = subModules.get(mType);
@@ -248,7 +240,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	 * @param method a EstimationMethodInDeterministicMode enum
 	 * @return a StemTaperEstimate instance with the cross section diameter in mm2
 	 */
-	public AbstractStemTaperEstimate getPredictedTaperForTheseSegments(StemTaperTree tree, StemTaperSegmentList stemTaperSegments, EstimationMethodInDeterministicMode method) {		
+	public AbstractStemTaperEstimate getPredictedTaperForTheseSegments(Schneider2013StemTaperTree tree, StemTaperSegmentList stemTaperSegments, EstimationMethodInDeterministicMode method) {		
 		List<Double> currentHeightsToEvaluate = stemTaperSegments.getHeightsWithoutReplicates();	
 		return getPredictedTaperForTheseHeights(tree, currentHeightsToEvaluate, method);		
 	}
@@ -264,7 +256,7 @@ public final class StemTaperPredictor extends AbstractStemTaperPredictor {
 	 * @return the underbark volume in dm3 or -1 if the volume cannot be calculated
 	 */
 	@SuppressWarnings("unchecked")
-	public static double getUnderbarkVolumeThroughSmalianFormula(StemTaperTree tree) {
+	public static double getUnderbarkVolumeThroughSmalianFormula(Schneider2013StemTaperTree tree) {
 		List<StemTaperCrossSection> heightSections = tree.getCrossSections();
 		
 		if (heightSections != null && !heightSections.isEmpty() && heightSections.size() > 1) {

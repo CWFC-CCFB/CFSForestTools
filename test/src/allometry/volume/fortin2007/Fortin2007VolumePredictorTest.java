@@ -19,17 +19,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package quebecmrnfutility.predictor.volumemodels.fortin2007volume;
+package allometry.volume.fortin2007;
 
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableStand;
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableStandImpl;
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableTree;
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumePredictor;
 import repicea.simulation.species.REpiceaSpecies;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
@@ -38,7 +34,7 @@ public class Fortin2007VolumePredictorTest {
 
 	@Test
 	public void test01SimpleHappyPath() {
-		Fortin2007VolumableStand p = new Fortin2007VolumableStandImpl();
+		Fortin2007VolumablePlot p = new Fortin2007VolumableStandImpl();
 		Fortin2007VolumableTree t = new Fortin2007VolumableTreeImpl("BOJ", 18, 15);
 		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		double volumeDM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t);
@@ -47,7 +43,7 @@ public class Fortin2007VolumePredictorTest {
 
 	@Test
 	public void test02WithNonmerchantableTree() {
-		Fortin2007VolumableStand p = new Fortin2007VolumableStandImpl();
+		Fortin2007VolumablePlot p = new Fortin2007VolumableStandImpl();
 		Fortin2007VolumableTree t = new Fortin2007VolumableTreeImpl("BOJ", 8d, 15);
 		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		double volumeDM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t);
@@ -56,7 +52,7 @@ public class Fortin2007VolumePredictorTest {
 
 	@Test
 	public void test03WithNonobservedHeight() {
-		Fortin2007VolumableStand p = new Fortin2007VolumableStandImpl();
+		Fortin2007VolumablePlot p = new Fortin2007VolumableStandImpl();
 		Fortin2007VolumableTree t = new Fortin2007VolumableTreeImpl("BOJ", 10d, -1d);
 		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		try {
@@ -69,7 +65,7 @@ public class Fortin2007VolumePredictorTest {
 
 	@Test
 	public void test04WithTooShortTree() {
-		Fortin2007VolumableStand p = new Fortin2007VolumableStandImpl();
+		Fortin2007VolumablePlot p = new Fortin2007VolumableStandImpl();
 		Fortin2007VolumableTree t = new Fortin2007VolumableTreeImpl("BOJ", 10d, 1d);
 		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		try {

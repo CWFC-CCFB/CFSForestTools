@@ -16,14 +16,14 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
+package allometry.stemtaper.schneider2013;
 
-class StemTaperStandImpl implements StemTaperStand {
+class Schneider2013StemTaperPlotImpl implements Schneider2013StemTaperPlot {
 
 	double gHa;
 	double stemHa;
 	
-	protected StemTaperStandImpl(double gHa, double stemHa) {
+	protected Schneider2013StemTaperPlotImpl(double gHa, double stemHa) {
 		this.gHa = gHa;
 		this.stemHa = stemHa;
 	}

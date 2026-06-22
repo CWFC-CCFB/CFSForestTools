@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.fortin2007volume;
+package allometry.volume.fortin2007;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;
@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import allometry.volume.fortin2007.Fortin2007VolumableTree.VolSpecies;
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableTree.VolSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
@@ -183,7 +183,7 @@ public final class Fortin2007VolumePredictor extends REpiceaPredictor implements
 	 * @param tree a TreeVolumable object
 	 * @return the commercial underbark volume (dm3)
 	 */
-	public double predictTreeCommercialUnderbarkVolumeDm3(Fortin2007VolumableStand stand, Fortin2007VolumableTree tree) {
+	public double predictTreeCommercialUnderbarkVolumeDm3(Fortin2007VolumablePlot stand, Fortin2007VolumableTree tree) {
 		if (tree.getDbhCm() < 9.1) {	// means this is a sapling
 			return 0d;
 		}
@@ -293,7 +293,7 @@ public final class Fortin2007VolumePredictor extends REpiceaPredictor implements
 	 * @return the fixed effect prediction (double)
 	 * @throws Exception
 	 */
-	private double fixedEffectPrediction(Fortin2007VolumableStand stand, Fortin2007VolumableTree t, Matrix modelParameters, Species species) {
+	private double fixedEffectPrediction(Fortin2007VolumablePlot stand, Fortin2007VolumableTree t, Matrix modelParameters, Species species) {
 		double dbh = t.getDbhCm();
 		double dbh2 = t.getSquaredDbhCm();
 		double height = t.getHeightM();
@@ -326,7 +326,7 @@ public final class Fortin2007VolumePredictor extends REpiceaPredictor implements
 	 * @param t = a TreeVolumable object
 	 * @return a simulated random effect (double)
 	 */
-	private double blupImplementation(Fortin2007VolumableStand stand, Fortin2007VolumableTree t, Species species) {
+	private double blupImplementation(Fortin2007VolumablePlot stand, Fortin2007VolumableTree t, Species species) {
 		if (isRandomEffectsVariabilityEnabled) {					
 			String cruiseLineID = stand.getCruiseLineID();
 			if (cruiseLineID == null) {

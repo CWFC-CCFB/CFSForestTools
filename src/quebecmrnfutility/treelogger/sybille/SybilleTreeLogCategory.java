@@ -22,7 +22,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperTree;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
@@ -173,7 +173,7 @@ public class SybilleTreeLogCategory extends LogCategory {
 	 */
 	@Override
 	protected List<SybilleWoodPiece> extractFromTree(LoggableTree tree, Object... params) {
-		if (!(tree instanceof StemTaperTree)) {
+		if (!(tree instanceof Schneider2013StemTaperTree)) {
 			throw new InvalidParameterException("Sybille only uses trees that implement the StemTaperTree interface!");
 		} 
 		

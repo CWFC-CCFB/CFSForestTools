@@ -25,7 +25,7 @@ import java.util.Map;
 import canforservutility.occupancyindex.OccupancyIndexCalculator;
 import ontariomnrf.predictor.trillium2026.Trillium2026Tree;
 import repicea.simulation.HierarchicalLevel;
-import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.species.REpiceaSpecies.Species;
 

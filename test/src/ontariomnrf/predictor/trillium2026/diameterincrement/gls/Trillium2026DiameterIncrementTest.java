@@ -34,7 +34,7 @@ import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
-import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;

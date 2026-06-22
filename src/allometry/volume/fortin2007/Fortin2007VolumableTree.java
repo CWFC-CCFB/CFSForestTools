@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.fortin2007volume;
+package allometry.volume.fortin2007;
 
 import java.util.ArrayList;
 import java.util.Collections;

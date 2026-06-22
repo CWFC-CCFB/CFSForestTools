@@ -20,7 +20,7 @@
 package ontariomnrf.predictor.trillium2026.diameterincrement.gls;
 
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionPlannedProvider;

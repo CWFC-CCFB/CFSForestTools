@@ -29,12 +29,10 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import allometry.heightgrowth.huang2026.Huang2026HeightGrowthPlot;
-import allometry.heightgrowth.huang2026.Huang2026HeightGrowthPredictor;
 import repicea.io.javacsv.CSVHeader;
 import repicea.io.javacsv.CSVReader;
-import repicea.simulation.climate.REpiceaClimateVariableInformation;
-import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.util.ObjectUtility;
 

@@ -22,7 +22,7 @@ package ontariomnrf.predictor.trillium2026.recruitment;
 import canforservutility.occupancyindex.OccupancyIndexCalculablePlot;
 import canforservutility.simulation.RecruitmentPlotWithOccupancy;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
-import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaBySpeciesTypeM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.GrowthStepLengthYrProvider;

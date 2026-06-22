@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
+package allometry.stemtaper.schneider2013;
 
 import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcDrainageClassProvider;
 import repicea.simulation.HierarchicalLevel;
@@ -27,7 +27,7 @@ import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;
 import repicea.simulation.covariateproviders.plotlevel.ElevationMProvider;
 import repicea.simulation.covariateproviders.plotlevel.StemDensityHaProvider;
 
-public interface StemTaperStand extends MonteCarloSimulationCompliantObject,
+public interface Schneider2013StemTaperPlot extends MonteCarloSimulationCompliantObject,
 										BasalAreaM2HaProvider,
 										StemDensityHaProvider,
 										EcologicalRegionProvider,

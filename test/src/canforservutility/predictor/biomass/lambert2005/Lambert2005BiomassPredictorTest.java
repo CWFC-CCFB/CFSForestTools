@@ -33,12 +33,12 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import allometry.volume.fortin2007.Fortin2007VolumablePlot;
+import allometry.volume.fortin2007.Fortin2007VolumableStandImpl;
+import allometry.volume.fortin2007.Fortin2007VolumableTreeImpl;
+import allometry.volume.fortin2007.Fortin2007VolumePredictor;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
 import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableStand;
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableStandImpl;
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumableTreeImpl;
-import quebecmrnfutility.predictor.volumemodels.fortin2007volume.Fortin2007VolumePredictor;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;
@@ -390,7 +390,7 @@ public class Lambert2005BiomassPredictorTest {
 		Fortin2007VolumePredictor volPred = new Fortin2007VolumePredictor();
 		Lambert2005BiomassPredictor bioPred = new Lambert2005BiomassPredictor();
 		Species species = Species.Populus_tremuloides;
-		Fortin2007VolumableStand p = new Fortin2007VolumableStandImpl();
+		Fortin2007VolumablePlot p = new Fortin2007VolumableStandImpl();
 		Tree t = new Tree("PET", species, 20, 15);
 		double volumeM3 = volPred.predictTreeCommercialUnderbarkVolumeDm3(p, t) * 0.001;
 		double overbarkCommercialVolumeM3 = volumeM3 * (1 + species.getBarkProportionOfWoodVolume(SpeciesLocale.Quebec));

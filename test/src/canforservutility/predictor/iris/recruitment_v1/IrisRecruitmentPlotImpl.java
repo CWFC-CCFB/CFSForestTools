@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import canforservutility.predictor.iris.recruitment_v1.IrisTree.IrisSpecies;
-import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 
 final class IrisRecruitmentPlotImpl implements IrisRecruitmentPlot {

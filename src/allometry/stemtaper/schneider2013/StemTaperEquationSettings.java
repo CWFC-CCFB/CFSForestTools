@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
+package allometry.stemtaper.schneider2013;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperTree.StemTaperTreeSpecies;
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcDrainageClassProvider.QcDrainageClass;
 import repicea.math.Matrix;
 
@@ -534,7 +534,7 @@ class StemTaperEquationSettings implements Serializable {
 	 * @param tree The stemTaperTree instance
 	 * @return the model type equation
 	 */
-	public static ModelType getModelTypeEquation(StemTaperTree tree) {
+	public static ModelType getModelTypeEquation(Schneider2013StemTaperTree tree) {
 //	public static ModelType getModelTypeEquation(StemTaperTree tree, Object... additionalParameters) {
 		ModelType modelType = null;
 //		if (additionalParameters != null) {
@@ -546,7 +546,7 @@ class StemTaperEquationSettings implements Serializable {
 //		}
 		modelType = ModelType.HYBRIDMODEL;
 		StemTaperTreeSpecies species = tree.getStemTaperTreeSpecies();
-		StemTaperStand stand = tree.getStand();
+		Schneider2013StemTaperPlot stand = tree.getStand();
 		if (EFFECTS_MAP.get(modelType).get(species).contains(Effect.VegPot)) {
 			String potentialVegetation = stand.getEcologicalType().substring(0, 3).toUpperCase();
 			if (POTENTIAL_VEGETATION_GROUP_DUMMY_MAP.get(species).get(potentialVegetation) == null) {

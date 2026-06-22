@@ -23,7 +23,7 @@ import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.REpiceaPredictor;
-import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.StatisticalUtility;
 

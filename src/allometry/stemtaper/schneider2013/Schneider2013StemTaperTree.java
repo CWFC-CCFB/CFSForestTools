@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
+package allometry.stemtaper.schneider2013;
 
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +36,7 @@ import repicea.simulation.stemtaper.StemTaperCrossSection;
  * This interface ensures that the object is compatible with the StemTaperEquation class.
  * @author Mathieu Fortin - July 2011
  */
-public interface StemTaperTree extends BasicStemTaperTree,
+public interface Schneider2013StemTaperTree extends BasicStemTaperTree,
 										MonteCarloSimulationCompliantObject,
 										DbhCmProvider,
 										HeightMProvider {
@@ -131,7 +131,7 @@ public interface StemTaperTree extends BasicStemTaperTree,
 	 * This method returns the stand in which the tree grows.
 	 * @return a StemTaperStand instance
 	 */
-	public StemTaperStand getStand();
+	public Schneider2013StemTaperPlot getStand();
 	
 	
 	/**

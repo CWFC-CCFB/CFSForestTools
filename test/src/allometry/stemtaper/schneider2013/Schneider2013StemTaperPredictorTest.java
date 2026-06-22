@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
+package allometry.stemtaper.schneider2013;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,8 +28,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPredictor.EstimationMethodInDeterministicMode;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.serial.xml.XmlDeserializer;
@@ -40,31 +40,31 @@ import repicea.util.ObjectUtility;
 
 
 @SuppressWarnings("rawtypes")
-public class StemTaperPredictorTest {
+public class Schneider2013StemTaperPredictorTest {
 	
-	static String path = ObjectUtility.getPackagePath(StemTaperPredictorTest.class);
+	static String path = ObjectUtility.getPackagePath(Schneider2013StemTaperPredictorTest.class);
 	
 	
 	
 	private Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> runSimulation(EstimationMethodInDeterministicMode method) throws Exception {
-		StemTaperPredictor ste = new StemTaperPredictor();
-		StemTaperStandImpl stand = new StemTaperStandImpl(20, 700);		// 20 m2/ha and 700 stems / ha
-		List<StemTaperTreeImpl> trees = new ArrayList<StemTaperTreeImpl>();
-		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.BOP, stand, 30, 20));	// 30 cm in dbh and 20 m in height
-		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.EPB, stand, 30, 20)); 
-		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.EPN, stand, 30, 20));
-		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.EPR, stand, 30, 20));
-		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.PEG, stand, 30, 20));		
-		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.PET, stand, 30, 20));
-		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.SAB, stand, 30, 20)); 
-		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.THO, stand, 30, 20));
-		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.PIG, stand, 30, 20));
-		trees.add(new StemTaperTreeImpl(StemTaperTreeSpecies.PIB, stand, 30, 20));
+		Schneider2013StemTaperPredictor ste = new Schneider2013StemTaperPredictor();
+		Schneider2013StemTaperPlotImpl stand = new Schneider2013StemTaperPlotImpl(20, 700);		// 20 m2/ha and 700 stems / ha
+		List<Schneider2013StemTaperTreeImpl> trees = new ArrayList<Schneider2013StemTaperTreeImpl>();
+		trees.add(new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.BOP, stand, 30, 20));	// 30 cm in dbh and 20 m in height
+		trees.add(new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.EPB, stand, 30, 20)); 
+		trees.add(new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.EPN, stand, 30, 20));
+		trees.add(new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.EPR, stand, 30, 20));
+		trees.add(new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.PEG, stand, 30, 20));		
+		trees.add(new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.PET, stand, 30, 20));
+		trees.add(new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.SAB, stand, 30, 20)); 
+		trees.add(new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.THO, stand, 30, 20));
+		trees.add(new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.PIG, stand, 30, 20));
+		trees.add(new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.PIB, stand, 30, 20));
 
 
 		AbstractStemTaperEstimate stemTaper;
 		Map<StemTaperTreeSpecies, AbstractStemTaperEstimate> outputMap = new HashMap<StemTaperTreeSpecies, AbstractStemTaperEstimate>();
-		for (StemTaperTreeImpl tree : trees) {
+		for (Schneider2013StemTaperTreeImpl tree : trees) {
 //			heights = tree.getHeightsForTaper();
 //			ste.setTree(tree);
 			stemTaper = ste.getPredictedTaperForTheseSegments(tree, tree.getSegments(), method);
@@ -403,9 +403,9 @@ public class StemTaperPredictorTest {
 	@Test
 	public void TestComparisonGaussLegendreAndTrapezoidalRuleForBottomSections() throws Exception {
 	
-		StemTaperPredictor ste = new StemTaperPredictor();
-		StemTaperStandImpl stand = new StemTaperStandImpl(20, 700);		// 20 m2/ha and 700 stems / ha
-		StemTaperTreeImpl tree = new StemTaperTreeImpl(StemTaperTreeSpecies.EPB, stand, 30, 20); 
+		Schneider2013StemTaperPredictor ste = new Schneider2013StemTaperPredictor();
+		Schneider2013StemTaperPlotImpl stand = new Schneider2013StemTaperPlotImpl(20, 700);		// 20 m2/ha and 700 stems / ha
+		Schneider2013StemTaperTreeImpl tree = new Schneider2013StemTaperTreeImpl(StemTaperTreeSpecies.EPB, stand, 30, 20); 
 
 //		ste.setTree(tree);
 		StemTaperSegmentList segments = tree.getGaussLegendreBottomSegments();
@@ -425,7 +425,7 @@ public class StemTaperPredictorTest {
 		
 		
 
-		ste = new StemTaperPredictor();
+		ste = new Schneider2013StemTaperPredictor();
 //		ste.setTree(tree);
 		segments = tree.getTrapezoidalBottomSegments();
 		taperEstimate = ste.getPredictedTaperForTheseSegments(tree, segments);

@@ -17,13 +17,13 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.fortin2007volume;
+package allometry.volume.fortin2007;
 
 /**
  * A class to facilitate the use of the deterministic version of the model in R.
  * @author Mathieu Fortin - August 2021
  */
-public final class Fortin2007VolumableStandImpl implements Fortin2007VolumableStand {
+public final class Fortin2007VolumableStandImpl implements Fortin2007VolumablePlot {
 
 	/**
 	 * Constructor to be used with deterministic version of the MerchantableVolumePredictor.

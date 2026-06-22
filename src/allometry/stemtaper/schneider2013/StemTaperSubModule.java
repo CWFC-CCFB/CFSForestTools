@@ -16,15 +16,15 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
+package allometry.stemtaper.schneider2013;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperEquationSettings.ModelType;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.SchneiderStemTaperEstimate;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
+import allometry.stemtaper.schneider2013.StemTaperEquationSettings.ModelType;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPredictor.EstimationMethodInDeterministicMode;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPredictor.SchneiderStemTaperEstimate;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperTree.StemTaperTreeSpecies;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.simulation.HierarchicalLevel;
@@ -62,7 +62,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	private double varFunctionParm1;
 	private double varFunctionParm2;
 	private Double residualStdDev;
-	private StemTaperTree tree;
+	private Schneider2013StemTaperTree tree;
 	private Matrix correctionMatrix;
 
 	/**
@@ -150,7 +150,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	
 	@Override
 	public synchronized AbstractStemTaperEstimate getPredictedTaperForTheseHeights(BasicStemTaperTree t, List<Double> heightMeasures, Object... additionalParameters) {
-		this.tree = (StemTaperTree) t;
+		this.tree = (Schneider2013StemTaperTree) t;
 		Matrix parametersForThisRealization = getParametersForThisRealization(tree);
 		linearExpressions.setParameters(parametersForThisRealization);
 		EstimationMethodInDeterministicMode estimationMethod = EstimationMethodInDeterministicMode.SecondOrder;
@@ -211,14 +211,14 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 		return prediction;
 	}
 
-	private Matrix getTreeRandomEffects(StemTaperTree tree) {
+	private Matrix getTreeRandomEffects(Schneider2013StemTaperTree tree) {
 		if (getDefaultRandomEffects(tree.getHierarchicalLevel()) != null) {
 			return getRandomEffectsForThisSubject(tree); 
 		}
 		return FakeMatrixForMissingRandomEffects;
 	}
 
-	private Matrix getPlotRandomEffects(StemTaperStand stand) {
+	private Matrix getPlotRandomEffects(Schneider2013StemTaperPlot stand) {
 		if (getDefaultRandomEffects(stand.getHierarchicalLevel()) != null) {
 			return getRandomEffectsForThisSubject(stand); 
 		}
@@ -378,7 +378,7 @@ final class StemTaperSubModule extends AbstractStemTaperPredictor {
 	 * This method returns the tree whose taper is being predicted.
 	 * @return a StemTaperTree instance
  	 */
-	protected StemTaperTree getTree() {return tree;}
+	protected Schneider2013StemTaperTree getTree() {return tree;}
 
 	
 }

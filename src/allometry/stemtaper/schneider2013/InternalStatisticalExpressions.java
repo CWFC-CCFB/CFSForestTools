@@ -16,15 +16,15 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations;
+package allometry.stemtaper.schneider2013;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import allometry.stemtaper.schneider2013.StemTaperEquationSettings.Effect;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperTree.StemTaperTreeSpecies;
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperEquationSettings.Effect;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
 import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcDrainageClassProvider.QcDrainageClass;
 import repicea.math.AbstractMathematicalFunction;
 import repicea.math.Matrix;
@@ -41,7 +41,7 @@ class InternalStatisticalExpressions {
 	private LinearStatisticalExpression firstLinearTerm;
 	private AbstractMathematicalFunction secondLinearTerm;		// abstract because it can be linear or nonlinear sometimes
 	
-	private StemTaperTree lastTree;
+	private Schneider2013StemTaperTree lastTree;
 	
 	private List<Integer> indexOfChangingEffects = new ArrayList<Integer>();
 
@@ -204,7 +204,7 @@ class InternalStatisticalExpressions {
 		int variableIndex = 0;
 		Map<String, Matrix> oMap;
 		Matrix oMat;
-		StemTaperTree currentTree = stemTaperPredictor.getTree();
+		Schneider2013StemTaperTree currentTree = stemTaperPredictor.getTree();
 		boolean isNewTree = false;
 		if (!currentTree.equals(lastTree)) {
 			isNewTree = true;
@@ -213,7 +213,7 @@ class InternalStatisticalExpressions {
 		}
 
 		int formerIndex;
-		StemTaperStand currentStand = currentTree.getStand();
+		Schneider2013StemTaperPlot currentStand = currentTree.getStand();
 		List<Effect> effects = StemTaperEquationSettings.EFFECTS_MAP.get(stemTaperPredictor.modelType).get(currentTree.getStemTaperTreeSpecies());
 		for (Effect effect : effects) {
 			if (isNewTree) {	

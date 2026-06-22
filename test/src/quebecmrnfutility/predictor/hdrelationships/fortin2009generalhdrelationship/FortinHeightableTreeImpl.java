@@ -24,7 +24,7 @@ import repicea.simulation.species.REpiceaSpecies.Species;
 class FortinHeightableTreeImpl implements Fortin2009HeightableTree {
 
 	final double dbhCm;
-	final Fortin2009HeightableStand stand;
+	final Fortin2009HeightablePlot stand;
 	final int subjectID;
 	double heightM;
 	Hd2009Species speciesCode;

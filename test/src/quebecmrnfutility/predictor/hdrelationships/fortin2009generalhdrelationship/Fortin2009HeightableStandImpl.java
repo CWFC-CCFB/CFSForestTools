@@ -21,13 +21,11 @@ package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelations
 import java.util.ArrayList;
 import java.util.Collection;
 
-import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableStand;
-import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableTree;
-import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation;
 import repicea.simulation.covariateproviders.plotlevel.MeanQuadraticDiameterCmProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
-public class Fortin2009HeightableStandImpl implements Fortin2009HeightableStand, MeanQuadraticDiameterCmProvider {
+public class Fortin2009HeightableStandImpl implements Fortin2009HeightablePlot, MeanQuadraticDiameterCmProvider {
 
 	final String subjectID;
 	int monteCarloRealizationID;

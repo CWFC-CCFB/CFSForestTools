@@ -20,14 +20,15 @@ package quebecmrnfutility.treelogger.sybille;
 
 import java.util.Vector;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPlot;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperTree.StemTaperTreeSpecies;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.stemtaper.StemTaperCrossSection;
 
 public class LoggableTreeImpl implements SybilleLoggableTree {
 
 	
-	private StemTaperStand stand;
+	private Schneider2013StemTaperPlot stand;
 	private StemTaperTreeSpecies species;
 	private double dbhmm;
 	private double heightm;
@@ -39,7 +40,7 @@ public class LoggableTreeImpl implements SybilleLoggableTree {
 	 * @param dbhmm (cm)
 	 * @param heightm (m)
 	 */
-	protected LoggableTreeImpl(StemTaperStand stand, StemTaperTreeSpecies species, double dbhmm, double heightm, double refVolume) {
+	protected LoggableTreeImpl(Schneider2013StemTaperPlot stand, StemTaperTreeSpecies species, double dbhmm, double heightm, double refVolume) {
 		this.stand = stand;
 		this.species = species;
 		this.dbhmm = dbhmm;
@@ -47,7 +48,7 @@ public class LoggableTreeImpl implements SybilleLoggableTree {
 		this.refVolume = refVolume;
 	}
 
-	protected LoggableTreeImpl(StemTaperStand stand, StemTaperTreeSpecies species, double dbhmm, double heightm) {
+	protected LoggableTreeImpl(Schneider2013StemTaperPlot stand, StemTaperTreeSpecies species, double dbhmm, double heightm) {
 		this(stand, species, dbhmm, heightm, 0d);
 	}
 
@@ -56,7 +57,7 @@ public class LoggableTreeImpl implements SybilleLoggableTree {
 	public String getSubjectId() {return ((Integer) hashCode()).toString();}
 
 	@Override
-	public StemTaperStand getStand() {return stand;}
+	public Schneider2013StemTaperPlot getStand() {return stand;}
 
 	@Override
 	public double getDbhCm() {return dbhmm;}
