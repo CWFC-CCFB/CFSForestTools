@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
+package allometry.hdrelationship.fortin2009generalhdrelationship;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +25,7 @@ import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation;
 import repicea.simulation.covariateproviders.plotlevel.MeanQuadraticDiameterCmProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
-public class Fortin2009HeightableStandImpl implements Fortin2009HeightablePlot, MeanQuadraticDiameterCmProvider {
+public class Fortin2009HeightablePlotImpl implements Fortin2009HeightablePlot, MeanQuadraticDiameterCmProvider {
 
 	final String subjectID;
 	int monteCarloRealizationID;
@@ -40,7 +40,7 @@ public class Fortin2009HeightableStandImpl implements Fortin2009HeightablePlot, 
 	boolean isDefoliated;
 	final Collection<Fortin2009HeightableTree> trees;
 	
-	Fortin2009HeightableStandImpl(String subjectID,
+	Fortin2009HeightablePlotImpl(String subjectID,
 			double basalAreaM2Ha, 
 			double meanQuadraticDiameter, 
 			String ecoRegion, 

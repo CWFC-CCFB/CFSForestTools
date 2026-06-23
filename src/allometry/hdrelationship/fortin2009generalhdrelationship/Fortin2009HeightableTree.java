@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
+package allometry.hdrelationship.fortin2009generalhdrelationship;
 
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;

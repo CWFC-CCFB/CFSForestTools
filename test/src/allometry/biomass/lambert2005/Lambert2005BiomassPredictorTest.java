@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package canforservutility.predictor.biomass.lambert2005;
+package allometry.biomass.lambert2005;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,12 +33,12 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import allometry.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
+import allometry.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
 import allometry.volume.fortin2007.Fortin2007VolumablePlot;
 import allometry.volume.fortin2007.Fortin2007VolumableStandImpl;
 import allometry.volume.fortin2007.Fortin2007VolumableTreeImpl;
 import allometry.volume.fortin2007.Fortin2007VolumePredictor;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.BiomassCompartment;
-import canforservutility.predictor.biomass.lambert2005.Lambert2005BiomassPredictor.ModelVersion;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
 import repicea.simulation.HierarchicalLevel;

@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
+package allometry.hdrelationship.fortin2009generalhdrelationship;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -29,9 +29,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightPredictor;
-import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightablePlot;
-import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableTree;
 import quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014.GeneralHeight2014PredictorTest;
 import repicea.io.javacsv.CSVReader;
 import repicea.math.Matrix;
@@ -77,7 +74,7 @@ public class Fortin2009HeightPredictorTest {
 				String species = record[5].toString();
 				
 				if (!standMap.containsKey(placetteID)) {
-					standMap.put(placetteID, new Fortin2009HeightableStandImpl(placetteID,
+					standMap.put(placetteID, new Fortin2009HeightablePlotImpl(placetteID,
 							basalAreaM2Ha,
 							meanQuadraticDiameterCm,
 							regEco,
@@ -86,7 +83,7 @@ public class Fortin2009HeightPredictorTest {
 							meanAnnualTemperatureC,
 							meanAnnualPrecipitationMm));
 				}
-				Fortin2009HeightableStandImpl stand = (Fortin2009HeightableStandImpl) standMap.get(placetteID);
+				Fortin2009HeightablePlotImpl stand = (Fortin2009HeightablePlotImpl) standMap.get(placetteID);
 				new FortinHeightableTreeImpl(stand, dbhCm, treeID++, species, heightM);
 			}
 		} catch (IOException e) {
@@ -222,7 +219,7 @@ public class Fortin2009HeightPredictorTest {
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		Matrix realization;
 		for (int i = 0; i < 50000; i++) {
-			((Fortin2009HeightableStandImpl) s).monteCarloRealizationID = i;
+			((Fortin2009HeightablePlotImpl) s).monteCarloRealizationID = i;
 			realization = new Matrix(1,1);
 			realization.setValueAt(0, 0, stoPredictor.predictHeightM(s, tree));
 			estimate.addRealization(realization);
@@ -262,7 +259,7 @@ public class Fortin2009HeightPredictorTest {
 			throw new InvalidParameterException("This tree should have an observed height!");
 		}
 		for (int i = 0; i < 10; i++) {
-			((Fortin2009HeightableStandImpl) s).monteCarloRealizationID = i;
+			((Fortin2009HeightablePlotImpl) s).monteCarloRealizationID = i;
 			double predictedHeight = stoPredictor.predictHeightM(s, tree);
 			Assert.assertEquals("Comparing stochastic prediction to observed height", tree.getHeightM(), predictedHeight, 1E-8);
 		}
@@ -273,7 +270,7 @@ public class Fortin2009HeightPredictorTest {
 	
 	@Test
 	public void aDeadTreeOnly() {
-		Fortin2009HeightableStandImpl stand = new Fortin2009HeightableStandImpl("PlotWithASingleDeadTree",
+		Fortin2009HeightablePlotImpl stand = new Fortin2009HeightablePlotImpl("PlotWithASingleDeadTree",
 				0d,
 				0d,
 				"3a",

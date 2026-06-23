@@ -19,38 +19,52 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package canforservutility.predictor.biomass.lambert2005;
+package allometry.biomass.lambert2005;
 
 import java.security.InvalidParameterException;
 
-import repicea.simulation.covariateproviders.treelevel.HeightMProvider;
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.species.REpiceaSpecies.Species;
 
 /**
- * An implementation of the Lambert2005Tree interface for the complete model.
+ * An implementation of the Lambert2005Tree interface for the reduced model.
  * @author Mathieu Fortin - February 2026
  */
-public class Lambert2005TreeCompleteImpl extends Lambert2005TreeReducedImpl implements HeightMProvider {
+public class Lambert2005TreeReducedImpl implements Lambert2005Tree {
 
-	final double heightM;	
+	final Species species;
+	final double dbhCm;
 	
 	/**
 	 * Constructor.
-	 * @param species a Lambert2005Species enum
+	 * @param species a Species enum
 	 * @param dbhCm tree diameter at breast height (cm)
-	 * @param heightM tree height (m)
 	 */
-	public Lambert2005TreeCompleteImpl(Species species, double dbhCm, double heightM) {
-		super(species, dbhCm);
-		if (heightM <= 0d) {
-			throw new InvalidParameterException("The tree height must be positive!");
+	public Lambert2005TreeReducedImpl(Species species, double dbhCm) {
+		if (species == null) {
+			throw new InvalidParameterException("The species argument cannot be null!");
 		}
-		this.heightM = heightM;		
+		if (dbhCm <= 0d) {
+			throw new InvalidParameterException("The tree diameter must be positive!");
+		}
+		this.species = species;
+		this.dbhCm = dbhCm;
 	}
 	
+	@Override
+	public double getDbhCm() {return dbhCm;}
 
 	@Override
-	public double getHeightM() {return heightM;}
+	public String getSubjectId() {return null;}
+
+	@Override
+	public HierarchicalLevel getHierarchicalLevel() {return null;}
+
+	@Override
+	public int getMonteCarloRealizationId() {return 0;}
+
+	@Override
+	public Species getREpiceaSpecies() {return species;}
 
 }
 

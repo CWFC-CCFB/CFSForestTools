@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import allometry.hdrelationship.fortin2009generalhdrelationship.Fortin2009HeightableTree.Hd2009Species;
 import allometry.volume.fortin2007.Fortin2007VolumableTree.VolSpecies;
-import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableTree.Hd2009Species;
 import quebecmrnfutility.predictor.thinners.formerofficialharvestmodule.FormerOfficialHarvestableTree.FormerOfficialHarvestableSpecies;
 import repicea.simulation.covariateproviders.plotlevel.LandUseProvider.LandUse;
 import repicea.simulation.species.REpiceaSpecies.Species;

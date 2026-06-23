@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship;
+package allometry.hdrelationship.fortin2009generalhdrelationship;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;
@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import allometry.hdrelationship.fortin2009generalhdrelationship.Fortin2009HeightableTree.Hd2009Species;
 import modulemanagement.SimulationModule;
 import modulemanagement.SimulationModule.ModuleType;
 import quebecmrnfutility.predictor.QuebecGeneralSettings;
-import quebecmrnfutility.predictor.hdrelationships.fortin2009generalhdrelationship.Fortin2009HeightableTree.Hd2009Species;
 import repicea.math.DiagonalMatrix;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
