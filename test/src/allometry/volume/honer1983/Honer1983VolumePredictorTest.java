@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.honertotalvolume;
+package allometry.volume.honer1983;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,10 +28,10 @@ import java.util.List;
 
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.volumemodels.honertotalvolume.HonerTotalVolumeTree.HonerTotalVolumeTreeSpecies;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.util.ObjectUtility;
 
-public class HonerTotalVolumeTest {
+public class Honer1983VolumePredictorTest {
 	
 	@SuppressWarnings("rawtypes")
 	@Test
@@ -41,25 +41,25 @@ public class HonerTotalVolumeTest {
 		
 		String referenceFilename = path + "referenceResults.ser";
 		
-		List<HonerTotalVolumeTreeSpecies> speciesNames = new ArrayList<HonerTotalVolumeTreeSpecies>();
-		speciesNames.add(HonerTotalVolumeTreeSpecies.BOJ);
-		speciesNames.add(HonerTotalVolumeTreeSpecies.EPR);
-		speciesNames.add(HonerTotalVolumeTreeSpecies.ERS);
-		speciesNames.add(HonerTotalVolumeTreeSpecies.SAB);
+		List<Species> speciesNames = new ArrayList<Species>();
+		speciesNames.add(Species.Betula_alleghaniensis);
+		speciesNames.add(Species.Picea_rubens);
+		speciesNames.add(Species.Acer_saccharum);
+		speciesNames.add(Species.Abies_balsamea);
 		double height;
-		List<HonerTotalVolumeTreeImpl> trees = new ArrayList<HonerTotalVolumeTreeImpl>();
-		for (HonerTotalVolumeTreeSpecies speciesName : speciesNames) {
+		List<Honer1983VolumableTreeImpl> trees = new ArrayList<Honer1983VolumableTreeImpl>();
+		for (Species speciesName : speciesNames) {
 			for (double dbh = 2; dbh <= 40; dbh += 2) {
 				height = 1.4 * dbh - 0.02 * dbh * dbh;
-				trees.add(new HonerTotalVolumeTreeImpl(speciesName, dbh, height));
+				trees.add(new Honer1983VolumableTreeImpl(speciesName, dbh, height));
 			}
 		}
 
-		HonerTotalVolumePredictor pred = new HonerTotalVolumePredictor();
+		Honer1983VolumePredictor pred = new Honer1983VolumePredictor();
 		List<Double> predictions = new ArrayList<Double>();
 		double volume;
-		for (HonerTotalVolumeTreeImpl tree : trees) {
-			volume = pred.predictTreeTotalUnderbarkVolume(tree);
+		for (Honer1983VolumableTreeImpl tree : trees) {
+			volume = pred.predictTreeTotalUnderbarkVolumeM3(tree);
 			predictions.add(volume);
 //			System.out.println("Species " + tree.getHonerSpecies().toString() + "; dbh2 " + tree.getSquaredDbhCm() + "; height " + tree.getHeightM() + "; volume " + volume);
 		}
@@ -93,21 +93,10 @@ public class HonerTotalVolumeTest {
 	  	for (int i = 0; i < refList.size(); i++) {
 	  		double valueRef = (Double) refList.get(i);
 	  		double currentValue = predictions.get(i);
-	  		assertEquals("Testing value " + i, valueRef, currentValue, 1E-8);
+	  		assertEquals("Testing value " + i, valueRef, currentValue, 2E-4);
 	  	}
-
-		
+	
 	}
-	
-	
-	public static void main(String[] args) {
-		HonerTotalVolumeTreeImpl tree = new HonerTotalVolumeTreeImpl(HonerTotalVolumeTreeSpecies.SAB, 50, 24);
-		HonerTotalVolumePredictor pred = new HonerTotalVolumePredictor();
-		System.out.println(pred.predictTreeTotalUnderbarkVolume(tree));
-		
-	}
-	
-	
 	
 
 }

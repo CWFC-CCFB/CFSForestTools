@@ -16,16 +16,17 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package quebecmrnfutility.predictor.volumemodels.honertotalvolume;
+package allometry.volume.honer1983;
 
+import repicea.simulation.species.REpiceaSpecies.Species;
 
-public class HonerTotalVolumeTreeImpl implements HonerTotalVolumeTree {//, VolumableTree {
+public class Honer1983VolumableTreeImpl implements Honer1983VolumableTree {//, VolumableTree {
 
-	private final HonerTotalVolumeTreeSpecies species;
+	private final Species species;
 	private final double dbh;
 	private final double height;
 	
-	protected HonerTotalVolumeTreeImpl(HonerTotalVolumeTreeSpecies species, double dbh, double height) {
+	protected Honer1983VolumableTreeImpl(Species species, double dbh, double height) {
 		this.species = species;
 		this.dbh = dbh;
 		this.height = height;
@@ -35,10 +36,12 @@ public class HonerTotalVolumeTreeImpl implements HonerTotalVolumeTree {//, Volum
 	public double getHeightM() {return height;}
 
 	@Override
-	public HonerTotalVolumeTreeSpecies getHonerSpecies() {return species;}
+	public double getDbhCm() {return dbh;}
 
 	@Override
-	public double getDbhCm() {return dbh;}
+	public Species getREpiceaSpecies() {
+		return species;
+	}
 
 
 }
