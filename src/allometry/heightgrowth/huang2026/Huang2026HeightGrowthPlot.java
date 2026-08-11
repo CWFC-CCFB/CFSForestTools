@@ -25,7 +25,7 @@ import repicea.simulation.covariateproviders.plotlevel.climate.MeanJulyTemperatu
 import repicea.simulation.covariateproviders.plotlevel.climate.TotalAnnualPrecipitationMmProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 
-public interface Huang2026HeightGrowthPlot extends MonteCarloSimulationCompliantObject,
+interface Huang2026HeightGrowthPlot extends MonteCarloSimulationCompliantObject,
 													TotalAnnualPrecipitationMmProvider, 
 													MeanJulyTemperatureCelsiusProvider {
 

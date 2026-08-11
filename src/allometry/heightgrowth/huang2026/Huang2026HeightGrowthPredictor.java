@@ -57,8 +57,8 @@ import repicea.util.ObjectUtility;
  * Technical Report Pub. No.: T/2026-RIBS01
  * </a>  */
 @SuppressWarnings("serial")
-@SimulationModule(type = ModuleType.HeightGrowth, scope = SpeciesLocale.Alberta)
-public class Huang2026HeightGrowthPredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject, 
+//@SimulationModule(type = ModuleType.HeightGrowth, scope = SpeciesLocale.Alberta)
+class Huang2026HeightGrowthPredictor extends REpiceaPredictor implements REpiceaSpeciesCompliantObject, 
 																			ClimateSensitivePredictor {
 
 	
