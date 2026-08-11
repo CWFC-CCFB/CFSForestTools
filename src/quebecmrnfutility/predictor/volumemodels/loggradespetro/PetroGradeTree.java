@@ -29,7 +29,6 @@ import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.covariateproviders.treelevel.BarkProportionProvider;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 import repicea.simulation.species.REpiceaSpecies;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
@@ -38,7 +37,6 @@ import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
  * @author Mathieu Fortin - Sept 2016
  */
 public interface PetroGradeTree extends DbhCmProvider,
-										SquaredDbhCmProvider,
 										QcTreeQualityProvider,
 										QcHarvestPriorityProvider,
 										QcVigorClassProvider,
@@ -128,4 +126,14 @@ public interface PetroGradeTree extends DbhCmProvider,
 	 * @return a PetroGradeSpecies enum variable
 	 */
 	public PetroGradeSpecies getPetroGradeSpecies();
+	
+	/**
+	 * This method returns the square of dbh. 
+	 * @return the square of dbh in cm2 (double)
+	 */
+	public default double getSquaredDbhCm() {
+		double dbhCm = getDbhCm();
+		return dbhCm * dbhCm;
+	}
+
 }

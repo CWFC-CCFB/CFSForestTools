@@ -21,7 +21,7 @@ package quebecmrnfutility.treelogger.sybille;
 import java.io.IOException;
 import java.util.List;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPredictor;
 import repicea.math.integral.CompositeSimpsonRule;
 import repicea.math.integral.TrapezoidalRule;
 import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
@@ -38,7 +38,7 @@ import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
  */
 public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, SybilleLoggableTree> {
 
-	private StemTaperPredictor stp;
+	private Schneider2013StemTaperPredictor stp;
 	private StemTaperSegmentList segments;
 	private final boolean isVariabilityEnabled;
 	
@@ -56,7 +56,7 @@ public class SybilleTreeLogger extends TreeLogger<SybilleTreeLoggerParameters, S
 	public SybilleTreeLogger(boolean isVariabilityEnabled) {
 		super();
 		this.isVariabilityEnabled = isVariabilityEnabled;
-		stp = new StemTaperPredictor(isVariabilityEnabled);
+		stp = new Schneider2013StemTaperPredictor(isVariabilityEnabled);
 		segments = new StemTaperSegmentList();
 	}
 	

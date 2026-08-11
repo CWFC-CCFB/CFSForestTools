@@ -23,8 +23,6 @@ import java.util.Set;
 
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.LnDbhCmPlus1Provider;
-import repicea.simulation.covariateproviders.treelevel.SquaredLnDbhCmPlus1Provider;
 import repicea.simulation.hdrelationships.HDRelationshipTree;
 
 /**
@@ -33,12 +31,25 @@ import repicea.simulation.hdrelationships.HDRelationshipTree;
  * 
  * @author Denis Hache - Fev. 2014
  */
-public interface Heightable2014Tree extends HDRelationshipTree,
-										DbhCmProvider,
-										LnDbhCmPlus1Provider,
-										SquaredLnDbhCmPlus1Provider
-//										BasalAreaLargerThanSubjectM2Provider 
-										{
+public interface Heightable2014Tree extends HDRelationshipTree, DbhCmProvider {
+
+	
+	/**
+	 * This method returns ln(dbh + 1) with the dbh in cm.
+	 * @return a double
+	 */
+	public default double getLnDbhCmPlus1() {
+		return Math.log(getDbhCm() + 1);
+	}
+
+	/**
+	 * This method returns (ln(dbh + 1))^2 with the dbh in cm.
+	 * @return a double
+	 */
+	public default double getSquaredLnDbhCmPlus1() {
+		double lnDbhCmPlus1 = getLnDbhCmPlus1();
+		return lnDbhCmPlus1 * lnDbhCmPlus1;
+	}
 
 	public enum Hd2014Species {	
 		BOJ,

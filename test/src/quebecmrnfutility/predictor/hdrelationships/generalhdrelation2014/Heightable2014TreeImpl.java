@@ -62,22 +62,7 @@ class Heightable2014TreeImpl implements Heightable2014Tree {
 	public double getDbhCm() {return dbhCm;}
 
 	@Override
-	public double getLnDbhCmPlus1() {return Math.log(getDbhCm() + 1);}
-
-	@Override
-	public double getSquaredLnDbhCmPlus1() {
-		double lnDbhCmPlus1 = this.getLnDbhCmPlus1();
-		return lnDbhCmPlus1 * lnDbhCmPlus1;
-	}
-
-//	@Override
-//	public double getBasalAreaLargerThanSubjectM2Ha() {
-//		return 0;
-//	}
-
-	@Override
 	public int getErrorTermIndex() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -86,14 +71,8 @@ class Heightable2014TreeImpl implements Heightable2014Tree {
 		return speciesCode;
 	}
 
-//	@Override
-//	public double getSocialStatusIndex() {
-//		return getDbhCm()/stand.getMeanQuadraticDiameterCm();
-//	}
 
 	protected double getPredictedHeight() {return predictedHeightM;}
-
-
 
 	@Override
 	public Enum<?> getHDRelationshipTreeErrorGroup() {

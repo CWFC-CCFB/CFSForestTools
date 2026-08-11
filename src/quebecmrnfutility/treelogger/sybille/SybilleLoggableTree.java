@@ -18,7 +18,7 @@
  */
 package quebecmrnfutility.treelogger.sybille;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperTree;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.LoggableTree;
 
@@ -26,7 +26,7 @@ import repicea.simulation.treelogger.LoggableTree;
  * This interface makes sure the instance is compatible with Sybille tree logger.
  * @author Mathieu Fortin - March 2012
  */
-public interface SybilleLoggableTree extends LoggableTree, StemTaperTree {
+public interface SybilleLoggableTree extends LoggableTree, Schneider2013StemTaperTree {
 
 	@Override
 	public default SpeciesLocale getSpeciesLocale() {return SpeciesLocale.Quebec;}

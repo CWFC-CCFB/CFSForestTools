@@ -31,10 +31,11 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPredictor.EstimationMethodInDeterministicMode;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPlot;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperTree.StemTaperTreeSpecies;
 import repicea.io.FormatReader;
+import repicea.serial.SerializerChangeMonitor;
 import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.treelogger.LogCategory;
 import repicea.simulation.treelogger.LoggableTree;
@@ -50,7 +51,8 @@ public class SybilleTreeLoggerTest {
 		REpiceaTranslator.setCurrentLanguage(REpiceaTranslator.Language.French); // test results were initially recorded with language set to French
 	}
 
-	private class StemTaperStandInternalImpl implements StemTaperStand {
+
+	private class StemTaperStandInternalImpl implements Schneider2013StemTaperPlot {
 
 		private int monteCarloRealizationID;
 		private double basalAreaM2Ha;
@@ -122,7 +124,7 @@ public class SybilleTreeLoggerTest {
 			String ecologicalType = record[dbfReader.getHeader().getIndexOfThisField("TYPECO_VAL")].toString().trim();
 			String drainageClass = record[dbfReader.getHeader().getIndexOfThisField("cl_drai")].toString().trim();
 			double elevationM = Double.parseDouble(record[dbfReader.getHeader().getIndexOfThisField("altitude")].toString());
-			StemTaperStand stand = new StemTaperStandInternalImpl(monteCarloRealizationID,
+			Schneider2013StemTaperPlot stand = new StemTaperStandInternalImpl(monteCarloRealizationID,
 							basalAreaM2Ha,
 							nbStemsHa,
 							ecoRegion,
@@ -151,7 +153,7 @@ public class SybilleTreeLoggerTest {
 	}
 	
 	private Map<String, Double> getObservedMap(EstimationMethodInDeterministicMode estimationMethod, boolean optimization) throws IOException {
-		StemTaperStand stand = new StemTaperStandImpl();
+		Schneider2013StemTaperPlot stand = new StemTaperStandImpl();
 		
 		Collection<SybilleLoggableTree> coll = new ArrayList<SybilleLoggableTree>();
 		coll.add(new LoggableTreeImpl(stand, StemTaperTreeSpecies.BOP, 25, 20));

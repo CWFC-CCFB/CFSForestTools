@@ -41,17 +41,6 @@ public class OfficialHarvestableTreeImpl implements OfficialHarvestableTree {
 
 	protected double getPredictedProbabilityFromFile() {return predictedProbabilityFromFile;}
 
-
-
-
-	@Override
-	public double getSquaredDbhCm() {
-		return dbh * dbh;
-	}
-
-
-
-
 	@Override
 	public double getDbhCm() {
 		return dbh;

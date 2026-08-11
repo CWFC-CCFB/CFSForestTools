@@ -72,24 +72,14 @@ public class OccupancyIndexTest {
 	}
 
 	
-	@Test
+	
+	@Test(expected = UnsupportedOperationException.class)
 	public void test02OccupancyIndexNaNException() throws IOException {
 		Assert.assertTrue("The plots static member is not empty", plots != null && !plots.isEmpty());
 		OccupancyIndexCalculator calculator = new OccupancyIndexCalculator(plots, 10d, plots.get(0).getDateYr()); // is static
 		calculator.registerPlots(plots);
-		try {
-			for (int i = 0; i < plots.size(); i++) {
-				calculator.getOccupancyIndex(plots.get(i), IrisSpecies.ERS);
-			}
-			Assert.fail("Should have thrown an unsupported operation exception!");
-		} catch (UnsupportedOperationException e) {
-			e.printStackTrace();
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-			System.out.println("Relax! This error was expected!");
+		for (int i = 0; i < plots.size(); i++) {
+			calculator.getOccupancyIndex(plots.get(i), IrisSpecies.ERS);
 		}
 	}
 

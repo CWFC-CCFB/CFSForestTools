@@ -18,9 +18,10 @@
  */
 package quebecmrnfutility.treelogger.sybille;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperStand;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPlot;
+import quebecmrnfutility.simulation.covariateproviders.plotlevel.QcDrainageClassProvider.QcDrainageClass;
 
-public class StemTaperStandImpl implements StemTaperStand {
+public class StemTaperStandImpl implements Schneider2013StemTaperPlot {
 
 	private int monteCarloId;
 	

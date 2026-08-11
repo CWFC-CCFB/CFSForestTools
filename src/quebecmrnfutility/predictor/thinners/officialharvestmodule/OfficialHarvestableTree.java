@@ -28,14 +28,12 @@ import java.util.Set;
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 
 /**
  * Trees that can be harvested by the official harvester.
  * @author M. Fortin - May 2010
  */
-public interface OfficialHarvestableTree extends DbhCmProvider,
-												SquaredDbhCmProvider {
+public interface OfficialHarvestableTree extends DbhCmProvider {
 	
 	public enum OfficialHarvestableSpecies {
 		AUT,
@@ -151,6 +149,15 @@ public interface OfficialHarvestableTree extends DbhCmProvider,
 		}
 	}
 	
+	/**
+	 * This method returns the square of dbh. 
+	 * @return the square of dbh in cm2 (double)
+	 */
+	public default double getSquaredDbhCm() {
+		double dbhCm = getDbhCm();
+		return dbhCm * dbhCm;
+	}
+
 	
 	public OfficialHarvestableSpecies getOfficialHarvestableTreeSpecies(TreatmentType treatment);	// TODO : check if the treatment is strictly required. This should be handled internally
 }

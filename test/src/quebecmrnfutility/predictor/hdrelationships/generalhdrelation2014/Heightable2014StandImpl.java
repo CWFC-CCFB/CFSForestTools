@@ -21,7 +21,7 @@ package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import repicea.simulation.climate.REpiceaClimateVariableInformation;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation;
 
 
 public class Heightable2014StandImpl implements Heightable2014Stand {

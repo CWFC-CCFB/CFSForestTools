@@ -45,16 +45,9 @@ public class MatapediaTreeImpl implements MatapediaTree {
 		return 0;
 	}
 
-
-
 	@Override
 	public double getDbhCm() {
 		return dbh;
-	}
-
-	@Override
-	public double getSquaredDbhCm() {
-		return dbh * dbh;
 	}
 
 	@Override

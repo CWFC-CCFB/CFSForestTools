@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor.EstimationMethodInDeterministicMode;
-import quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperTree.StemTaperTreeSpecies;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPredictor.EstimationMethodInDeterministicMode;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperTree.StemTaperTreeSpecies;
 import quebecmrnfutility.treelogger.sybille.SybilleTreeLogCategory.LengthID;
 import repicea.serial.SerializerChangeMonitor;
 import repicea.simulation.treelogger.TreeLoggerParameters;
@@ -40,8 +40,12 @@ import repicea.util.REpiceaTranslator.TextableEnum;
 public class SybilleTreeLoggerParameters extends TreeLoggerParameters<SybilleTreeLogCategory> {
 
 	static {
+		SerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethod", 
+				"allometry.stemtaper.schneider2013.Schneider2013StemTaperPredictor$EstimationMethodInDeterministicMode");
 		SerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethodInDeterministicMode", 
-				"quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethodInDeterministicMode");
+				"allometry.stemptaper.schneider2013.Schneider2013StemTaperPredictor$EstimationMethodInDeterministicMode");
+		SerializerChangeMonitor.registerClassNameChange("quebecmrnfutility.predictor.volumemodels.stemtaper.schneiderequations.StemTaperPredictor$EstimationMethodInDeterministicMode", 
+				"allometry.stemptaper.schneider2013.Schneider2013StemTaperPredictor$EstimationMethodInDeterministicMode");
 	}
 	
 	

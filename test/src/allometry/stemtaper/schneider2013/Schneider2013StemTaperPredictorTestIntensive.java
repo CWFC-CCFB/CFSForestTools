@@ -1,0 +1,194 @@
+/*
+ * This file is part of the CFSForesttools library.
+ *
+ * Copyright (C) 2009-2012 Gouvernement du Quebec
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
+ */
+package allometry.stemtaper.schneider2013;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
+import allometry.stemtaper.schneider2013.StemTaperEquationSettings.ModelType;
+import allometry.stemtaper.schneider2013.Schneider2013StemTaperPredictor.EstimationMethodInDeterministicMode;
+import repicea.io.FormatReader;
+import repicea.io.javacsv.CSVReader;
+import repicea.simulation.HierarchicalLevel;
+import repicea.simulation.stemtaper.AbstractStemTaperEstimate;
+import repicea.simulation.stemtaper.StemTaperCrossSection;
+import repicea.util.ObjectUtility;
+
+public class Schneider2013StemTaperPredictorTestIntensive {
+	
+	private static class StemTaperStandImpl implements Schneider2013StemTaperPlot {
+		
+		private final double basalAreaM2Ha;
+		private final double numberOfStemsHa;
+		private final String ecoRegion;
+		private final String ecologicalType;
+		private final QcDrainageClass drainageClass;
+		private final double elevationM;
+		
+		private StemTaperStandImpl(Object[] record) {
+			basalAreaM2Ha = Double.parseDouble(record[10].toString());
+			numberOfStemsHa = Double.parseDouble(record[11].toString());
+			ecoRegion = record[12].toString().trim();
+			ecologicalType = record[13].toString().trim();
+			drainageClass = QcDrainageClass.valueOf("C".concat(record[14].toString().trim().substring(0, 1)));
+			elevationM = Double.parseDouble(record[15].toString());
+		}
+
+		
+
+		@Override
+		public String getSubjectId() {return "0";}
+
+		@Override
+		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.PLOT;}
+
+
+		@Override
+		public int getMonteCarloRealizationId() {return 0;}
+
+		@Override
+		public double getBasalAreaM2Ha() {return basalAreaM2Ha;}
+
+		@Override
+		public double getNumberOfStemsHa() {return numberOfStemsHa;}
+
+		@Override
+		public String getEcoRegion() {return ecoRegion;}
+
+		@Override
+		public String getEcologicalType() {return ecologicalType;}
+
+		@Override
+		public QcDrainageClass getDrainageClass() {return drainageClass;}
+
+		@Override
+		public double getElevationM() {return elevationM;}
+		
+	}
+	
+	private static class StemTaperTreeImpl implements Schneider2013StemTaperTree {
+
+		private double dbhCm;
+		private double heightM;
+		private StemTaperTreeSpecies species;
+		private Schneider2013StemTaperPlot stand;
+		private double predicted;
+		private List<Double> crossSectionsHeight;
+		
+		private StemTaperTreeImpl(Object[] record, String species) {
+			double sectionHeight = Double.parseDouble(record[3].toString());
+			crossSectionsHeight = new ArrayList<Double>();
+			crossSectionsHeight.add(sectionHeight);
+			dbhCm = Double.parseDouble(record[2].toString()) * .1;
+			heightM = Double.parseDouble(record[6].toString());
+			predicted = Double.parseDouble(record[record.length - 1].toString());
+			this.species = StemTaperTreeSpecies.valueOf(species.trim().toUpperCase());
+			this.stand = new StemTaperStandImpl(record);
+		}
+		
+		private double getPredicted() {return predicted;}
+		
+		private List<Double> getHeightList() {return crossSectionsHeight;}
+		
+
+		@Override
+		public String getSubjectId() {return "0";}
+
+		@Override
+		public HierarchicalLevel getHierarchicalLevel() {return HierarchicalLevel.TREE;}
+
+		@Override
+		public int getMonteCarloRealizationId() {return 0;}
+
+		@Override
+		public double getDbhCm() {return dbhCm;}
+
+		@Override
+		public double getSquaredDbhCm() {return dbhCm*dbhCm;}
+
+		@Override
+		public double getHeightM() {return heightM;}
+
+		@Override
+		public Schneider2013StemTaperPlot getStand() {return stand;}
+
+		@Override
+		public List<StemTaperCrossSection> getCrossSections() {
+			return null;
+		}
+
+		@Override
+		public StemTaperTreeSpecies getStemTaperTreeSpecies() {return species;}
+		
+	}
+
+	static String path = ObjectUtility.getPackagePath(Schneider2013StemTaperPredictorTest.class);
+
+	
+	
+	private static List<Schneider2013StemTaperTree> getTreeList(String species) throws IOException {
+		List<Schneider2013StemTaperTree> treeList = new ArrayList<Schneider2013StemTaperTree>();
+		String filename = path + species.trim().toLowerCase().concat("PredRef.csv");
+		CSVReader reader = (CSVReader) FormatReader.createFormatReader(filename);
+		Object[] record;
+		while ((record = reader.nextRecord()) != null) {
+			treeList.add(new StemTaperTreeImpl(record, species));
+		}
+		return treeList;
+	}
+
+	/**
+	 * This test processes 500 observations of each species and compares with the predictions from R.
+	 * @throws IOException
+	 */
+	@Test
+	public void testSchneiderStemTaperModels() throws IOException {
+		List<String> speciesList = new ArrayList<String>();
+		speciesList.add("bop");
+		speciesList.add("epb");
+		speciesList.add("epn");
+		speciesList.add("epr");
+		speciesList.add("peg");
+		speciesList.add("pet");
+		speciesList.add("sab");
+		speciesList.add("tho");
+		for (String species : speciesList) {
+			System.out.println("Testing species: " + species);
+			List<Schneider2013StemTaperTree> trees = getTreeList(species);
+			Schneider2013StemTaperPredictor stm = new Schneider2013StemTaperPredictor();
+			for (Schneider2013StemTaperTree tree : trees) {
+				AbstractStemTaperEstimate estimate = stm.getPredictedTaperForTheseHeights(tree, ((StemTaperTreeImpl) tree).getHeightList(), EstimationMethodInDeterministicMode.FirstOrderMeanOnly, ModelType.TREEMODEL);
+				double newValue = estimate.getMean().getValueAt(0, 0);
+				double oldValue = ((StemTaperTreeImpl) tree).getPredicted();
+//				if (Math.abs(oldValue - newValue) > 1E-8) {
+//					int u = 0;
+//				}
+				assertEquals("Testing species " + species, 
+						oldValue, 
+						newValue,
+						1E-8);	
+			}
+		}
+	}
+}

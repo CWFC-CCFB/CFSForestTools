@@ -20,7 +20,7 @@ package quebecmrnfutility.predictor.hdrelationships.generalhdrelation2014;
 
 import java.util.Collection;
 
-import repicea.simulation.climate.REpiceaClimateVariableInformation.Resolution;
+import repicea.simulation.climatemanagement.REpiceaClimateVariableInformation.Resolution;
 import repicea.simulation.covariateproviders.plotlevel.BasalAreaM2HaProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalRegionProvider;
 import repicea.simulation.covariateproviders.plotlevel.EcologicalTypeProvider;

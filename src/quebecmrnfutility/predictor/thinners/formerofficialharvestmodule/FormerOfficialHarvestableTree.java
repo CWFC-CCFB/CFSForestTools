@@ -20,17 +20,13 @@ package quebecmrnfutility.predictor.thinners.formerofficialharvestmodule;
 
 import repicea.math.Matrix;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
-import repicea.simulation.covariateproviders.treelevel.LnDbhCmPlus1Provider;
-import repicea.simulation.covariateproviders.treelevel.SquaredDbhCmProvider;
 
 /**
  * Trees that can be harvested by the general harvester thinner.
  * @author M. Fortin - May 2010
  */
 @Deprecated
-public interface FormerOfficialHarvestableTree extends  DbhCmProvider,
-														LnDbhCmPlus1Provider,
-														SquaredDbhCmProvider {
+public interface FormerOfficialHarvestableTree extends  DbhCmProvider {
 	
 	@Deprecated
 	public enum FormerOfficialHarvestableSpecies {
@@ -59,5 +55,22 @@ public interface FormerOfficialHarvestableTree extends  DbhCmProvider,
 	}
 	
 	
+	/**
+	 * This method returns ln(dbh + 1) with the dbh in cm.
+	 * @return a double
+	 */
+	public default double getLnDbhCmPlus1() {
+		return Math.log(getDbhCm() + 1);
+	}
+
+	/**
+	 * This method returns the square of dbh. 
+	 * @return the square of dbh in cm2 (double)
+	 */
+	public default double getSquaredDbhCm() {
+		double dbhCm = getDbhCm();
+		return dbhCm * dbhCm;
+	}
+
 	public FormerOfficialHarvestableSpecies getFormerOfficialHarvestableTreeSpecies();
 }
