@@ -135,7 +135,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	private FixedEffectVectorFactory xVectorFactory;
 	private Map<TreatmentType, OfficialHarvestSubmodel> modelParametersLibrary;
 	protected static Map<TreatmentType, Map<String, String>> speciesMap;
-	private final OfficialHarvestSubmodelSelector selector;
+	private final OfficialHarvestSubmodelSelectorV2 selector;
 	
 	
 	/**
@@ -147,7 +147,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 		modelParametersLibrary = new HashMap<TreatmentType, OfficialHarvestSubmodel>();
 		init();
 		xVectorFactory = new FixedEffectVectorFactory();
-		selector = new OfficialHarvestSubmodelSelector();
+		selector = new OfficialHarvestSubmodelSelectorV2();
 	}
 	
 	/**
@@ -169,7 +169,7 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	 * Provide access to the treatment selector.
 	 * @return an OfficialHarvestSubmodelSelector instance
 	 */
-	public OfficialHarvestSubmodelSelector getSelector() {return selector;}
+	public OfficialHarvestSubmodelSelectorV2 getSelector() {return selector;}
 	
 	
 	@Override
@@ -339,12 +339,13 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 	}
 
 	@Override
-	public OfficialHarvestTreatmentDefinition getTreatmentDefinitionForThisHarvestedStand(OfficialHarvestableStand stand) {
-		OfficialHarvestTreatmentDefinition currentSelection = selector.getMatch(stand.getLandUse(), stand.getPotentialVegetation()).getDeepClone();
+	public OfficialHarvestTreatmentDefinitionV2 getTreatmentDefinitionForThisHarvestedStand(OfficialHarvestableStand stand) {
+		OfficialHarvestTreatmentDefinitionV2 currentSelection = selector.getMatch(stand.getLandUse(), stand.getPotentialVegetation()).getDeepClone();
 		REpiceaThinningOccurrenceProvider thinningOcc = stand.getThinningOccurrence();
 		if (thinningOcc != null) {
-			if (((OfficialHarvestTreatmentDefinition) thinningOcc.getTreatmentDefinition()).doesFinalCutHaveToBeScheduled()) {
-				OfficialHarvestTreatmentDefinition defCPRS = new OfficialHarvestTreatmentDefinition(TreatmentType.CPRS, currentSelection.getDelayBeforeReentryYrs());
+			OfficialHarvestTreatmentDefinitionV2 def = (OfficialHarvestTreatmentDefinitionV2) thinningOcc.getTreatmentDefinition();
+			if (def.doesFinalCutHaveToBeScheduled()) {
+				OfficialHarvestTreatmentDefinitionV2 defCPRS = new OfficialHarvestTreatmentDefinitionV2(def.getKey(), TreatmentType.CPRS, currentSelection.getDelayBeforeReentryYrs());
 				return defCPRS;
 			}
 		}
