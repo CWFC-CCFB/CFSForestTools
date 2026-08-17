@@ -33,8 +33,10 @@ import repicea.simulation.thinners.REpiceaTreatmentDefinition;
  * An implementation of the REpiceaMatchComplexObject interface, which allows to specify a
  * delay between two treatments.
  * @author Mathieu Fortin - February 2021
+ * @deprecated Use OfficialHarvestTreatmentDefinitionV2 instead.
  */
 @SuppressWarnings("serial")
+@Deprecated
 public class OfficialHarvestTreatmentDefinition implements Serializable, 
 															REpiceaMatchComplexObject<OfficialHarvestTreatmentDefinition>,
 															REpiceaTreatmentDefinition {
