@@ -20,6 +20,7 @@
 package quebecmrnfutility.predictor.thinners.officialharvestmodule;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 
 import javax.swing.Box;
@@ -30,6 +31,9 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
+import repicea.gui.CommonGuiUtility;
+import repicea.gui.REpiceaAWTProperty;
+import repicea.gui.REpiceaDialog;
 import repicea.gui.REpiceaPanel;
 import repicea.gui.UIControlManager;
 import repicea.gui.components.NumberFormatFieldFactory;
@@ -132,7 +136,14 @@ public class OfficialHarvestSubmodelAreaLimitationPanel extends REpiceaPanel imp
 			TreatmentType trt = (TreatmentType) tableModel.getValueAt(e.getFirstRow(), 0);
 			double value = Double.parseDouble(tableModel.getValueAt(e.getFirstRow(), e.getColumn()).toString());
 			caller.areaLimitationMap.put(trt, value);
+			fireChange("Change in treatment area detected");
 		}
+	}
+
+
+	private void fireChange(String message) {
+		REpiceaDialog dlg = (REpiceaDialog) CommonGuiUtility.getParentComponent((Component) this, REpiceaDialog.class);
+		dlg.firePropertyChange(REpiceaAWTProperty.ActionPerformed, "", message);
 	}
 
 	

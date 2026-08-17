@@ -37,13 +37,15 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.table.TableCellEditor;
 
-import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestSubmodelSelector.Mode;
+import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
+import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestSubmodelSelectorV2.Mode;
+import repicea.gui.REpiceaAWTProperty;
 import repicea.gui.UIControlManager;
-import repicea.gui.components.REpiceaEnhancedMatchSelectorDialog;
+import repicea.gui.components.REpiceaMatchWithEnumSelectorDialog;
 import repicea.simulation.covariateproviders.plotlevel.LandUseProvider.LandUse;
 
 @SuppressWarnings({ "serial", "rawtypes" })
-public class OfficialHarvestSubmodelSelectorDialog extends REpiceaEnhancedMatchSelectorDialog<OfficialHarvestTreatmentDefinition>
+public class OfficialHarvestSubmodelSelectorDialog extends REpiceaMatchWithEnumSelectorDialog
 													implements ItemListener, ActionListener {
 	
 	static {
@@ -53,11 +55,11 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaEnhancedMatchS
 
 	private Map<Enum<?>, JRadioButton> singleTreatmentButtons;
 	private Map<Enum<?>, JRadioButton> treatmentByPotentialVegetationButtons;
-	private Map<Enum<?>, JComboBox<OfficialHarvestTreatmentDefinition>> singleTreatmentComboBoxes;
+	private Map<Enum<?>, JComboBox<TreatmentType>> singleTreatmentComboBoxes;
 	
 	private OfficialHarvestSubmodelAreaLimitationPanel areaLimitationsPanel;
 	
-	protected OfficialHarvestSubmodelSelectorDialog(OfficialHarvestSubmodelSelector caller, Window parent, Object[] columnNames) {
+	protected OfficialHarvestSubmodelSelectorDialog(OfficialHarvestSubmodelSelectorV2 caller, Window parent, Object[] columnNames) {
 		super(caller, parent, columnNames);
 	}
 
@@ -80,9 +82,9 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaEnhancedMatchS
 			bg.add(treatmentByPotentialVegetationButton);
 		}
 
-		singleTreatmentComboBoxes = new HashMap<Enum<?>, JComboBox<OfficialHarvestTreatmentDefinition>>();
+		singleTreatmentComboBoxes = new HashMap<Enum<?>, JComboBox<TreatmentType>>();
 		for (Enum<?> landUse : getCaller().modes.keySet()) {
-			JComboBox<OfficialHarvestTreatmentDefinition> singleTreatmentComboBox = new JComboBox<OfficialHarvestTreatmentDefinition>(getCaller().getPotentialMatches(landUse).toArray(new OfficialHarvestTreatmentDefinition[]{}));
+			JComboBox<TreatmentType> singleTreatmentComboBox = new JComboBox<TreatmentType>(TreatmentType.values());
 			singleTreatmentComboBox.setName("singleTreatmentComboBox_" + landUse.name());
 			singleTreatmentComboBoxes.put(landUse, singleTreatmentComboBox);
 		}		
@@ -95,7 +97,7 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaEnhancedMatchS
 		for (Enum<?> landUse : getCaller().modes.keySet()) {
 			singleTreatmentButtons.get(landUse).setSelected(getCaller().getMode(landUse) == Mode.SingleTreatment);
 			treatmentByPotentialVegetationButtons.get(landUse).setSelected(getCaller().getMode(landUse) == Mode.TreatmentByPotentialVegetation);
-			singleTreatmentComboBoxes.get(landUse).setSelectedItem(getCaller().getSingleTreatment(landUse));
+			singleTreatmentComboBoxes.get(landUse).setSelectedItem(getCaller().getSingleTreatment(landUse).getValue());
 		}
 		if (areaLimitationsPanel != null) {
 			areaLimitationsPanel.refreshInterface();
@@ -105,8 +107,8 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaEnhancedMatchS
 	}
 
 	@Override
-	protected OfficialHarvestSubmodelSelector getCaller() {
-		return (OfficialHarvestSubmodelSelector) super.getCaller();
+	protected OfficialHarvestSubmodelSelectorV2 getCaller() {
+		return (OfficialHarvestSubmodelSelectorV2) super.getCaller();
 	}
 	
 	protected void checkFeaturesToEnable() {
@@ -199,6 +201,7 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaEnhancedMatchS
 					getCaller().modes.put(landUse, Mode.SingleTreatment);
 					System.out.println("Single treatment for land use: " + landUse.name());
 					checkFeaturesToEnable();
+					firePropertyChange(REpiceaAWTProperty.ActionPerformed, "", "single treatment selection");
 				}
 			} else if (name.startsWith("treatmentByPotentialVegetationButton")) {
 				landUse = getLandUseFromName(name);
@@ -206,6 +209,7 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaEnhancedMatchS
 					getCaller().modes.put(landUse, Mode.TreatmentByPotentialVegetation);
 					System.out.println("Treatment by potential vegetation for land use: " + landUse.name());
 					checkFeaturesToEnable();
+					firePropertyChange(REpiceaAWTProperty.ActionPerformed, "", "treatment by potential vegetation selection");
 				}
 			}
 		}
@@ -219,9 +223,10 @@ public class OfficialHarvestSubmodelSelectorDialog extends REpiceaEnhancedMatchS
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					LandUse landUse = getLandUseFromName(name);
 					if (landUse != null) {
-						OfficialHarvestTreatmentDefinition treatment = (OfficialHarvestTreatmentDefinition) ((JComboBox) e.getSource()).getSelectedItem();
-						getCaller().singleTreatments.put(landUse, treatment);
+						TreatmentType treatment = (TreatmentType) ((JComboBox) e.getSource()).getSelectedItem();
+						getCaller().singleTreatments.get(landUse).setValue(treatment);
 						System.out.println("Treatment selected = " + treatment + " for land use " + landUse.name());
+						firePropertyChange(REpiceaAWTProperty.ActionPerformed, "", "New treatment selected");
 					}
 				}
 			}

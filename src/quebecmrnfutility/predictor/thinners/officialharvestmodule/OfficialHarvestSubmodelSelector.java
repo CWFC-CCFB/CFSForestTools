@@ -20,8 +20,6 @@
  */
 package quebecmrnfutility.predictor.thinners.officialharvestmodule;
 
-import java.awt.Container;
-import java.awt.Window;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -38,13 +36,14 @@ import repicea.serial.SerializerChangeMonitor;
 import repicea.serial.xml.XmlDeserializer;
 import repicea.simulation.covariateproviders.plotlevel.LandUseProvider.LandUse;
 import repicea.util.REpiceaTranslator;
-import repicea.util.REpiceaTranslator.Language;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
 /**
  * A class to assign treatments to potential vegetation.
  * @author Mathieu Fortin - 2017, December 2024
+ * @deprecated Use OfficialHarvestSubmodelSelectorV2 instead.
  */
+@Deprecated
 public final class OfficialHarvestSubmodelSelector extends REpiceaEnhancedMatchSelector<OfficialHarvestTreatmentDefinition> 
 												implements PostUnmarshalling {
 		
@@ -150,13 +149,13 @@ public final class OfficialHarvestSubmodelSelector extends REpiceaEnhancedMatchS
 	protected final Mode getMode(Enum<?> lu) {return modes.get(lu);}
 	protected final OfficialHarvestTreatmentDefinition getSingleTreatment(Enum<?> lu) {return singleTreatments.get(lu);}
 	
-	@Override
-	public OfficialHarvestSubmodelSelectorDialog getUI(Container parent) {
-		if (guiInterface == null) {
-			guiInterface = new OfficialHarvestSubmodelSelectorDialog(this, (Window) parent, columnNames);
-		}
-		return (OfficialHarvestSubmodelSelectorDialog) guiInterface;
-	}
+//	@Override
+//	public OfficialHarvestSubmodelSelectorDialog getUI(Container parent) {
+//		if (guiInterface == null) {
+//			guiInterface = new OfficialHarvestSubmodelSelectorDialog(this, (Window) parent, columnNames);
+//		}
+//		return (OfficialHarvestSubmodelSelectorDialog) guiInterface;
+//	}
 
 	@Override
 	public void load(String filename) throws IOException {
@@ -208,14 +207,14 @@ public final class OfficialHarvestSubmodelSelector extends REpiceaEnhancedMatchS
 
 	
 	
-	public static void main(String[] args) {
-		REpiceaTranslator.setCurrentLanguage(Language.French);
-		OfficialHarvestSubmodelSelector selector = new OfficialHarvestSubmodelSelector();
-		selector.showUI(null);
-		boolean cancelled = selector.getUI(null).hasBeenCancelled();
-		System.out.println("The dialog has been cancelled : " + cancelled);
-		System.exit(0);
-	}
+//	public static void main(String[] args) {
+//		REpiceaTranslator.setCurrentLanguage(Language.French);
+//		OfficialHarvestSubmodelSelector selector = new OfficialHarvestSubmodelSelector();
+//		selector.showUI(null);
+//		boolean cancelled = selector.getUI(null).hasBeenCancelled();
+//		System.out.println("The dialog has been cancelled : " + cancelled);
+//		System.exit(0);
+//	}
 
 	@SuppressWarnings("unchecked")
 	@Override
