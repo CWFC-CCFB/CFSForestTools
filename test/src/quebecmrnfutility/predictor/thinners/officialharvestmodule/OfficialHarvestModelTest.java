@@ -37,7 +37,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestModel.TreatmentType;
-import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestTreatmentDefinition.ScheduledFinalHarvestInfo;
 import quebecmrnfutility.predictor.thinners.officialharvestmodule.OfficialHarvestableTree.OfficialHarvestableSpecies;
 import repicea.simulation.disturbances.DisturbanceParameter;
 import repicea.util.ObjectUtility;
@@ -122,7 +121,13 @@ public class OfficialHarvestModelTest {
 		}
 	}
 
-	
+	@Test
+	public void test05IsFinalHarvestTriggered() {
+		OfficialHarvestTreatmentDefinitionV2 def = new OfficialHarvestTreatmentDefinitionV2("RS2", TreatmentType.CE);
+		OfficialHarvestTreatmentDefinitionV2.ScheduledFinalHarvestInfo info = def.getProbabilityOfFinalCutBeingCarriedOut(2025, 2055, 2065);
+		Assert.assertEquals("Testing that probability is equal to 1 when exceeding the window for the final cut", info.getProbability(), 1d, 1E-12);
+		int u = 0;
+	}
 	
 	private static List<OfficialHarvestableStand> readData() throws Exception {
 		List<OfficialHarvestableStand> stands = new ArrayList<OfficialHarvestableStand>();
@@ -169,10 +174,11 @@ public class OfficialHarvestModelTest {
 		return stands;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void test05TreatmentFinalCutBeingCarriedOutAlgorithm() {
 		OfficialHarvestTreatmentDefinition treatDef = new OfficialHarvestTreatmentDefinition(TreatmentType.CP, 10);
-		ScheduledFinalHarvestInfo info = treatDef.getProbabilityOfFinalCutBeingCarriedOut(2007, 2010, 2020);
+		OfficialHarvestTreatmentDefinition.ScheduledFinalHarvestInfo info = treatDef.getProbabilityOfFinalCutBeingCarriedOut(2007, 2010, 2020);
 		assertEquals("Testing probability", 0d, info.prob, 1E-8);
 		Assert.assertTrue("Testing range", info.range == null);
 		info = treatDef.getProbabilityOfFinalCutBeingCarriedOut(2007, 2020, 2030);

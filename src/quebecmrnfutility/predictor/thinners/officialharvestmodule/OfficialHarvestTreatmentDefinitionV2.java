@@ -120,6 +120,8 @@ public class OfficialHarvestTreatmentDefinitionV2 implements Serializable,
 			double windowDurationYr = finalCutRange[1] - finalCutRange[0];
 			if (intervalEndDateYr < finalCutRange[0] + lastHarvestDateYr) {
 				return new ScheduledFinalHarvestInfo(null, 0d); // were not in the range yet
+			} else if (intervalBeginDateYr >= finalCutRange[1] + lastHarvestDateYr) {
+				return new ScheduledFinalHarvestInfo(new int[] {intervalBeginDateYr, intervalBeginDateYr + 1}, 1d); // we must harvest, we are beyond the window!
 			} else {
 				int upperBound = intervalEndDateYr <= finalCutRange[1] + lastHarvestDateYr ? 
 						intervalEndDateYr : 
