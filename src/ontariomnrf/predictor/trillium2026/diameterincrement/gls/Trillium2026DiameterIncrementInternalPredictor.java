@@ -24,12 +24,14 @@ import java.util.List;
 
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.HierarchicalLevel;
 import repicea.simulation.ModelParameterEstimates;
 import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.REpiceaPredictor;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.StatisticalUtility.TypeMatrixR;
 import repicea.stats.estimates.GaussianErrorTermEstimate;
+import repicea.stats.estimates.GaussianEstimate;
 
 @SuppressWarnings("serial")
 final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredictor {
@@ -38,30 +40,36 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 	private final Species species;
 	private final List<Integer> effects;
 	final boolean hasCorrelationStructure;
+	final boolean hasPlotRandomEffect;
 	
 
 	Trillium2026DiameterIncrementInternalPredictor(Trillium2026DiameterIncrementPredictor owner,
 			Species species,
 			boolean isParametersVariabilityEnabled, 
+			boolean isRandomEffectVariabilityEnabled,
 			boolean isResidualVariabilityEnabled,
 			final ModelParameterEstimates parmEst,
 			final List<Integer> effectList,
 			Double rho,
+			final SymmetricMatrix randomEffectVariance,
 			final SymmetricMatrix residualVariance) {
-		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled); // no random effect
+		super(isParametersVariabilityEnabled, isRandomEffectVariabilityEnabled, isResidualVariabilityEnabled); // no random effect
 		this.owner = owner;
 		this.species = species;
 		setParameterEstimates(parmEst);
 		oXVector = new Matrix(1, getParameterEstimates().getMean().m_iRows);
 		effects = new ArrayList<Integer>();
 		effects.addAll(effectList);
-		
+
 		hasCorrelationStructure = rho != null;
-		
 		setDefaultResidualError(REpiceaPredictor.ErrorTermGroup.Default, 
 				hasCorrelationStructure ?
 					new GaussianErrorTermEstimate(residualVariance, rho, TypeMatrixR.POWER) :
 						new GaussianErrorTermEstimate(residualVariance));
+		hasPlotRandomEffect = randomEffectVariance != null;
+		if (hasPlotRandomEffect) {
+			setDefaultRandomEffects(HierarchicalLevel.PLOT, new GaussianEstimate(new Matrix(1,1), randomEffectVariance));
+		}
 	}
 
 	@Override
@@ -103,53 +111,45 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 				double ba = plot.getBasalAreaM2Ha();
 				oXVector.setValueAt(0, index++, ba * ba);
 				break;
-			case 11: //	MeanTempJuneToAugust^2
-				double meanTempJuneAugust = plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution);
-				oXVector.setValueAt(0, index++, meanTempJuneAugust * meanTempJuneAugust);
-				break;
-			case 12: // MeanTmaxJuly^2
+			case 11: // MeanTmaxJuly^2
 				double meanTmaxJuly = plot.getMeanMaximumJulyTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution);
 				oXVector.setValueAt(0, index++, meanTmaxJuly * meanTmaxJuly);
 				break;
-			case 13: // MeanTminJanuary^2
-				double meanTminJanuary = plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution);
-				oXVector.setValueAt(0, index++, meanTminJanuary * meanTminJanuary);
-				break;
-			case 14:  // TotalPrecJuneToAugust^2
+			case 12:  // TotalPrecJuneToAugust^2
 				double totalPrecJuneToAugust = plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution);
 				oXVector.setValueAt(0, index++, totalPrecJuneToAugust * totalPrecJuneToAugust);
 				break; 
-			case 15: // log dbh
+			case 13: // log dbh
 				oXVector.setValueAt(0, index++, Math.log(tree.getDbhCm()));
 				break;
-			case 16: // log dbh * G_TOT
+			case 14: // log dbh * G_TOT
 				oXVector.setValueAt(0, index++, Math.log(tree.getDbhCm()) * plot.getBasalAreaM2Ha());
 				break;
-			case 17: // log N_TOT
+			case 15: // log N_TOT
 				oXVector.setValueAt(0, index++, Math.log(plot.getNumberOfStemsHa()));
 				break;
-			case 18: // mean summer VPD
+			case 16: // mean summer VPD
 				oXVector.setValueAt(0, index++, plot.getMeanVPDFromJuneToAugustHPa(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
-			case 19: //	meanTempJuneAugust
+			case 17: //	meanTempJuneAugust
 				oXVector.setValueAt(0, index++, plot.getMeanTemperatureFromJuneToAugustCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
-			case 20: // MeanTmaxJuly
+			case 18: // MeanTmaxJuly
 				oXVector.setValueAt(0, index++, plot.getMeanMaximumJulyTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
-			case 21: // MeanTminJanuary
+			case 19: // MeanTminJanuary
 				oXVector.setValueAt(0, index++, plot.getMeanMinimumJanuaryTemperatureCelsius(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
-			case 22: // N_TOT
+			case 20: // N_TOT
 				oXVector.setValueAt(0, index++, plot.getNumberOfStemsHa());
 				break;
-			case 23:  // SMImean:
+			case 21:  // SMImean:
 				oXVector.setValueAt(0, index++, plot.getMeanAnnualSMIPercent(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
-			case 24:  // TotalPrecJuneToAugust
+			case 22:  // TotalPrecJuneToAugust
 				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromJuneToAugustMm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break; 
-			case 25:  // totalPrecMarchToMay
+			case 23:  // totalPrecMarchToMay
 				oXVector.setValueAt(0, index++, plot.getTotalPrecipitationFromMarchToMayMm(owner, Trillium2026DiameterIncrementPlot.ClimateVariableResolution));
 				break;
 			default:
@@ -162,6 +162,11 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		Matrix beta = getParametersForThisRealization(plot);
 		setXVector(plot, tree);
 		double pred = oXVector.multiply(beta).getValueAt(0, 0);
+		
+		if (hasPlotRandomEffect && isRandomEffectsVariabilityEnabled) {
+			pred += getRandomEffectsForThisSubject(plot).getValueAt(0, 0);
+		}
+		
 		if (isResidualVariabilityEnabled) {
 			double residualErrorTerm;
 			if (hasCorrelationStructure) {
@@ -176,6 +181,9 @@ final class Trillium2026DiameterIncrementInternalPredictor extends REpiceaPredic
 		
 		if (owner.doBackTransformation) {
 			double variance = 0d;
+			if (hasPlotRandomEffect && !isRandomEffectsVariabilityEnabled) {
+				variance += getDefaultRandomEffects(HierarchicalLevel.PLOT).getVariance().getValueAt(0, 0);
+			}
 			if (!isResidualVariabilityEnabled) {
 				variance += getDefaultResidualError(ErrorTermGroup.Default).getVariance().getValueAt(0,0);
 			}

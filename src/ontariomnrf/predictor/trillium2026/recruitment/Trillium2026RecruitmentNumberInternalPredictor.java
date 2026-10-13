@@ -74,7 +74,9 @@ class Trillium2026RecruitmentNumberInternalPredictor extends REpiceaRecruitmentN
 			this.theta = 0d;
 			this.invTheta = 0d;
 		}
-		this.maxCap = maxCap > 10 ? maxCap : 10;		// we cap the recruit number for those that could have more than 10 recruits in the database, otherwise we set it to 10.
+		// We increase the max number of recruit for those species with low recruitment, and keep the cap 
+		// for largely abundant species.
+		this.maxCap = maxCap < 10 ? 2 * maxCap : maxCap;		
 	}
 
 	@Override

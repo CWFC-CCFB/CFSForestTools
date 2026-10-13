@@ -129,6 +129,8 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	private static Map<Species, List<Integer>> EffectMap;
 	static Map<Species, Double> RhoMap;
 	static Map<Species, SymmetricMatrix> ResVarMap;
+	static Map<Species, SymmetricMatrix> PlotRandomEffectVariance;
+
 	
 	final Map<Species, Trillium2026DiameterIncrementInternalPredictor> internalPredictorMap;
 
@@ -143,16 +145,17 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	 * @param isVariabilityEnabled a boolean to enable/disable the stochastic variability
 	 */
 	public Trillium2026DiameterIncrementPredictor(boolean isVariabilityEnabled) {
-		this(isVariabilityEnabled, isVariabilityEnabled);
+		this(isVariabilityEnabled, isVariabilityEnabled, isVariabilityEnabled);
 	}
 
 	/**
 	 * General constructor.
-	 * @param isParametersVariabilityEnabled a boolean to enable/disable the stochastic variability in the parameter estimates
+	 * @param isParametersVariabilityEnabled a boolean to enable/disable the stochastic variability in the parameter estimates.
+	 * @param isRandomEffectVariabilityEnabled a boolean to enable/disable the stochastic variability of the plot random effects.
 	 * @param isResidualVariabilityEnabled a boolean to enable/disable the stochastic variability in the residual error term.
 	 */
-	public Trillium2026DiameterIncrementPredictor(boolean isParametersVariabilityEnabled, boolean isResidualVariabilityEnabled) {
-		super(isParametersVariabilityEnabled, false, isResidualVariabilityEnabled); // there are no random effects in this model 
+	public Trillium2026DiameterIncrementPredictor(boolean isParametersVariabilityEnabled, boolean isRandomEffectVariabilityEnabled, boolean isResidualVariabilityEnabled) {
+		super(isParametersVariabilityEnabled, isRandomEffectVariabilityEnabled, isResidualVariabilityEnabled); // there are no random effects in this model 
 		internalPredictorMap = new HashMap<Species, Trillium2026DiameterIncrementInternalPredictor>();
 		surrogateMap = new ConcurrentHashMap<Species, Species>();
 		setSurrogateMapToDefaultValue();
@@ -177,10 +180,12 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 			Trillium2026DiameterIncrementInternalPredictor pred = new Trillium2026DiameterIncrementInternalPredictor(this, 
 					sp, 
 					isParametersVariabilityEnabled, 
+					isRandomEffectsVariabilityEnabled,
 					isResidualVariabilityEnabled,
 					parmEstimates,
 					EffectMap.get(sp),
 					RhoMap.get(sp),
+					PlotRandomEffectVariance.get(sp),
 					ResVarMap.get(sp));
 			internalPredictorMap.put(sp, pred);
 		}
@@ -202,18 +207,21 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 			String vcovFilename = path + "0_diaminc_vcov.csv";
 			String effectMatchFilename = path + "0_diaminc_effectMatch.csv";
 			String rhoFilename = path + "0_diaminc_rho.csv";
+			String plotRandomEffectVarianceFilename = path + "0_diaminc_PlotRanef.csv";
 			String resVarFilename = path + "0_diaminc_ResidualVar.csv";
 
 			ParameterMap parmMap = ParameterLoader.loadVectorFromFile(1, betaFilename);
 			ParameterMap vcovMap = ParameterLoader.loadVectorFromFile(1, vcovFilename);
 			ParameterMap effectMatchMap = ParameterLoader.loadVectorFromFile(1, effectMatchFilename);
 			ParameterMap rhoMap = ParameterLoader.loadVectorFromFile(1, rhoFilename);
+			ParameterMap plotRanEffMap = ParameterLoader.loadVectorFromFile(1, plotRandomEffectVarianceFilename);
 			ParameterMap resVarianceMap = ParameterLoader.loadVectorFromFile(1, resVarFilename);
 
 			CoefMap = new HashMap<Species, Matrix>();
 			VCovMap = new HashMap<Species, SymmetricMatrix>();
 			EffectMap = new HashMap<Species, List<Integer>>();
 			RhoMap = new HashMap<Species, Double>();
+			PlotRandomEffectVariance = new HashMap<Species, SymmetricMatrix>();
 			ResVarMap = new HashMap<Species, SymmetricMatrix>();
 
 			for (Integer speciesID : InternalSpeciesLookupMap.keySet()) {
@@ -229,6 +237,10 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 				Matrix rho = rhoMap.get(speciesID);
 				if (rho != null) {
 					RhoMap.put(sp, rho.getValueAt(0, 0));
+				}
+				Matrix ranEffVar = plotRanEffMap.get(speciesID);
+				if (ranEffVar != null) {
+					PlotRandomEffectVariance.put(sp, SymmetricMatrix.convertToSymmetricIfPossible(ranEffVar));
 				}
 				ResVarMap.put(sp, SymmetricMatrix.convertToSymmetricIfPossible(resVarianceMap.get(speciesID)));
 			}
@@ -263,9 +275,9 @@ public class Trillium2026DiameterIncrementPredictor extends REpiceaPredictor
 	@Override
 	public List<Species> getEligibleSpecies() {return SpeciesList;}
 	
-	public static void main(String[] args) {
-		new Trillium2026DiameterIncrementPredictor(false);
-	}
+//	public static void main(String[] args) {
+//		new Trillium2026DiameterIncrementPredictor(false);
+//	}
 
 	@Override
 	public SpeciesLocale getScope() {return SpeciesLocale.Ontario;}

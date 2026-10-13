@@ -318,7 +318,7 @@ public class Trillium2026DiameterIncrementTest {
 
 	@Test
 	public void test03StochasticPredictions() {
-		Trillium2026DiameterIncrementPredictor stoPredictor = new Trillium2026DiameterIncrementPredictor(false, true); // stochastic but parameter variability disabled
+		Trillium2026DiameterIncrementPredictor stoPredictor = new Trillium2026DiameterIncrementPredictor(false, true, true); // stochastic but parameter variability disabled
 		Trillium2026DiameterIncrementPredictor detPredictor = new Trillium2026DiameterIncrementPredictor(false); // deterministic
 		Trillium2026TreeImpl t = TreeMap.get(Species.Abies_balsamea).get(0);
 		Matrix real;
@@ -352,7 +352,7 @@ public class Trillium2026DiameterIncrementTest {
 	@Test
 	public void test05CorrelationStructure() {
 		Species sp = Species.Abies_balsamea;
-		Trillium2026DiameterIncrementPredictor predictor = new Trillium2026DiameterIncrementPredictor(false, true); // to make sure the static maps are populated
+		Trillium2026DiameterIncrementPredictor predictor = new Trillium2026DiameterIncrementPredictor(false, true, true); // to make sure the static maps are populated
 		Trillium2026TreeImpl t = TreeMap.get(sp).get(0);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		int initialDateYr = t.dateYr;
@@ -380,7 +380,7 @@ public class Trillium2026DiameterIncrementTest {
 	@Test
 	public void test06WithoutCorrelationStructure() {
 		Species sp = Species.Acer_pensylvanicum;
-		Trillium2026DiameterIncrementPredictor predictor = new Trillium2026DiameterIncrementPredictor(false, true); // to make sure the static maps are populated
+		Trillium2026DiameterIncrementPredictor predictor = new Trillium2026DiameterIncrementPredictor(false, true, true); // to make sure the static maps are populated
 		Trillium2026TreeImpl t = TreeMap.get(sp).get(0);
 		MonteCarloEstimate estimate = new MonteCarloEstimate();
 		int initialDateYr = t.dateYr;
