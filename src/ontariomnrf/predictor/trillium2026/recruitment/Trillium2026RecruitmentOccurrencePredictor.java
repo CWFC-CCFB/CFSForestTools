@@ -62,6 +62,18 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 																REpiceaSpeciesCompliantObject, 
 																ClimateSensitivePredictor {
 
+	private static boolean OriginalFile = false;
+	
+	/**
+	 * Set the original file for species occurrence index calculation. <p>
+	 * 
+	 * IMPORTANT: Should be used For test purpose only.
+	 * 
+	 * @param b true to select the original (but limited) file.
+	 */
+	public static void enableOriginalFileForEvaluation(boolean b) {
+		OriginalFile = b; 
+	}
 	
 	private static final Map<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>> CLIMATE_INFO = new HashMap<Class<? extends REpiceaClimateVariableProvider>, Map<Resolution, REpiceaClimateVariableInformation>>();
 	static {
@@ -108,7 +120,8 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 		for (Species sp : SpeciesList) {
 			SpeciesLookupMap.put(sp.getLatinName().trim().toLowerCase(), sp);
 		}
-		SpeciesLookupMap.put("carya sp.", Species.Other_broadleaved);
+		SpeciesLookupMap.put("carya sp.", Species.Carya_spp);
+		SpeciesLookupMap.put("carya spp", Species.Carya_spp);
 		SpeciesLookupMap.put("meridional species", Species.Other_broadleaved);
 		SpeciesLookupMap.put("shrubs", Species.Broadleaved_shrubs);
 		SpeciesLookupMap.put("ulmus sp.", Species.Ulmus_spp);
@@ -183,7 +196,11 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 						double basalAreaM2Ha = Double.parseDouble(record[header.getIndexOfThisField("G_SpGr")].toString());
 						innerMap.get(dateYr).setBasalArea(sp, basalAreaM2Ha);
 					}
-				}
+				} 
+//				else {
+////					System.out.println("Species " + speciesStr);
+////					int u = 0;
+//				}
 			}
 		} finally {
 			if (reader != null) {
@@ -201,7 +218,9 @@ public class Trillium2026RecruitmentOccurrencePredictor extends REpiceaBinaryEve
 		List<OccupancyIndexCalculablePlot> copyList = new ArrayList<OccupancyIndexCalculablePlot>();
 		if (ReferencePlotsForOccupancyIndexCalculation == null) {
 			String rootPath = ObjectUtility.getRelativePackagePath(Trillium2026RecruitmentOccurrencePredictor.class);
-			String refOccupancyIndex = rootPath + "0_recruitmentRefOccupancyIndex.csv";
+			String refOccupancyIndex = rootPath + (OriginalFile ? 
+					"0_recruitmentRefOccupancyIndex.csv" :
+						"0_recruitmentOccupancyIndex.csv");
 			try {
 				Map<String, Map<Integer,SimpleOccupancyIndexCalculablePlot>> occMap = readRefOccupancyIndex(refOccupancyIndex);
 				ReferencePlotsForOccupancyIndexCalculation = new ArrayList<OccupancyIndexCalculablePlot>();

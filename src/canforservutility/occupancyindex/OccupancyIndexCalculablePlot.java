@@ -38,7 +38,10 @@ public interface OccupancyIndexCalculablePlot extends MonteCarloSimulationCompli
 									AreaHaProvider {
 
 	/**
-	 * Provide the basal area (m2/ha) for this species or species group. 
+	 * Provide the basal area (m2/ha) for this species or species group. <p>
+	 * For efficiency, it is suggested to store none zero values in a map. 
+	 * This method should check if the map contains the key species. If it doesn't,
+	 * it then returns zero.
 	 * 
 	 * @param species an enum standing for the species
 	 * @return a double

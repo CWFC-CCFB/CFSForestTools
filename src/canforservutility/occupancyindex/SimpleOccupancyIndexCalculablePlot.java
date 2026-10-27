@@ -77,15 +77,6 @@ public class SimpleOccupancyIndexCalculablePlot implements OccupancyIndexCalcula
 	}
 
 	/**
-	 * Set a basal area entry for a particular species.
-	 * @param species an Enum variable standing for the species
-	 * @param baHaSpecies the species basal area in the plot (m2/ha)
-	 */
-	public void setBasalArea(Enum<?> species, double baHaSpecies) {
-		baHaSpeciesMap.put(species, baHaSpecies);
-	}
-	
-	/**
 	 * Constructor for a single species.
 	 * @param id plotId
 	 * @param latitudeDeg latitude
@@ -103,6 +94,15 @@ public class SimpleOccupancyIndexCalculablePlot implements OccupancyIndexCalcula
 			throw new InvalidParameterException("The speciesBasalAreaMap argument should be a non empty map!");
 		}
 		baHaSpeciesMap.putAll(speciesBasalAreaMap);
+	}
+	
+	/**
+	 * Set a basal area entry for a particular species.
+	 * @param species an Enum variable standing for the species
+	 * @param baHaSpecies the species basal area in the plot (m2/ha)
+	 */
+	public void setBasalArea(Enum<?> species, double baHaSpecies) {
+		baHaSpeciesMap.put(species, baHaSpecies);
 	}
 
 	@Override
@@ -129,7 +129,9 @@ public class SimpleOccupancyIndexCalculablePlot implements OccupancyIndexCalcula
 	
 	@Override
 	public double getBasalAreaM2HaForThisSpecies(Enum<?> species) {
-		return baHaSpeciesMap.get(species);
+		return baHaSpeciesMap.containsKey(species) ?
+				baHaSpeciesMap.get(species):
+					0d;
 	}
 
 	@Override 

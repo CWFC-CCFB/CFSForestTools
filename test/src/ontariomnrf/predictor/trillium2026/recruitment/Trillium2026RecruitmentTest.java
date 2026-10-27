@@ -133,8 +133,10 @@ public class Trillium2026RecruitmentTest {
 
 	@BeforeClass
 	public static void initialize() throws IOException {
+		Trillium2026RecruitmentOccurrencePredictor.enableOriginalFileForEvaluation(true);
 		OccIndCalc = new OccupancyIndexCalculator(Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex(), 25, null);
 		OccIndCalc.registerPlots(Trillium2026RecruitmentOccurrencePredictor.getReferencePlotsForOccupancyIndex());
+		Trillium2026RecruitmentOccurrencePredictor.enableOriginalFileForEvaluation(false);
 
 		PlotMapForOccurrence = new HashMap<String, Trillium2026RecruitmentPlotImpl>();
 		String filename = ObjectUtility.getPackagePath(Trillium2026RecruitmentTest.class) + "0_RecruitmentOccurrenceValidationDataset.csv";
