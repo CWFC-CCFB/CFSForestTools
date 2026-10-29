@@ -243,7 +243,7 @@ public class GeneralSettings {
 		SPECIES_LOOKUP_MAP.put("CHE", Species.Quercus_bicolor);
 		SPECIES_LOOKUP_MAP.put("CHG", Species.Quercus_macrocarpa);
 		SPECIES_LOOKUP_MAP.put("CHR", Species.Quercus_rubra);
-		SPECIES_LOOKUP_MAP.put("CRA", Species.Crategus_spp);
+		SPECIES_LOOKUP_MAP.put("CRA", Species.Crataegus_spp);
 		SPECIES_LOOKUP_MAP.put("EPB", Species.Picea_glauca);
 		SPECIES_LOOKUP_MAP.put("EPR", Species.Picea_rubens);
 		SPECIES_LOOKUP_MAP.put("EPN", Species.Picea_mariana);
