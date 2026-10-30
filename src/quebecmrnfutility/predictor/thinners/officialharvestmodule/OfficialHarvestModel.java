@@ -77,20 +77,34 @@ public final class OfficialHarvestModel extends REpiceaThinner<OfficialHarvestab
 		 * Manuel de d\u00E9termination des possibilit\u00E9s foresti\u00E8res 2013-2018.
 		 * </a>
 		 */
-		CP("Shelterwood cutting", "Coupe progressive", new int[] {15, 30}), 
-		EC("Commercial thinning", "\u00C9claircie commerciale", new int[] {15, 30}),
-		ES("Selective thinning", "\u00C9claircie s\u00E9lective", new int[] {15, 30}),
-		CP_35("Partial cutting 35%", "Coupe partielle 35% chantier for\u00eat feuillue R-06", new int[] {15, 30}),
-		CP_45("Partial cutting 45%", "Coupe partielle 45% chantier for\u00eat feuillue R-06", new int[] {15, 30}),
-		CPI_CP("CPI_CP Outaouais", "CPI_CP Outaouais", null),
-		CPI_RL("CPI_RL Outaouais", "CPI_RL Outaouais", null),
-		CRS("CRS Outaouais", "CRS Outaouais", null),
-		CJP("Selection cutting CIMOTFF","Coupes jardinage CIMOTFF", null),
-		CJPG_QM("Selection cutting group of trees CIMOTFF","Coupe jardinage par groupe d'arbres CIMOTFF", null),
-		CPI_CP_CIMOTF("CPI_CP CIMOTFF", "Coupe progressive irr\u00E9guli\u00E8re couvert permanent CIMOTFF", null),
-		CPI_RL_CIMOTF("CPI_RL CIMOTFF","Coupe progressive irr\u00E9guli\u00E8re \u00E0 r\u00E9g\u00E9n\u00E9ration lente CIMOTFF", null),
-		CPRS("Harvesting with soil and regeneration protection", "CPRS - Coupe avec protection de la r\u00E9g\u00E9n\u00E9ration et des sols", null),
-		PROTECTION("No harvest", "Aucune coupe", null)
+		CP("Shelterwood cutting", 
+				"Coupe progressive", new int[] {15, 30}), 
+		EC("Commercial thinning", 
+				"\u00C9claircie commerciale", new int[] {15, 30}),
+		ES("Selective thinning", 
+				"\u00C9claircie s\u00E9lective", new int[] {15, 30}),
+		CP_35("Partial cutting 35%", 
+				"Coupe partielle 35% chantier for\u00eat feuillue R-06", new int[] {15, 30}),
+		CP_45("Partial cutting 45%", 
+				"Coupe partielle 45% chantier for\u00eat feuillue R-06", new int[] {15, 30}),
+		CPI_CP("Irregular shelterwood with continuous cover (Outaouais)", 
+				"Coupe progressive irr\u00E9guli\u00E8re \u00E0 couvert permanent (Outaouais)", null),
+		CPI_RL("Irregular shelterwood with delayed regeneration (Outaouais)", 
+				"Coupe progressive irr\u00E9guli\u00E8re \u00E0 r\u00E9g\u00E9n\u00E9ration lente (Outaouais)", new int[] {30, 50}),
+		CRS("Seed-tree cutting (Outaouais)", 
+				"Coupe avec r\u00E9serve de semenciers (Outaouais)", null),
+		CJP("Selection cutting (CIMOTFF)",
+				"Coupes jardinage (CIMOTFF)", null),
+		CJPG_QM("Selection cutting group of trees (CIMOTFF)",
+				"Coupe jardinage par groupe d'arbres (CIMOTFF)", null),
+		CPI_CP_CIMOTF("Irregular shelterwood with continuous cover (CIMOTFF)", 
+				"Coupe progressive irr\u00E9guli\u00E8re couvert permanent (CIMOTFF)", null),
+		CPI_RL_CIMOTF("Irregular shelterwood with delayed regeneration (CIMOTFF)",
+				"Coupe progressive irr\u00E9guli\u00E8re \u00E0 r\u00E9g\u00E9n\u00E9ration lente (CIMOTFF)", new int[] {30, 50}),
+		CPRS("Harvesting with soil and regeneration protection",
+				"CPRS - Coupe avec protection de la r\u00E9g\u00E9n\u00E9ration et des sols", null),
+		PROTECTION("No harvest", 
+				"Aucune coupe", null)
 		;		
 
 		private static List<TreatmentType> FinalTreatments = Arrays.asList(CRS, CPRS);
